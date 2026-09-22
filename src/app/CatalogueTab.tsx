@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
 import EvidenceDrawer, { SourceList } from "@/components/EvidenceDrawer";
 import { productEvents, products } from "@/content/load";
-import { catalogueAt, eventLabel, intervalQualified, nameAt, type ProductState } from "@/content/derive";
+import { catalogueAt, eventLabel, intervalQualified, nameAt, ownerAt, type ProductState } from "@/content/derive";
 import { formatDate } from "@/content/dates";
 import type { ProductEvent } from "@/content/schema";
 import type { HistoryState } from "./state";
@@ -192,7 +192,11 @@ function Group({ id, items, date, dashed, label, columns = 1 }: { id: string; it
 export default function CatalogueTab({ state }: { state: HistoryState }) {
   const date = state.anchor.date;
   const states = useMemo(() => catalogueAt(date, products, productEvents), [date]);
-  const company = states.find((s) => s.product.id === "dbt-labs");
+  // Name the company from its name history so it reads correctly before its first dated event.
+  const companyProduct = products.get("dbt-labs");
+  const companyName = companyProduct ? nameAt(companyProduct, date) : "dbt Labs";
+  const companyOwner = companyProduct ? ownerAt(companyProduct, date) : null;
+  const currentName = companyProduct?.names.at(-1)?.name ?? "dbt Labs";
   const members = states.filter((s) => !s.pending);
   const pending = states.filter((s) => s.pending);
   const byId = Object.fromEntries(GROUPS.map((g) => [g.id, members.filter(g.match)])) as Record<string, ProductState[]>;
@@ -201,9 +205,16 @@ export default function CatalogueTab({ state }: { state: HistoryState }) {
   return (
     <div className="flex h-full min-h-0 flex-col">
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2.5 rounded-lg bg-highlight-wash px-4 py-2.5 text-[13px]">
-        <strong>{company?.name ?? "The company"}</strong>
+        <span>
+          <strong>{companyName}</strong>
+          <span className="text-muted-foreground">
+            {" "}
+            · the company behind dbt{companyName !== currentName ? `, later ${currentName}` : ""}
+          </span>
+        </span>
         <small className="text-[11px] text-muted-foreground">
-          products and capabilities as of {formatDate(date)} · {company?.owner ?? ""}
+          what it offered on {formatDate(date)}
+          {companyOwner && companyOwner !== "Independent company before the merger" ? ` · ${companyOwner}` : ""}
         </small>
       </div>
       <div className={cn("grid min-h-0 flex-1 gap-3 overflow-y-auto sm:grid-cols-2", platformColumns === 3 ? "xl:grid-cols-[1fr_3fr_1fr]" : platformColumns === 2 ? "xl:grid-cols-[1fr_2fr_1fr]" : "xl:grid-cols-3")}>
