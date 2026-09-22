@@ -44,7 +44,7 @@ export default function ReleaseTab({ state }: { state: HistoryState }) {
         </div>
       </div>
 
-      <div className="grid min-h-0 flex-1 grid-cols-1 gap-8 overflow-y-auto lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
+      <div className="grid min-h-0 flex-1 grid-cols-1 gap-x-12 gap-y-6 overflow-y-auto lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
         <div className="flex min-h-0 flex-col">
           <h3 className="mb-2.5 text-sm font-semibold">What changed</h3>
           {r.what_changed.length ? (
@@ -99,7 +99,7 @@ export default function ReleaseTab({ state }: { state: HistoryState }) {
           </div>
         </div>
 
-        <div className="flex min-h-0 flex-col gap-4 rounded-[11px] border border-border bg-card p-5">
+        <div className="flex min-h-0 flex-col gap-4 lg:pt-0">
           {r.problem_then && (
             <div>
               <h3 className="mb-1 text-sm font-semibold">The problem then</h3>
