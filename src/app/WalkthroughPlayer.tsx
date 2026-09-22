@@ -38,11 +38,13 @@ export default function WalkthroughPlayer({ release, walkthrough, step, onStep, 
   const sources = release.sources.filter((s) => sourceIds.has(s.id));
 
   return (
-    <section aria-label="Waffle Shop walkthrough" className="flex min-h-0 flex-col overflow-hidden rounded-[11px] border border-border bg-card">
+    <section aria-label="Waffle Shop walkthrough" className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[11px] border border-border bg-card">
       <header className="flex items-center gap-2.5 border-b border-border px-4 py-3">
         <div className="waffle-mark" aria-hidden="true" />
         <div className="min-w-0 flex-1">
-          <h3 className="text-sm font-semibold">Waffle Shop</h3>
+          <h3 className="text-sm font-semibold">
+            Waffle Shop <span className="font-normal text-muted-foreground">· {release.label}</span>
+          </h3>
           <small className="block truncate text-[11px] text-muted-foreground">{walkthrough.title ?? walkthrough.learning_objective.trim()}</small>
         </div>
         <ol className="flex items-center gap-1" aria-label="Steps">
@@ -62,12 +64,13 @@ export default function WalkthroughPlayer({ release, walkthrough, step, onStep, 
         </ol>
       </header>
 
-      <div key={current.id} className="flex min-h-0 flex-1 flex-col gap-2.5 overflow-y-auto px-4 py-3">
+      <div key={current.id} className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto px-5 py-4">
         <div>
-          <h3 className="text-sm font-semibold">{current.title}</h3>
-          <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{current.explanation.trim()}</p>
+          <h3 className="font-display text-xl font-medium tracking-[-0.3px]">{current.title}</h3>
+          <p className="mt-1 max-w-[70ch] text-[13px] leading-relaxed text-muted-foreground">{current.explanation.trim()}</p>
+          <p className="provenance mt-1">{walkthrough.context.trim()}</p>
         </div>
-        <div className={cn("grid min-h-0 gap-3", current.code.length && current.state ? "xl:grid-cols-2" : "")}>
+        <div className={cn("grid min-h-0 gap-4", current.code.length && current.state ? "lg:grid-cols-2" : "")}>
           {current.code.length > 0 && (
             <div className="flex min-h-0 flex-col gap-2">
               {current.code.map((c, i) => (
@@ -82,7 +85,7 @@ export default function WalkthroughPlayer({ release, walkthrough, step, onStep, 
           )}
         </div>
         {current.takeaway && (
-          <p className="border-l-[3px] border-accent bg-highlight-wash px-3 py-2 text-xs">
+          <p className="border-l-[3px] border-accent bg-highlight-wash px-3 py-2 text-[13px]">
             <span className="mr-1.5 font-semibold">Takeaway.</span>
             {current.takeaway.trim()}
           </p>

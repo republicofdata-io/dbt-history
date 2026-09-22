@@ -2,7 +2,6 @@ import { Badge } from "@/components/ui/badge";
 import EvidenceDrawer, { SourceList } from "@/components/EvidenceDrawer";
 import { formatDate } from "@/content/dates";
 import type { HistoryState } from "./state";
-import WalkthroughPlayer from "./WalkthroughPlayer";
 
 function Prose({ text, className }: { text?: string | null; className?: string }) {
   if (!text) return null;
@@ -22,11 +21,10 @@ function Prose({ text, className }: { text?: string | null; className?: string }
 
 /**
  * The release panel from the concept: context row, big version number with
- * title and lead, then a story grid with "What changed" on the left and the
- * Waffle Shop card on the right. Sized to fit one screen; the walkthrough
- * takes the remaining height.
+ * title and lead, then "What changed" beside the problem, the practical
+ * effect and the practitioner detail. The Waffle Shop example has its own tab.
  */
-export default function ReleaseTab({ state, active }: { state: HistoryState; active: boolean }) {
+export default function ReleaseTab({ state }: { state: HistoryState }) {
   const r = state.release;
   const m = state.anchor.milestone;
   const sourcesById = new Map(r.sources.map((s) => [s.id, s]));
@@ -46,16 +44,16 @@ export default function ReleaseTab({ state, active }: { state: HistoryState; act
         </div>
       </div>
 
-      <div className="grid min-h-0 flex-1 grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)]">
-        <div className="flex min-h-0 flex-col overflow-y-auto">
+      <div className="grid min-h-0 flex-1 grid-cols-1 gap-8 overflow-y-auto lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
+        <div className="flex min-h-0 flex-col">
           <h3 className="mb-2.5 text-sm font-semibold">What changed</h3>
           {r.what_changed.length ? (
-            <ul className="flex flex-col gap-3">
+            <ul className="flex flex-col gap-3.5">
               {r.what_changed.map((c) => (
-                <li key={c.id} className="flex gap-2.5 text-xs leading-relaxed">
-                  <span className="mt-[7px] h-1.5 w-1.5 flex-none rounded-full bg-accent" aria-hidden="true" />
+                <li key={c.id} className="flex gap-2.5 text-[13px] leading-relaxed">
+                  <span className="mt-[8px] h-1.5 w-1.5 flex-none rounded-full bg-accent" aria-hidden="true" />
                   <div>
-                    <strong className="block text-[13px] font-semibold">
+                    <strong className="block text-sm font-semibold">
                       {c.summary}{" "}
                       {c.introduced_in && <Badge variant="accent" className="ml-1 align-middle">{c.introduced_in}</Badge>}
                       {!c.introduced_in && c.known_present_in && <Badge className="ml-1 align-middle">by {c.known_present_in}</Badge>}
@@ -70,38 +68,9 @@ export default function ReleaseTab({ state, active }: { state: HistoryState; act
           ) : (
             <p className="text-xs text-muted-foreground">Feature claims are still being authored for this chapter.</p>
           )}
-          {r.problem_then && (
-            <div className="mt-4">
-              <h3 className="mb-1 text-xs font-semibold">The problem then</h3>
-              <Prose text={r.problem_then} className="text-xs leading-relaxed text-muted-foreground" />
-            </div>
-          )}
-          {r.in_practice && (
-            <div className="mt-3">
-              <h3 className="mb-1 text-xs font-semibold">In practice</h3>
-              <Prose text={r.in_practice} className="text-xs leading-relaxed text-muted-foreground" />
-            </div>
-          )}
-          <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-1 pt-4 text-xs">
-            {(r.technical_detail || r.caveats.length > 0) && (
-              <EvidenceDrawer title="For the practitioner" description={`${r.label} · ${r.title}`} trigger={<button type="button" className="text-accent underline-offset-2 hover:underline">For the practitioner</button>}>
-                <div className="flex flex-col gap-3 text-sm">
-                  <Prose text={r.technical_detail} className="leading-relaxed" />
-                  {r.caveats.length > 0 && (
-                    <div>
-                      <p className="kicker mb-1">Keep in mind</p>
-                      <ul className="list-disc pl-4 text-muted-foreground">
-                        {r.caveats.map((c, i) => (
-                          <li key={i}>{c}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-              </EvidenceDrawer>
-            )}
+          <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-1 pt-5 text-xs">
             {r.milestones.length > 1 && (
-              <EvidenceDrawer title="Dated milestones in this chapter" description="Selecting one moves the date for all three tabs." trigger={<button type="button" className="text-accent underline-offset-2 hover:underline">Milestones</button>}>
+              <EvidenceDrawer title="Dated milestones in this chapter" description="Selecting one moves the date for all tabs." trigger={<button type="button" className="text-accent underline-offset-2 hover:underline">Milestones</button>}>
                 <ul className="flex flex-col gap-2 text-sm">
                   {r.milestones.map((x) => (
                     <li key={x.id}>
@@ -124,22 +93,42 @@ export default function ReleaseTab({ state, active }: { state: HistoryState; act
             <EvidenceDrawer title={`${r.label} sources`} description="Primary release and package evidence." trigger={<button type="button" className="text-accent underline-offset-2 hover:underline">Release sources</button>}>
               <SourceList sources={r.sources} />
             </EvidenceDrawer>
+            <button type="button" onClick={() => state.goTab("waffle")} className="text-accent underline-offset-2 hover:underline">
+              See it happen in the Waffle Shop ›
+            </button>
           </div>
         </div>
 
-        {r.walkthrough ? (
-          <WalkthroughPlayer release={r} walkthrough={r.walkthrough} step={state.step} onStep={state.setStep} active={active} />
-        ) : (
-          <section aria-label="Waffle Shop walkthrough" className="rounded-[11px] border border-dashed border-border p-5">
-            <div className="flex items-center gap-2.5">
-              <div className="waffle-mark" aria-hidden="true" />
-              <div>
-                <h3 className="text-sm font-semibold">Waffle Shop</h3>
-                <small className="block text-[11px] text-muted-foreground">Walkthrough in preparation</small>
-              </div>
+        <div className="flex min-h-0 flex-col gap-4 rounded-[11px] border border-border bg-card p-5">
+          {r.problem_then && (
+            <div>
+              <h3 className="mb-1 text-sm font-semibold">The problem then</h3>
+              <Prose text={r.problem_then} className="text-[13px] leading-relaxed text-muted-foreground" />
             </div>
-          </section>
-        )}
+          )}
+          {r.in_practice && (
+            <div>
+              <h3 className="mb-1 text-sm font-semibold">What changed in practice</h3>
+              <Prose text={r.in_practice} className="text-[13px] leading-relaxed text-muted-foreground" />
+            </div>
+          )}
+          {r.technical_detail && (
+            <div>
+              <h3 className="mb-1 text-sm font-semibold">For the practitioner</h3>
+              <Prose text={r.technical_detail} className="text-[13px] leading-relaxed text-muted-foreground" />
+            </div>
+          )}
+          {r.caveats.length > 0 && (
+            <div>
+              <h3 className="mb-1 text-sm font-semibold">Keep in mind</h3>
+              <ul className="list-disc pl-4 text-[13px] leading-relaxed text-muted-foreground">
+                {r.caveats.map((c, i) => (
+                  <li key={i}>{c}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

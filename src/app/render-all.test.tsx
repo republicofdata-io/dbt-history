@@ -24,13 +24,13 @@ describe("every chapter renders", () => {
     it(`${release.label} renders all tabs, steps and milestones`, () => {
       const steps = release.walkthrough?.steps ?? [];
       for (let i = 1; i <= steps.length; i++) {
-        renderAt(`/${release.id}/release?s=${i}`);
+        renderAt(`/${release.id}/waffle?s=${i}`);
         expect(screen.getAllByText(steps[i - 1].title).length).toBeGreaterThan(0);
         expect(screen.getByText(`Step ${i} of ${steps.length}`)).toBeInTheDocument();
         cleanup();
       }
       for (const m of release.milestones) {
-        for (const tab of ["catalogue", "ecosystem"] as const) {
+        for (const tab of ["release", "catalogue", "ecosystem"] as const) {
           renderAt(`/${release.id}/${tab}?m=${m.id}`);
           expect((screen.getByLabelText("Selected release") as HTMLSelectElement).value).toBe(release.id);
           cleanup();

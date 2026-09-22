@@ -8,7 +8,8 @@ Current delivery direction confirmed by Olivier on 22 September 2026. This super
 - History begins in 2016, with 35 version chapters: 0.1–0.21, 1.0–1.12, 2.0. Keep version chapters, with significant patches inside them.
 - Waffle Shop is the recurring scenario. Each release contains a guided walkthrough for new and experienced practitioners.
 - Visitors advance through prepared steps using Next, Previous and Restart. Show read-only code, highlighted changes, tables, diagrams and explained results. No visitor code editing, fixture changes, live execution or separate terminal workflow.
-- Selected release/date anchors release, catalogue and wider ecosystem tabs. Preserve active tab and walkthrough progress when navigating appropriately.
+- Selected release/date anchors the release, Waffle Shop, catalogue and wider ecosystem tabs. Preserve active tab and walkthrough progress when navigating appropriately.
+- **Decision of 22 September 2026:** the Waffle Shop walkthrough is its own tab, alongside the release, catalogue and ecosystem. This supersedes the guided-examples brief's line that the example lives inside The release tab.
 - Read `documentation/01-app-brief.md` and `documentation/02-guided-examples-brief.md` as the implementation briefs. The separate local lab is outside scope; runtime research is reference material, not a prerequisite.
 - Keep Olivier's personal recording notes out of the app.
 - Source historical claims and preserve exact introduction patches, contemporary product names, maturity and ownership.

@@ -6,7 +6,7 @@
 
 Each release includes a short Waffle Shop walkthrough. Visitors advance through prepared steps with **Next**, **Previous** and **Restart**. The app shows read-only code, highlighted changes, small tables, diagrams and explained results. Visitors don't edit code, change fixtures, configure dbt or execute commands. A command may appear as part of the explanation, without being a runnable terminal control.
 
-The example lives inside **The release** tab. It isn't a fourth tab or a separate application. All 35 version chapters remain, with the same release/date anchor controlling the catalogue and ecosystem views. The app will be published on Olivier's website so viewers can explore at their own pace afterward.
+**Updated 22 September 2026:** the example is a fourth tab, **Waffle Shop**, beside The release, The catalogue and The wider ecosystem. It is not a separate application. All 35 version chapters remain, with the same release/date anchor controlling the catalogue and ecosystem views. The app will be published on Olivier's website so viewers can explore at their own pace afterward.
 
 ## Suggested walkthrough structure
 
