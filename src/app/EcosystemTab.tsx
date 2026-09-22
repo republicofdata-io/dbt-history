@@ -82,10 +82,10 @@ export default function EcosystemTab({ state }: { state: HistoryState }) {
   const bands = BAND_LAYERS.filter((l) => snapshot.has(l));
   const merged = date >= "2026-06-01";
   // What appeared, left or was renamed on the chart since the previous chapter opened.
+  // The first chapter starts from an empty chart, so every player on it is new.
   const previousRelease = state.index > 0 ? releases[state.index - 1] : null;
   const change = useMemo(() => {
-    if (!previousRelease) return null;
-    const prev = ecosystemAt(resolveAnchor(previousRelease).date, ecosystem.placements, products, productEvents);
+    const prev = previousRelease ? ecosystemAt(resolveAnchor(previousRelease).date, ecosystem.placements, products, productEvents) : new Map();
     return diffEcosystem(prev, snapshot);
   }, [previousRelease, snapshot]);
   const tagFor = (s: PlacementState) => {
@@ -107,7 +107,7 @@ export default function EcosystemTab({ state }: { state: HistoryState }) {
       </div>
       {change && (
         <p className="mb-3 text-xs text-muted-foreground">
-          <span className="font-semibold text-foreground">Since {previousRelease!.label}:</span>{" "}
+          <span className="font-semibold text-foreground">{previousRelease ? `Since ${previousRelease.label}:` : "The story opens with:"}</span>{" "}
           {change.added.length === 0 && change.renamed.length === 0 && change.removed.length === 0 && "no change on the chart."}
           {change.added.length > 0 && (
             <>

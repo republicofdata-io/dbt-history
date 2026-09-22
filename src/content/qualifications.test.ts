@@ -110,6 +110,13 @@ describe("what changed since the previous chapter", () => {
     expect(d.added.map((s) => s.product.id)).toContain("snowflake");
   });
 
+  it("marks everything in the first chapter as new", () => {
+    const d = diffCatalogue([], cat("origin"));
+    expect(d.get("dbt-core")?.kind).toBe("new");
+    const e = diffEcosystem(new Map(), eco("origin"));
+    expect(e.added.length).toBeGreaterThan(0);
+  });
+
   it("marks the Fivetran lineage as new in the catalogue at the first chapter after the merger", () => {
     const d = diffCatalogue(cat("1.11"), cat("1.12"));
     expect(d.get("fivetran")?.kind).toBe("new");

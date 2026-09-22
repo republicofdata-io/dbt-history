@@ -201,10 +201,10 @@ export default function CatalogueTab({ state }: { state: HistoryState }) {
   const date = state.anchor.date;
   const states = useMemo(() => catalogueAt(date, products, productEvents), [date]);
   // What is new or changed since the previous chapter opened.
+  // The first chapter starts from an empty catalogue, so everything in it is new.
   const previousRelease = state.index > 0 ? releases[state.index - 1] : null;
   const changes = useMemo(() => {
-    if (!previousRelease) return new Map<string, CatalogueChange>();
-    const prev = catalogueAt(resolveAnchor(previousRelease).date, products, productEvents);
+    const prev = previousRelease ? catalogueAt(resolveAnchor(previousRelease).date, products, productEvents) : [];
     return diffCatalogue(prev, states);
   }, [previousRelease, states]);
   const newOnes = states.filter((s) => changes.get(s.product.id)?.kind === "new");
@@ -234,9 +234,9 @@ export default function CatalogueTab({ state }: { state: HistoryState }) {
           {companyOwner && companyOwner !== "Independent company before the merger" ? ` · ${companyOwner}` : ""}
         </small>
       </div>
-      {previousRelease && (
+      {(newOnes.length > 0 || changedOnes.length > 0 || previousRelease) && (
         <p className="mb-3 text-xs text-muted-foreground">
-          <span className="font-semibold text-foreground">Since {previousRelease.label}:</span>{" "}
+          <span className="font-semibold text-foreground">{previousRelease ? `Since ${previousRelease.label}:` : "The story opens with:"}</span>{" "}
           {newOnes.length === 0 && changedOnes.length === 0 && "no change in the catalogue."}
           {newOnes.length > 0 && (
             <>
