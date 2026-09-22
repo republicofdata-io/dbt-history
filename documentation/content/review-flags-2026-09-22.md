@@ -122,3 +122,6 @@ Wording was rewritten by an editorial pass; these items need a content or histor
 - Step 3 result table shows location, payment_cents and refund_cents, but the corrected query selects only location_id and revenue_cents. Either widen the query or narrow the table.
 - Step 2 does not say which distribution reports the missing column, or at what moment (parse, compile, run). The rewrite says full dbt, while reading the SQL. Confirm.
 - Historical claims to confirm: package names dbt and dbt-oss at 2.0.2, the Product Licensing Agreement licence category, and the September 16 Summit product statuses.
+
+## 0.2 (added by Olivier's review)
+- Step 3 was replaced by a seed demo (CSV in `data/locations.csv`, `dbt seed`, resulting table). Confirm against the 0.2.3.0 source that the seed folder was `data/` and whether models could `ref()` a seeded table at that patch; adjust the CSV path or add a join step if so.

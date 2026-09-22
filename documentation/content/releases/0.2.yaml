@@ -25,9 +25,12 @@ what_changed:
     confidence: high
 in_practice: |
   Build the project, then inspect explicit data assertions. Treat the first seed command as a patch milestone.
-technical_detail: |
+technical_detail: >
   The 0.2 series starts with package 0.2.0, which brings the test command. CSV seeds and accepted-values tests
-  arrive later in the series, in patch 0.2.3.0 (dbt used four-part version numbers at the time). The walkthrough
+
+  arrive later in the series, in patch 0.2.3.0 (dbt used four-part version numbers at the time). The
+  walkthrough
+
   writes its relationship test in the schema file format of 2016, not in today's YAML.
 milestones:
   - id: 0.2.0
@@ -228,100 +231,55 @@ walkthrough:
         - src-3
         - src-4
         - src-5
-    - id: boundary
-      title: Keep the stray 400 cents visible
+    - id: seed
+      title: From patch 0.2.3.0, load the location list from a CSV file
       explanation: >
-        The revenue models start from orders. Highlighted lines 2 and 5 of order_amounts total payments and
-        refunds per order, and lines 8 and 9 attach those totals to each order. A payment with no order never
-        joins, so it is left out of the sums in highlighted lines 3 to 5 of the location model. The last file
-        adds up the left-out money instead: highlighted lines 1 and 4 sum payments with no matching order. The
-        result panel reconciles everything: 14,200 cents of raw payments, 1,300 of refunds, 400 unattributed,
-        12,500 of order-based revenue.
+        Three shops need names, not just ids. The CSV file, highlighted on lines 1 to 4, lists them: a header
+        row and one row per location. The command file runs dbt seed, which arrived in patch 0.2.3.0 and loads
+        every CSV in the project's data folder into the warehouse as a table. The result panel shows the table
+        it creates: three rows, one per location, ready for a model to join to.
+      code:
+        - language: text
+          filename: data/locations.csv
+          content: |
+            location_id,name
+            1,Old Port
+            2,Mile End
+            3,Riverside
+          highlight_lines:
+            - 1
+            - 2
+            - 3
+            - 4
+          purpose: authored fixture file; illustration only
+        - language: shell
+          filename: commands.sh
+          content: |
+            dbt seed
+          highlight_lines:
+            - 1
+          purpose: authored command; illustration only
       state:
-        kind: comparison
-        title: Where every cent went
+        kind: table
+        title: The locations table created by dbt seed
         columns:
-          - measure
-          - cents
+          - location_id
+          - name
         rows:
-          - - raw payments
-            - 14200
-          - - refunds
-            - 1300
-          - - unattributed payment
-            - 400
-          - - order-based revenue
-            - 12500
+          - - 1
+            - Old Port
+          - - 2
+            - Mile End
+          - - 3
+            - Riverside
         result_status: null
         diagram: null
         provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
       takeaway: >
-        The location totals stay correct at 12,500 cents, and the 400 cents that cannot be placed is reported
-        separately instead of hidden.
+        A small lookup table can live in the project as a CSV file and be loaded with one command, instead of
+        being created by hand in the warehouse.
       evidence:
-        - src-1
-        - src-2
         - src-3
-        - src-4
-        - src-5
-      code:
-        - language: sql
-          filename: models/order_amounts.sql
-          content: |
-            with paid as (
-                select order_id, sum(amount_cents) as payment_cents
-                from raw.payments group by order_id
-            ), refunded as (
-                select order_id, sum(amount_cents) as refund_cents
-                from raw.refunds group by order_id
-            )
-            select o.*, coalesce(p.payment_cents, 0) as payment_cents,
-                coalesce(r.refund_cents, 0) as refund_cents
-            from raw.orders as o
-            left join paid as p on o.order_id = p.order_id
-            left join refunded as r on o.order_id = r.order_id
-          highlight_lines:
-            - 2
-            - 5
-            - 8
-            - 9
-          purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: models/order_revenue.sql
-          content: |
-            select *, payment_cents - refund_cents as revenue_cents
-            from {{ ref("order_amounts") }}
-          highlight_lines:
-            - 1
-          purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: models/revenue_by_location.sql
-          content: |
-            select
-                r.location_id, l.name as location,
-                sum(r.payment_cents) as payment_cents,
-                sum(r.refund_cents) as refund_cents,
-                sum(r.revenue_cents) as revenue_cents
-            from {{ ref("order_revenue") }} as r
-            join raw.locations as l on r.location_id = l.location_id
-            group by r.location_id, l.name
-            order by r.location_id
-          highlight_lines:
-            - 3
-            - 4
-            - 5
-          purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: analyses/unattributed_money.sql
-          content: |
-            select sum(p.amount_cents) as unattributed_cents
-            from {{ ref("payments") }} as p
-            left join {{ ref("orders") }} as o on p.order_id = o.order_id
-            where o.order_id is null
-          highlight_lines:
-            - 1
-            - 4
-          purpose: authored executable syntax; illustration only
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -338,7 +296,9 @@ walkthrough:
 
       0.2.0 schema_tester.py checks child-table IDs against the model declaring the relationship. The rule
       therefore belongs under orders with to: payments, the reverse of later child-oriented syntax. dbt test
-      is a separate command here; dependency-blocking dbt build arrives in 0.21.
+      is a separate command here; dependency-blocking dbt build arrives in 0.21. The seed step shows the CSV,
+      the command and the resulting table; the data folder name and whether models could ref() a seeded table
+      at 0.2.3.0 should be confirmed against the 0.2.3.0 source.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
@@ -357,9 +317,9 @@ walkthrough:
       still reports 12,500 cents, because it starts from orders and never sees the stray payment. The shop
       needs a separate check that flags money it cannot tie to a location.
     outcome: >
-      Watch the test command report one broken link, while revenue by location stays at 12,500 cents and the
-      stray 400 cents is shown on its own.
+      Watch the test command report one broken link while revenue by location stays at 12,500 cents, then see
+      the seed command from patch 0.2.3.0 load the list of locations from a CSV file.
   title: |
-    Demo: a relationship test catches a payment with no matching order
+    Demo: a relationship test catches a payment with no matching order, and a CSV becomes a table
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.
