@@ -69,7 +69,7 @@ export default function ReleaseTab({ state }: { state: HistoryState }) {
           )}
           <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-1 pt-5 text-xs">
             {r.milestones.length > 1 && (
-              <EvidenceDrawer title="Dated milestones in this chapter" description="Selecting one moves the date for all tabs." trigger={<button type="button" className="text-accent underline-offset-2 hover:underline">Milestones</button>}>
+              <EvidenceDrawer title="Dated milestones in this chapter" description="Selecting one moves the date for all tabs. A chapter opens on its first published package; that is the package upload date, not an announcement date." trigger={<button type="button" className="text-accent underline-offset-2 hover:underline">Milestones</button>}>
                 <ul className="flex flex-col gap-2 text-sm">
                   {r.milestones.map((x) => (
                     <li key={x.id}>

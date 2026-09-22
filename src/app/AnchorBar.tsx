@@ -32,10 +32,13 @@ export default function AnchorBar({ state }: { state: HistoryState }) {
         </select>
         <span className="text-[13px]" aria-live="polite">
           <span className="font-semibold">{formatDate(m.date, m.precision)}</span>
-          <span className="text-muted-foreground"> · {m.title}</span>
+          {m.kind !== "package" && (
+            <span className="text-muted-foreground">
+              {" "}· {m.version ? `${m.version} · ` : ""}
+              {m.title}
+            </span>
+          )}
         </span>
-        {m.kind === "package" && <span className="provenance hidden lg:inline">package upload date, not an announcement date</span>}
-        {m.kind !== "package" && m.kind !== "origin" && <span className="provenance hidden lg:inline">during {release.label}</span>}
       </div>
       <div className="flex gap-1.5">
         <button type="button" onClick={state.goPrevious} disabled={!state.hasPrevious} aria-label="Previous release" title="Previous release ([)" className="whitespace-nowrap rounded-md border border-border bg-card px-2.5 py-1.5 text-xs disabled:opacity-35">
