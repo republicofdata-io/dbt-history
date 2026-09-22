@@ -125,7 +125,7 @@ walkthrough:
   - id: answer
     title: The handwritten answer
     explanation: |
-      The analyst writes one query. It adds up payments and refunds per order first, then joins them to orders to find the location. The numbers are right.
+      The analyst writes one query. It adds up payments and refunds per order first, then joins them to orders to find the location. The highlighted lines hold the business rule, payments minus refunds. The numbers are right.
     code:
     - language: sql
       filename: analyst/revenue_by_location.sql
@@ -172,7 +172,7 @@ walkthrough:
         - 4800
       provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
-      The query is correct. Nothing about it says so, and nothing keeps it that way.
+      The numbers are right, but nothing checks them and nothing protects the refund rule from being lost when the query is copied.
     evidence:
     - src-1
     - src-2
