@@ -15,7 +15,7 @@ what_changed:
       - src-1
     confidence: high
   - id: change-2
-    summary: In-model config and this variable; enum materializations replace Boolean configuration.
+    summary: In-model config and the {{ this }} variable, which names the table the model is building; named materializations (table, view, incremental, ephemeral) replace the true/false setting.
     introduced_in: 0.4.0
     adapter_constraints:
     evidence:
@@ -232,7 +232,7 @@ walkthrough:
       title: Pick out only the orders that are new
       explanation: >-
         Highlighted lines 1 and 2 keep order_revenue incremental and filter for ids above the stored maximum.
-        this means the model’s own table. The helper now reads the second-day input; its highlighted line
+        In that filter, {{ this }} means the model’s own table. The helper now reads the second-day input; its highlighted line
         1 still keeps it inline. The result panel shows only the two new orders: 1053 for 500 cents and 1054
         for 1,400 cents.
       state:
