@@ -1,0 +1,2412 @@
+{
+  "researched_on": "2026-09-21",
+  "scope": "35 minor-series chapters: 0.1–0.21, 1.0–1.12, 2.0; origin prologue 0.0.1",
+  "origin": {
+    "version": "0.0.1",
+    "first_package_uploaded_at": "2016-03-23T15:50:27.060220Z",
+    "source_url": "https://pypi.org/project/dbt/0.0.1/",
+    "note": "Package metadata credits Analyst Collective. Package date is not asserted as project founding date."
+  },
+  "date_policy": "Keep package upload, GitHub release publication, tag commit date and public announcement dates distinct. Suggested display date below is only a consistent initial research convention.",
+  "patch_submilestones": [
+    {
+      "version": "0.1.14",
+      "feature": "ref()/deps present by this package; absence in 0.1.1 source confirmed",
+      "package_uploaded_at": "2016-05-06T20:00:25.168758Z",
+      "github_published_at": null,
+      "source_url": "https://pypi.org/project/dbt/0.1.14/"
+    },
+    {
+      "version": "0.2.3.0",
+      "feature": "CSV seed command and accepted-values tests",
+      "package_uploaded_at": "2016-07-15T16:27:12.820717Z",
+      "github_published_at": "2016-07-15T17:12:56Z",
+      "source_url": "https://github.com/dbt-labs/dbt/releases/tag/v0.2.3.0"
+    },
+    {
+      "version": "0.5.1",
+      "feature": "Archives; first-class Postgres",
+      "package_uploaded_at": "2016-10-21T15:44:59.479503Z",
+      "github_published_at": "2016-10-21T17:11:32Z",
+      "source_url": "https://github.com/dbt-labs/dbt/releases/tag/v0.5.1"
+    },
+    {
+      "version": "0.5.4",
+      "feature": "Custom SQL data tests",
+      "package_uploaded_at": "2016-11-29T06:36:22.257193Z",
+      "github_published_at": "2016-11-29T07:14:18Z",
+      "source_url": "https://github.com/dbt-labs/dbt/releases/tag/v0.5.4"
+    },
+    {
+      "version": "0.8.3",
+      "feature": "BigQuery adapter",
+      "package_uploaded_at": "2017-07-14T20:22:49.799716Z",
+      "github_published_at": "2017-07-14T20:42:23Z",
+      "source_url": "https://github.com/dbt-labs/dbt/releases/tag/v0.8.3"
+    },
+    {
+      "version": "0.18.1",
+      "feature": "Exposures",
+      "package_uploaded_at": "2020-10-13T21:43:28.234791Z",
+      "github_published_at": "2020-10-13T21:51:53Z",
+      "source_url": "https://github.com/dbt-labs/dbt/releases/tag/v0.18.1"
+    }
+  ],
+  "chapters": [
+    {
+      "id": "0.1",
+      "label": "v0.1",
+      "title": "Earliest SQL build workflow",
+      "initial_version": "0.1.1",
+      "first_package_uploaded_at": "2016-04-03T21:22:37.297626Z",
+      "package": "dbt",
+      "package_url": "https://pypi.org/project/dbt/0.1.1/",
+      "github_release_published_at": null,
+      "github_release_url": null,
+      "github_tag": null,
+      "latest_stable_patch_observed": "0.1.14",
+      "latest_patch_upload": "2016-05-06T20:00:25.168758Z",
+      "display_date": "2016-04-03",
+      "display_date_kind": "first package upload (UTC), not asserted announcement date",
+      "highlights": [
+        "Jinja-templated SQL compiled to tables/views; materialized configuration was Boolean.",
+        "By 0.1.14: ref-based dependencies and dependency installation."
+      ],
+      "proposed_waffle_shop_demo": "Compile Waffle Shop staging and revenue models; compare the generated CREATE statements. Use 0.1.14 for a ref() demo.",
+      "caveats": [
+        "Early Redshift-only code; local Postgres execution must be proven and disclosed as compatibility work. No dbt test command."
+      ],
+      "source_urls": [
+        "https://pypi.org/project/dbt/0.1.1/",
+        "https://pypi.org/pypi/dbt/json"
+      ],
+      "confidence": "high for dates and cited features; execution not tested",
+      "execution_status": "not_tested",
+      "stable_versions": [
+        {
+          "version": "0.1.1",
+          "uploaded_at": "2016-04-03T21:22:37.297626Z",
+          "yanked": false
+        },
+        {
+          "version": "0.1.11",
+          "uploaded_at": "2016-04-03T21:35:58.778327Z",
+          "yanked": false
+        },
+        {
+          "version": "0.1.12",
+          "uploaded_at": "2016-04-03T21:50:22.716639Z",
+          "yanked": false
+        },
+        {
+          "version": "0.1.13",
+          "uploaded_at": "2016-05-06T18:48:12.584488Z",
+          "yanked": false
+        },
+        {
+          "version": "0.1.14",
+          "uploaded_at": "2016-05-06T20:00:25.168758Z",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "id": "0.2",
+      "label": "v0.2",
+      "title": "Tests and a project workflow",
+      "initial_version": "0.2.0",
+      "first_package_uploaded_at": "2016-06-22T01:21:18.079942Z",
+      "package": "dbt",
+      "package_url": "https://pypi.org/project/dbt/0.2.0/",
+      "github_release_published_at": null,
+      "github_release_url": null,
+      "github_tag": null,
+      "latest_stable_patch_observed": "0.2.5.0",
+      "latest_patch_upload": "2016-07-19T22:06:05.720779Z",
+      "display_date": "2016-06-22",
+      "display_date_kind": "first package upload (UTC), not asserted announcement date",
+      "highlights": [
+        "0.2.0 includes init, deps, test and ref().",
+        "0.2.3.0 adds CSV seeds, accepted-values tests and compilation of analytical queries."
+      ],
+      "proposed_waffle_shop_demo": "Break a payment relationship, see a schema test fail; at patch 0.2.3.0 seed the waffle menu.",
+      "caveats": [
+        "Four-component 0.2.3.0 is a real historical version. Seed is not present in 0.2.0."
+      ],
+      "source_urls": [
+        "https://pypi.org/project/dbt/0.2.0/",
+        "https://pypi.org/pypi/dbt/json"
+      ],
+      "confidence": "high for dates and cited features; execution not tested",
+      "execution_status": "not_tested",
+      "stable_versions": [
+        {
+          "version": "0.2.0",
+          "uploaded_at": "2016-06-22T01:21:18.079942Z",
+          "yanked": false
+        },
+        {
+          "version": "0.2.1",
+          "uploaded_at": "2016-07-14T14:53:56.348977Z",
+          "yanked": false
+        },
+        {
+          "version": "0.2.2",
+          "uploaded_at": "2016-07-14T14:54:21.721430Z",
+          "yanked": false
+        },
+        {
+          "version": "0.2.2.1",
+          "uploaded_at": "2016-07-14T15:07:52.848421Z",
+          "yanked": false
+        },
+        {
+          "version": "0.2.3.0",
+          "uploaded_at": "2016-07-15T16:27:12.820717Z",
+          "yanked": false
+        },
+        {
+          "version": "0.2.3.1",
+          "uploaded_at": "2016-07-16T19:56:21.589921Z",
+          "yanked": false
+        },
+        {
+          "version": "0.2.4.0",
+          "uploaded_at": "2016-07-18T18:00:03.128478Z",
+          "yanked": false
+        },
+        {
+          "version": "0.2.5.0",
+          "uploaded_at": "2016-07-19T22:06:05.720779Z",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "id": "0.3",
+      "label": "v0.3",
+      "title": "Concurrent model builds",
+      "initial_version": "0.3.0",
+      "first_package_uploaded_at": "2016-08-03T02:38:01.618671Z",
+      "package": "dbt",
+      "package_url": "https://pypi.org/project/dbt/0.3.0/",
+      "github_release_published_at": "2016-08-04T04:26:33Z",
+      "github_release_url": "https://github.com/dbt-labs/dbt/releases/tag/0.3.0",
+      "github_tag": "0.3.0",
+      "latest_stable_patch_observed": "0.3.0",
+      "latest_patch_upload": "2016-08-03T02:38:01.618671Z",
+      "display_date": "2016-08-03",
+      "display_date_kind": "first package upload (UTC), not asserted announcement date",
+      "highlights": [
+        "Parallel model creation with up to eight threads.",
+        "Failures skip descendants while independent branches continue; temporary relations reduce unavailable time."
+      ],
+      "proposed_waffle_shop_demo": "Build orders and payments branches together, then inject a failure into only one branch.",
+      "caveats": [
+        "First release uses tag 0.3.0 without v prefix; runtime still needs early-database feasibility validation."
+      ],
+      "source_urls": [
+        "https://github.com/dbt-labs/dbt/releases/tag/0.3.0"
+      ],
+      "confidence": "high for dates and cited features; execution not tested",
+      "execution_status": "not_tested",
+      "stable_versions": [
+        {
+          "version": "0.3.0",
+          "uploaded_at": "2016-08-03T02:38:01.618671Z",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "id": "0.4",
+      "label": "v0.4",
+      "title": "Materialization choices",
+      "initial_version": "0.4.0",
+      "first_package_uploaded_at": "2016-08-16T05:54:29.565028Z",
+      "package": "dbt",
+      "package_url": "https://pypi.org/project/dbt/0.4.0/",
+      "github_release_published_at": "2016-08-16T07:11:32Z",
+      "github_release_url": "https://github.com/dbt-labs/dbt/releases/tag/v0.4.0",
+      "github_tag": "v0.4.0",
+      "latest_stable_patch_observed": "0.4.9",
+      "latest_patch_upload": "2016-09-22T16:16:51.388273Z",
+      "display_date": "2016-08-16",
+      "display_date_kind": "first package upload (UTC), not asserted announcement date",
+      "highlights": [
+        "Incremental and ephemeral models introduced in 0.4.0.",
+        "In-model config and this variable; enum materializations replace Boolean configuration."
+      ],
+      "proposed_waffle_shop_demo": "Append a second trading day incrementally and inline a reusable staging model as a CTE.",
+      "caveats": [
+        "Use period-correct sql_where configuration, not today's incremental recipe."
+      ],
+      "source_urls": [
+        "https://github.com/dbt-labs/dbt/releases/tag/v0.4.0"
+      ],
+      "confidence": "high for dates and cited features; execution not tested",
+      "execution_status": "not_tested",
+      "stable_versions": [
+        {
+          "version": "0.4.0",
+          "uploaded_at": "2016-08-16T05:54:29.565028Z",
+          "yanked": false
+        },
+        {
+          "version": "0.4.1",
+          "uploaded_at": "2016-08-22T03:16:54.572067Z",
+          "yanked": false
+        },
+        {
+          "version": "0.4.2",
+          "uploaded_at": "2016-08-22T19:22:06.452089Z",
+          "yanked": false
+        },
+        {
+          "version": "0.4.3",
+          "uploaded_at": "2016-08-25T12:26:06.531254Z",
+          "yanked": false
+        },
+        {
+          "version": "0.4.4",
+          "uploaded_at": "2016-08-25T16:08:12.901810Z",
+          "yanked": false
+        },
+        {
+          "version": "0.4.5",
+          "uploaded_at": "2016-09-19T23:28:34.463717Z",
+          "yanked": false
+        },
+        {
+          "version": "0.4.6",
+          "uploaded_at": "2016-09-19T23:40:44.526016Z",
+          "yanked": false
+        },
+        {
+          "version": "0.4.7",
+          "uploaded_at": "2016-09-20T15:57:12.580515Z",
+          "yanked": false
+        },
+        {
+          "version": "0.4.8",
+          "uploaded_at": "2016-09-22T16:05:37.277893Z",
+          "yanked": false
+        },
+        {
+          "version": "0.4.9",
+          "uploaded_at": "2016-09-22T16:16:51.388273Z",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "id": "0.5",
+      "label": "v0.5",
+      "title": "Configuration, history and custom tests",
+      "initial_version": "0.5.0",
+      "first_package_uploaded_at": "2016-09-28T00:29:33.917144Z",
+      "package": "dbt",
+      "package_url": "https://pypi.org/project/dbt/0.5.0/",
+      "github_release_published_at": "2016-09-28T01:17:18Z",
+      "github_release_url": "https://github.com/dbt-labs/dbt/releases/tag/v0.5.0",
+      "github_tag": "v0.5.0",
+      "latest_stable_patch_observed": "0.5.4",
+      "latest_patch_upload": "2016-11-29T06:36:22.257193Z",
+      "display_date": "2016-09-28",
+      "display_date_kind": "first package upload (UTC), not asserted announcement date",
+      "highlights": [
+        "0.5.0 adds vars and more reliable incremental writes.",
+        "0.5.1 adds archives and first-class Postgres; 0.5.4 adds custom SQL data tests."
+      ],
+      "proposed_waffle_shop_demo": "Parameterize the excluded test customer; at 0.5.1 preserve a changed customer city; at 0.5.4 test revenue reconciliation.",
+      "caveats": [
+        "Archives predate snapshots. Features listed span distinct patches, not the initial 0.5.0 release."
+      ],
+      "source_urls": [
+        "https://github.com/dbt-labs/dbt/releases/tag/v0.5.0",
+        "https://github.com/dbt-labs/dbt-core/blob/v0.13.0/CHANGELOG.md"
+      ],
+      "confidence": "high for dates and cited features; execution not tested",
+      "execution_status": "not_tested",
+      "stable_versions": [
+        {
+          "version": "0.5.0",
+          "uploaded_at": "2016-09-28T00:29:33.917144Z",
+          "yanked": false
+        },
+        {
+          "version": "0.5.1",
+          "uploaded_at": "2016-10-21T15:44:59.479503Z",
+          "yanked": false
+        },
+        {
+          "version": "0.5.2",
+          "uploaded_at": "2016-10-25T01:53:28.046656Z",
+          "yanked": false
+        },
+        {
+          "version": "0.5.3",
+          "uploaded_at": "2016-10-27T03:48:02.266753Z",
+          "yanked": false
+        },
+        {
+          "version": "0.5.4",
+          "uploaded_at": "2016-11-29T06:36:22.257193Z",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "id": "0.6",
+      "label": "v0.6",
+      "title": "Reusable macros",
+      "initial_version": "0.6.0",
+      "first_package_uploaded_at": "2016-12-22T05:09:45.067305Z",
+      "package": "dbt",
+      "package_url": "https://pypi.org/project/dbt/0.6.0/",
+      "github_release_published_at": "2016-12-22T05:13:40Z",
+      "github_release_url": "https://github.com/dbt-labs/dbt/releases/tag/v0.6.0",
+      "github_tag": "v0.6.0",
+      "latest_stable_patch_observed": "0.6.2",
+      "latest_patch_upload": "2017-01-16T18:49:52.110281Z",
+      "display_date": "2016-12-22",
+      "display_date_kind": "first package upload (UTC), not asserted announcement date",
+      "highlights": [
+        "Macros, full-refresh control for incrementals and target context.",
+        "Run-level hooks and additional runtime materialization controls."
+      ],
+      "proposed_waffle_shop_demo": "Use a reusable money conversion macro and rebuild the incremental revenue table after a logic change.",
+      "caveats": [
+        "Historical macro context is more limited than in 0.9 and later."
+      ],
+      "source_urls": [
+        "https://github.com/dbt-labs/dbt/releases/tag/v0.6.0",
+        "https://github.com/dbt-labs/dbt-core/blob/v0.13.0/CHANGELOG.md"
+      ],
+      "confidence": "high for dates and cited features; execution not tested",
+      "execution_status": "not_tested",
+      "stable_versions": [
+        {
+          "version": "0.6.0",
+          "uploaded_at": "2016-12-22T05:09:45.067305Z",
+          "yanked": false
+        },
+        {
+          "version": "0.6.1",
+          "uploaded_at": "2017-01-11T17:20:01.640194Z",
+          "yanked": false
+        },
+        {
+          "version": "0.6.2",
+          "uploaded_at": "2017-01-16T18:49:52.110281Z",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "id": "0.7",
+      "label": "v0.7",
+      "title": "Snowflake joins the targets",
+      "initial_version": "0.7.0",
+      "first_package_uploaded_at": "2017-02-09T18:40:13.744142Z",
+      "package": "dbt",
+      "package_url": "https://pypi.org/project/dbt/0.7.0/",
+      "github_release_published_at": "2017-02-10T18:47:27Z",
+      "github_release_url": "https://github.com/dbt-labs/dbt/releases/tag/v0.7.0",
+      "github_tag": "v0.7.0",
+      "latest_stable_patch_observed": "0.7.1",
+      "latest_patch_upload": "2017-03-01T00:08:46.690684Z",
+      "display_date": "2017-02-09",
+      "display_date_kind": "first package upload (UTC), not asserted announcement date",
+      "highlights": [
+        "Snowflake support joins Redshift and Postgres.",
+        "Snowflake role configuration arrives in 0.7.1."
+      ],
+      "proposed_waffle_shop_demo": "Keep the local Postgres Waffle Shop baseline; show the historical Snowflake profile and adapter reach.",
+      "caveats": [
+        "Actual Snowflake execution is an optional external-service demo; local Postgres cannot demonstrate Snowflake behavior."
+      ],
+      "source_urls": [
+        "https://github.com/dbt-labs/dbt/releases/tag/v0.7.0",
+        "https://github.com/dbt-labs/dbt-core/blob/v0.13.0/CHANGELOG.md"
+      ],
+      "confidence": "high for dates and cited features; execution not tested",
+      "execution_status": "not_tested",
+      "stable_versions": [
+        {
+          "version": "0.7.0",
+          "uploaded_at": "2017-02-09T18:40:13.744142Z",
+          "yanked": false
+        },
+        {
+          "version": "0.7.1",
+          "uploaded_at": "2017-03-01T00:08:46.690684Z",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "id": "0.8",
+      "label": "v0.8",
+      "title": "Concurrency and adapter growth",
+      "initial_version": "0.8.0",
+      "first_package_uploaded_at": "2017-04-17T20:35:35.850127Z",
+      "package": "dbt",
+      "package_url": "https://pypi.org/project/dbt/0.8.0/",
+      "github_release_published_at": "2017-04-17T20:43:11Z",
+      "github_release_url": "https://github.com/dbt-labs/dbt/releases/tag/v0.8.0",
+      "github_tag": "v0.8.0",
+      "latest_stable_patch_observed": "0.8.3",
+      "latest_patch_upload": "2017-07-14T20:22:49.799716Z",
+      "display_date": "2017-04-17",
+      "display_date_kind": "first package upload (UTC), not asserted announcement date",
+      "highlights": [
+        "Unique per-model transactions fix true concurrency; materializations rewritten as macros.",
+        "BigQuery support appears in 0.8.3."
+      ],
+      "proposed_waffle_shop_demo": "Run two independent Waffle Shop branches and inspect their execution order; show BigQuery as a dated patch event.",
+      "caveats": [
+        "BigQuery support must not be shown at the initial April 0.8.0 anchor."
+      ],
+      "source_urls": [
+        "https://github.com/dbt-labs/dbt/releases/tag/v0.8.0",
+        "https://github.com/dbt-labs/dbt-core/blob/v0.13.0/CHANGELOG.md"
+      ],
+      "confidence": "high for dates and cited features; execution not tested",
+      "execution_status": "not_tested",
+      "stable_versions": [
+        {
+          "version": "0.8.0",
+          "uploaded_at": "2017-04-17T20:35:35.850127Z",
+          "yanked": false
+        },
+        {
+          "version": "0.8.1",
+          "uploaded_at": "2017-05-10T19:49:00.497664Z",
+          "yanked": false
+        },
+        {
+          "version": "0.8.2",
+          "uploaded_at": "2017-05-31T19:30:29.860217Z",
+          "yanked": false
+        },
+        {
+          "version": "0.8.3",
+          "uploaded_at": "2017-07-14T20:22:49.799716Z",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "id": "0.9",
+      "label": "v0.9",
+      "title": "Extensible projects",
+      "initial_version": "0.9.0",
+      "first_package_uploaded_at": "2017-10-26T03:16:12.886817Z",
+      "package": "dbt",
+      "package_url": "https://pypi.org/project/dbt/0.9.0/",
+      "github_release_published_at": "2017-10-26T19:39:00Z",
+      "github_release_url": "https://github.com/dbt-labs/dbt/releases/tag/v0.9.0",
+      "github_tag": "v0.9.0",
+      "latest_stable_patch_observed": "0.9.1",
+      "latest_patch_upload": "2018-01-05T18:40:09.061455Z",
+      "display_date": "2017-10-26",
+      "display_date_kind": "first package upload (UTC), not asserted announcement date",
+      "highlights": [
+        "Macros can use adapter, ref and var; packages can supply custom tests/materializations.",
+        "Custom schemas; improved BigQuery table support."
+      ],
+      "proposed_waffle_shop_demo": "Put finance models in a dedicated schema and install a pinned local Waffle Shop package containing a custom test.",
+      "caveats": [
+        "Package management syntax still predates packages.yml."
+      ],
+      "source_urls": [
+        "https://github.com/dbt-labs/dbt/releases/tag/v0.9.0"
+      ],
+      "confidence": "high for dates and cited features; execution not tested",
+      "execution_status": "not_tested",
+      "stable_versions": [
+        {
+          "version": "0.9.0",
+          "uploaded_at": "2017-10-26T03:16:12.886817Z",
+          "yanked": false
+        },
+        {
+          "version": "0.9.1",
+          "uploaded_at": "2018-01-05T18:40:09.061455Z",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "id": "0.10",
+      "label": "v0.10",
+      "title": "Reusable packages and portable seeds",
+      "initial_version": "0.10.0",
+      "first_package_uploaded_at": "2018-03-08T22:24:54.299747Z",
+      "package": "dbt",
+      "package_url": "https://pypi.org/project/dbt/0.10.0/",
+      "github_release_published_at": "2018-03-09T02:45:23Z",
+      "github_release_url": "https://github.com/dbt-labs/dbt/releases/tag/v0.10.0",
+      "github_tag": "v0.10.0",
+      "latest_stable_patch_observed": "0.10.2",
+      "latest_patch_upload": "2018-08-03T15:39:01.960849Z",
+      "display_date": "2018-03-08",
+      "display_date_kind": "first package upload (UTC), not asserted announcement date",
+      "highlights": [
+        "packages.yml and local package paths replace repository declarations.",
+        "Seed overhaul: all adapters, ref-able CSVs and configuration."
+      ],
+      "proposed_waffle_shop_demo": "Seed the menu and location lookup, ref them in order models, and reuse a local package.",
+      "caveats": [
+        "Seeds were introduced in 0.2.3.0; this chapter is their overhaul."
+      ],
+      "source_urls": [
+        "https://github.com/dbt-labs/dbt/releases/tag/v0.10.0"
+      ],
+      "confidence": "high for dates and cited features; execution not tested",
+      "execution_status": "not_tested",
+      "stable_versions": [
+        {
+          "version": "0.10.0",
+          "uploaded_at": "2018-03-08T22:24:54.299747Z",
+          "yanked": false
+        },
+        {
+          "version": "0.10.1",
+          "uploaded_at": "2018-05-18T16:46:14.409366Z",
+          "yanked": false
+        },
+        {
+          "version": "0.10.2",
+          "uploaded_at": "2018-08-03T15:39:01.960849Z",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "id": "0.11",
+      "label": "v0.11",
+      "title": "Generated documentation",
+      "initial_version": "0.11.0",
+      "first_package_uploaded_at": "2018-09-06T13:14:39.940699Z",
+      "package": "dbt",
+      "package_url": "https://pypi.org/project/dbt/0.11.0/",
+      "github_release_published_at": "2018-09-06T14:39:29Z",
+      "github_release_url": "https://github.com/dbt-labs/dbt/releases/tag/v0.11.0",
+      "github_tag": "v0.11.0",
+      "latest_stable_patch_observed": "0.11.1",
+      "latest_patch_upload": "2018-09-18T20:26:57.619618Z",
+      "display_date": "2018-09-06",
+      "display_date_kind": "first package upload (UTC), not asserted announcement date",
+      "highlights": [
+        "Auto-generated project documentation and lineage.",
+        "Schema YAML version 2 adds model/column descriptions."
+      ],
+      "proposed_waffle_shop_demo": "Generate and browse Waffle Shop docs, tracing daily revenue back through orders and payments.",
+      "caveats": [
+        "Schema YAML version 2 is unrelated to dbt engine v2."
+      ],
+      "source_urls": [
+        "https://github.com/dbt-labs/dbt/releases/tag/v0.11.0"
+      ],
+      "confidence": "high for dates and cited features; execution not tested",
+      "execution_status": "not_tested",
+      "stable_versions": [
+        {
+          "version": "0.11.0",
+          "uploaded_at": "2018-09-06T13:14:39.940699Z",
+          "yanked": false
+        },
+        {
+          "version": "0.11.1",
+          "uploaded_at": "2018-09-18T20:26:57.619618Z",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "id": "0.12",
+      "label": "v0.12",
+      "title": "Faster and more selective runs",
+      "initial_version": "0.12.0",
+      "first_package_uploaded_at": "2018-11-12T18:12:55.678102Z",
+      "package": "dbt",
+      "package_url": "https://pypi.org/project/dbt/0.12.0/",
+      "github_release_published_at": "2018-11-13T15:40:06Z",
+      "github_release_url": "https://github.com/dbt-labs/dbt/releases/tag/v0.12.0",
+      "github_tag": "v0.12.0",
+      "latest_stable_patch_observed": "0.12.2",
+      "latest_patch_upload": "2019-01-07T19:14:55.374793Z",
+      "display_date": "2018-11-12",
+      "display_date_kind": "first package upload (UTC), not asserted announcement date",
+      "highlights": [
+        "Relation caching speeds introspection.",
+        "Model tags and selection by tag."
+      ],
+      "proposed_waffle_shop_demo": "Tag finance models and run only that slice; compare query/log evidence for caching.",
+      "caveats": [
+        "Small fixtures may not show a meaningful speed difference; do not fabricate a benchmark."
+      ],
+      "source_urls": [
+        "https://github.com/dbt-labs/dbt/releases/tag/v0.12.0"
+      ],
+      "confidence": "high for dates and cited features; execution not tested",
+      "execution_status": "not_tested",
+      "stable_versions": [
+        {
+          "version": "0.12.0",
+          "uploaded_at": "2018-11-12T18:12:55.678102Z",
+          "yanked": false
+        },
+        {
+          "version": "0.12.1",
+          "uploaded_at": "2018-11-15T15:01:57.437570Z",
+          "yanked": false
+        },
+        {
+          "version": "0.12.2",
+          "uploaded_at": "2019-01-07T19:14:55.374793Z",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "id": "0.13",
+      "label": "v0.13",
+      "title": "Sources and adapter plugins",
+      "initial_version": "0.13.0",
+      "first_package_uploaded_at": "2019-03-21T17:29:11.772735Z",
+      "package": "dbt",
+      "package_url": "https://pypi.org/project/dbt/0.13.0/",
+      "github_release_published_at": "2019-03-22T14:54:10Z",
+      "github_release_url": "https://github.com/dbt-labs/dbt/releases/tag/v0.13.0",
+      "github_tag": "v0.13.0",
+      "latest_stable_patch_observed": "0.13.1",
+      "latest_patch_upload": "2019-05-13T15:59:02.470956Z",
+      "display_date": "2019-03-21",
+      "display_date_kind": "first package upload (UTC), not asserted announcement date",
+      "highlights": [
+        "Sources with freshness checks.",
+        "Stable adapter API and separate adapter plugins; Presto adapter."
+      ],
+      "proposed_waffle_shop_demo": "Declare raw orders and payments as sources, then demonstrate a stale payment feed.",
+      "caveats": [
+        "Historical freshness command syntax differs from modern dbt source freshness."
+      ],
+      "source_urls": [
+        "https://github.com/dbt-labs/dbt/releases/tag/v0.13.0"
+      ],
+      "confidence": "high for dates and cited features; execution not tested",
+      "execution_status": "not_tested",
+      "stable_versions": [
+        {
+          "version": "0.13.0",
+          "uploaded_at": "2019-03-21T17:29:11.772735Z",
+          "yanked": false
+        },
+        {
+          "version": "0.13.1",
+          "uploaded_at": "2019-05-13T15:59:02.470956Z",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "id": "0.14",
+      "label": "v0.14",
+      "title": "Snapshots replace archives",
+      "initial_version": "0.14.0",
+      "first_package_uploaded_at": "2019-07-10T01:45:27.654171Z",
+      "package": "dbt",
+      "package_url": "https://pypi.org/project/dbt/0.14.0/",
+      "github_release_published_at": "2019-07-10T14:11:06Z",
+      "github_release_url": "https://github.com/dbt-labs/dbt/releases/tag/v0.14.0",
+      "github_tag": "v0.14.0",
+      "latest_stable_patch_observed": "0.14.4",
+      "latest_patch_upload": "2019-11-08T18:37:23.633673Z",
+      "display_date": "2019-07-10",
+      "display_date_kind": "first package upload (UTC), not asserted announcement date",
+      "highlights": [
+        "Snapshots replace archives.",
+        "run-operation, ls and RPC server; configurable test severity."
+      ],
+      "proposed_waffle_shop_demo": "Change a customer city and inspect snapshot history; issue a warning for a soft business-rule violation.",
+      "caveats": [
+        "Archives are deprecated/replaced, not a brand-new historical-data capability.",
+        "Source conflict: 0.14 notes announce run-operation, but the inspected 0.13.0 package CLI includes it. Do not claim its exact first introduction until reconciled."
+      ],
+      "source_urls": [
+        "https://github.com/dbt-labs/dbt/releases/tag/v0.14.0"
+      ],
+      "confidence": "high for dates and cited features; execution not tested",
+      "execution_status": "not_tested",
+      "stable_versions": [
+        {
+          "version": "0.14.0",
+          "uploaded_at": "2019-07-10T01:45:27.654171Z",
+          "yanked": false
+        },
+        {
+          "version": "0.14.1",
+          "uploaded_at": "2019-09-03T23:53:44.588664Z",
+          "yanked": false
+        },
+        {
+          "version": "0.14.2",
+          "uploaded_at": "2019-09-13T16:55:55.298779Z",
+          "yanked": false
+        },
+        {
+          "version": "0.14.3",
+          "uploaded_at": "2019-10-10T22:25:17.931501Z",
+          "yanked": false
+        },
+        {
+          "version": "0.14.4",
+          "uploaded_at": "2019-11-08T18:37:23.633673Z",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "id": "0.15",
+      "label": "v0.15",
+      "title": "Partial parsing and structured operations",
+      "initial_version": "0.15.0",
+      "first_package_uploaded_at": "2019-11-25T18:40:24.241157Z",
+      "package": "dbt",
+      "package_url": "https://pypi.org/project/dbt/0.15.0/",
+      "github_release_published_at": "2019-11-25T21:10:05Z",
+      "github_release_url": "https://github.com/dbt-labs/dbt/releases/tag/v0.15.0",
+      "github_tag": "v0.15.0",
+      "latest_stable_patch_observed": "0.15.3",
+      "latest_patch_upload": "2020-03-17T14:05:02.021694Z",
+      "display_date": "2019-11-25",
+      "display_date_kind": "first package upload (UTC), not asserted announcement date",
+      "highlights": [
+        "Opt-in partial parsing; structured/JSON logging.",
+        "Python 2 support dropped; improved snapshot/docs/RPC behavior."
+      ],
+      "proposed_waffle_shop_demo": "Edit one Waffle Shop model and show partial parsing; inspect a structured run log.",
+      "caveats": [
+        "Record exact Python runtime and partial-parsing configuration for the checkpoint."
+      ],
+      "source_urls": [
+        "https://github.com/dbt-labs/dbt/releases/tag/v0.15.0"
+      ],
+      "confidence": "high for dates and cited features; execution not tested",
+      "execution_status": "not_tested",
+      "stable_versions": [
+        {
+          "version": "0.15.0",
+          "uploaded_at": "2019-11-25T18:40:24.241157Z",
+          "yanked": false
+        },
+        {
+          "version": "0.15.1",
+          "uploaded_at": "2020-01-16T14:28:43.857847Z",
+          "yanked": false
+        },
+        {
+          "version": "0.15.2",
+          "uploaded_at": "2020-02-02T19:32:11.859812Z",
+          "yanked": false
+        },
+        {
+          "version": "0.15.3",
+          "uploaded_at": "2020-03-17T14:05:02.021694Z",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "id": "0.16",
+      "label": "v0.16",
+      "title": "Richer metadata",
+      "initial_version": "0.16.0",
+      "first_package_uploaded_at": "2020-03-23T14:06:40.466565Z",
+      "package": "dbt",
+      "package_url": "https://pypi.org/project/dbt/0.16.0/",
+      "github_release_published_at": "2020-03-23T14:02:26Z",
+      "github_release_url": "https://github.com/dbt-labs/dbt/releases/tag/v0.16.0",
+      "github_tag": "v0.16.0",
+      "latest_stable_patch_observed": "0.16.1",
+      "latest_patch_upload": "2020-04-14T15:00:07.539572Z",
+      "display_date": "2020-03-23",
+      "display_date_kind": "first package upload (UTC), not asserted announcement date",
+      "highlights": [
+        "meta and richer resource documentation.",
+        "Documentation for macros, analyses, snapshots and seeds; source/column tags."
+      ],
+      "proposed_waffle_shop_demo": "Add owner and business context to the revenue model; inspect documented macro arguments and menu seeds.",
+      "caveats": [
+        "These are Core project metadata features, not a separately hosted catalogue product."
+      ],
+      "source_urls": [
+        "https://github.com/dbt-labs/dbt/releases/tag/v0.16.0"
+      ],
+      "confidence": "high for dates and cited features; execution not tested",
+      "execution_status": "not_tested",
+      "stable_versions": [
+        {
+          "version": "0.16.0",
+          "uploaded_at": "2020-03-23T14:06:40.466565Z",
+          "yanked": false
+        },
+        {
+          "version": "0.16.1",
+          "uploaded_at": "2020-04-14T15:00:07.539572Z",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "id": "0.17",
+      "label": "v0.17",
+      "title": "Safer execution and configurable sources",
+      "initial_version": "0.17.0",
+      "first_package_uploaded_at": "2020-06-08T17:25:14.921097Z",
+      "package": "dbt",
+      "package_url": "https://pypi.org/project/dbt/0.17.0/",
+      "github_release_published_at": "2020-06-08T18:09:06Z",
+      "github_release_url": "https://github.com/dbt-labs/dbt/releases/tag/v0.17.0",
+      "github_tag": "v0.17.0",
+      "latest_stable_patch_observed": "0.17.2",
+      "latest_patch_upload": "2020-07-29T19:25:37.490215Z",
+      "display_date": "2020-06-08",
+      "display_date_kind": "first package upload (UTC), not asserted announcement date",
+      "highlights": [
+        "fail-fast and path-based selection.",
+        "Source overrides/enablement; persist_docs support expands across warehouses."
+      ],
+      "proposed_waffle_shop_demo": "Run with fail-fast after an intentional bad model, then persist revenue descriptions into Postgres comments.",
+      "caveats": [
+        "Show concrete output rather than promise large speedups."
+      ],
+      "source_urls": [
+        "https://github.com/dbt-labs/dbt/releases/tag/v0.17.0"
+      ],
+      "confidence": "high for dates and cited features; execution not tested",
+      "execution_status": "not_tested",
+      "stable_versions": [
+        {
+          "version": "0.17.0",
+          "uploaded_at": "2020-06-08T17:25:14.921097Z",
+          "yanked": false
+        },
+        {
+          "version": "0.17.1",
+          "uploaded_at": "2020-07-20T13:03:35.808660Z",
+          "yanked": false
+        },
+        {
+          "version": "0.17.2",
+          "uploaded_at": "2020-07-29T19:25:37.490215Z",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "id": "0.18",
+      "label": "v0.18",
+      "title": "State-aware selection and downstream context",
+      "initial_version": "0.18.0",
+      "first_package_uploaded_at": "2020-09-03T16:46:20.150779Z",
+      "package": "dbt",
+      "package_url": "https://pypi.org/project/dbt/0.18.0/",
+      "github_release_published_at": "2020-09-03T16:58:08Z",
+      "github_release_url": "https://github.com/dbt-labs/dbt/releases/tag/v0.18.0",
+      "github_tag": "v0.18.0",
+      "latest_stable_patch_observed": "0.18.2",
+      "latest_patch_upload": "2021-03-22T15:10:26.132639Z",
+      "display_date": "2020-09-03",
+      "display_date_kind": "first package upload (UTC), not asserted announcement date",
+      "highlights": [
+        "state:modified/new, --state, --defer and YAML selectors.",
+        "0.18.1 adds exposures representing dashboards and other downstream uses."
+      ],
+      "proposed_waffle_shop_demo": "Change refund logic and rebuild its affected slice against prior state; at 0.18.1 add a Waffle Shop dashboard exposure.",
+      "caveats": [
+        "File-based state selection is distinct from the 2026 commercial dbt State product."
+      ],
+      "source_urls": [
+        "https://github.com/dbt-labs/dbt/releases/tag/v0.18.0",
+        "https://github.com/dbt-labs/dbt-core/releases/tag/v0.18.1"
+      ],
+      "confidence": "high for dates and cited features; execution not tested",
+      "execution_status": "not_tested",
+      "stable_versions": [
+        {
+          "version": "0.18.0",
+          "uploaded_at": "2020-09-03T16:46:20.150779Z",
+          "yanked": false
+        },
+        {
+          "version": "0.18.1",
+          "uploaded_at": "2020-10-13T21:43:28.234791Z",
+          "yanked": false
+        },
+        {
+          "version": "0.18.2",
+          "uploaded_at": "2021-03-22T15:10:26.132639Z",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "id": "0.19",
+      "label": "v0.19",
+      "title": "More complete history and artifacts",
+      "initial_version": "0.19.0",
+      "first_package_uploaded_at": "2021-01-27T18:03:11.736366Z",
+      "package": "dbt",
+      "package_url": "https://pypi.org/project/dbt/0.19.0/",
+      "github_release_published_at": "2021-01-27T18:24:45Z",
+      "github_release_url": "https://github.com/dbt-labs/dbt/releases/tag/v0.19.0",
+      "github_tag": "v0.19.0",
+      "latest_stable_patch_observed": "0.19.2",
+      "latest_patch_upload": "2021-06-28T20:03:25.016648Z",
+      "display_date": "2021-01-27",
+      "display_date_kind": "first package upload (UTC), not asserted announcement date",
+      "highlights": [
+        "Snapshot hard-delete invalidation and revival.",
+        "Deferral extends to tests; versioned artifact schemas and project config migrations."
+      ],
+      "proposed_waffle_shop_demo": "Delete a customer from the raw feed and show the snapshot record being invalidated.",
+      "caveats": [
+        "Exposures already existed in 0.18.1; do not attribute them here."
+      ],
+      "source_urls": [
+        "https://github.com/dbt-labs/dbt/releases/tag/v0.19.0"
+      ],
+      "confidence": "high for dates and cited features; execution not tested",
+      "execution_status": "not_tested",
+      "stable_versions": [
+        {
+          "version": "0.19.0",
+          "uploaded_at": "2021-01-27T18:03:11.736366Z",
+          "yanked": false
+        },
+        {
+          "version": "0.19.1",
+          "uploaded_at": "2021-03-31T17:48:44.208265Z",
+          "yanked": false
+        },
+        {
+          "version": "0.19.2",
+          "uploaded_at": "2021-06-28T20:03:25.016648Z",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "id": "0.20",
+      "label": "v0.20",
+      "title": "Actionable data-test failures",
+      "initial_version": "0.20.0",
+      "first_package_uploaded_at": "2021-07-12T16:49:11.785328Z",
+      "package": "dbt",
+      "package_url": "https://pypi.org/project/dbt/0.20.0/",
+      "github_release_published_at": "2021-07-12T17:50:44Z",
+      "github_release_url": "https://github.com/dbt-labs/dbt/releases/tag/v0.20.0",
+      "github_tag": "v0.20.0",
+      "latest_stable_patch_observed": "0.20.2",
+      "latest_patch_upload": "2021-09-07T21:23:05.091103Z",
+      "display_date": "2021-07-12",
+      "display_date_kind": "first package upload (UTC), not asserted announcement date",
+      "highlights": [
+        "Store test failures in the database.",
+        "Test where/limit/warn_if/error_if/fail_calc configuration; experimental parser."
+      ],
+      "proposed_waffle_shop_demo": "Persist failed payment rows and distinguish warning thresholds from errors.",
+      "caveats": [
+        "Do not use native unit-test YAML here; that arrives in 1.8."
+      ],
+      "source_urls": [
+        "https://github.com/dbt-labs/dbt/releases/tag/v0.20.0"
+      ],
+      "confidence": "high for dates and cited features; execution not tested",
+      "execution_status": "not_tested",
+      "stable_versions": [
+        {
+          "version": "0.20.0",
+          "uploaded_at": "2021-07-12T16:49:11.785328Z",
+          "yanked": false
+        },
+        {
+          "version": "0.20.1",
+          "uploaded_at": "2021-08-11T19:06:12.358054Z",
+          "yanked": false
+        },
+        {
+          "version": "0.20.2",
+          "uploaded_at": "2021-09-07T21:23:05.091103Z",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "id": "0.21",
+      "label": "v0.21",
+      "title": "Build in dependency order",
+      "initial_version": "0.21.0",
+      "first_package_uploaded_at": "2021-10-04T17:38:54.136895Z",
+      "package": "dbt",
+      "package_url": "https://pypi.org/project/dbt/0.21.0/",
+      "github_release_published_at": "2021-10-04T18:44:46Z",
+      "github_release_url": "https://github.com/dbt-labs/dbt/releases/tag/v0.21.0",
+      "github_tag": "v0.21.0",
+      "latest_stable_patch_observed": "0.21.1",
+      "latest_patch_upload": "2021-11-29T16:01:01.640719Z",
+      "display_date": "2021-10-04",
+      "display_date_kind": "first package upload (UTC), not asserted announcement date",
+      "highlights": [
+        "dbt build runs seeds, snapshots, models and tests in DAG order.",
+        "on_schema_change for incremental models; state detects macro changes."
+      ],
+      "proposed_waffle_shop_demo": "Run the whole Waffle Shop workflow with one build and show how a failed test prevents downstream work.",
+      "caveats": [
+        "0.21 is the last 0.x minor series; no 0.22–0.99 chapters."
+      ],
+      "source_urls": [
+        "https://github.com/dbt-labs/dbt/releases/tag/v0.21.0"
+      ],
+      "confidence": "high for dates and cited features; execution not tested",
+      "execution_status": "not_tested",
+      "stable_versions": [
+        {
+          "version": "0.21.0",
+          "uploaded_at": "2021-10-04T17:38:54.136895Z",
+          "yanked": false
+        },
+        {
+          "version": "0.21.1",
+          "uploaded_at": "2021-11-29T16:01:01.640719Z",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "id": "1.0",
+      "label": "v1.0",
+      "title": "The stable framework",
+      "initial_version": "1.0.0",
+      "first_package_uploaded_at": "2021-12-03T18:50:56.632002Z",
+      "package": "dbt-core",
+      "package_url": "https://pypi.org/project/dbt-core/1.0.0/",
+      "github_release_published_at": "2021-12-03T18:50:15Z",
+      "github_release_url": "https://github.com/dbt-labs/dbt/releases/tag/v1.0.0",
+      "github_tag": "v1.0.0",
+      "latest_stable_patch_observed": "1.0.9",
+      "latest_patch_upload": "2023-01-05T16:12:22.604602Z",
+      "display_date": "2021-12-03",
+      "display_date_kind": "first package upload (UTC), not asserted announcement date",
+      "highlights": [
+        "Default partial/static parsing, result selectors and interactive init.",
+        "Metrics nodes enter the manifest; package/adapter installation conventions evolve."
+      ],
+      "proposed_waffle_shop_demo": "Run the established shop project, fail a model, and select prior failures for a targeted rerun.",
+      "caveats": [
+        "Metrics metadata in Core does not mean a hosted Semantic Layer query service existed at 1.0."
+      ],
+      "source_urls": [
+        "https://github.com/dbt-labs/dbt/releases/tag/v1.0.0"
+      ],
+      "confidence": "high for dates and cited features; execution not tested",
+      "execution_status": "not_tested",
+      "stable_versions": [
+        {
+          "version": "1.0.0",
+          "uploaded_at": "2021-12-03T18:50:56.632002Z",
+          "yanked": false
+        },
+        {
+          "version": "1.0.1",
+          "uploaded_at": "2022-01-03T19:02:25.117936Z",
+          "yanked": false
+        },
+        {
+          "version": "1.0.2",
+          "uploaded_at": "2022-02-18T14:46:42.175991Z",
+          "yanked": false
+        },
+        {
+          "version": "1.0.3",
+          "uploaded_at": "2022-02-21T19:59:55.549202Z",
+          "yanked": false
+        },
+        {
+          "version": "1.0.4",
+          "uploaded_at": "2022-03-18T14:25:19.651251Z",
+          "yanked": false
+        },
+        {
+          "version": "1.0.5",
+          "uploaded_at": "2022-04-20T17:30:45.875924Z",
+          "yanked": false
+        },
+        {
+          "version": "1.0.6",
+          "uploaded_at": "2022-04-27T19:53:53.509763Z",
+          "yanked": false
+        },
+        {
+          "version": "1.0.7",
+          "uploaded_at": "2022-05-20T16:47:06.474637Z",
+          "yanked": false
+        },
+        {
+          "version": "1.0.8",
+          "uploaded_at": "2022-06-15T17:08:51.965786Z",
+          "yanked": false
+        },
+        {
+          "version": "1.0.9",
+          "uploaded_at": "2023-01-05T16:12:22.604602Z",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "id": "1.1",
+      "label": "v1.1",
+      "title": "Work only from fresher sources",
+      "initial_version": "1.1.0",
+      "first_package_uploaded_at": "2022-04-28T17:22:12.224210Z",
+      "package": "dbt-core",
+      "package_url": "https://pypi.org/project/dbt-core/1.1.0/",
+      "github_release_published_at": "2022-04-28T17:21:30Z",
+      "github_release_url": "https://github.com/dbt-labs/dbt/releases/tag/v1.1.0",
+      "github_tag": "v1.1.0",
+      "latest_stable_patch_observed": "1.1.6",
+      "latest_patch_upload": "2026-08-14T13:49:09.380913Z",
+      "display_date": "2022-04-28",
+      "display_date_kind": "first package upload (UTC), not asserted announcement date",
+      "highlights": [
+        "source_status:fresher+ selection.",
+        "Composite unique_key lists and custom generic-test names."
+      ],
+      "proposed_waffle_shop_demo": "Load new orders only and build descendants of the fresher source.",
+      "caveats": [
+        "This is explicitly user-driven freshness/state selection, not automatic 2026 dbt State."
+      ],
+      "source_urls": [
+        "https://github.com/dbt-labs/dbt/releases/tag/v1.1.0"
+      ],
+      "confidence": "high for dates and cited features; execution not tested",
+      "execution_status": "not_tested",
+      "stable_versions": [
+        {
+          "version": "1.1.0",
+          "uploaded_at": "2022-04-28T17:22:12.224210Z",
+          "yanked": false
+        },
+        {
+          "version": "1.1.1",
+          "uploaded_at": "2022-06-15T15:44:57.965205Z",
+          "yanked": false
+        },
+        {
+          "version": "1.1.2",
+          "uploaded_at": "2022-07-29T12:05:31.821459Z",
+          "yanked": false
+        },
+        {
+          "version": "1.1.3",
+          "uploaded_at": "2023-01-05T14:18:09.014493Z",
+          "yanked": false
+        },
+        {
+          "version": "1.1.4",
+          "uploaded_at": "2023-02-28T15:21:52.543445Z",
+          "yanked": false
+        },
+        {
+          "version": "1.1.5",
+          "uploaded_at": "2023-04-19T13:42:41.662862Z",
+          "yanked": false
+        },
+        {
+          "version": "1.1.6",
+          "uploaded_at": "2026-08-14T13:49:09.380913Z",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "id": "1.2",
+      "label": "v1.2",
+      "title": "Grants as project configuration",
+      "initial_version": "1.2.0",
+      "first_package_uploaded_at": "2022-07-26T14:59:50.388497Z",
+      "package": "dbt-core",
+      "package_url": "https://pypi.org/project/dbt-core/1.2.0/",
+      "github_release_published_at": "2022-07-26T14:59:00Z",
+      "github_release_url": "https://github.com/dbt-labs/dbt/releases/tag/v1.2.0",
+      "github_tag": "v1.2.0",
+      "latest_stable_patch_observed": "1.2.7",
+      "latest_patch_upload": "2026-08-14T13:55:02.762147Z",
+      "display_date": "2022-07-26",
+      "display_date_kind": "first package upload (UTC), not asserted announcement date",
+      "highlights": [
+        "Grants managed through model configs.",
+        "Cross-database macros move into Core; ratio metrics supported."
+      ],
+      "proposed_waffle_shop_demo": "Grant a reporting role access to revenue through model configuration.",
+      "caveats": [
+        "Local role verification works only on an adapter with grants support, such as Postgres."
+      ],
+      "source_urls": [
+        "https://github.com/dbt-labs/dbt/releases/tag/v1.2.0"
+      ],
+      "confidence": "high for dates and cited features; execution not tested",
+      "execution_status": "not_tested",
+      "stable_versions": [
+        {
+          "version": "1.2.0",
+          "uploaded_at": "2022-07-26T14:59:50.388497Z",
+          "yanked": false
+        },
+        {
+          "version": "1.2.1",
+          "uploaded_at": "2022-08-25T19:18:39.409564Z",
+          "yanked": false
+        },
+        {
+          "version": "1.2.2",
+          "uploaded_at": "2022-10-03T18:50:27.077233Z",
+          "yanked": false
+        },
+        {
+          "version": "1.2.3",
+          "uploaded_at": "2022-11-16T18:06:26.716600Z",
+          "yanked": false
+        },
+        {
+          "version": "1.2.4",
+          "uploaded_at": "2023-01-05T13:59:13.045606Z",
+          "yanked": false
+        },
+        {
+          "version": "1.2.5",
+          "uploaded_at": "2023-02-28T15:34:18.523523Z",
+          "yanked": false
+        },
+        {
+          "version": "1.2.6",
+          "uploaded_at": "2023-04-19T17:17:06.870080Z",
+          "yanked": false
+        },
+        {
+          "version": "1.2.7",
+          "uploaded_at": "2026-08-14T13:55:02.762147Z",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "id": "1.3",
+      "label": "v1.3",
+      "title": "Python models",
+      "initial_version": "1.3.0",
+      "first_package_uploaded_at": "2022-10-12T11:44:34.139381Z",
+      "package": "dbt-core",
+      "package_url": "https://pypi.org/project/dbt-core/1.3.0/",
+      "github_release_published_at": "2022-10-12T11:43:55Z",
+      "github_release_url": "https://github.com/dbt-labs/dbt/releases/tag/v1.3.0",
+      "github_tag": "v1.3.0",
+      "latest_stable_patch_observed": "1.3.8",
+      "latest_patch_upload": "2026-08-14T13:12:33.117357Z",
+      "display_date": "2022-10-12",
+      "display_date_kind": "first package upload (UTC), not asserted announcement date",
+      "highlights": [
+        "Python models, including incremental support on supported platforms.",
+        "More portable macros and .dbtignore."
+      ],
+      "proposed_waffle_shop_demo": "Add an optional Python customer segmentation model while keeping SQL revenue as the shared baseline.",
+      "caveats": [
+        "Python-model execution is adapter-specific and cannot be assumed on local Postgres; may require another adapter or evidence-only experience."
+      ],
+      "source_urls": [
+        "https://github.com/dbt-labs/dbt/releases/tag/v1.3.0"
+      ],
+      "confidence": "high for dates and cited features; execution not tested",
+      "execution_status": "not_tested",
+      "stable_versions": [
+        {
+          "version": "1.3.0",
+          "uploaded_at": "2022-10-12T11:44:34.139381Z",
+          "yanked": false
+        },
+        {
+          "version": "1.3.1",
+          "uploaded_at": "2022-11-16T19:32:54.301392Z",
+          "yanked": false
+        },
+        {
+          "version": "1.3.2",
+          "uploaded_at": "2023-01-04T20:36:11.026856Z",
+          "yanked": false
+        },
+        {
+          "version": "1.3.3",
+          "uploaded_at": "2023-02-28T15:28:32.081964Z",
+          "yanked": false
+        },
+        {
+          "version": "1.3.4",
+          "uploaded_at": "2023-04-19T17:12:21.309877Z",
+          "yanked": false
+        },
+        {
+          "version": "1.3.5",
+          "uploaded_at": "2023-08-04T16:33:06.812619Z",
+          "yanked": false
+        },
+        {
+          "version": "1.3.6",
+          "uploaded_at": "2023-09-20T19:35:57.986882Z",
+          "yanked": false
+        },
+        {
+          "version": "1.3.7",
+          "uploaded_at": "2023-10-11T19:02:21.431097Z",
+          "yanked": false
+        },
+        {
+          "version": "1.3.8",
+          "uploaded_at": "2026-08-14T13:12:33.117357Z",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "id": "1.4",
+      "label": "v1.4",
+      "title": "Fine-tuning incremental work",
+      "initial_version": "1.4.0",
+      "first_package_uploaded_at": "2023-01-25T15:32:18.202457Z",
+      "package": "dbt-core",
+      "package_url": "https://pypi.org/project/dbt-core/1.4.0/",
+      "github_release_published_at": "2023-01-25T15:31:40Z",
+      "github_release_url": "https://github.com/dbt-labs/dbt/releases/tag/v1.4.0",
+      "github_tag": "v1.4.0",
+      "latest_stable_patch_observed": "1.4.10",
+      "latest_patch_upload": "2026-08-14T10:48:04.715456Z",
+      "display_date": "2023-01-25",
+      "display_date_kind": "first package upload (UTC), not asserted announcement date",
+      "highlights": [
+        "Incremental predicates and favor-state deferral.",
+        "Buildable indirect test selection; richer structured logs and warning controls."
+      ],
+      "proposed_waffle_shop_demo": "Constrain the scanned history for an incremental revenue model; show favor-state using a known reference manifest.",
+      "caveats": [
+        "Adapter support and generated SQL must be validated for the chosen target."
+      ],
+      "source_urls": [
+        "https://github.com/dbt-labs/dbt/releases/tag/v1.4.0"
+      ],
+      "confidence": "high for dates and cited features; execution not tested",
+      "execution_status": "not_tested",
+      "stable_versions": [
+        {
+          "version": "1.4.0",
+          "uploaded_at": "2023-01-25T15:32:18.202457Z",
+          "yanked": false
+        },
+        {
+          "version": "1.4.1",
+          "uploaded_at": "2023-01-26T01:53:11.805080Z",
+          "yanked": false
+        },
+        {
+          "version": "1.4.2",
+          "uploaded_at": "2023-02-23T17:48:23.322417Z",
+          "yanked": false
+        },
+        {
+          "version": "1.4.3",
+          "uploaded_at": "2023-02-24T02:17:56.127842Z",
+          "yanked": false
+        },
+        {
+          "version": "1.4.4",
+          "uploaded_at": "2023-02-28T15:13:36.988894Z",
+          "yanked": false
+        },
+        {
+          "version": "1.4.5",
+          "uploaded_at": "2023-03-10T23:36:53.245310Z",
+          "yanked": false
+        },
+        {
+          "version": "1.4.6",
+          "uploaded_at": "2023-04-19T17:16:31.461433Z",
+          "yanked": false
+        },
+        {
+          "version": "1.4.7",
+          "uploaded_at": "2023-08-04T16:40:06.909314Z",
+          "yanked": false
+        },
+        {
+          "version": "1.4.8",
+          "uploaded_at": "2023-09-20T19:42:06.557688Z",
+          "yanked": false
+        },
+        {
+          "version": "1.4.9",
+          "uploaded_at": "2023-10-11T19:09:09.001202Z",
+          "yanked": false
+        },
+        {
+          "version": "1.4.10",
+          "uploaded_at": "2026-08-14T10:48:04.715456Z",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "id": "1.5",
+      "label": "v1.5",
+      "title": "Models as governed interfaces",
+      "initial_version": "1.5.0",
+      "first_package_uploaded_at": "2023-04-27T13:31:10.828027Z",
+      "package": "dbt-core",
+      "package_url": "https://pypi.org/project/dbt-core/1.5.0/",
+      "github_release_published_at": "2023-04-27T13:29:39Z",
+      "github_release_url": "https://github.com/dbt-labs/dbt/releases/tag/v1.5.0",
+      "github_tag": "v1.5.0",
+      "latest_stable_patch_observed": "1.5.12",
+      "latest_patch_upload": "2026-08-14T08:46:55.790934Z",
+      "display_date": "2023-04-27",
+      "display_date_kind": "first package upload (UTC), not asserted announcement date",
+      "highlights": [
+        "Contracts, model versions, groups and access.",
+        "dbt show and programmatic dbtRunner."
+      ],
+      "proposed_waffle_shop_demo": "Break a revenue contract, then provide v1/v2 revenue model interfaces and preview a result.",
+      "caveats": [
+        "Database-enforced constraints differ by adapter; do not conflate contract validation with all database constraints."
+      ],
+      "source_urls": [
+        "https://github.com/dbt-labs/dbt/releases/tag/v1.5.0"
+      ],
+      "confidence": "high for dates and cited features; execution not tested",
+      "execution_status": "not_tested",
+      "stable_versions": [
+        {
+          "version": "1.5.0",
+          "uploaded_at": "2023-04-27T13:31:10.828027Z",
+          "yanked": false
+        },
+        {
+          "version": "1.5.1",
+          "uploaded_at": "2023-05-30T15:25:43.855565Z",
+          "yanked": false
+        },
+        {
+          "version": "1.5.2",
+          "uploaded_at": "2023-06-22T16:50:39.808116Z",
+          "yanked": false
+        },
+        {
+          "version": "1.5.3",
+          "uploaded_at": "2023-07-17T18:04:09.188740Z",
+          "yanked": false
+        },
+        {
+          "version": "1.5.4",
+          "uploaded_at": "2023-07-28T15:01:23.923504Z",
+          "yanked": false
+        },
+        {
+          "version": "1.5.5",
+          "uploaded_at": "2023-08-17T18:31:08.946279Z",
+          "yanked": false
+        },
+        {
+          "version": "1.5.6",
+          "uploaded_at": "2023-08-21T17:22:01.046635Z",
+          "yanked": false
+        },
+        {
+          "version": "1.5.7",
+          "uploaded_at": "2023-09-28T22:39:13.505600Z",
+          "yanked": false
+        },
+        {
+          "version": "1.5.8",
+          "uploaded_at": "2023-10-11T18:01:36.886394Z",
+          "yanked": false
+        },
+        {
+          "version": "1.5.9",
+          "uploaded_at": "2023-10-31T17:52:16.053233Z",
+          "yanked": false
+        },
+        {
+          "version": "1.5.10",
+          "uploaded_at": "2024-02-28T21:48:47.670589Z",
+          "yanked": false
+        },
+        {
+          "version": "1.5.11",
+          "uploaded_at": "2024-03-28T16:09:30.425085Z",
+          "yanked": false
+        },
+        {
+          "version": "1.5.12",
+          "uploaded_at": "2026-08-14T08:46:55.790934Z",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "id": "1.6",
+      "label": "v1.6",
+      "title": "Recovery, cloning and semantic-model foundations",
+      "initial_version": "1.6.0",
+      "first_package_uploaded_at": "2023-07-31T16:02:01.315718Z",
+      "package": "dbt-core",
+      "package_url": "https://pypi.org/project/dbt-core/1.6.0/",
+      "github_release_published_at": "2023-07-31T16:00:21Z",
+      "github_release_url": "https://github.com/dbt-labs/dbt/releases/tag/v1.6.0",
+      "github_tag": "v1.6.0",
+      "latest_stable_patch_observed": "1.6.19",
+      "latest_patch_upload": "2026-08-14T08:07:43.137552Z",
+      "display_date": "2023-07-31",
+      "display_date_kind": "first package upload (UTC), not asserted announcement date",
+      "highlights": [
+        "retry, clone and materialized views.",
+        "Semantic-model parsing and cross-project dependency foundations."
+      ],
+      "proposed_waffle_shop_demo": "Retry a failed shop build; inspect a local materialized view; offer clone only where its semantics are supported.",
+      "caveats": [
+        "Postgres clone fallback is not zero-copy storage cloning; hosted Mesh and Semantic Layer availability must be dated independently."
+      ],
+      "source_urls": [
+        "https://github.com/dbt-labs/dbt/releases/tag/v1.6.0"
+      ],
+      "confidence": "high for dates and cited features; execution not tested",
+      "execution_status": "not_tested",
+      "stable_versions": [
+        {
+          "version": "1.6.0",
+          "uploaded_at": "2023-07-31T16:02:01.315718Z",
+          "yanked": false
+        },
+        {
+          "version": "1.6.1",
+          "uploaded_at": "2023-08-23T19:45:41.612598Z",
+          "yanked": false
+        },
+        {
+          "version": "1.6.2",
+          "uploaded_at": "2023-09-07T22:06:53.708338Z",
+          "yanked": false
+        },
+        {
+          "version": "1.6.3",
+          "uploaded_at": "2023-09-19T19:14:28.892169Z",
+          "yanked": false
+        },
+        {
+          "version": "1.6.4",
+          "uploaded_at": "2023-09-28T21:50:14.139650Z",
+          "yanked": false
+        },
+        {
+          "version": "1.6.5",
+          "uploaded_at": "2023-10-02T18:02:30.724598Z",
+          "yanked": false
+        },
+        {
+          "version": "1.6.6",
+          "uploaded_at": "2023-10-11T18:41:14.372131Z",
+          "yanked": false
+        },
+        {
+          "version": "1.6.7",
+          "uploaded_at": "2023-11-01T13:23:43.962169Z",
+          "yanked": false
+        },
+        {
+          "version": "1.6.8",
+          "uploaded_at": "2023-11-08T23:56:04.862650Z",
+          "yanked": false
+        },
+        {
+          "version": "1.6.9",
+          "uploaded_at": "2023-11-16T18:14:55.809033Z",
+          "yanked": false
+        },
+        {
+          "version": "1.6.10",
+          "uploaded_at": "2024-02-28T21:53:43.759462Z",
+          "yanked": false
+        },
+        {
+          "version": "1.6.11",
+          "uploaded_at": "2024-03-28T16:09:17.485725Z",
+          "yanked": false
+        },
+        {
+          "version": "1.6.12",
+          "uploaded_at": "2024-04-16T18:13:37.528817Z",
+          "yanked": false
+        },
+        {
+          "version": "1.6.13",
+          "uploaded_at": "2024-04-18T17:53:58.304932Z",
+          "yanked": false
+        },
+        {
+          "version": "1.6.14",
+          "uploaded_at": "2024-05-03T00:30:52.730903Z",
+          "yanked": false
+        },
+        {
+          "version": "1.6.15",
+          "uploaded_at": "2024-05-22T21:19:16.215075Z",
+          "yanked": false
+        },
+        {
+          "version": "1.6.16",
+          "uploaded_at": "2024-06-05T19:42:23.755299Z",
+          "yanked": false
+        },
+        {
+          "version": "1.6.17",
+          "uploaded_at": "2024-06-20T21:05:51.032643Z",
+          "yanked": false
+        },
+        {
+          "version": "1.6.18",
+          "uploaded_at": "2024-08-07T22:23:03.656749Z",
+          "yanked": false
+        },
+        {
+          "version": "1.6.19",
+          "uploaded_at": "2026-08-14T08:07:43.137552Z",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "id": "1.7",
+      "label": "v1.7",
+      "title": "Reproducible dependencies and shareable docs",
+      "initial_version": "1.7.0",
+      "first_package_uploaded_at": "2023-11-02T16:04:12.163526Z",
+      "package": "dbt-core",
+      "package_url": "https://pypi.org/project/dbt-core/1.7.0/",
+      "github_release_published_at": "2023-11-02T16:03:00Z",
+      "github_release_url": "https://github.com/dbt-labs/dbt/releases/tag/v1.7.0",
+      "github_tag": "v1.7.0",
+      "latest_stable_patch_observed": "1.7.20",
+      "latest_patch_upload": "2026-08-14T06:52:13.615532Z",
+      "display_date": "2023-11-02",
+      "display_date_kind": "first package upload (UTC), not asserted announcement date",
+      "highlights": [
+        "Package dependency locking and static documentation.",
+        "Saved-query semantic metadata; configurable seed delimiters."
+      ],
+      "proposed_waffle_shop_demo": "Install locked shop packages and open a self-contained documentation page.",
+      "caveats": [
+        "Semantic query execution needs separate MetricFlow/service setup; parsing alone is not the whole product."
+      ],
+      "source_urls": [
+        "https://github.com/dbt-labs/dbt/releases/tag/v1.7.0"
+      ],
+      "confidence": "high for dates and cited features; execution not tested",
+      "execution_status": "not_tested",
+      "stable_versions": [
+        {
+          "version": "1.7.0",
+          "uploaded_at": "2023-11-02T16:04:12.163526Z",
+          "yanked": false
+        },
+        {
+          "version": "1.7.1",
+          "uploaded_at": "2023-11-07T20:58:44.490573Z",
+          "yanked": false
+        },
+        {
+          "version": "1.7.2",
+          "uploaded_at": "2023-11-16T19:17:34.501926Z",
+          "yanked": false
+        },
+        {
+          "version": "1.7.3",
+          "uploaded_at": "2023-11-29T15:48:18.490332Z",
+          "yanked": false
+        },
+        {
+          "version": "1.7.4",
+          "uploaded_at": "2023-12-14T20:33:52.819245Z",
+          "yanked": false
+        },
+        {
+          "version": "1.7.5",
+          "uploaded_at": "2024-01-18T16:48:09.465190Z",
+          "yanked": false
+        },
+        {
+          "version": "1.7.6",
+          "uploaded_at": "2024-01-25T18:37:32.162650Z",
+          "yanked": false
+        },
+        {
+          "version": "1.7.7",
+          "uploaded_at": "2024-02-01T18:43:56.312178Z",
+          "yanked": false
+        },
+        {
+          "version": "1.7.8",
+          "uploaded_at": "2024-02-14T21:42:05.961650Z",
+          "yanked": false
+        },
+        {
+          "version": "1.7.9",
+          "uploaded_at": "2024-02-28T21:53:52.728354Z",
+          "yanked": false
+        },
+        {
+          "version": "1.7.10",
+          "uploaded_at": "2024-03-14T01:41:39.087743Z",
+          "yanked": false
+        },
+        {
+          "version": "1.7.11",
+          "uploaded_at": "2024-03-28T13:00:18.066356Z",
+          "yanked": false
+        },
+        {
+          "version": "1.7.12",
+          "uploaded_at": "2024-04-16T16:36:52.012445Z",
+          "yanked": false
+        },
+        {
+          "version": "1.7.13",
+          "uploaded_at": "2024-04-18T17:58:57.010601Z",
+          "yanked": false
+        },
+        {
+          "version": "1.7.14",
+          "uploaded_at": "2024-05-02T23:31:38.407489Z",
+          "yanked": false
+        },
+        {
+          "version": "1.7.15",
+          "uploaded_at": "2024-05-22T21:09:58.090959Z",
+          "yanked": false
+        },
+        {
+          "version": "1.7.16",
+          "uploaded_at": "2024-06-05T19:50:16.788097Z",
+          "yanked": false
+        },
+        {
+          "version": "1.7.17",
+          "uploaded_at": "2024-06-20T21:14:47.652020Z",
+          "yanked": false
+        },
+        {
+          "version": "1.7.18",
+          "uploaded_at": "2024-08-07T21:27:50.496299Z",
+          "yanked": false
+        },
+        {
+          "version": "1.7.19",
+          "uploaded_at": "2024-12-02T18:22:55.382828Z",
+          "yanked": false
+        },
+        {
+          "version": "1.7.20",
+          "uploaded_at": "2026-08-14T06:52:13.615532Z",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "id": "1.8",
+      "label": "v1.8",
+      "title": "Native unit tests",
+      "initial_version": "1.8.0",
+      "first_package_uploaded_at": "2024-05-09T16:14:39.406121Z",
+      "package": "dbt-core",
+      "package_url": "https://pypi.org/project/dbt-core/1.8.0/",
+      "github_release_published_at": "2024-05-09T16:13:33Z",
+      "github_release_url": "https://github.com/dbt-labs/dbt/releases/tag/v1.8.0",
+      "github_tag": "v1.8.0",
+      "latest_stable_patch_observed": "1.8.10",
+      "latest_patch_upload": "2026-08-14T06:09:27.980317Z",
+      "display_date": "2024-05-09",
+      "display_date_kind": "first package upload (UTC), not asserted announcement date",
+      "highlights": [
+        "Native SQL unit tests with controlled fixtures.",
+        "Schema-only --empty builds; Core/adapter internals decoupled."
+      ],
+      "proposed_waffle_shop_demo": "Test refund edge cases before materializing full data; display expected versus actual results.",
+      "caveats": [
+        "Unit tests still use a warehouse to execute SQL; --empty also connects and executes, and is not an offline SQL validator."
+      ],
+      "source_urls": [
+        "https://github.com/dbt-labs/dbt/releases/tag/v1.8.0"
+      ],
+      "confidence": "high for dates and cited features; execution not tested",
+      "execution_status": "not_tested",
+      "stable_versions": [
+        {
+          "version": "1.8.0",
+          "uploaded_at": "2024-05-09T16:14:39.406121Z",
+          "yanked": false
+        },
+        {
+          "version": "1.8.1",
+          "uploaded_at": "2024-05-22T23:13:43.179689Z",
+          "yanked": false
+        },
+        {
+          "version": "1.8.2",
+          "uploaded_at": "2024-06-05T19:33:21.799255Z",
+          "yanked": false
+        },
+        {
+          "version": "1.8.3",
+          "uploaded_at": "2024-06-20T20:56:35.679774Z",
+          "yanked": false
+        },
+        {
+          "version": "1.8.4",
+          "uploaded_at": "2024-07-18T22:17:21.975836Z",
+          "yanked": false
+        },
+        {
+          "version": "1.8.5",
+          "uploaded_at": "2024-08-07T20:13:57.754119Z",
+          "yanked": false
+        },
+        {
+          "version": "1.8.6",
+          "uploaded_at": "2024-08-29T13:26:25.475218Z",
+          "yanked": false
+        },
+        {
+          "version": "1.8.7",
+          "uploaded_at": "2024-09-24T18:46:20.547113Z",
+          "yanked": false
+        },
+        {
+          "version": "1.8.8",
+          "uploaded_at": "2024-10-23T21:27:41.375516Z",
+          "yanked": false
+        },
+        {
+          "version": "1.8.9",
+          "uploaded_at": "2024-11-21T20:57:05.800811Z",
+          "yanked": false
+        },
+        {
+          "version": "1.8.10",
+          "uploaded_at": "2026-08-14T06:09:27.980317Z",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "id": "1.9",
+      "label": "v1.9",
+      "title": "Microbatch and simpler snapshots",
+      "initial_version": "1.9.0",
+      "first_package_uploaded_at": "2024-12-09T18:05:55.181871Z",
+      "package": "dbt-core",
+      "package_url": "https://pypi.org/project/dbt-core/1.9.0/",
+      "github_release_published_at": "2024-12-09T18:04:53Z",
+      "github_release_url": "https://github.com/dbt-labs/dbt/releases/tag/v1.9.0",
+      "github_tag": "v1.9.0",
+      "latest_stable_patch_observed": "1.9.11",
+      "latest_patch_upload": "2026-08-13T20:13:48.204650Z",
+      "display_date": "2024-12-09",
+      "display_date_kind": "first package upload (UTC), not asserted announcement date",
+      "highlights": [
+        "Microbatch incremental strategy and batch retry.",
+        "YAML snapshots and new snapshot configuration."
+      ],
+      "proposed_waffle_shop_demo": "Backfill daily order batches and repair a late-arriving order; express customer history in YAML.",
+      "caveats": [
+        "Execution and parallelism depend on adapter support. Keep event timestamps deterministic."
+      ],
+      "source_urls": [
+        "https://github.com/dbt-labs/dbt/releases/tag/v1.9.0"
+      ],
+      "confidence": "high for dates and cited features; execution not tested",
+      "execution_status": "not_tested",
+      "stable_versions": [
+        {
+          "version": "1.9.0",
+          "uploaded_at": "2024-12-09T18:05:55.181871Z",
+          "yanked": false
+        },
+        {
+          "version": "1.9.1",
+          "uploaded_at": "2024-12-16T18:42:15.204348Z",
+          "yanked": false
+        },
+        {
+          "version": "1.9.2",
+          "uploaded_at": "2025-01-29T21:51:38.638606Z",
+          "yanked": false
+        },
+        {
+          "version": "1.9.3",
+          "uploaded_at": "2025-03-07T16:15:22.646812Z",
+          "yanked": false
+        },
+        {
+          "version": "1.9.4",
+          "uploaded_at": "2025-04-02T16:55:34.806770Z",
+          "yanked": false
+        },
+        {
+          "version": "1.9.5",
+          "uploaded_at": "2025-05-28T04:34:06.200716Z",
+          "yanked": false
+        },
+        {
+          "version": "1.9.6",
+          "uploaded_at": "2025-05-30T17:19:50.934118Z",
+          "yanked": false
+        },
+        {
+          "version": "1.9.7",
+          "uploaded_at": "2025-06-09T21:39:27.832278Z",
+          "yanked": false
+        },
+        {
+          "version": "1.9.8",
+          "uploaded_at": "2025-06-10T16:10:36.216004Z",
+          "yanked": false
+        },
+        {
+          "version": "1.9.9",
+          "uploaded_at": "2025-08-15T20:23:56.608468Z",
+          "yanked": false
+        },
+        {
+          "version": "1.9.10",
+          "uploaded_at": "2025-08-29T15:15:02.244224Z",
+          "yanked": false
+        },
+        {
+          "version": "1.9.11",
+          "uploaded_at": "2026-08-13T20:13:48.204650Z",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "id": "1.10",
+      "label": "v1.10",
+      "title": "Sampling and migration readiness",
+      "initial_version": "1.10.0",
+      "first_package_uploaded_at": "2025-06-16T16:30:45.156312Z",
+      "package": "dbt-core",
+      "package_url": "https://pypi.org/project/dbt-core/1.10.0/",
+      "github_release_published_at": "2025-06-16T16:30:02Z",
+      "github_release_url": "https://github.com/dbt-labs/dbt/releases/tag/v1.10.0",
+      "github_tag": "v1.10.0",
+      "latest_stable_patch_observed": "1.10.23",
+      "latest_patch_upload": "2026-08-12T16:28:57.087809Z",
+      "display_date": "2025-06-16",
+      "display_date_kind": "first package upload (UTC), not asserted announcement date",
+      "highlights": [
+        "Time-window sample mode and custom source freshness queries.",
+        "Macro argument validation and clearer configuration deprecations."
+      ],
+      "proposed_waffle_shop_demo": "Build a small trading window, then show actionable warnings from a deliberately outdated configuration.",
+      "caveats": [
+        "Some configuration exists for platform features; its presence in Core is not proof the hosted feature is locally available."
+      ],
+      "source_urls": [
+        "https://github.com/dbt-labs/dbt/releases/tag/v1.10.0"
+      ],
+      "confidence": "high for dates and cited features; execution not tested",
+      "execution_status": "not_tested",
+      "stable_versions": [
+        {
+          "version": "1.10.0",
+          "uploaded_at": "2025-06-16T16:30:45.156312Z",
+          "yanked": false
+        },
+        {
+          "version": "1.10.1",
+          "uploaded_at": "2025-06-16T20:52:59.491454Z",
+          "yanked": false
+        },
+        {
+          "version": "1.10.2",
+          "uploaded_at": "2025-06-20T19:29:42.227970Z",
+          "yanked": false
+        },
+        {
+          "version": "1.10.3",
+          "uploaded_at": "2025-07-02T21:33:22.185422Z",
+          "yanked": false
+        },
+        {
+          "version": "1.10.4",
+          "uploaded_at": "2025-07-10T20:42:27.175500Z",
+          "yanked": false
+        },
+        {
+          "version": "1.10.5",
+          "uploaded_at": "2025-07-22T13:56:12.799317Z",
+          "yanked": false
+        },
+        {
+          "version": "1.10.6",
+          "uploaded_at": "2025-07-29T18:03:30.285897Z",
+          "yanked": false
+        },
+        {
+          "version": "1.10.7",
+          "uploaded_at": "2025-08-07T21:54:58.246806Z",
+          "yanked": false
+        },
+        {
+          "version": "1.10.8",
+          "uploaded_at": "2025-08-12T13:13:49.320720Z",
+          "yanked": false
+        },
+        {
+          "version": "1.10.9",
+          "uploaded_at": "2025-08-15T19:29:48.836383Z",
+          "yanked": false
+        },
+        {
+          "version": "1.10.10",
+          "uploaded_at": "2025-08-28T18:23:49.368283Z",
+          "yanked": false
+        },
+        {
+          "version": "1.10.11",
+          "uploaded_at": "2025-09-04T18:53:47.306970Z",
+          "yanked": false
+        },
+        {
+          "version": "1.10.12",
+          "uploaded_at": "2025-09-10T19:56:58.932363Z",
+          "yanked": true
+        },
+        {
+          "version": "1.10.13",
+          "uploaded_at": "2025-09-25T20:34:32.647029Z",
+          "yanked": false
+        },
+        {
+          "version": "1.10.14",
+          "uploaded_at": "2025-11-10T20:01:03.096047Z",
+          "yanked": true
+        },
+        {
+          "version": "1.10.15",
+          "uploaded_at": "2025-11-12T20:11:33.345695Z",
+          "yanked": false
+        },
+        {
+          "version": "1.10.16",
+          "uploaded_at": "2025-12-16T16:58:14.414055Z",
+          "yanked": false
+        },
+        {
+          "version": "1.10.17",
+          "uploaded_at": "2025-12-20T01:32:11.079947Z",
+          "yanked": false
+        },
+        {
+          "version": "1.10.18",
+          "uploaded_at": "2026-01-06T23:07:23.629720Z",
+          "yanked": false
+        },
+        {
+          "version": "1.10.19",
+          "uploaded_at": "2026-01-20T20:37:55.615586Z",
+          "yanked": false
+        },
+        {
+          "version": "1.10.20",
+          "uploaded_at": "2026-03-03T20:26:03.213180Z",
+          "yanked": false
+        },
+        {
+          "version": "1.10.21",
+          "uploaded_at": "2026-05-14T10:50:49.270432Z",
+          "yanked": false
+        },
+        {
+          "version": "1.10.22",
+          "uploaded_at": "2026-05-20T10:53:04.169641Z",
+          "yanked": false
+        },
+        {
+          "version": "1.10.23",
+          "uploaded_at": "2026-08-12T16:28:57.087809Z",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "id": "1.11",
+      "label": "v1.11",
+      "title": "Functions become project resources",
+      "initial_version": "1.11.0",
+      "first_package_uploaded_at": "2025-12-19T19:03:41.541242Z",
+      "package": "dbt-core",
+      "package_url": "https://pypi.org/project/dbt-core/1.11.0/",
+      "github_release_published_at": "2025-12-19T19:02:58Z",
+      "github_release_url": "https://github.com/dbt-labs/dbt/releases/tag/v1.11.0",
+      "github_tag": "v1.11.0",
+      "latest_stable_patch_observed": "1.11.15",
+      "latest_patch_upload": "2026-09-08T06:43:53.992700Z",
+      "display_date": "2025-12-19",
+      "display_date_kind": "first package upload (UTC), not asserted announcement date",
+      "highlights": [
+        "User-defined functions represented as first-class DAG resources.",
+        "Stricter config validation and DBT_ENGINE_ environment-variable namespace."
+      ],
+      "proposed_waffle_shop_demo": "Create a revenue-normalization function and reference it from a shop model, on a supported adapter.",
+      "caveats": [
+        "Language and adapter support must be checked; do not assume Postgres supports every new UDF feature."
+      ],
+      "source_urls": [
+        "https://github.com/dbt-labs/dbt/releases/tag/v1.11.0"
+      ],
+      "confidence": "high for dates and cited features; execution not tested",
+      "execution_status": "not_tested",
+      "stable_versions": [
+        {
+          "version": "1.11.0",
+          "uploaded_at": "2025-12-19T19:03:41.541242Z",
+          "yanked": true
+        },
+        {
+          "version": "1.11.1",
+          "uploaded_at": "2025-12-19T22:21:19.612934Z",
+          "yanked": true
+        },
+        {
+          "version": "1.11.2",
+          "uploaded_at": "2025-12-22T19:14:03.213226Z",
+          "yanked": false
+        },
+        {
+          "version": "1.11.3",
+          "uploaded_at": "2026-02-05T18:16:55.460137Z",
+          "yanked": false
+        },
+        {
+          "version": "1.11.4",
+          "uploaded_at": "2026-02-09T23:58:00.887507Z",
+          "yanked": false
+        },
+        {
+          "version": "1.11.5",
+          "uploaded_at": "2026-02-13T17:43:10.303907Z",
+          "yanked": false
+        },
+        {
+          "version": "1.11.6",
+          "uploaded_at": "2026-02-17T22:23:50.266336Z",
+          "yanked": false
+        },
+        {
+          "version": "1.11.7",
+          "uploaded_at": "2026-03-04T16:16:24.818421Z",
+          "yanked": false
+        },
+        {
+          "version": "1.11.8",
+          "uploaded_at": "2026-04-08T19:01:44.830375Z",
+          "yanked": false
+        },
+        {
+          "version": "1.11.9",
+          "uploaded_at": "2026-05-06T20:02:35.650160Z",
+          "yanked": false
+        },
+        {
+          "version": "1.11.10",
+          "uploaded_at": "2026-05-14T10:48:03.116090Z",
+          "yanked": false
+        },
+        {
+          "version": "1.11.11",
+          "uploaded_at": "2026-05-20T11:09:59.856306Z",
+          "yanked": false
+        },
+        {
+          "version": "1.11.12",
+          "uploaded_at": "2026-07-01T13:17:43.867444Z",
+          "yanked": false
+        },
+        {
+          "version": "1.11.13",
+          "uploaded_at": "2026-08-12T15:49:48.174595Z",
+          "yanked": false
+        },
+        {
+          "version": "1.11.14",
+          "uploaded_at": "2026-08-20T15:49:52.625311Z",
+          "yanked": false
+        },
+        {
+          "version": "1.11.15",
+          "uploaded_at": "2026-09-08T06:43:53.992700Z",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "id": "1.12",
+      "label": "v1.12",
+      "title": "Preparing for the Rust engine",
+      "initial_version": "1.12.0",
+      "first_package_uploaded_at": "2026-07-16T13:57:32.277809Z",
+      "package": "dbt-core",
+      "package_url": "https://pypi.org/project/dbt-core/1.12.0/",
+      "github_release_published_at": "2026-07-16T13:56:39Z",
+      "github_release_url": "https://github.com/dbt-labs/dbt/releases/tag/v1.12.0",
+      "github_tag": "v1.12.0",
+      "latest_stable_patch_observed": "1.12.5",
+      "latest_patch_upload": "2026-09-15T19:08:26.360255Z",
+      "display_date": "2026-07-16",
+      "display_date_kind": "first package upload (UTC), not asserted announcement date",
+      "highlights": [
+        "Opt-in v2 Rust parser; vars.yml and ad hoc run-operation --sql.",
+        "Expanded UDFs, semantic definitions and catalogue integration; on_error configuration."
+      ],
+      "proposed_waffle_shop_demo": "Compare parsers on the same shop project and validate equivalent model selection; move stable vars into vars.yml.",
+      "caveats": [
+        "GitHub/PyPI July 16 differs from blog edited Aug 17. Optional parser is an extra binary. Catalogue integrations/UDFs have adapter-specific requirements."
+      ],
+      "source_urls": [
+        "https://github.com/dbt-labs/dbt/releases/tag/v1.12.0",
+        "https://www.getdbt.com/blog/dbt-core-v1-12-is-ga"
+      ],
+      "confidence": "high for dates and cited features; execution not tested",
+      "execution_status": "not_tested",
+      "stable_versions": [
+        {
+          "version": "1.12.0",
+          "uploaded_at": "2026-07-16T13:57:32.277809Z",
+          "yanked": false
+        },
+        {
+          "version": "1.12.1",
+          "uploaded_at": "2026-08-12T10:44:08.046189Z",
+          "yanked": false
+        },
+        {
+          "version": "1.12.2",
+          "uploaded_at": "2026-08-12T19:28:37.791778Z",
+          "yanked": false
+        },
+        {
+          "version": "1.12.3",
+          "uploaded_at": "2026-08-21T00:29:46.184355Z",
+          "yanked": false
+        },
+        {
+          "version": "1.12.4",
+          "uploaded_at": "2026-09-08T10:01:39.779080Z",
+          "yanked": false
+        },
+        {
+          "version": "1.12.5",
+          "uploaded_at": "2026-09-15T19:08:26.360255Z",
+          "yanked": false
+        }
+      ],
+      "announcement_page_last_edited": "2026-08-17"
+    },
+    {
+      "id": "2.0",
+      "label": "v2.0",
+      "title": "One engine, two distributions",
+      "initial_version": "2.0.0",
+      "first_package_uploaded_at": "2026-09-14T12:55:41.011849Z",
+      "package": "dbt",
+      "package_url": "https://pypi.org/project/dbt/2.0.0/",
+      "github_release_published_at": "2026-09-14T20:50:56Z",
+      "github_release_url": "https://github.com/dbt-labs/dbt/releases/tag/v2.0.0",
+      "github_tag": "v2.0.0",
+      "latest_stable_patch_observed": "2.0.6",
+      "latest_patch_upload": "2026-09-19T13:22:27.612681Z",
+      "display_date": "2026-09-14",
+      "display_date_kind": "first package upload (UTC), not asserted announcement date",
+      "highlights": [
+        "Rust engine becomes dbt v2; full dbt and Apache-licensed dbt OSS distributions.",
+        "Full distribution adds proprietary SQL comprehension, including earlier SQL feedback."
+      ],
+      "proposed_waffle_shop_demo": "Run the shop locally with DuckDB, introduce an invalid column, and compare feedback to a v1 checkpoint.",
+      "caveats": [
+        "Do not attribute proprietary SQL comprehension to dbt OSS. Postgres is coming soon at GA; v1 remains maintained, so v2 does not mean v1 vanished."
+      ],
+      "source_urls": [
+        "https://github.com/dbt-labs/dbt/releases/tag/v2.0.0",
+        "https://www.getdbt.com/blog/dbt-summit-2026-product-announcements",
+        "https://www.getdbt.com/licenses-faq"
+      ],
+      "confidence": "high for dates and cited features; execution not tested",
+      "execution_status": "not_tested",
+      "stable_versions": [
+        {
+          "version": "2.0.0",
+          "uploaded_at": "2026-09-14T12:55:41.011849Z",
+          "yanked": false
+        },
+        {
+          "version": "2.0.1",
+          "uploaded_at": "2026-09-14T17:35:49.210556Z",
+          "yanked": false
+        },
+        {
+          "version": "2.0.2",
+          "uploaded_at": "2026-09-15T09:35:22.167667Z",
+          "yanked": false
+        },
+        {
+          "version": "2.0.3",
+          "uploaded_at": "2026-09-16T02:21:29.092812Z",
+          "yanked": false
+        },
+        {
+          "version": "2.0.4",
+          "uploaded_at": "2026-09-16T07:46:29.941799Z",
+          "yanked": false
+        },
+        {
+          "version": "2.0.5",
+          "uploaded_at": "2026-09-17T22:42:09.967962Z",
+          "yanked": false
+        },
+        {
+          "version": "2.0.6",
+          "uploaded_at": "2026-09-19T13:22:27.612681Z",
+          "yanked": false
+        }
+      ],
+      "public_ga_announcement": "2026-09-16",
+      "licensing_faq_ga_rebrand_change_date": "2026-09-15"
+    }
+  ],
+  "delivery_direction": {
+    "confirmed_on": "2026-09-22",
+    "mode": "guided-read-only-walkthroughs",
+    "brief": "../02-guided-examples-brief.md",
+    "note": "Retained proposed demos are authoring inputs. Runtime execution_status fields describe research history, not current app readiness. Convert each demo into prepared steps; do not require runtime coverage."
+  }
+}

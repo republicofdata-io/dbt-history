@@ -1,0 +1,324 @@
+{
+  "researched_on": "2026-09-21",
+  "note": "Sourced input for editorial normalization, not a complete computed product-state database. Date labels intentionally preserve uncertainty. See app brief for event schema.",
+  "events": [
+    {
+      "id": "catalogue-event-01",
+      "section": "Early product family",
+      "date_label": "9 March 2016",
+      "statement": "Project origin used in the two-year retrospective. Keep separate from the first PyPI artifact on 23 March.",
+      "evidence_or_interpretation": "[Two years of dbt](https://www.getdbt.com/blog/on-two-years-of-dbt)",
+      "source_urls": [
+        "https://www.getdbt.com/blog/on-two-years-of-dbt"
+      ],
+      "normalization_status": "research-ledger; retain date precision and distinguish event from publication/observation"
+    },
+    {
+      "id": "catalogue-event-02",
+      "section": "Early product family",
+      "date_label": "January 2017, month precision",
+      "statement": "Sinter launched as a hosted-services experiment and increasingly focused on scheduling/monitoring dbt. Do not retroactively name it Cloud.",
+      "evidence_or_interpretation": "[Founder account](https://www.getdbt.com/blog/whats-in-a-name)",
+      "source_urls": [
+        "https://www.getdbt.com/blog/whats-in-a-name"
+      ],
+      "normalization_status": "research-ledger; retain date precision and distinguish event from publication/observation"
+    },
+    {
+      "id": "catalogue-event-03",
+      "section": "Early product family",
+      "date_label": "15 January 2019",
+      "statement": "Sinter becomes dbt Cloud; the open-source tool is named dbt Core. The date comes from original publication metadata, distinct from the page's 2024 edit date.",
+      "evidence_or_interpretation": "[Rename](https://www.getdbt.com/blog/whats-in-a-name), [Cloud introduction](https://www.getdbt.com/blog/introducing-dbt-cloud)",
+      "source_urls": [
+        "https://www.getdbt.com/blog/whats-in-a-name",
+        "https://www.getdbt.com/blog/introducing-dbt-cloud"
+      ],
+      "normalization_status": "research-ledger; retain date precision and distinguish event from publication/observation"
+    },
+    {
+      "id": "catalogue-event-04",
+      "section": "Early product family",
+      "date_label": "2019 preview; GA announcement 14 January 2020",
+      "statement": "Browser IDE is a Cloud development surface. A retrospective places development in 2019; the GA article's publication metadata is January 2020. Do not collapse those into one launch.",
+      "evidence_or_interpretation": "[IDE announcement](https://www.getdbt.com/blog/announcing-the-dbt-ide), [v1 retrospective](https://www.getdbt.com/blog/dbt-core-v1-is-here)",
+      "source_urls": [
+        "https://www.getdbt.com/blog/announcing-the-dbt-ide",
+        "https://www.getdbt.com/blog/dbt-core-v1-is-here"
+      ],
+      "normalization_status": "research-ledger; retain date precision and distinguish event from publication/observation"
+    },
+    {
+      "id": "catalogue-event-05",
+      "section": "Early product family",
+      "date_label": "30 June 2021",
+      "statement": "Fishtown Analytics renames to dbt Labs. This is a company rename, not a new engine.",
+      "evidence_or_interpretation": "[Company announcement](https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software)",
+      "source_urls": [
+        "https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software"
+      ],
+      "normalization_status": "research-ledger; retain date precision and distinguish event from publication/observation"
+    },
+    {
+      "id": "catalogue-event-06",
+      "section": "Early product family",
+      "date_label": "October 2022, month precision",
+      "statement": "Original dbt Semantic Layer public preview. Metrics metadata in Core 1.0 precedes this service. The July announcement is a future launch notice, not July availability.",
+      "evidence_or_interpretation": "[Original preview announcement](https://www.getdbt.com/blog/dbt-semantic-layer), [retrospective confirmation](https://www.getdbt.com/blog/dbt-semantic-layer-whats-next)",
+      "source_urls": [
+        "https://www.getdbt.com/blog/dbt-semantic-layer",
+        "https://www.getdbt.com/blog/dbt-semantic-layer-whats-next"
+      ],
+      "normalization_status": "research-ledger; retain date precision and distinguish event from publication/observation"
+    },
+    {
+      "id": "catalogue-event-07",
+      "section": "Early product family",
+      "date_label": "8 February 2023",
+      "statement": "Agreement to acquire Transform and integrate MetricFlow. Record agreement separately from legal completion; exact completion date not established here.",
+      "evidence_or_interpretation": "[Acquisition agreement](https://www.getdbt.com/blog/press-release-dbt-acquisition-transform)",
+      "source_urls": [
+        "https://www.getdbt.com/blog/press-release-dbt-acquisition-transform"
+      ],
+      "normalization_status": "research-ledger; retain date precision and distinguish event from publication/observation"
+    },
+    {
+      "id": "catalogue-event-08",
+      "section": "Early product family",
+      "date_label": "17 October 2023",
+      "statement": "New Semantic Layer generation, Explorer, Cloud CLI and Mesh enter the catalogue. Mesh and Explorer are public preview; the MetricFlow-based Semantic Layer reaches GA at Coalesce.",
+      "evidence_or_interpretation": "[Press announcement](https://www.getdbt.com/blog/dbt-labs-announces-major-enhancements-to-dbt-cloud-to-enable-collaboration-at-scale), [product recap](https://www.getdbt.com/blog/new-dbt-cloud-features-announced-at-coalesce-2023)",
+      "source_urls": [
+        "https://www.getdbt.com/blog/dbt-labs-announces-major-enhancements-to-dbt-cloud-to-enable-collaboration-at-scale",
+        "https://www.getdbt.com/blog/new-dbt-cloud-features-announced-at-coalesce-2023"
+      ],
+      "normalization_status": "research-ledger; retain date precision and distinguish event from publication/observation"
+    },
+    {
+      "id": "catalogue-event-09",
+      "section": "Early product family",
+      "date_label": "14 May 2024",
+      "statement": "Press announcement establishes GA Cloud CLI, Explorer's existing capabilities including column lineage, and Mesh multi-project support. Assist and visual editor are beta. Advanced CI and automatic exposures are described as beta coming soon.",
+      "evidence_or_interpretation": "[Dated press release](https://www.getdbt.com/blog/new-dbt-cloud-enhancements-empower-organizations-with-trustworthy-data-at-scale)",
+      "source_urls": [
+        "https://www.getdbt.com/blog/new-dbt-cloud-enhancements-empower-organizations-with-trustworthy-data-at-scale"
+      ],
+      "normalization_status": "research-ledger; retain date precision and distinguish event from publication/observation"
+    },
+    {
+      "id": "catalogue-event-10",
+      "section": "Early product family",
+      "date_label": "28 May 2024",
+      "statement": "Dedicated Mesh GA article is published after the earlier press statement. Store as additional evidence, not a second first-launch date.",
+      "evidence_or_interpretation": "[Mesh GA article](https://www.getdbt.com/blog/dbt-mesh-is-now-generally-available)",
+      "source_urls": [
+        "https://www.getdbt.com/blog/dbt-mesh-is-now-generally-available"
+      ],
+      "normalization_status": "research-ledger; retain date precision and distinguish event from publication/observation"
+    },
+    {
+      "id": "catalogue-event-11",
+      "section": "Early product family",
+      "date_label": "8 October 2024",
+      "statement": "Copilot and expanded visual/multi-platform development announced at Coalesce. Don't automatically treat all named capabilities as separately sold products or all previews as GA.",
+      "evidence_or_interpretation": "[Coalesce announcement](https://www.getdbt.com/blog/dbt-labs-unveils-ai-innovations-and-new-features-to-improve-collaboration-and-multi-platform)",
+      "source_urls": [
+        "https://www.getdbt.com/blog/dbt-labs-unveils-ai-innovations-and-new-features-to-improve-collaboration-and-multi-platform"
+      ],
+      "normalization_status": "research-ledger; retain date precision and distinguish event from publication/observation"
+    },
+    {
+      "id": "catalogue-event-12",
+      "section": "Fusion, broader interfaces and the v2 transition",
+      "date_label": "14 January 2025",
+      "statement": "SDF Labs acquisition. Fusion's SQL comprehension lineage comes from SDF; a product-family diagram must not imply every product was a fork of Core's code.",
+      "evidence_or_interpretation": "[SDF announcement](https://www.getdbt.com/blog/dbt-labs-announces-sdf-labs-acquisition)",
+      "source_urls": [
+        "https://www.getdbt.com/blog/dbt-labs-announces-sdf-labs-acquisition"
+      ],
+      "normalization_status": "research-ledger; retain date precision and distinguish event from publication/observation"
+    },
+    {
+      "id": "catalogue-event-13",
+      "section": "Fusion, broader interfaces and the v2 transition",
+      "date_label": "28 May 2025",
+      "statement": "Fusion and VS Code extension public beta. New development engine coexists with Python Core.",
+      "evidence_or_interpretation": "[Fusion announcement](https://www.getdbt.com/blog/dbt-labs-redefines-dbt-with-new-fusion-engine), [chronology](https://www.getdbt.com/fusion-in-bloom)",
+      "source_urls": [
+        "https://www.getdbt.com/blog/dbt-labs-redefines-dbt-with-new-fusion-engine",
+        "https://www.getdbt.com/fusion-in-bloom"
+      ],
+      "normalization_status": "research-ledger; retain date precision and distinguish event from publication/observation"
+    },
+    {
+      "id": "catalogue-event-14",
+      "section": "Fusion, broader interfaces and the v2 transition",
+      "date_label": "28 May 2025",
+      "statement": "Cloud branding becomes “dbt”; Explorer → Catalog, browser IDE → Studio, visual editor → Canvas, plus Insights. Keep stable product IDs through these changes.",
+      "evidence_or_interpretation": "[Names explained](https://www.getdbt.com/blog/updated-names-for-dbt-platform-and-features)",
+      "source_urls": [
+        "https://www.getdbt.com/blog/updated-names-for-dbt-platform-and-features"
+      ],
+      "normalization_status": "research-ledger; retain date precision and distinguish event from publication/observation"
+    },
+    {
+      "id": "catalogue-event-15",
+      "section": "Fusion, broader interfaces and the v2 transition",
+      "date_label": "28 May 2025",
+      "statement": "Canvas GA, Insights preview, Catalog core experience GA with global Snowflake asset discovery in preview; local MCP beta appears in launch recap.",
+      "evidence_or_interpretation": "[Product press](https://www.getdbt.com/blog/dbt-labs-launches-ai-powered-features-to-onboard-data-analysts-into-dbt), [launch recap](https://www.getdbt.com/blog/dbt-launch-showcase-2025-recap)",
+      "source_urls": [
+        "https://www.getdbt.com/blog/dbt-labs-launches-ai-powered-features-to-onboard-data-analysts-into-dbt",
+        "https://www.getdbt.com/blog/dbt-launch-showcase-2025-recap"
+      ],
+      "normalization_status": "research-ledger; retain date precision and distinguish event from publication/observation"
+    },
+    {
+      "id": "catalogue-event-16",
+      "section": "Fusion, broader interfaces and the v2 transition",
+      "date_label": "14 October 2025",
+      "statement": "Insights and remote MCP GA; Fusion state-aware orchestration preview. Discovery and analyst agents beta; developer/observability agents described as upcoming. MetricFlow moves to Apache 2.0.",
+      "evidence_or_interpretation": "[Dated product press](https://www.getdbt.com/blog/dbt-labs-cost-optimization-agentic-ai-product-announcements), [Coalesce recap](https://www.getdbt.com/blog/coalesce-2025-rewriting-the-future)",
+      "source_urls": [
+        "https://www.getdbt.com/blog/dbt-labs-cost-optimization-agentic-ai-product-announcements",
+        "https://www.getdbt.com/blog/coalesce-2025-rewriting-the-future"
+      ],
+      "normalization_status": "research-ledger; retain date precision and distinguish event from publication/observation"
+    },
+    {
+      "id": "catalogue-event-17",
+      "section": "Fusion, broader interfaces and the v2 transition",
+      "date_label": "6 May 2026 publication",
+      "statement": "Developer Agent preview in Studio, described as Copilot's next evolution. Original publication is May 6; edited date May 7.",
+      "evidence_or_interpretation": "[Developer Agent](https://www.getdbt.com/blog/the-dbt-developer-agent-is-now-in-preview)",
+      "source_urls": [
+        "https://www.getdbt.com/blog/the-dbt-developer-agent-is-now-in-preview"
+      ],
+      "normalization_status": "research-ledger; retain date precision and distinguish event from publication/observation"
+    },
+    {
+      "id": "catalogue-event-18",
+      "section": "Fusion, broader interfaces and the v2 transition",
+      "date_label": "1 June 2026",
+      "statement": "Merger closes; Core v2 alpha and dbt State preview announced. Separate these from September GA.",
+      "evidence_or_interpretation": "[Merger completion](https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents), [Summit recap](https://www.getdbt.com/blog/what-we-announced-at-snowflake-summit-and-why-it-matters)",
+      "source_urls": [
+        "https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents",
+        "https://www.getdbt.com/blog/what-we-announced-at-snowflake-summit-and-why-it-matters"
+      ],
+      "normalization_status": "research-ledger; retain date precision and distinguish event from publication/observation"
+    },
+    {
+      "id": "catalogue-event-19",
+      "section": "Fusion, broader interfaces and the v2 transition",
+      "date_label": "24 July 2026 publication",
+      "statement": "dbt Snowflake Native App enters maintenance; new installations disabled; November removal announced. It is still in maintenance at this research cutoff, not already removed. This is distinct from Snowflake's own dbt Projects product.",
+      "evidence_or_interpretation": "[Retirement notice](https://www.getdbt.com/blog/retiring-the-dbt-snowflake-native-app)",
+      "source_urls": [
+        "https://www.getdbt.com/blog/retiring-the-dbt-snowflake-native-app"
+      ],
+      "normalization_status": "research-ledger; retain date precision and distinguish event from publication/observation"
+    },
+    {
+      "id": "catalogue-event-20",
+      "section": "Fusion, broader interfaces and the v2 transition",
+      "date_label": "14 / 15 / 16 September 2026",
+      "statement": "v2 artifact / new distribution names / public Summit GA announcement respectively. Full distribution is dbt; Apache subset is dbt OSS. Python Core remains v1.",
+      "evidence_or_interpretation": "[v2 release](https://github.com/dbt-labs/dbt/releases/tag/v2.0.0), [licensing chronology](https://www.getdbt.com/licenses-faq), [Summit recap](https://www.getdbt.com/blog/dbt-summit-2026-product-announcements)",
+      "source_urls": [
+        "https://github.com/dbt-labs/dbt/releases/tag/v2.0.0",
+        "https://www.getdbt.com/licenses-faq",
+        "https://www.getdbt.com/blog/dbt-summit-2026-product-announcements"
+      ],
+      "normalization_status": "research-ledger; retain date precision and distinguish event from publication/observation"
+    },
+    {
+      "id": "catalogue-event-21",
+      "section": "Fivetran and other ownership events",
+      "date_label": "1 October 2021",
+      "statement": "Fivetran completed HVR acquisition. [Completion announcement](https://www.fivetran.com/press/fivetran-completes-acquisition-of-hvr)",
+      "evidence_or_interpretation": "Adds enterprise replication/CDC to the Fivetran family; Fivetran remains external to dbt.",
+      "source_urls": [
+        "https://www.fivetran.com/press/fivetran-completes-acquisition-of-hvr"
+      ],
+      "normalization_status": "research-ledger; retain date precision and distinguish event from publication/observation"
+    },
+    {
+      "id": "catalogue-event-22",
+      "section": "Fivetran and other ownership events",
+      "date_label": "23 April 2025",
+      "statement": "Datadog acquires Metaplane. [Datadog announcement](https://investors.datadoghq.com/news-releases/news-release-details/datadog-brings-observability-data-teams-acquiring-metaplane)",
+      "evidence_or_interpretation": "Metaplane must never appear as a dbt Labs acquisition.",
+      "source_urls": [
+        "https://investors.datadoghq.com/news-releases/news-release-details/datadog-brings-observability-data-teams-acquiring-metaplane"
+      ],
+      "normalization_status": "research-ledger; retain date precision and distinguish event from publication/observation"
+    },
+    {
+      "id": "catalogue-event-23",
+      "section": "Fivetran and other ownership events",
+      "date_label": "1 May 2025",
+      "statement": "Fivetran signs Census acquisition agreement. [Agreement](https://www.fivetran.com/press/fivetran-signs-agreement-to-acquire-census-delivering-the-first-end-to-end-data-movement-platform-for-the-ai-era)",
+      "evidence_or_interpretation": "Agreement is not a verified completion date. Keep ownership transition uncertainty until confirmed.",
+      "source_urls": [
+        "https://www.fivetran.com/press/fivetran-signs-agreement-to-acquire-census-delivering-the-first-end-to-end-data-movement-platform-for-the-ai-era"
+      ],
+      "normalization_status": "research-ledger; retain date precision and distinguish event from publication/observation"
+    },
+    {
+      "id": "catalogue-event-24",
+      "section": "Fivetran and other ownership events",
+      "date_label": "By 3 September 2025",
+      "statement": "Tobiko acquisition announcement refers to Census as already acquired. [Tobiko press](https://www.fivetran.com/press/fivetran-acquires-tobiko-data-to-power-the-next-generation-of-advanced-ai-ready-data-transformation)",
+      "evidence_or_interpretation": "Establishes a conservative completion bound. Earlier exact completion remains open.",
+      "source_urls": [
+        "https://www.fivetran.com/press/fivetran-acquires-tobiko-data-to-power-the-next-generation-of-advanced-ai-ready-data-transformation"
+      ],
+      "normalization_status": "research-ledger; retain date precision and distinguish event from publication/observation"
+    },
+    {
+      "id": "catalogue-event-25",
+      "section": "Fivetran and other ownership events",
+      "date_label": "3 September 2025",
+      "statement": "Fivetran acquires Tobiko Data, including SQLMesh and SQLGlot. [Announcement](https://www.fivetran.com/press/fivetran-acquires-tobiko-data-to-power-the-next-generation-of-advanced-ai-ready-data-transformation)",
+      "evidence_or_interpretation": "SQLMesh is an independent alternative before acquisition, Fivetran-owned afterward, combined-family after merger. Acquisition is not proof of retirement or full integration.",
+      "source_urls": [
+        "https://www.fivetran.com/press/fivetran-acquires-tobiko-data-to-power-the-next-generation-of-advanced-ai-ready-data-transformation"
+      ],
+      "normalization_status": "research-ledger; retain date precision and distinguish event from publication/observation"
+    },
+    {
+      "id": "catalogue-event-26",
+      "section": "Fivetran and other ownership events",
+      "date_label": "13 October 2025",
+      "statement": "Fivetran/dbt Labs merger announced. [Founder announcement](https://www.getdbt.com/blog/dbt-labs-and-fivetran-merge-announcement)",
+      "evidence_or_interpretation": "Keep announced combination separate from completed ownership.",
+      "source_urls": [
+        "https://www.getdbt.com/blog/dbt-labs-and-fivetran-merge-announcement"
+      ],
+      "normalization_status": "research-ledger; retain date precision and distinguish event from publication/observation"
+    },
+    {
+      "id": "catalogue-event-27",
+      "section": "Fivetran and other ownership events",
+      "date_label": "By 2 February 2026",
+      "statement": "Census is described as Fivetran Activations in a pricing article. [Primary article](https://www.fivetran.com/blog/census-joins-fivetrans-consumption-based-pricing)",
+      "evidence_or_interpretation": "Use as an observed name bound, not a proved original rename date; older pages may have been updated retrospectively.",
+      "source_urls": [
+        "https://www.fivetran.com/blog/census-joins-fivetrans-consumption-based-pricing"
+      ],
+      "normalization_status": "research-ledger; retain date precision and distinguish event from publication/observation"
+    },
+    {
+      "id": "catalogue-event-28",
+      "section": "Fivetran and other ownership events",
+      "date_label": "1 June 2026",
+      "statement": "Fivetran/dbt merger completes. [Completion](https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents)",
+      "evidence_or_interpretation": "Combined catalogue/ownership can now appear, while product names and access requirements remain distinct.",
+      "source_urls": [
+        "https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents"
+      ],
+      "normalization_status": "research-ledger; retain date precision and distinguish event from publication/observation"
+    }
+  ]
+}
