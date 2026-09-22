@@ -16,7 +16,7 @@ export default function Header({ presentation, onTogglePresentation, theme, onCy
       <div className="min-w-0">
         <h1 className="truncate text-[26px] leading-tight tracking-[-1px]">dbt, version by version.</h1>
         <p className="mt-1 text-xs text-muted-foreground">
-          2016–2026 &nbsp;/&nbsp; One shop. Ten years of dbt. &nbsp;/&nbsp;{" "}
+          2016–2026 &nbsp;/&nbsp; A history of dbt, told through one evolving data project &nbsp;/&nbsp;{" "}
           <a href="https://republicofdata.io" className="text-accent underline-offset-2 hover:underline">
             RepublicOfData.io
           </a>
