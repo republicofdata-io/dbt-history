@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
 import EvidenceDrawer, { SourceList } from "@/components/EvidenceDrawer";
 import { productEvents, products, releases } from "@/content/load";
-import { catalogueAt, diffCatalogue, eventLabel, intervalQualified, nameAt, ownerAt, resolveAnchor, type CatalogueChange, type ProductState } from "@/content/derive";
+import { catalogueAt, diffCatalogue, eventLabel, nameAt, ownerAt, resolveAnchor, type CatalogueChange, type ProductState } from "@/content/derive";
 import { formatDate } from "@/content/dates";
 import type { ProductEvent } from "@/content/schema";
 import type { HistoryState } from "./state";
@@ -56,7 +56,7 @@ function EventRow({ e, qualified }: { e: ProductEvent; qualified: boolean }) {
         {formatDate(e.date, e.precision)} · {eventLabel(e)}
         {e.date_basis ? ` · ${e.date_basis}` : ""}
         {e.uncertainty ? ` · between ${formatDate(e.uncertainty.earliest)} and ${formatDate(e.uncertainty.latest)}` : ""}
-        {qualified && " · the anchor falls inside this event's date range"}
+        {qualified && " · the exact day within this period is not established"}
       </p>
       <p className="mt-1">{e.summary.trim()}</p>
       <div className="mt-1 flex flex-wrap gap-1">
@@ -91,7 +91,6 @@ function ChangeBadge({ change }: { change?: CatalogueChange }) {
 
 function ProductRow({ s, date, change }: { s: ProductState; date: string; change?: CatalogueChange }) {
   const parent = s.product.parent ? products.get(s.product.parent) : null;
-  const ownerQualified = intervalQualified(s.ownerInterval, date);
   return (
     <li className="border-t border-border py-2 first:border-0 first:pt-0">
       <EvidenceDrawer
@@ -107,7 +106,6 @@ function ProductRow({ s, date, change }: { s: ProductState; date: string; change
               <ChangeBadge change={change} />
               <StatePill s={s} />
               {s.pending && <Badge variant="warn">pending</Badge>}
-              {s.certainty === "qualified" && <Badge variant="warn">qualified</Badge>}
             </span>
           </button>
         }
@@ -117,7 +115,6 @@ function ProductRow({ s, date, change }: { s: ProductState; date: string; change
             {change && <Badge variant={change.kind === "new" ? "accent" : "warn"}>{change.kind === "new" ? "new since the previous chapter" : `since the previous chapter: ${change.notes.join("; ")}`}</Badge>}
             <StatePill s={s} />
             {s.pending && <Badge variant="warn">announced or agreed, not yet in the catalogue</Badge>}
-            {s.certainty === "qualified" && <Badge variant="warn">date qualified</Badge>}
             {s.product.family === "fivetran" && <Badge>Fivetran lineage</Badge>}
           </div>
           {s.product.description && <p className="text-muted-foreground">{s.product.description.trim()}</p>}
@@ -136,7 +133,6 @@ function ProductRow({ s, date, change }: { s: ProductState; date: string; change
             <dt className="text-muted-foreground">Owner</dt>
             <dd>
               {s.owner ?? <span className="text-muted-foreground">not established</span>}
-              {ownerQualified && <Badge variant="warn" className="ml-1">qualified</Badge>}
               {s.ownerInterval?.note && <span className="block text-muted-foreground">{s.ownerInterval.note}</span>}
               {s.ownerInterval?.uncertainty && (
                 <span className="block text-muted-foreground">
@@ -266,7 +262,7 @@ export default function CatalogueTab({ state }: { state: HistoryState }) {
         </div>
       </div>
       <p className="mt-3 border-l-[3px] border-accent pl-3 text-[11px] text-muted-foreground">
-        Names, maturity and access as of the selected date; later launches and renames are not shown. Access, licence and maturity are separate dimensions, and "not established" means the research did not settle it. Select a product for its dated events and sources.
+        Names, maturity and access as of the selected date; later launches and renames are not shown. "Not established" means the research did not settle it. Select a product for its dated events and sources.
       </p>
     </div>
   );

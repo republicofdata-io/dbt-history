@@ -57,7 +57,6 @@ export default function ReleaseTab({ state }: { state: HistoryState }) {
                       {c.summary}{" "}
                       {c.introduced_in && <Badge variant="accent" className="ml-1 align-middle">{c.introduced_in}</Badge>}
                       {!c.introduced_in && c.known_present_in && <Badge className="ml-1 align-middle">by {c.known_present_in}</Badge>}
-                      {c.confidence === "qualified" && <Badge variant="warn" className="ml-1 align-middle">qualified</Badge>}
                     </strong>
                     {c.adapter_constraints && <span className="text-muted-foreground">{c.adapter_constraints}</span>}
                     {c.introduction_uncertainty && <span className="block text-muted-foreground">{c.introduction_uncertainty}</span>}

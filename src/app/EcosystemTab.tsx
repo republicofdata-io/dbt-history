@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
 import EvidenceDrawer, { SourceList } from "@/components/EvidenceDrawer";
 import { ecosystem, productEvents, products, releases } from "@/content/load";
-import { BAND_LAYERS, FLOW_LAYERS, LAYER_LABELS, diffEcosystem, ecosystemAt, intervalQualified, ownerIntervalAt, resolveAnchor, type PlacementState } from "@/content/derive";
+import { BAND_LAYERS, FLOW_LAYERS, LAYER_LABELS, diffEcosystem, ecosystemAt, ownerIntervalAt, resolveAnchor, type PlacementState } from "@/content/derive";
 import { formatDate } from "@/content/dates";
 import { cn } from "@/lib/utils";
 import type { HistoryState } from "./state";
@@ -20,7 +20,6 @@ function Chip({ s, date, tag }: { s: PlacementState; date: string; tag?: string 
   const own = s.relationship === "dbt-owned";
   const fam = s.relationship === "combined-family";
   const ownerInterval = ownerIntervalAt(s.product, date);
-  const ownerQualified = intervalQualified(ownerInterval, date);
   return (
     <EvidenceDrawer
       title={s.name}
@@ -48,7 +47,6 @@ function Chip({ s, date, tag }: { s: PlacementState; date: string; tag?: string 
           <Badge variant={own ? "accent" : "default"}>{REL[s.relationship]}</Badge>
           {s.placement.maturity && <Badge variant="warn">{s.placement.maturity}</Badge>}
           {s.owner && s.owner !== s.name && <Badge>owner: {s.owner}</Badge>}
-          {ownerQualified && <Badge variant="warn">ownership qualified</Badge>}
         </div>
         {ownerInterval?.note && <p className="text-xs text-muted-foreground">{ownerInterval.note}</p>}
         {ownerInterval?.uncertainty && (
