@@ -1,12 +1,49 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Camera, ChevronLeft, ChevronRight, FlaskConical, RotateCcw } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import CodeFiles from "@/components/CodeFiles";
+import CodeFiles, { LinkedText } from "@/components/CodeFiles";
 import StateView from "@/components/StateView";
 import EvidenceDrawer, { SourceList } from "@/components/EvidenceDrawer";
 import { formatDate } from "@/content/dates";
-import { walkthroughSourceIds, type Release, type Walkthrough } from "@/content/schema";
+import { walkthroughSourceIds, type Release, type Step, type Walkthrough } from "@/content/schema";
 import { cn } from "@/lib/utils";
+
+/** One prepared step. Owns which file tab is open so prose links can switch it. */
+function StepView({ step, fixture }: { step: Step; fixture: string }) {
+  const [fileIndex, setFileIndex] = useState(0);
+  return (
+    <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto px-5 py-4">
+      <div>
+        <h3 className="font-display text-xl font-medium tracking-[-0.3px]">{step.title}</h3>
+        <LinkedText text={step.explanation.trim()} blocks={step.code} onSelect={setFileIndex} className="mt-1 max-w-[70ch] text-[13px] leading-relaxed text-muted-foreground" />
+      </div>
+      <div className={cn("grid min-h-0 gap-4", step.code.length && step.state ? "lg:grid-cols-2" : "")}>
+        {step.code.length > 0 && (
+          <div className="flex min-h-0 flex-col gap-2">
+            <CodeFiles blocks={step.code} index={fileIndex} onSelect={setFileIndex} />
+          </div>
+        )}
+        {step.state && (
+          <div className="flex min-h-0 flex-col gap-2">
+            {step.data_context && (
+              <p className="provenance">
+                Data: {step.data_context.dataset_variant ?? fixture}
+                {step.data_context.phase ? ` · ${step.data_context.phase}` : ""}
+              </p>
+            )}
+            <StateView state={step.state} />
+          </div>
+        )}
+      </div>
+      {step.takeaway && (
+        <p className="border-l-[3px] border-accent bg-highlight-wash px-3 py-2 text-[13px]">
+          <span className="mr-1.5 font-semibold">Takeaway.</span>
+          {step.takeaway.trim()}
+        </p>
+      )}
+    </div>
+  );
+}
 
 /**
  * The Waffle Shop card from the concept, holding the guided example. Visitors
@@ -123,36 +160,7 @@ export default function WalkthroughPlayer({ release, walkthrough, step, onStep, 
           </div>
         </div>
       ) : (
-        <div key={current!.id} className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto px-5 py-4">
-          <div>
-            <h3 className="font-display text-xl font-medium tracking-[-0.3px]">{current!.title}</h3>
-            <p className="mt-1 max-w-[70ch] text-[13px] leading-relaxed text-muted-foreground">{current!.explanation.trim()}</p>
-          </div>
-          <div className={cn("grid min-h-0 gap-4", current!.code.length && current!.state ? "lg:grid-cols-2" : "")}>
-            {current!.code.length > 0 && (
-              <div className="flex min-h-0 flex-col gap-2">
-                <CodeFiles key={`${release.id}/${current!.id}`} blocks={current!.code} />
-              </div>
-            )}
-            {current!.state && (
-              <div className="flex min-h-0 flex-col gap-2">
-                {current!.data_context && (
-                  <p className="provenance">
-                    Data: {current!.data_context.dataset_variant ?? walkthrough.dataset_variant}
-                    {current!.data_context.phase ? ` · ${current!.data_context.phase}` : ""}
-                  </p>
-                )}
-                <StateView state={current!.state} />
-              </div>
-            )}
-          </div>
-          {current!.takeaway && (
-            <p className="border-l-[3px] border-accent bg-highlight-wash px-3 py-2 text-[13px]">
-              <span className="mr-1.5 font-semibold">Takeaway.</span>
-              {current!.takeaway.trim()}
-            </p>
-          )}
-        </div>
+        <StepView key={`${release.id}/${current!.id}`} step={current!} fixture={walkthrough.dataset_variant} />
       )}
 
       <footer className="flex items-center justify-between gap-2 border-t border-border px-4 py-2">
