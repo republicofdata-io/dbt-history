@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-import { ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import EvidenceDrawer, { SourceList } from "@/components/EvidenceDrawer";
 import { ecosystem, productEvents, products } from "@/content/load";
@@ -30,14 +29,18 @@ function Chip({ s, date }: { s: PlacementState; date: string }) {
         <button
           type="button"
           className={cn(
-            "w-full rounded-sm border px-2 py-1 text-left text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-            own && "border-accent bg-highlight-wash text-accent-bright",
-            fam && "border-accent/50 bg-highlight-wash/60 text-foreground",
-            !own && !fam && "border-border bg-card text-foreground/90 hover:border-foreground/40",
+            "w-full rounded-md px-2.5 py-1.5 text-left text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+            own && "bg-highlight-wash font-semibold text-foreground",
+            fam && "bg-highlight-wash/70 text-foreground",
+            !own && !fam && "bg-card text-foreground/90 hover:bg-muted",
           )}
         >
           <span className="block truncate">{s.name}</span>
-          {s.certainty === "qualified" && <span className="provenance block text-[0.65rem]">date qualified</span>}
+          {(s.certainty === "qualified" || s.placement.maturity) && (
+            <span className="provenance block text-[10px]">
+              {[s.placement.maturity, s.certainty === "qualified" ? "date qualified" : null].filter(Boolean).join(" · ")}
+            </span>
+          )}
         </button>
       }
     >
@@ -58,7 +61,7 @@ function Chip({ s, date }: { s: PlacementState; date: string }) {
         {s.product.ownership_note && <p className="text-xs text-muted-foreground">{s.product.ownership_note}</p>}
         <div>
           <p className="kicker mb-1">Why it is on the chart</p>
-          <p className="text-muted-foreground">{s.placement.rationale}</p>
+          <p className="text-muted-foreground">{s.placement.rationale.trim()}</p>
           <p className="provenance mt-1">on the chart from {formatDate(s.placement.from, s.placement.from_precision)}</p>
         </div>
         <div>
@@ -70,66 +73,64 @@ function Chip({ s, date }: { s: PlacementState; date: string }) {
   );
 }
 
-/** The data-stack diagram at the anchor date: a left-to-right flow plus cross-cutting bands. */
+/**
+ * The ecosystem panel from the concept: legend, a left-to-right logical flow
+ * with one column per layer, then cross-cutting responsibilities as rails.
+ */
 export default function EcosystemTab({ state }: { state: HistoryState }) {
   const date = state.anchor.date;
   const snapshot = useMemo(() => ecosystemAt(date, ecosystem.placements, products, productEvents), [date]);
   const bands = BAND_LAYERS.filter((l) => snapshot.has(l));
+  const merged = date >= "2026-06-01";
   return (
-    <div className="flex flex-col gap-6">
-      <p className="text-base text-muted-foreground">
-        The data stack on <span className="text-foreground">{formatDate(date)}</span>: a logical flow from raw data to answers, with dbt's footprint highlighted. dbt's SQL runs inside the warehouse, so there is no separate storage hop through dbt.
-      </p>
+    <div className="flex h-full min-h-0 flex-col overflow-y-auto">
+      <div className="mb-3 flex flex-wrap items-center gap-4 text-[11px] text-muted-foreground">
+        <span className="flex items-center gap-1.5">
+          <i className="inline-block h-2.5 w-2.5 rounded-[2px] bg-accent" aria-hidden="true" /> {merged ? "Combined Fivetran and dbt family" : "dbt products"}
+        </span>
+        <span className="flex items-center gap-1.5">
+          <i className="inline-block h-2.5 w-2.5 rounded-[2px] bg-muted-foreground opacity-50" aria-hidden="true" /> Other players and approaches
+        </span>
+        <span>The data stack on {formatDate(date)}. dbt models execute in the warehouse.</span>
+      </div>
 
-      <section aria-label="Logical data flow">
-        <h2 className="kicker mb-3">Logical flow</h2>
-        <ol className="grid grid-cols-1 gap-2 sm:grid-cols-5">
-          {FLOW_LAYERS.map((layer, i) => {
-            const items = snapshot.get(layer) ?? [];
-            return (
-              <li key={layer} className="relative flex flex-col gap-2 rounded-lg border border-border p-3">
-                <h3 className="font-display text-sm font-semibold">{LAYER_LABELS[layer]}</h3>
-                {layer === "sources" && !items.length && <p className="text-xs text-muted-foreground">Applications, databases, events and files. Not vendor-specific on this chart.</p>}
-                {items.map((s) => (
-                  <Chip key={s.product.id} s={s} date={date} />
-                ))}
+      <ol className="grid grid-cols-2 gap-2 sm:grid-cols-5" aria-label="Logical data flow">
+        {FLOW_LAYERS.map((layer, i) => {
+          const items = snapshot.get(layer) ?? [];
+          return (
+            <li key={layer} className="relative flex flex-col gap-1.5 rounded-lg border border-border bg-muted/60 p-2.5">
+              <h3 className="text-xs font-semibold">
+                {LAYER_LABELS[layer]}
                 {i < FLOW_LAYERS.length - 1 && (
-                  <ArrowRight className="absolute -right-3 top-1/2 hidden h-4 w-4 -translate-y-1/2 text-muted-foreground sm:block" aria-hidden="true" />
+                  <span className="absolute -right-2 top-2 hidden text-muted-foreground sm:inline" aria-hidden="true">
+                    ›
+                  </span>
                 )}
-              </li>
-            );
-          })}
-        </ol>
-      </section>
+              </h3>
+              {layer === "sources" && !items.length && <p className="text-[11px] text-muted-foreground">Applications, databases, events and files.</p>}
+              {items.map((s) => (
+                <Chip key={s.product.id} s={s} date={date} />
+              ))}
+            </li>
+          );
+        })}
+      </ol>
 
       {bands.length > 0 && (
-        <section aria-label="Cross-cutting responsibilities">
-          <h2 className="kicker mb-3">Cross-cutting responsibilities</h2>
-          <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-            {bands.map((layer) => (
-              <li key={layer} className="flex flex-col gap-2 rounded-lg border border-border p-3">
-                <h3 className="font-display text-sm font-semibold">{LAYER_LABELS[layer]}</h3>
+        <div className="mt-3" aria-label="Cross-cutting responsibilities">
+          {bands.map((layer) => (
+            <div key={layer} className="grid grid-cols-1 gap-2 border-t border-border py-2 text-xs sm:grid-cols-[150px_minmax(0,1fr)]">
+              <span className="pt-1.5 font-medium">{LAYER_LABELS[layer]}</span>
+              <div className="grid grid-cols-2 gap-1.5 md:grid-cols-3 xl:grid-cols-5">
                 {(snapshot.get(layer) ?? []).map((s) => (
                   <Chip key={s.product.id} s={s} date={date} />
                 ))}
-              </li>
-            ))}
-          </ul>
-        </section>
+              </div>
+            </div>
+          ))}
+        </div>
       )}
-
-      <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
-        <span className="inline-flex items-center gap-1.5">
-          <span className="inline-block h-3 w-3 rounded-sm border border-accent bg-highlight-wash" aria-hidden="true" /> dbt product
-        </span>
-        <span className="inline-flex items-center gap-1.5">
-          <span className="inline-block h-3 w-3 rounded-sm border border-accent/50 bg-highlight-wash/60" aria-hidden="true" /> combined family (after 1 June 2026)
-        </span>
-        <span className="inline-flex items-center gap-1.5">
-          <span className="inline-block h-3 w-3 rounded-sm border border-border bg-card" aria-hidden="true" /> other player
-        </span>
-        <span className="provenance">Representative players, not a market ranking. Select a chip for its relationship and sources.</span>
-      </div>
+      <p className="provenance mt-auto pt-3">Representative players, not a market ranking. Select a chip for its relationship, ownership and sources.</p>
     </div>
   );
 }

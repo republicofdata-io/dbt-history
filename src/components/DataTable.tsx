@@ -11,12 +11,12 @@ export default function DataTable({ columns, rows, highlightRows = [], caption, 
   const hl = new Set(highlightRows);
   return (
     <div className="overflow-x-auto rounded-md border border-border">
-      <table className={cn("w-full border-collapse font-mono text-sm", compact && "text-xs")}>
+      <table className={cn("w-full border-collapse font-mono text-xs", compact && "text-[11px]")}>
         {caption && <caption className="px-3 py-1.5 text-left text-xs text-muted-foreground">{caption}</caption>}
         <thead>
           <tr className="border-b border-border bg-card">
             {columns.map((c) => (
-              <th key={c} scope="col" className="px-3 py-1.5 text-left text-xs font-medium tracking-wide text-muted-foreground">
+              <th key={c} scope="col" className="px-2.5 py-1 text-left text-[11px] font-medium tracking-wide text-muted-foreground">
                 {c}
               </th>
             ))}
@@ -26,7 +26,7 @@ export default function DataTable({ columns, rows, highlightRows = [], caption, 
           {rows.map((row, i) => (
             <tr key={i} className={cn("border-b border-border/60 last:border-0", hl.has(i) && "bg-highlight-wash")}>
               {row.map((cell, j) => (
-                <td key={j} className={cn("px-3 py-1.5", typeof cell === "number" && "text-right tabular-nums")}>
+                <td key={j} className={cn("px-2.5 py-1", typeof cell === "number" && "text-right tabular-nums")}>
                   {fmt(cell)}
                 </td>
               ))}

@@ -3,16 +3,24 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TABS, useHistoryState, type Tab } from "./state";
 import Header from "./Header";
 import { usePresentation } from "./usePresentation";
+import { useTheme } from "./theme";
 import ReleaseIndex from "./ReleaseIndex";
 import AnchorBar from "./AnchorBar";
 import ReleaseTab from "./ReleaseTab";
 import CatalogueTab from "./CatalogueTab";
 import EcosystemTab from "./EcosystemTab";
 import NotFound from "./NotFound";
+import { cn } from "@/lib/utils";
 
+/**
+ * The page is a fixed-height shell (masthead / sidebar + main / footer) so a
+ * chapter fits the screen without scrolling during a recording. Panels scroll
+ * internally only as a fallback on small screens.
+ */
 export default function HistoryPage() {
   const state = useHistoryState();
   const [presentation, setPresentation] = usePresentation();
+  const [theme, cycleTheme] = useTheme();
 
   useEffect(() => {
     if (!state) return;
@@ -36,13 +44,17 @@ export default function HistoryPage() {
   if (!state) return <NotFound />;
 
   return (
-    <div className="min-h-screen">
-      <Header presentation={presentation} onTogglePresentation={() => setPresentation((v) => !v)} />
-      <ReleaseIndex current={state.release.id} onSelect={state.goRelease} compact={presentation} />
-      <main id="main" className="pb-16">
-        <AnchorBar state={state} />
-        <div className="mx-auto max-w-6xl px-4 pt-6 sm:px-6">
-          <Tabs value={state.tab} onValueChange={(v) => state.goTab(v as Tab)}>
+    <div className="grid h-full grid-rows-[auto_minmax(0,1fr)_auto]">
+      <Header presentation={presentation} onTogglePresentation={() => setPresentation((v) => !v)} theme={theme} onCycleTheme={cycleTheme} />
+      <div className={cn("grid min-h-0 border-t border-border", presentation ? "grid-cols-1" : "grid-cols-1 md:grid-cols-[166px_minmax(0,1fr)]")}>
+        {!presentation && (
+          <div className="hidden min-h-0 md:block">
+            <ReleaseIndex current={state.release.id} onSelect={state.goRelease} />
+          </div>
+        )}
+        <main id="main" className={cn("flex min-h-0 flex-col overflow-y-auto px-5 pt-4 md:px-7", presentation && "px-8 pt-6 md:px-10")}>
+          <AnchorBar state={state} />
+          <Tabs value={state.tab} onValueChange={(v) => state.goTab(v as Tab)} className="flex min-h-0 flex-1 flex-col">
             <TabsList aria-label="Views of this release">
               {TABS.map((t) => (
                 <TabsTrigger key={t.id} value={t.id}>
@@ -50,21 +62,29 @@ export default function HistoryPage() {
                 </TabsTrigger>
               ))}
             </TabsList>
-            <TabsContent value="release">
+            <TabsContent value="release" className="min-h-0 flex-1">
               <ReleaseTab state={state} active={state.tab === "release"} />
             </TabsContent>
-            <TabsContent value="catalogue">
+            <TabsContent value="catalogue" className="min-h-0 flex-1">
               <CatalogueTab state={state} />
             </TabsContent>
-            <TabsContent value="ecosystem">
+            <TabsContent value="ecosystem" className="min-h-0 flex-1">
               <EcosystemTab state={state} />
             </TabsContent>
           </Tabs>
-        </div>
-      </main>
-      <footer className="border-t border-border px-4 py-6 text-center text-xs text-muted-foreground sm:px-6">
-        A practitioner's history by Olivier Dupuis · <a href="https://republicofdata.io" className="underline-offset-4 hover:text-foreground hover:underline">RepublicOfData.io</a> · research cutoff 21 September 2026 · keys: [ ] releases, ← → steps, P presentation
-      </footer>
+        </main>
+      </div>
+      {!presentation && (
+        <footer className="flex flex-wrap justify-between gap-2 border-t border-border bg-muted px-7 py-2 text-[11px] text-muted-foreground">
+          <span>
+            Research cutoff 21 September 2026 · illustrative examples, no live dbt execution ·{" "}
+            <a href="https://republicofdata.io" className="text-accent underline-offset-2 hover:underline">
+              RepublicOfData.io
+            </a>
+          </span>
+          <span>keys: [ ] releases · ← → steps · P presentation</span>
+        </footer>
+      )}
     </div>
   );
 }

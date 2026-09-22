@@ -20,7 +20,9 @@ Current delivery direction confirmed by Olivier on 22 September 2026. This super
 ## Technical decisions (22 September 2026)
 
 - **Own repo, own site.** This repo (`republicofdata-io/dbt-history`) is a standalone Vite + React 19 + TypeScript app deployed as its own Netlify site and proxied under `republicofdata.io/labs/dbt-history` by the website repo. Do not move the app into the website repo.
-- **Signal look.** Use the website's dark-only design tokens copied into `src/index.css`. The purple, two-theme direction of `documentation/visual-reference.html` is superseded for colour and theming; keep its layout ideas (version index, shared anchor, three tabs, presentation mode).
+- **Concept look, not the website's.** Olivier preferred the researcher's HTML concept (`documentation/visual-reference.html`) over the website's dark Signal look once he saw a build of it. Style from the concept's stylesheet: light-dark paper/plum/gold palette, DM Sans and Space Grotesk, sidebar release index, big plum version number, Waffle Shop card with the gold waffle mark. The website is only the deployment host.
+- **One screen per chapter.** Everything must fit the viewport without page scrolling, so the video recording is smooth. Put detail behind drawers, keep rows compact, and let a panel scroll internally only as a fallback.
+- **Not about Olivier.** App copy and content never refer to Olivier, "you" or "your story". His articles may be cited as neutral sources ("a July 2018 practitioner article").
 - **Content is YAML, separate from UI.** Everything visitors read is under `documentation/content/` and validated by `src/content/schema.ts`. Field names are a contract with the content author (`documentation/09-content-authoring.md`). Change a field only together with that document and the content files.
 - **Catalogue and ecosystem are computed**, never hand-copied per chapter: `src/content/derive.ts` resolves product names, owners, maturity and placements at the anchor date from the event ledger.
 - **State lives in the URL** (`/<release>/<tab>?m=&s=`); step progress per release in `sessionStorage`; presentation mode in `localStorage`.

@@ -26,7 +26,7 @@ export default function Dag({ diagram, title }: { diagram: Diagram; title?: stri
   }
   const colCount = Math.max(...columns.keys()) + 1;
   const rowCount = Math.max(...[...columns.values()].map((c) => c.length));
-  const W = 176, H = 40, GX = 56, GY = 18;
+  const W = 150, H = 34, GX = 44, GY = 12;
   const width = colCount * W + (colCount - 1) * GX;
   const height = rowCount * H + (rowCount - 1) * GY;
   const pos = new Map<string, { x: number; y: number }>();
@@ -36,9 +36,9 @@ export default function Dag({ diagram, title }: { diagram: Diagram; title?: stri
   }
   const hl = new Set(diagram.highlight);
   return (
-    <figure className="overflow-x-auto rounded-md border border-border bg-card p-4">
+    <figure className="overflow-x-auto rounded-md bg-muted p-3">
       {title && <figcaption className="provenance mb-3 text-foreground/80">{title}</figcaption>}
-      <svg viewBox={`-2 -2 ${width + 4} ${height + 4}`} width={width + 4} height={height + 4} className="mx-auto block max-w-full font-mono text-[12px]" role="img" aria-label={title ?? "Lineage diagram"}>
+      <svg viewBox={`-2 -2 ${width + 4} ${height + 4}`} width={width + 4} height={height + 4} className="mx-auto block max-w-full font-mono text-[11px]" role="img" aria-label={title ?? "Lineage diagram"}>
         <defs>
           <marker id="dag-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
             <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor" />
@@ -57,9 +57,9 @@ export default function Dag({ diagram, title }: { diagram: Diagram; title?: stri
           const on = hl.has(n.id);
           return (
             <g key={n.id} transform={`translate(${p.x} ${p.y})`}>
-              <rect width={W} height={H} rx={6} className={cn(on ? "fill-highlight-wash stroke-accent" : "fill-background stroke-border")} strokeWidth={on ? 1.5 : 1} />
+              <rect width={W} height={H} rx={6} className={cn(on ? "fill-highlight-wash stroke-accent" : "fill-card stroke-border")} strokeWidth={on ? 1.5 : 1} />
               <text x={W / 2} y={H / 2} dominantBaseline="middle" textAnchor="middle" className={cn("fill-current", on ? "text-accent-bright" : "text-foreground")}>
-                {n.label.length > 24 ? `${n.label.slice(0, 23)}…` : n.label}
+                {n.label.length > 22 ? `${n.label.slice(0, 21)}…` : n.label}
               </text>
             </g>
           );

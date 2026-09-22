@@ -385,9 +385,9 @@
   to: '2025-05-28'
   relationship: complement
   rationale: |
-    Olivier's July 2018 implementation used Tableau; practitioner evidence, not first availability. Rotated out of the representative set when dbt Insights enters, to keep the layer readable.
+    A July 2018 practitioner account describes Tableau downstream of dbt; practitioner evidence, not first availability. Rotated out of the representative set when dbt Insights enters, to keep the layer readable.
   sources:
-  - title: Olivier's 2018 article
+  - title: Practitioner article, July 2018
     url: https://odupuis.medium.com/my-journey-introducing-the-data-build-tool-dbt-in-projects-analytical-stacks-69971faed2c2
     retrieved: '2026-09-21'
   date_basis: earliest supported chart inclusion; not necessarily original launch
@@ -406,7 +406,7 @@
     roles:
     - bi
     sources:
-    - title: Olivier's 2018 article
+    - title: Practitioner article, July 2018
       url: https://odupuis.medium.com/my-journey-introducing-the-data-build-tool-dbt-in-projects-analytical-stacks-69971faed2c2
       retrieved: '2026-09-21'
     owners: []
@@ -807,12 +807,12 @@
   from_precision: month
   relationship: partial-substitute
   rationale: |
-    Olivier documents using Cube by October 2022; founder retrospective places the open-source framework in 2019.
+    An October 2022 practitioner article documents Cube in use; the founder retrospective places the open-source framework in 2019.
   sources:
   - title: Cube.js is now Cube
     url: https://cube.dev/blog/cube-js-is-now-cube
     retrieved: '2026-09-21'
-  - title: Olivier on the data-platform standard
+  - title: Practitioner article on dbt as a platform standard, October 2022
     url: https://odupuis.medium.com/dbt-inside-setting-the-data-platform-standard-419aa3d9e11c
     retrieved: '2026-09-21'
   to: null
@@ -839,7 +839,7 @@
     - title: Cube.js is now Cube
       url: https://cube.dev/blog/cube-js-is-now-cube
       retrieved: '2026-09-21'
-    - title: Olivier on the data-platform standard
+    - title: Practitioner article on dbt as a platform standard, October 2022
       url: https://odupuis.medium.com/dbt-inside-setting-the-data-platform-standard-419aa3d9e11c
       retrieved: '2026-09-21'
     owners: []

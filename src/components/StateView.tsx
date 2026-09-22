@@ -35,15 +35,15 @@ export default function StateView({ state }: { state: StepState }) {
   const r = RESULT[state.result_status ?? "info"];
   const Icon = r.icon;
   return (
-    <div className={cn("rounded-md border p-3", r.cls)}>
+    <div className={cn("rounded-md border p-2.5 text-xs", r.cls)}>
       <div className="flex items-center gap-2">
         <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
-        <span className="font-mono text-xs uppercase tracking-wider">{r.label}</span>
-        {state.title && <span className="text-sm text-foreground">· {state.title}</span>}
+        <span className="text-[11px] font-semibold uppercase tracking-wider">{r.label}</span>
+        {state.title && <span className="text-xs text-foreground">· {state.title}</span>}
       </div>
-      {state.message && <p className="mt-2 text-sm text-foreground">{state.message}</p>}
+      {state.message && <p className="mt-1.5 text-xs text-foreground">{state.message}</p>}
       {state.columns && state.rows && (
-        <div className="mt-3 text-foreground">
+        <div className="mt-2 text-foreground">
           <DataTable columns={state.columns} rows={state.rows} compact />
         </div>
       )}

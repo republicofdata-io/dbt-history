@@ -2,7 +2,7 @@ id: origin
 label: Origins
 title: Before the project had a name
 lead: |
-  The story begins in 2016, before Olivier adopted dbt. Waffle Shop starts with a question, some raw tables and a manually maintained revenue query.
+  The story begins in 2016. Waffle Shop starts with a question, some raw tables and a manually maintained revenue query.
 problem_then: |
   The shop can calculate revenue, but someone must remember which scripts to run and which copy contains the latest refund rule.
 what_changed:
@@ -45,10 +45,10 @@ sources:
   retrieved: '2026-09-21'
   supports: Package version and upload date.
 - id: src-3
-  title: Olivier introduces dbt in his analytical stack
+  title: A practitioner introduces dbt into an analytical stack (July 2018)
   url: https://odupuis.medium.com/my-journey-introducing-the-data-build-tool-dbt-in-projects-analytical-stacks-69971faed2c2
   retrieved: '2026-09-21'
-  supports: Olivier documented his use in July 2018, after the project began.
+  supports: A practitioner account from July 2018, two years after the project began.
 narrative_evidence:
 - src-1
 - src-2

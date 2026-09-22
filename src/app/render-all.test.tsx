@@ -32,7 +32,7 @@ describe("every chapter renders", () => {
       for (const m of release.milestones) {
         for (const tab of ["catalogue", "ecosystem"] as const) {
           renderAt(`/${release.id}/${tab}?m=${m.id}`);
-          expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(release.title);
+          expect((screen.getByLabelText("Selected release") as HTMLSelectElement).value).toBe(release.id);
           cleanup();
         }
       }

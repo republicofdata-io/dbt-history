@@ -15,7 +15,11 @@ Published at `republicofdata.io/labs/dbt-history` (see [Publishing](#publishing)
 
 ## Stack
 
-Vite 8, React 19, TypeScript, Tailwind 4 and shadcn-style components on Radix, react-router 7, zod for content validation, vitest for tests. The look mirrors the RepublicOfData.io website's dark "Signal" design tokens (`src/index.css`), so the app reads as part of the site.
+Vite 8, React 19, TypeScript, Tailwind 4 and shadcn-style components on Radix, react-router 7, zod for content validation, vitest for tests.
+
+**Look and feel** follow the approved concept in `documentation/visual-reference.html`: paper, plum and gold palette as light-dark pairs (system preference, with a toggle), DM Sans and Space Grotesk, a sidebar release index, a large plum version number and a Waffle Shop card with the gold waffle mark. Tokens live in `src/index.css`.
+
+**Fits one screen.** The page is a fixed-height shell (masthead, sidebar plus main, footer) so a chapter never needs page scrolling during a recording. Details open in side drawers instead of expanding the page. A panel or code block scrolls internally only as a fallback when a screen is smaller than about 1280×800.
 
 ```sh
 make            # menu of targets

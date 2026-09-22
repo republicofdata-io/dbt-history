@@ -6,20 +6,21 @@ import { catalogueAt, eventLabel, intervalQualified, nameAt, type ProductState }
 import { formatDate } from "@/content/dates";
 import type { ProductEvent } from "@/content/schema";
 import type { HistoryState } from "./state";
+import { cn } from "@/lib/utils";
 
 const MATURITY: Record<string, { label: string; variant: "good" | "warn" | "accent" | "default" | "bad" }> = {
   ga: { label: "GA", variant: "good" },
-  beta: { label: "Beta", variant: "warn" },
-  preview: { label: "Preview", variant: "warn" },
-  maintenance: { label: "Maintenance", variant: "default" },
-  retiring: { label: "Retiring", variant: "bad" },
-  retired: { label: "Retired", variant: "bad" },
+  beta: { label: "beta", variant: "warn" },
+  preview: { label: "preview", variant: "warn" },
+  maintenance: { label: "maintenance", variant: "default" },
+  retiring: { label: "retiring", variant: "bad" },
+  retired: { label: "retired", variant: "bad" },
 };
 
 const AVAILABILITY: Record<string, { label: string; variant: "warn" | "bad" | "default" }> = {
-  "announced-not-available": { label: "Announced, not available", variant: "bad" },
-  alpha: { label: "Alpha", variant: "warn" },
-  "existing-installations-only": { label: "Existing installations only", variant: "warn" },
+  "announced-not-available": { label: "announced, not available", variant: "bad" },
+  alpha: { label: "alpha", variant: "warn" },
+  "existing-installations-only": { label: "existing installations only", variant: "warn" },
 };
 
 const ACCESS: Record<string, string> = {
@@ -33,19 +34,29 @@ const ACCESS: Record<string, string> = {
 
 const GROUPS: { id: string; label: string; match: (s: ProductState) => boolean }[] = [
   { id: "engines", label: "Engines and distributions", match: (s) => s.product.type === "engine" || s.product.type === "distribution" },
-  { id: "platform", label: "Hosted platform and its capabilities", match: (s) => s.product.type === "platform" || s.product.type === "capability" },
+  { id: "platform", label: "Hosted platform and capabilities", match: (s) => s.product.type === "platform" || s.product.type === "capability" },
   { id: "products", label: "Products and services", match: (s) => s.product.type === "product" || s.product.type === "service" },
   { id: "companies", label: "Companies and acquisitions", match: (s) => s.product.type === "company" },
 ];
 
+/** The compact maturity/availability pill shown in the row; the drawer has the rest. */
+function StatePill({ s }: { s: ProductState }) {
+  const m = s.maturity ? MATURITY[s.maturity] : null;
+  const av = s.availability ? AVAILABILITY[s.availability] : null;
+  if (av) return <Badge variant={av.variant}>{av.label}</Badge>;
+  if (m) return <Badge variant={m.variant}>{s.availabilityScope && (s.maturity === "beta" || s.maturity === "preview") ? `${s.availabilityScope} ${m.label}` : m.label}</Badge>;
+  if (s.maturityLabel) return <Badge variant="warn">{s.maturityLabel.split(";")[0]}</Badge>;
+  return <Badge>maturity not established</Badge>;
+}
+
 function EventRow({ e, qualified }: { e: ProductEvent; qualified: boolean }) {
   return (
     <li className="border-l-2 border-border pl-3">
-      <p className="font-mono text-xs text-muted-foreground">
+      <p className="text-xs text-muted-foreground">
         {formatDate(e.date, e.precision)} · {eventLabel(e)}
         {e.date_basis ? ` · ${e.date_basis}` : ""}
         {e.uncertainty ? ` · between ${formatDate(e.uncertainty.earliest)} and ${formatDate(e.uncertainty.latest)}` : ""}
-        {qualified && " · anchor falls inside this event's date range"}
+        {qualified && " · the anchor falls inside this event's date range"}
       </p>
       <p className="mt-1">{e.summary.trim()}</p>
       <div className="mt-1 flex flex-wrap gap-1">
@@ -68,143 +79,146 @@ function EventRow({ e, qualified }: { e: ProductEvent; qualified: boolean }) {
   );
 }
 
-function Card({ s, date }: { s: ProductState; date: string }) {
-  const m = s.maturity ? MATURITY[s.maturity] : null;
-  const av = s.availability ? AVAILABILITY[s.availability] : null;
+/** One compact row per product; everything else lives in its drawer. */
+function ProductRow({ s, date }: { s: ProductState; date: string }) {
   const parent = s.product.parent ? products.get(s.product.parent) : null;
   const ownerQualified = intervalQualified(s.ownerInterval, date);
-  const scopeLabel = s.availabilityScope && (s.maturity === "beta" || s.maturity === "preview") ? `${s.availabilityScope} ${MATURITY[s.maturity].label.toLowerCase()}` : null;
   return (
-    <li className={"flex flex-col gap-2 rounded-lg border p-3 " + (s.pending ? "border-dashed border-warn/50" : s.product.family === "dbt" ? "border-border" : "border-dashed border-border")}>
-      <div className="flex flex-wrap items-start justify-between gap-2">
-        <div>
-          <h3 className="font-display text-base font-semibold">{s.name}</h3>
-          <p className="provenance">
-            {s.product.type}
-            {parent ? ` · part of ${nameAt(parent, date)}` : ""}
-            {s.product.roles.length ? ` · ${s.product.roles.join(", ")}` : ""}
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-1">
-          {s.pending && <Badge variant="warn">pending, not yet in the catalogue</Badge>}
-          {m && !scopeLabel && <Badge variant={m.variant}>{m.label}</Badge>}
-          {scopeLabel && <Badge variant="warn">{scopeLabel}</Badge>}
-          {s.maturityLabel && <Badge variant="warn">{s.maturityLabel}</Badge>}
-          {av && <Badge variant={av.variant}>{av.label}</Badge>}
-          {!m && !s.maturityLabel && !av && <Badge>maturity not established</Badge>}
-          {s.certainty === "qualified" && <Badge variant="warn">date qualified</Badge>}
-          {s.product.family === "fivetran" && <Badge>Fivetran lineage</Badge>}
-        </div>
-      </div>
-      {s.product.description && <p className="text-sm text-muted-foreground">{s.product.description.trim()}</p>}
-      {s.nameInterval?.note && <p className="text-xs text-muted-foreground">Name: {s.nameInterval.note}</p>}
-      <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-xs">
-        <dt className="text-muted-foreground">Access</dt>
-        <dd className="flex flex-wrap gap-1">{s.access?.length ? s.access.map((a) => <Badge key={a}>{ACCESS[a] ?? a}</Badge>) : <span className="text-muted-foreground">not established</span>}</dd>
-        <dt className="text-muted-foreground">Licence</dt>
-        <dd>{s.licence ? `${s.licence.name}${s.licence.category ? ` (${s.licence.category})` : ""}` : <span className="text-muted-foreground">not established</span>}</dd>
-        {s.commercialConditions.length > 0 && (
-          <>
-            <dt className="text-muted-foreground">Conditions</dt>
-            <dd>{s.commercialConditions.join("; ")}</dd>
-          </>
-        )}
-        <dt className="text-muted-foreground">Owner</dt>
-        <dd>
-          {s.owner ?? <span className="text-muted-foreground">not established</span>}
-          {ownerQualified && <Badge variant="warn" className="ml-1">qualified</Badge>}
-          {s.ownerInterval?.note && <span className="block text-muted-foreground">{s.ownerInterval.note}</span>}
-          {s.ownerInterval?.uncertainty && (
-            <span className="block text-muted-foreground">
-              transition between {formatDate(s.ownerInterval.uncertainty.earliest)} and {formatDate(s.ownerInterval.uncertainty.latest)}
+    <li className="border-t border-border py-2 first:border-0 first:pt-0">
+      <EvidenceDrawer
+        title={s.name}
+        description={`${s.product.type}${parent ? ` · part of ${nameAt(parent, date)}` : ""} · as of ${formatDate(date)}`}
+        trigger={
+          <button type="button" className="flex w-full items-start justify-between gap-2 text-left hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+            <span className="min-w-0">
+              <span className="block text-[13px] font-semibold leading-tight">{s.name}</span>
+              {s.product.roles.length > 0 && <span className="provenance block truncate">{s.product.roles.join(", ")}</span>}
             </span>
-          )}
-        </dd>
-        {s.plannedRetirement && (
-          <>
-            <dt className="text-muted-foreground">Retirement</dt>
+            <span className="flex shrink-0 flex-wrap justify-end gap-1">
+              <StatePill s={s} />
+              {s.pending && <Badge variant="warn">pending</Badge>}
+              {s.certainty === "qualified" && <Badge variant="warn">qualified</Badge>}
+            </span>
+          </button>
+        }
+      >
+        <div className="flex flex-col gap-4 text-sm">
+          <div className="flex flex-wrap gap-1">
+            <StatePill s={s} />
+            {s.pending && <Badge variant="warn">announced or agreed, not yet in the catalogue</Badge>}
+            {s.certainty === "qualified" && <Badge variant="warn">date qualified</Badge>}
+            {s.product.family === "fivetran" && <Badge>Fivetran lineage</Badge>}
+          </div>
+          {s.product.description && <p className="text-muted-foreground">{s.product.description.trim()}</p>}
+          {s.nameInterval?.note && <p className="text-xs text-muted-foreground">Name: {s.nameInterval.note}</p>}
+          <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1.5 text-xs">
+            <dt className="text-muted-foreground">Access</dt>
+            <dd className="flex flex-wrap gap-1">{s.access?.length ? s.access.map((a) => <Badge key={a}>{ACCESS[a] ?? a}</Badge>) : <span className="text-muted-foreground">not established</span>}</dd>
+            <dt className="text-muted-foreground">Licence</dt>
+            <dd>{s.licence ? `${s.licence.name}${s.licence.category ? ` (${s.licence.category})` : ""}` : <span className="text-muted-foreground">not established</span>}</dd>
+            {s.commercialConditions.length > 0 && (
+              <>
+                <dt className="text-muted-foreground">Conditions</dt>
+                <dd>{s.commercialConditions.join("; ")}</dd>
+              </>
+            )}
+            <dt className="text-muted-foreground">Owner</dt>
             <dd>
-              planned {formatDate(s.plannedRetirement.date, s.plannedRetirement.precision)}
-              {s.plannedRetirement.status ? ` (${s.plannedRetirement.status.replace(/-/g, " ")})` : ""}
+              {s.owner ?? <span className="text-muted-foreground">not established</span>}
+              {ownerQualified && <Badge variant="warn" className="ml-1">qualified</Badge>}
+              {s.ownerInterval?.note && <span className="block text-muted-foreground">{s.ownerInterval.note}</span>}
+              {s.ownerInterval?.uncertainty && (
+                <span className="block text-muted-foreground">
+                  transition between {formatDate(s.ownerInterval.uncertainty.earliest)} and {formatDate(s.ownerInterval.uncertainty.latest)}
+                </span>
+              )}
             </dd>
-          </>
-        )}
-        {s.product.known_since_basis && (
-          <>
-            <dt className="text-muted-foreground">Known since</dt>
-            <dd>{s.product.known_since_basis}</dd>
-          </>
-        )}
-      </dl>
-      <div className="flex items-center justify-between gap-2 text-xs text-muted-foreground">
-        <span>
-          {s.latest ? (
-            <>
-              Latest event: {formatDate(s.latest.date, s.latest.precision)} · {eventLabel(s.latest)}
-            </>
-          ) : (
-            "No dated event applied yet."
-          )}
-        </span>
-        <EvidenceDrawer title={s.name} description={`Events on or before ${formatDate(date)}.`} trigger={<button type="button" className="shrink-0 underline-offset-4 hover:text-foreground hover:underline">Source</button>}>
+            {s.plannedRetirement && (
+              <>
+                <dt className="text-muted-foreground">Retirement</dt>
+                <dd>
+                  planned {formatDate(s.plannedRetirement.date, s.plannedRetirement.precision)}
+                  {s.plannedRetirement.status ? ` (${s.plannedRetirement.status.replace(/-/g, " ")})` : ""}
+                </dd>
+              </>
+            )}
+            {s.product.known_since_basis && (
+              <>
+                <dt className="text-muted-foreground">Known since</dt>
+                <dd>{s.product.known_since_basis}</dd>
+              </>
+            )}
+          </dl>
           {s.product.ownership_note && <p className="text-xs text-muted-foreground">{s.product.ownership_note}</p>}
           {s.product.commercial_availability_note && <p className="text-xs text-muted-foreground">{s.product.commercial_availability_note}</p>}
-          <ol className="flex flex-col gap-4 text-sm">
-            {[...s.applied, ...s.qualified].map((e) => (
-              <EventRow key={e.id} e={e} qualified={s.qualified.includes(e)} />
-            ))}
-          </ol>
+          <div>
+            <p className="kicker mb-2">Dated events up to {formatDate(date)}</p>
+            <ol className="flex flex-col gap-4">
+              {[...s.applied, ...s.qualified].map((e) => (
+                <EventRow key={e.id} e={e} qualified={s.qualified.includes(e)} />
+              ))}
+            </ol>
+          </div>
           {s.product.sources.length > 0 && (
             <div>
               <p className="kicker mb-2">Identity sources</p>
               <SourceList sources={s.product.sources} />
             </div>
           )}
-        </EvidenceDrawer>
-      </div>
+        </div>
+      </EvidenceDrawer>
     </li>
   );
 }
 
-/** Products and capabilities at the anchor date, computed from the event ledger. */
+/** One product group column; wide groups split into two text columns so the panel still fits a screen. */
+function Group({ id, items, date, dashed, label, columns = 1 }: { id: string; items: ProductState[]; date: string; dashed?: boolean; label?: string; columns?: 1 | 2 | 3 }) {
+  return (
+    <section className={cn("flex min-h-0 flex-col overflow-y-auto rounded-lg border border-border bg-card p-3.5", dashed && "border-dashed bg-transparent")}>
+      <h3 className="mb-2.5 text-xs font-medium text-muted-foreground">{label ?? GROUPS.find((g) => g.id === id)?.label}</h3>
+      <ul className={cn(columns === 2 && "columns-2 gap-x-5 [&>li]:break-inside-avoid", columns === 3 && "columns-3 gap-x-5 [&>li]:break-inside-avoid")}>
+        {items.map((s) => (
+          <ProductRow key={s.product.id} s={s} date={date} />
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+/**
+ * The catalogue panel from the concept: company bar, then product groups as
+ * columns of compact rows. Details open in a drawer so the panel fits a screen.
+ */
 export default function CatalogueTab({ state }: { state: HistoryState }) {
   const date = state.anchor.date;
   const states = useMemo(() => catalogueAt(date, products, productEvents), [date]);
   const company = states.find((s) => s.product.id === "dbt-labs");
   const members = states.filter((s) => !s.pending);
   const pending = states.filter((s) => s.pending);
+  const byId = Object.fromEntries(GROUPS.map((g) => [g.id, members.filter(g.match)])) as Record<string, ProductState[]>;
+  // The platform group grows to 24 capabilities by 2026; split it so the panel still fits one screen.
+  const platformColumns: 1 | 2 | 3 = byId.platform.length > 16 ? 3 : byId.platform.length > 8 ? 2 : 1;
   return (
-    <div className="flex flex-col gap-6">
-      <p className="text-base text-muted-foreground">
-        What <span className="text-foreground">{company?.name ?? "the company"}</span> offered on{" "}
-        <span className="text-foreground">{formatDate(date)}</span>, under the names and maturity of that day. Later launches and renames are not shown.
-      </p>
-      {GROUPS.map((g) => {
-        const items = members.filter(g.match);
-        if (!items.length) return null;
-        return (
-          <section key={g.id}>
-            <h2 className="kicker mb-3">{g.label}</h2>
-            <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-              {items.map((s) => (
-                <Card key={s.product.id} s={s} date={date} />
-              ))}
-            </ul>
-          </section>
-        );
-      })}
-      {pending.length > 0 && (
-        <section>
-          <h2 className="kicker mb-3">Announced or agreed, not yet part of the catalogue</h2>
-          <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-            {pending.map((s) => (
-              <Card key={s.product.id} s={s} date={date} />
-            ))}
-          </ul>
-        </section>
-      )}
-      <p className="provenance">
-        Access, licence and maturity are separate dimensions; "not established" means the research did not settle it, not free or GA. "Date qualified" means the anchor falls inside a period whose exact day is not established.
+    <div className="flex h-full min-h-0 flex-col">
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2.5 rounded-lg bg-highlight-wash px-4 py-2.5 text-[13px]">
+        <strong>{company?.name ?? "The company"}</strong>
+        <small className="text-[11px] text-muted-foreground">
+          products and capabilities as of {formatDate(date)} · {company?.owner ?? ""}
+        </small>
+      </div>
+      <div className={cn("grid min-h-0 flex-1 gap-3 overflow-y-auto sm:grid-cols-2", platformColumns === 3 ? "xl:grid-cols-[1fr_3fr_1fr]" : platformColumns === 2 ? "xl:grid-cols-[1fr_2fr_1fr]" : "xl:grid-cols-3")}>
+        <div className="flex min-h-0 flex-col gap-3">
+          {byId.engines.length > 0 && <Group id="engines" items={byId.engines} date={date} />}
+          {byId.companies.length > 0 && <Group id="companies" items={byId.companies} date={date} />}
+        </div>
+        {byId.platform.length > 0 && <Group id="platform" items={byId.platform} date={date} columns={platformColumns} />}
+        <div className="flex min-h-0 flex-col gap-3">
+          {byId.products.length > 0 && <Group id="products" items={byId.products} date={date} />}
+          {pending.length > 0 && <Group id="pending" items={pending} date={date} dashed label="Announced or agreed, not yet in the catalogue" />}
+        </div>
+      </div>
+      <p className="mt-3 border-l-[3px] border-accent pl-3 text-[11px] text-muted-foreground">
+        Names, maturity and access as of the selected date; later launches and renames are not shown. Access, licence and maturity are separate dimensions, and "not established" means the research did not settle it. Select a product for its dated events and sources.
       </p>
     </div>
   );

@@ -1,72 +1,94 @@
 @import "tailwindcss";
 
-/* Signal design tokens, mirrored from the RepublicOfData.io website so the app
-   reads as part of the site when proxied under /labs/dbt-history. Keep in sync
-   with ~/dev/channels/website/src/index.css. */
+/* Palette and type from documentation/visual-reference.html (the approved
+   concept). Colours are light-dark() pairs; the theme toggle sets color-scheme
+   on <html>, otherwise the visitor's system preference applies. Token names
+   stay generic (background, card, accent…) so components read the same. */
 @theme {
-  --color-background: hsl(220 14% 7%);
-  --color-foreground: hsl(40 20% 94%);
-  --color-card: hsl(220 12% 11%);
-  --color-card-foreground: hsl(40 20% 94%);
-  --color-popover: hsl(220 12% 11%);
-  --color-popover-foreground: hsl(40 20% 94%);
-  --color-primary: hsl(38 92% 56%);
-  --color-primary-foreground: hsl(220 14% 7%);
-  --color-secondary: hsl(220 10% 16%);
-  --color-secondary-foreground: hsl(40 20% 94%);
-  --color-muted: hsl(220 10% 16%);
-  --color-muted-foreground: hsl(220 8% 64%);
-  --color-accent: hsl(38 92% 56%);
-  --color-accent-foreground: hsl(220 14% 7%);
-  --color-accent-bright: hsl(42 95% 66%);
-  --color-destructive: hsl(0 72% 51%);
-  --color-destructive-foreground: hsl(40 20% 94%);
-  --color-border: hsl(220 8% 20%);
-  --color-input: hsl(220 8% 20%);
-  --color-ring: hsl(38 92% 56%);
-  /* Semantic states for test results and diff highlights */
-  --color-good: hsl(150 45% 55%);
-  --color-good-wash: hsl(150 30% 14%);
-  --color-bad: hsl(0 72% 62%);
-  --color-bad-wash: hsl(0 40% 14%);
-  --color-warn: hsl(42 95% 66%);
-  --color-warn-wash: hsl(40 40% 13%);
-  --color-highlight-wash: hsl(38 60% 15%);
+  --color-background: light-dark(#faf9fc, #20202a); /* paper */
+  --color-foreground: light-dark(#252334, #eeedf5); /* ink */
+  --color-card: light-dark(#ffffff, #282833); /* surface */
+  --color-card-foreground: light-dark(#252334, #eeedf5);
+  --color-popover: light-dark(#ffffff, #282833);
+  --color-popover-foreground: light-dark(#252334, #eeedf5);
+  --color-muted: light-dark(#efecf6, #333040); /* wash */
+  --color-muted-foreground: light-dark(#686475, #b5b1c6); /* sub */
+  --color-secondary: light-dark(#efecf6, #333040);
+  --color-secondary-foreground: light-dark(#252334, #eeedf5);
+  --color-border: light-dark(#e3dfec, #41404f); /* line */
+  --color-input: light-dark(#e3dfec, #41404f);
+  --color-primary: light-dark(#6546a8, #b69aec); /* plum */
+  --color-primary-foreground: light-dark(#ffffff, #20202a);
+  --color-accent: light-dark(#6546a8, #b69aec);
+  --color-accent-foreground: light-dark(#ffffff, #20202a);
+  --color-accent-bright: light-dark(#6546a8, #b69aec);
+  --color-ring: light-dark(#6546a8, #b69aec);
+  --color-highlight-wash: light-dark(#ece5f8, #3a2e51); /* plumwash */
+  --color-gold: light-dark(#94641e, #e4b665);
+  --color-gold-wash: light-dark(#f8efd9, #433820);
+  --color-good: light-dark(#35624b, #93c9a5);
+  --color-good-wash: light-dark(#e6f2ea, #22352b);
+  --color-bad: light-dark(#a33a3a, #f0a0a0);
+  --color-bad-wash: light-dark(#f8e5e5, #3d2626);
+  --color-warn: light-dark(#94641e, #e4b665);
+  --color-warn-wash: light-dark(#f8efd9, #433820);
+  --color-destructive: light-dark(#a33a3a, #f0a0a0);
+  --color-destructive-foreground: #ffffff;
 
-  --radius-sm: 0.25rem;
-  --radius-md: 0.375rem;
-  --radius-lg: 0.5rem;
+  --radius-sm: 0.3rem;
+  --radius-md: 0.4rem;
+  --radius-lg: 0.7rem;
 
-  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
-  --font-display: "Archivo", "Inter", system-ui, sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --font-sans: "DM Sans", system-ui, -apple-system, sans-serif;
+  --font-display: "Space Grotesk", "DM Sans", system-ui, sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", Menlo, monospace;
 }
 
 @layer base {
+  :root {
+    color-scheme: light dark;
+  }
+  :root[data-theme="light"] {
+    color-scheme: light;
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+  }
   * {
     border-color: var(--color-border);
   }
-  html {
-    color-scheme: dark;
+  html,
+  body,
+  #root {
+    height: 100%;
   }
   body {
+    margin: 0;
     background: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.5;
     -webkit-font-smoothing: antialiased;
+    overflow: hidden; /* the app fits the viewport; panels scroll internally only as a fallback */
   }
-  h1, h2, h3, h4 {
+  h1,
+  h2,
+  h3 {
     font-family: var(--font-display);
+    font-weight: 500;
   }
   ::selection {
-    background: color-mix(in srgb, var(--color-accent) 35%, transparent);
+    background: color-mix(in srgb, var(--color-accent) 30%, transparent);
   }
   :focus-visible {
-    outline: 2px solid var(--color-ring);
+    outline: 3px solid var(--color-ring);
     outline-offset: 2px;
   }
   @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
+    *,
+    *::before,
+    *::after {
       animation-duration: 0.01ms !important;
       transition-duration: 0.01ms !important;
     }
@@ -74,20 +96,32 @@
 }
 
 @utility kicker {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  letter-spacing: 0.2em;
+  font-size: 11px;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--color-accent-bright);
+  color: var(--color-muted-foreground);
+  font-weight: 600;
 }
 
 @utility provenance {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 11px;
   color: var(--color-muted-foreground);
 }
 
-/* Presentation mode scales the reading surface for a recording. */
+/* The waffle mark from the concept: a gold grid on a warm wash. */
+@utility waffle-mark {
+  width: 30px;
+  height: 30px;
+  border-radius: 7px;
+  border: 3px solid var(--color-gold);
+  background-color: var(--color-gold-wash);
+  background-image:
+    linear-gradient(90deg, transparent 28%, var(--color-gold) 29%, var(--color-gold) 32%, transparent 33%, transparent 65%, var(--color-gold) 66%, var(--color-gold) 69%, transparent 70%),
+    linear-gradient(0deg, transparent 28%, var(--color-gold) 29%, var(--color-gold) 32%, transparent 33%, transparent 65%, var(--color-gold) 66%, var(--color-gold) 69%, transparent 70%);
+  flex: none;
+}
+
+/* Presentation mode: sidebar and footer hidden (handled in components); type a touch larger. */
 :root[data-presentation="true"] {
-  font-size: 118%;
+  font-size: 108%;
 }
