@@ -63,107 +63,79 @@ narrative_evidence:
 - src-4
 walkthrough:
   id: wt-origin
+  title: Before dbt, the answer lived in a handwritten query.
   learning_objective: |
-    Separate the revenue calculation from the workflow needed to maintain it.
+    See why a correct SQL query is not the same thing as a trustworthy answer.
   context: |
-    Twelve orders at three fictional locations produce 13,800 cents of payments and 1,300 cents of refunds.
+    Waffle Shop has three locations. Twelve orders, 13,800 cents of payments and 1,300 cents of refunds make 12,500 cents of revenue.
+  intro:
+    can_now:
+    - Write the revenue query by hand in SQL and run it against the warehouse.
+    - Save copies of that query wherever they are needed, in a scheduler, a notebook or a dashboard.
+    - Nothing yet keeps those copies in step, runs them in the right order or checks the result.
+    scenario: |
+      Someone asks how much each location earned. The analyst writes one SQL query, gets the right number, and passes the query around. A month later two copies exist and they disagree.
+    outcome: |
+      Follow the question from the raw tables to a correct answer, then watch a second copy of the same query quietly report the wrong number.
   dataset_variant: base
   steps:
-  - id: raw
-    title: Five raw tables
+  - id: question
+    title: The question and the raw tables
     explanation: |
-      Orders link money events to the location that earned them.
+      How much did each location earn? Three raw tables hold the answer: orders say where an order was placed, payments say what was paid, refunds say what was given back.
+    code:
+    - language: sql
+      filename: raw/look_around.sql
+      content: |
+        select * from raw.orders;    -- 12 rows: order_id, customer_id, location_id, ordered_at
+        select * from raw.payments;  -- 13 rows: payment_id, order_id, amount_cents
+        select * from raw.refunds;   --  3 rows: refund_id, order_id, amount_cents
+      highlight_lines:
+      - 1
+      - 2
+      - 3
+      purpose: authored executable syntax; illustration only
     state:
-      kind: diagram
-      title: Waffle Shop before dbt
-      columns: []
-      rows: []
-      result_status: null
-      diagram:
-        nodes:
-        - id: orders
-          label: orders
-        - id: payments
-          label: payments
-        - id: refunds
-          label: refunds
-        - id: query
-          label: handwritten revenue query
-        edges:
-        - from: orders
-          to: query
-        - from: payments
-          to: query
-        - from: refunds
-          to: query
-        highlight: []
+      kind: comparison
+      title: What the raw tables hold
+      columns:
+      - table
+      - rows
+      - total cents
+      - what it tells us
+      rows:
+      - - raw.orders
+        - 12
+        - null
+        - which location each order belongs to
+      - - raw.payments
+        - 13
+        - 13800
+        - what customers paid, one order can have two payments
+      - - raw.refunds
+        - 3
+        - 1300
+        - what was given back
       provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
-      A correct answer starts with a clear grain and business rule.
+      Revenue is payments minus refunds, attributed to the location of the order.
     evidence:
     - src-1
     - src-2
-    - src-3
-    - src-4
-    code:
-    - language: sql
-      filename: manual/read_money_events.sql
-      content: |
-        select payment_id, order_id, amount_cents
-        from raw.payments order by payment_id;
-
-        select refund_id, order_id, amount_cents
-        from raw.refunds order by refund_id;
-      highlight_lines:
-      - 1
-      - 4
-      purpose: authored executable syntax; illustration only
-  - id: manual
-    title: Write the rule once
+  - id: answer
+    title: The handwritten answer
     explanation: |
-      Aggregate money events by order before joining, so split payments do not duplicate another relation.
-    state:
-      kind: table
-      title: Base revenue by location
-      columns:
-      - location_id
-      - location
-      - payment_cents
-      - refund_cents
-      - revenue_cents
-      rows:
-      - - 1
-        - Old Port
-        - 4400
-        - 1000
-        - 3400
-      - - 2
-        - Mile End
-        - 4600
-        - 300
-        - 4300
-      - - 3
-        - Riverside
-        - 4800
-        - 0
-        - 4800
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      The query can be correct even when its maintenance process is fragile.
+      The analyst writes one query. It adds up payments and refunds per order first, then joins them to orders to find the location. The numbers are right.
     code:
     - language: sql
-      filename: manual/revenue.sql
+      filename: analyst/revenue_by_location.sql
       content: |
         with payment_totals as (
             select order_id, sum(amount_cents) as payment_cents
-            from raw.payments
-            group by order_id
+            from raw.payments group by order_id
         ), refund_totals as (
             select order_id, sum(amount_cents) as refund_cents
-            from raw.refunds
-            group by order_id
+            from raw.refunds group by order_id
         )
         select
             orders.location_id,
@@ -174,103 +146,101 @@ walkthrough:
         left join refund_totals on orders.order_id = refund_totals.order_id
         group by orders.location_id
       highlight_lines:
-      - 12
-      - 13
-    evidence:
-    - src-1
-    - src-2
-    - src-3
-    - src-4
-  - id: handoff
-    title: Make the workflow visible
-    explanation: |
-      The next person needs to know the input tables, the refund rule and the order of work.
+      - 10
+      - 11
+      purpose: authored executable syntax; illustration only
     state:
-      kind: comparison
-      title: Prepared workflow comparison
+      kind: table
+      title: Revenue by location, 12,500 cents in total
       columns:
-      - responsibility
-      - manual approach
-      - project approach
+      - location
+      - payment_cents
+      - refund_cents
+      - revenue_cents
       rows:
-      - - SQL logic
-        - copied query
-        - reviewed project file
-      - - dependencies
-        - remembered by operator
-        - declared or inferred by tooling
-      - - revenue_cents
-        - 12500
-        - 12500
-      result_status: null
-      diagram: null
+      - - Old Port
+        - 4400
+        - 1000
+        - 3400
+      - - Mile End
+        - 4600
+        - 300
+        - 4300
+      - - Riverside
+        - 4800
+        - 0
+        - 4800
       provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
-      The history that follows changes how the shop produces and trusts the answer.
+      The query is correct. Nothing about it says so, and nothing keeps it that way.
     evidence:
     - src-1
     - src-2
-    - src-3
-    - src-4
+  - id: problem
+    title: Two copies, two answers
+    explanation: |
+      The query gets copied into the dashboard tool. That copy is missing the refund subtraction, so it reports 13,800 cents. Nobody knows which copy the dashboard is using, or which one is right.
     code:
     - language: sql
-      filename: manual/payment_totals.sql
+      filename: analyst/revenue_by_location.sql
       content: |
-        create view payment_totals as
-        select order_id, sum(amount_cents) as payment_cents
-        from raw.payments group by order_id;
+        select
+            orders.location_id,
+            sum(coalesce(payment_totals.payment_cents, 0)
+                - coalesce(refund_totals.refund_cents, 0)) as revenue_cents
+        from raw.orders as orders
+        left join payment_totals on orders.order_id = payment_totals.order_id
+        left join refund_totals on orders.order_id = refund_totals.order_id
+        group by orders.location_id
       highlight_lines:
-      - 1
-      - 2
       - 3
+      - 4
       purpose: authored executable syntax; illustration only
     - language: sql
-      filename: manual/refund_totals.sql
+      filename: dashboard/revenue_copy.sql
       content: |
-        create view refund_totals as
-        select order_id, sum(amount_cents) as refund_cents
-        from raw.refunds group by order_id;
+        select
+            orders.location_id,
+            sum(coalesce(payment_totals.payment_cents, 0)) as revenue_cents
+        from raw.orders as orders
+        left join payment_totals on orders.order_id = payment_totals.order_id
+        group by orders.location_id
       highlight_lines:
-      - 1
-      - 2
       - 3
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: manual/location_revenue.sql
-      content: |
-        select o.location_id,
-            sum(coalesce(p.payment_cents, 0)
-              - coalesce(r.refund_cents, 0)) as revenue_cents
-        from raw.orders as o
-        left join payment_totals as p on o.order_id = p.order_id
-        left join refund_totals as r on o.order_id = r.order_id
-        group by o.location_id;
-      highlight_lines:
-      - 2
-      - 3
-      - 5
-      - 6
-      purpose: authored executable syntax; illustration only
+      purpose: authored illustration of a divergent copy; illustration only
+    state:
+      kind: comparison
+      title: The same question, answered twice
+      columns:
+      - copy
+      - Old Port
+      - Mile End
+      - Riverside
+      - total
+      rows:
+      - - analyst query
+        - 3400
+        - 4300
+        - 4800
+        - 12500
+      - - dashboard copy
+        - 4400
+        - 4600
+        - 4800
+        - 13800
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+    takeaway: |
+      This is the problem the next ten years work on: not writing the query, but keeping one version of it, running it in the right order, and checking its answer.
+    evidence:
+    - src-1
+    - src-2
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
     - src-1
     - src-2
-    - src-4
     limitations: |
-      Fictional pre-dbt scenario. No 0.0.1 runtime was executed. The workflow comparison describes the direction of development, not a claim that every later feature existed at origin.
-    code_review:
-      reviewed_on: '2026-09-22'
-      historical_cutoff: '2026-09-21'
-      method: Original source/archive and release documentation inspection; no historical dbt execution.
-  intro:
-    can_now:
-    - From the first 0.0.1 package, keep transformation SQL in a project that dbt can compile.
-    - Let the early tool build database models from those SQL files.
-    scenario: |
-      Waffle Shop has twelve orders, split payments and refunds, but its revenue query is handed around manually. The opening example separates the correct calculation from the work of maintaining it.
-    outcome: |
-      Follow 13,800 cents of payments and 1,300 cents of refunds to 12,500 cents of revenue, then see what a repeatable project begins to replace.
+      Fictional pre-dbt scenario with authored SQL; no database or dbt runtime was executed. The divergent dashboard copy is a teaching device, not a historical incident.
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.
