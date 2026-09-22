@@ -89,8 +89,23 @@ export default function ReleaseTab({ state }: { state: HistoryState }) {
                 </ul>
               </EvidenceDrawer>
             )}
-            <EvidenceDrawer title={`${r.label} sources`} description="Primary release and package evidence." trigger={<button type="button" className="text-accent underline-offset-2 hover:underline">Release sources</button>}>
-              <SourceList sources={r.sources} />
+            <EvidenceDrawer title={`${r.label} sources and notes`} description="Primary release and package evidence, with the authoring notes behind this chapter." trigger={<button type="button" className="text-accent underline-offset-2 hover:underline">Sources and notes</button>}>
+              <div className="flex flex-col gap-4 text-sm">
+                <SourceList sources={r.sources} />
+                {(r.technical_detail || r.caveats.length > 0) && (
+                  <div>
+                    <p className="kicker mb-1">Notes for the record</p>
+                    <Prose text={r.technical_detail} className="text-muted-foreground" />
+                    {r.caveats.length > 0 && (
+                      <ul className="mt-2 list-disc pl-4 text-muted-foreground">
+                        {r.caveats.map((c, i) => (
+                          <li key={i}>{c}</li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                )}
+              </div>
             </EvidenceDrawer>
             <button type="button" onClick={() => state.goTab("waffle")} className="text-accent underline-offset-2 hover:underline">
               See it happen in the Waffle Shop ›
@@ -109,22 +124,6 @@ export default function ReleaseTab({ state }: { state: HistoryState }) {
             <div>
               <h3 className="mb-1 text-sm font-semibold">What changed in practice</h3>
               <Prose text={r.in_practice} className="text-[13px] leading-relaxed text-muted-foreground" />
-            </div>
-          )}
-          {r.technical_detail && (
-            <div>
-              <h3 className="mb-1 text-sm font-semibold">For the practitioner</h3>
-              <Prose text={r.technical_detail} className="text-[13px] leading-relaxed text-muted-foreground" />
-            </div>
-          )}
-          {r.caveats.length > 0 && (
-            <div>
-              <h3 className="mb-1 text-sm font-semibold">Keep in mind</h3>
-              <ul className="list-disc pl-4 text-[13px] leading-relaxed text-muted-foreground">
-                {r.caveats.map((c, i) => (
-                  <li key={i}>{c}</li>
-                ))}
-              </ul>
             </div>
           )}
         </div>
