@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { productEvents, products, releases } from "./load";
-import { catalogueAt, eventLabel, resolveAnchor } from "./derive";
+import { catalogueAt, diffCatalogue, diffEcosystem, ecosystemAt, eventLabel, resolveAnchor } from "./derive";
+import { ecosystem } from "./load";
 
 const at = (date: string) => new Map(catalogueAt(date, products, productEvents).map((s) => [s.product.id, s]));
 
@@ -91,5 +92,26 @@ describe("qualifications survive parsing and derivation", () => {
         expect(s.evidence.length, `${r.id}/${s.id}`).toBeGreaterThan(0);
       }
     }
+  });
+});
+
+describe("what changed since the previous chapter", () => {
+  const cat = (id: string) => catalogueAt(resolveAnchor(releases.find((r) => r.id === id)!).date, products, productEvents);
+  const eco = (id: string) => ecosystemAt(resolveAnchor(releases.find((r) => r.id === id)!).date, ecosystem.placements, products, productEvents);
+
+  it("marks the Sinter to dbt Cloud rename as a change between v0.12 and v0.13", () => {
+    const d = diffCatalogue(cat("0.12"), cat("0.13"));
+    expect(d.get("dbt-cloud")?.kind).toBe("changed");
+    expect(d.get("dbt-cloud")?.notes.join(" ")).toMatch(/was Sinter/);
+  });
+
+  it("marks Snowflake as new on the chart at v0.7", () => {
+    const d = diffEcosystem(eco("0.6"), eco("0.7"));
+    expect(d.added.map((s) => s.product.id)).toContain("snowflake");
+  });
+
+  it("marks the Fivetran lineage as new in the catalogue at the first chapter after the merger", () => {
+    const d = diffCatalogue(cat("1.11"), cat("1.12"));
+    expect(d.get("fivetran")?.kind).toBe("new");
   });
 });

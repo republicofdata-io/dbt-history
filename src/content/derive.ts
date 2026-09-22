@@ -281,3 +281,48 @@ export function ecosystemAt(
   }
   return out;
 }
+
+// ---------- What changed since the previous chapter ----------
+
+export interface CatalogueChange {
+  kind: "new" | "changed";
+  notes: string[];
+}
+
+/** Products new or changed since an earlier catalogue snapshot, keyed by product id. */
+export function diffCatalogue(previous: ProductState[], current: ProductState[]): Map<string, CatalogueChange> {
+  const before = new Map(previous.map((s) => [s.product.id, s]));
+  const out = new Map<string, CatalogueChange>();
+  for (const s of current) {
+    const p = before.get(s.product.id);
+    if (!p) {
+      out.set(s.product.id, { kind: "new", notes: [s.pending ? "announced or agreed" : "enters the catalogue"] });
+      continue;
+    }
+    const notes: string[] = [];
+    if (p.name !== s.name) notes.push(`was ${p.name}`);
+    if (p.maturity !== s.maturity && s.maturity) notes.push(`now ${s.maturity === "ga" ? "GA" : s.maturity}`);
+    if (p.availability !== s.availability && s.availability) notes.push(s.availability.replace(/-/g, " "));
+    if (p.owner !== s.owner && s.owner) notes.push(`owner ${s.owner}`);
+    if (p.pending && !s.pending) notes.push("now in the catalogue");
+    if (notes.length) out.set(s.product.id, { kind: "changed", notes });
+  }
+  return out;
+}
+
+export interface EcosystemChange {
+  added: PlacementState[];
+  removed: PlacementState[];
+  renamed: { now: PlacementState; from: string }[];
+}
+
+/** Players added to, removed from, or renamed on the chart since an earlier snapshot. */
+export function diffEcosystem(previous: Map<LayerT, PlacementState[]>, current: Map<LayerT, PlacementState[]>): EcosystemChange {
+  const key = (s: PlacementState) => `${s.placement.layer}/${s.product.id}`;
+  const before = new Map([...previous.values()].flat().map((s) => [key(s), s]));
+  const now = new Map([...current.values()].flat().map((s) => [key(s), s]));
+  const added = [...now.values()].filter((s) => !before.has(key(s)));
+  const removed = [...before.values()].filter((s) => !now.has(key(s)));
+  const renamed = [...now.values()].filter((s) => before.has(key(s)) && before.get(key(s))!.name !== s.name).map((s) => ({ now: s, from: before.get(key(s))!.name }));
+  return { added, removed, renamed };
+}

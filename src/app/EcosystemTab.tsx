@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
 import EvidenceDrawer, { SourceList } from "@/components/EvidenceDrawer";
-import { ecosystem, productEvents, products } from "@/content/load";
-import { BAND_LAYERS, FLOW_LAYERS, LAYER_LABELS, ecosystemAt, intervalQualified, ownerIntervalAt, type PlacementState } from "@/content/derive";
+import { ecosystem, productEvents, products, releases } from "@/content/load";
+import { BAND_LAYERS, FLOW_LAYERS, LAYER_LABELS, diffEcosystem, ecosystemAt, intervalQualified, ownerIntervalAt, resolveAnchor, type PlacementState } from "@/content/derive";
 import { formatDate } from "@/content/dates";
 import { cn } from "@/lib/utils";
 import type { HistoryState } from "./state";
@@ -16,7 +16,7 @@ const REL: Record<string, string> = {
   infrastructure: "infrastructure",
 };
 
-function Chip({ s, date }: { s: PlacementState; date: string }) {
+function Chip({ s, date, tag }: { s: PlacementState; date: string; tag?: string }) {
   const own = s.relationship === "dbt-owned";
   const fam = s.relationship === "combined-family";
   const ownerInterval = ownerIntervalAt(s.product, date);
@@ -35,7 +35,10 @@ function Chip({ s, date }: { s: PlacementState; date: string }) {
             !own && !fam && "bg-card text-foreground/90 hover:bg-muted",
           )}
         >
-          <span className="block truncate">{s.name}</span>
+          <span className="flex items-center gap-1.5">
+            <span className="truncate">{s.name}</span>
+            {tag && <Badge variant={tag === "new" ? "accent" : "warn"} className={tag === "new" ? "bg-highlight-wash" : "bg-gold-wash"}>{tag}</Badge>}
+          </span>
           {s.placement.maturity && <span className="provenance block text-[10px]">{s.placement.maturity}</span>}
         </button>
       }
@@ -80,6 +83,19 @@ export default function EcosystemTab({ state }: { state: HistoryState }) {
   const snapshot = useMemo(() => ecosystemAt(date, ecosystem.placements, products, productEvents), [date]);
   const bands = BAND_LAYERS.filter((l) => snapshot.has(l));
   const merged = date >= "2026-06-01";
+  // What appeared, left or was renamed on the chart since the previous chapter opened.
+  const previousRelease = state.index > 0 ? releases[state.index - 1] : null;
+  const change = useMemo(() => {
+    if (!previousRelease) return null;
+    const prev = ecosystemAt(resolveAnchor(previousRelease).date, ecosystem.placements, products, productEvents);
+    return diffEcosystem(prev, snapshot);
+  }, [previousRelease, snapshot]);
+  const tagFor = (s: PlacementState) => {
+    if (!change) return undefined;
+    if (change.added.some((a) => a.product.id === s.product.id && a.placement.layer === s.placement.layer)) return "new";
+    const r = change.renamed.find((x) => x.now.product.id === s.product.id && x.now.placement.layer === s.placement.layer);
+    return r ? `was ${r.from}` : undefined;
+  };
   return (
     <div className="flex h-full min-h-0 flex-col overflow-y-auto">
       <div className="mb-3 flex flex-wrap items-center gap-4 text-[11px] text-muted-foreground">
@@ -91,6 +107,25 @@ export default function EcosystemTab({ state }: { state: HistoryState }) {
         </span>
         <span>The data stack on {formatDate(date)}. dbt models execute in the warehouse.</span>
       </div>
+      {change && (
+        <p className="mb-3 text-xs text-muted-foreground">
+          <span className="font-semibold text-foreground">Since {previousRelease!.label}:</span>{" "}
+          {change.added.length === 0 && change.renamed.length === 0 && change.removed.length === 0 && "no change on the chart."}
+          {change.added.length > 0 && (
+            <>
+              new <span className="text-foreground">{change.added.map((s) => `${s.name} (${LAYER_LABELS[s.placement.layer].toLowerCase()})`).join(", ")}</span>
+              {change.renamed.length || change.removed.length ? "; " : "."}
+            </>
+          )}
+          {change.renamed.length > 0 && (
+            <>
+              renamed <span className="text-foreground">{change.renamed.map((r) => `${r.from} to ${r.now.name}`).join(", ")}</span>
+              {change.removed.length ? "; " : "."}
+            </>
+          )}
+          {change.removed.length > 0 && <>no longer shown {change.removed.map((s) => s.name).join(", ")} (editorial rotation, not retirement).</>}
+        </p>
+      )}
 
       <ol className="grid grid-cols-2 gap-2 sm:grid-cols-5" aria-label="Logical data flow">
         {FLOW_LAYERS.map((layer, i) => {
@@ -121,7 +156,7 @@ export default function EcosystemTab({ state }: { state: HistoryState }) {
               <span className="pt-1.5 font-medium">{LAYER_LABELS[layer]}</span>
               <div className="grid grid-cols-2 gap-1.5 md:grid-cols-3 xl:grid-cols-5">
                 {(snapshot.get(layer) ?? []).map((s) => (
-                  <Chip key={s.product.id} s={s} date={date} />
+                  <Chip key={s.product.id} s={s} date={date} tag={tagFor(s)} />
                 ))}
               </div>
             </div>

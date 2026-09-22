@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
 import EvidenceDrawer, { SourceList } from "@/components/EvidenceDrawer";
-import { productEvents, products } from "@/content/load";
-import { catalogueAt, eventLabel, intervalQualified, nameAt, ownerAt, type ProductState } from "@/content/derive";
+import { productEvents, products, releases } from "@/content/load";
+import { catalogueAt, diffCatalogue, eventLabel, intervalQualified, nameAt, ownerAt, resolveAnchor, type CatalogueChange, type ProductState } from "@/content/derive";
 import { formatDate } from "@/content/dates";
 import type { ProductEvent } from "@/content/schema";
 import type { HistoryState } from "./state";
@@ -80,7 +80,16 @@ function EventRow({ e, qualified }: { e: ProductEvent; qualified: boolean }) {
 }
 
 /** One compact row per product; everything else lives in its drawer. */
-function ProductRow({ s, date }: { s: ProductState; date: string }) {
+function ChangeBadge({ change }: { change?: CatalogueChange }) {
+  if (!change) return null;
+  return (
+    <Badge variant={change.kind === "new" ? "accent" : "warn"} className={change.kind === "new" ? "bg-highlight-wash" : "bg-gold-wash"} title={change.notes.join("; ")}>
+      {change.kind === "new" ? "new" : "changed"}
+    </Badge>
+  );
+}
+
+function ProductRow({ s, date, change }: { s: ProductState; date: string; change?: CatalogueChange }) {
   const parent = s.product.parent ? products.get(s.product.parent) : null;
   const ownerQualified = intervalQualified(s.ownerInterval, date);
   return (
@@ -95,6 +104,7 @@ function ProductRow({ s, date }: { s: ProductState; date: string }) {
               {s.product.roles.length > 0 && <span className="provenance block truncate">{s.product.roles.join(", ")}</span>}
             </span>
             <span className="flex shrink-0 flex-wrap justify-end gap-1">
+              <ChangeBadge change={change} />
               <StatePill s={s} />
               {s.pending && <Badge variant="warn">pending</Badge>}
               {s.certainty === "qualified" && <Badge variant="warn">qualified</Badge>}
@@ -104,6 +114,7 @@ function ProductRow({ s, date }: { s: ProductState; date: string }) {
       >
         <div className="flex flex-col gap-4 text-sm">
           <div className="flex flex-wrap gap-1">
+            {change && <Badge variant={change.kind === "new" ? "accent" : "warn"}>{change.kind === "new" ? "new since the previous chapter" : `since the previous chapter: ${change.notes.join("; ")}`}</Badge>}
             <StatePill s={s} />
             {s.pending && <Badge variant="warn">announced or agreed, not yet in the catalogue</Badge>}
             {s.certainty === "qualified" && <Badge variant="warn">date qualified</Badge>}
@@ -172,13 +183,13 @@ function ProductRow({ s, date }: { s: ProductState; date: string }) {
 }
 
 /** One product group column; wide groups split into two text columns so the panel still fits a screen. */
-function Group({ id, items, date, dashed, label, columns = 1 }: { id: string; items: ProductState[]; date: string; dashed?: boolean; label?: string; columns?: 1 | 2 | 3 }) {
+function Group({ id, items, date, dashed, label, columns = 1, changes }: { id: string; items: ProductState[]; date: string; dashed?: boolean; label?: string; columns?: 1 | 2 | 3; changes: Map<string, CatalogueChange> }) {
   return (
     <section className={cn("flex min-h-0 flex-col overflow-y-auto rounded-lg border border-border bg-card p-3.5", dashed && "border-dashed bg-transparent")}>
       <h3 className="mb-2.5 text-xs font-medium text-muted-foreground">{label ?? GROUPS.find((g) => g.id === id)?.label}</h3>
       <ul className={cn(columns === 2 && "columns-2 gap-x-5 [&>li]:break-inside-avoid", columns === 3 && "columns-3 gap-x-5 [&>li]:break-inside-avoid")}>
         {items.map((s) => (
-          <ProductRow key={s.product.id} s={s} date={date} />
+          <ProductRow key={s.product.id} s={s} date={date} change={changes.get(s.product.id)} />
         ))}
       </ul>
     </section>
@@ -192,6 +203,15 @@ function Group({ id, items, date, dashed, label, columns = 1 }: { id: string; it
 export default function CatalogueTab({ state }: { state: HistoryState }) {
   const date = state.anchor.date;
   const states = useMemo(() => catalogueAt(date, products, productEvents), [date]);
+  // What is new or changed since the previous chapter opened.
+  const previousRelease = state.index > 0 ? releases[state.index - 1] : null;
+  const changes = useMemo(() => {
+    if (!previousRelease) return new Map<string, CatalogueChange>();
+    const prev = catalogueAt(resolveAnchor(previousRelease).date, products, productEvents);
+    return diffCatalogue(prev, states);
+  }, [previousRelease, states]);
+  const newOnes = states.filter((s) => changes.get(s.product.id)?.kind === "new");
+  const changedOnes = states.filter((s) => changes.get(s.product.id)?.kind === "changed");
   // Name the company from its name history so it reads correctly before its first dated event.
   const companyProduct = products.get("dbt-labs");
   const companyName = companyProduct ? nameAt(companyProduct, date) : "dbt Labs";
@@ -217,15 +237,32 @@ export default function CatalogueTab({ state }: { state: HistoryState }) {
           {companyOwner && companyOwner !== "Independent company before the merger" ? ` · ${companyOwner}` : ""}
         </small>
       </div>
+      {previousRelease && (
+        <p className="mb-3 text-xs text-muted-foreground">
+          <span className="font-semibold text-foreground">Since {previousRelease.label}:</span>{" "}
+          {newOnes.length === 0 && changedOnes.length === 0 && "no change in the catalogue."}
+          {newOnes.length > 0 && (
+            <>
+              new <span className="text-foreground">{newOnes.map((s) => s.name).join(", ")}</span>
+              {changedOnes.length > 0 ? "; " : "."}
+            </>
+          )}
+          {changedOnes.length > 0 && (
+            <>
+              changed <span className="text-foreground">{changedOnes.map((s) => `${s.name} (${changes.get(s.product.id)!.notes.join(", ")})`).join(", ")}</span>.
+            </>
+          )}
+        </p>
+      )}
       <div className={cn("grid min-h-0 flex-1 gap-3 overflow-y-auto sm:grid-cols-2", platformColumns === 3 ? "xl:grid-cols-[1fr_3fr_1fr]" : platformColumns === 2 ? "xl:grid-cols-[1fr_2fr_1fr]" : "xl:grid-cols-3")}>
         <div className="flex min-h-0 flex-col gap-3">
-          {byId.engines.length > 0 && <Group id="engines" items={byId.engines} date={date} />}
-          {byId.companies.length > 0 && <Group id="companies" items={byId.companies} date={date} />}
+          {byId.engines.length > 0 && <Group id="engines" items={byId.engines} date={date} changes={changes} />}
+          {byId.companies.length > 0 && <Group id="companies" items={byId.companies} date={date} changes={changes} />}
         </div>
-        {byId.platform.length > 0 && <Group id="platform" items={byId.platform} date={date} columns={platformColumns} />}
+        {byId.platform.length > 0 && <Group id="platform" items={byId.platform} date={date} columns={platformColumns} changes={changes} />}
         <div className="flex min-h-0 flex-col gap-3">
-          {byId.products.length > 0 && <Group id="products" items={byId.products} date={date} />}
-          {pending.length > 0 && <Group id="pending" items={pending} date={date} dashed label="Announced or agreed, not yet in the catalogue" />}
+          {byId.products.length > 0 && <Group id="products" items={byId.products} date={date} changes={changes} />}
+          {pending.length > 0 && <Group id="pending" items={pending} date={date} dashed label="Announced or agreed, not yet in the catalogue" changes={changes} />}
         </div>
       </div>
       <p className="mt-3 border-l-[3px] border-accent pl-3 text-[11px] text-muted-foreground">
