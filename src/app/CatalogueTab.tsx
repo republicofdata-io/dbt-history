@@ -46,7 +46,8 @@ function StatePill({ s }: { s: ProductState }) {
   if (av) return <Badge variant={av.variant}>{av.label}</Badge>;
   if (m) return <Badge variant={m.variant}>{s.availabilityScope && (s.maturity === "beta" || s.maturity === "preview") ? `${s.availabilityScope} ${m.label}` : m.label}</Badge>;
   if (s.maturityLabel) return <Badge variant="warn">{s.maturityLabel.split(";")[0]}</Badge>;
-  return <Badge>maturity not established</Badge>;
+  // No dated maturity claim in the research: show nothing rather than a research note.
+  return null;
 }
 
 function EventRow({ e, qualified }: { e: ProductEvent; qualified: boolean }) {
@@ -262,7 +263,7 @@ export default function CatalogueTab({ state }: { state: HistoryState }) {
         </div>
       </div>
       <p className="mt-3 border-l-[3px] border-accent pl-3 text-[11px] text-muted-foreground">
-        Names, maturity and access as of the selected date; later launches and renames are not shown. "Not established" means the research did not settle it. Select a product for its dated events and sources.
+        Names, maturity and access as of the selected date; later launches and renames are not shown. Select a product for its dated events and sources.
       </p>
     </div>
   );
