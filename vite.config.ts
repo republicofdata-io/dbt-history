@@ -24,6 +24,9 @@ export const BASE_PATH = "/labs/dbt-history/";
 
 export default defineConfig(() => ({
   base: BASE_PATH,
+  // Emit the files under dist/labs/dbt-history/ so they sit at the same path they
+  // are served from; Netlify then serves them directly and the SPA fallback below works.
+  build: { outDir: `dist${BASE_PATH}`, emptyOutDir: true },
   server: { host: "::", port: 8081 },
   plugins: [react(), yamlPlugin()],
   resolve: {

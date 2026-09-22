@@ -74,21 +74,29 @@ The catalogue derivation (`src/content/derive.ts`) carries every qualification f
 
 ## Publishing
 
-The app is its own Netlify site, served under the main domain by a proxy rule in the website repo:
+The app is its own Netlify site, `republicofdata-dbt-history` (https://republicofdata-dbt-history.netlify.app), served under the main domain by one proxy rule in the website repo (`republicofdata.io-website/netlify.toml`):
 
-1. Netlify site for this repo: build `npm run build`, publish `dist` (see `netlify.toml`). Vite's `base` is `/labs/dbt-history/`.
-2. In the website repo (`republicofdata.io-website`), add to `netlify.toml` before the SPA fallback:
-   ```toml
-   [[redirects]]
-     from = "/labs/dbt-history/*"
-     to = "https://<this-site>.netlify.app/labs/dbt-history/:splat"
-     status = 200
-   ```
-3. Check deep links, asset paths and a narrow screen on the live URL.
+```toml
+[[redirects]]
+  from = "/labs/dbt-history/*"
+  to = "https://republicofdata-dbt-history.netlify.app/labs/dbt-history/:splat"
+  status = 200
+  force = true
+```
+
+Vite builds into `dist/labs/dbt-history/` (see `vite.config.ts`) so the files sit at the path they are served from; `netlify.toml` publishes `dist`, adds the SPA fallback for deep links and redirects the site root to the app.
+
+Deploy from this folder with the Netlify CLI (`npm install -g netlify-cli`, `netlify login` once):
+
+```sh
+netlify deploy --prod --build
+```
+
+Continuous deploys from GitHub can be enabled with `netlify init` (it needs a one-time GitHub authorization in the browser). After any deploy, check `https://republicofdata.io/labs/dbt-history/1.8/waffle?s=2` loads directly.
 
 ## Status
 
-22 September 2026: scaffold, content schema, app shell, walkthrough player, computed catalogue and ecosystem, and browser-checked navigation. The complete first content set is integrated: 36 chapters with 110 walkthrough steps, 43 catalogue identities, 105 events and 61 ecosystem placements, all rendered with their qualifications and covered by 64 tests. Not yet done: the Netlify site and the website proxy rule.
+22 September 2026: scaffold, content schema, app shell, walkthrough player, computed catalogue and ecosystem, and browser-checked navigation. The complete first content set is integrated: 36 chapters with 110 walkthrough steps, 43 catalogue identities, 105 events and 61 ecosystem placements, all rendered with their qualifications and covered by 64 tests. Published on 22 September 2026 to the `republicofdata-dbt-history` Netlify site and proxied from the website.
 
 ## Authored history content
 
