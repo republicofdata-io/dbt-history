@@ -74,7 +74,7 @@ walkthrough:
     - Save copies of that query wherever they are needed, in a scheduler, a notebook or a dashboard.
     - Nothing yet keeps those copies in step, runs them in the right order or checks the result.
     scenario: |
-      Someone asks how much each location earned. The analyst writes one SQL query, gets the right number, and passes the query around. A month later two copies exist and they disagree.
+      Someone asks how much each location earned. The analyst writes one SQL query, gets the right number, and passes the query around. A month later two copies exist and they disagree. Amounts throughout are in cents, the way payment systems store money, so every sum is a whole number: 12,500 cents is $125.
     outcome: |
       Follow the question from the raw tables to a correct answer, then watch a second copy of the same query quietly report the wrong number.
   dataset_variant: base
