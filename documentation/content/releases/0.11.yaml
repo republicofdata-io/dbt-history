@@ -1,255 +1,283 @@
 id: '0.11'
 label: v0.11
 title: Generated documentation
-lead: |
-  Generated documentation and lineage make the project easier to navigate. The refund definition can live beside the column it describes.
+lead: >
+  Generated documentation and lineage make the project easier to navigate. The refund definition can live
+  beside the column it describes.
 problem_then: |
   A correct table is hard to trust when its meaning and dependencies live only in someone’s memory.
 what_changed:
-- id: change-1
-  summary: Auto-generated project documentation and lineage.
-  introduced_in: 0.11.0
-  adapter_constraints: null
-  evidence:
-  - src-1
-  confidence: high
-- id: change-2
-  summary: Schema YAML version 2 adds model/column descriptions.
-  introduced_in: 0.11.0
-  adapter_constraints: null
-  evidence:
-  - src-1
-  confidence: high
+  - id: change-1
+    summary: Auto-generated project documentation and lineage.
+    introduced_in: 0.11.0
+    adapter_constraints: null
+    evidence:
+      - src-1
+    confidence: high
+  - id: change-2
+    summary: Schema YAML version 2 adds model/column descriptions.
+    introduced_in: 0.11.0
+    adapter_constraints: null
+    evidence:
+      - src-1
+    confidence: high
 in_practice: |
   Document model and column meaning, then browse the generated project graph.
-technical_detail: |
-  Schema YAML version 2 introduces this richer documentation structure. Generated docs describe the project; they are not the later hosted Explorer/Catalog product.
+technical_detail: >
+  Schema YAML version 2 introduces this richer documentation structure. Generated docs describe the project;
+  they are not the later hosted Explorer/Catalog product.
 milestones:
-- id: 0.11.0
-  kind: package
-  date: '2018-09-06'
-  precision: day
-  title: First published package
-  evidence:
-  - src-2
+  - id: 0.11.0
+    kind: package
+    date: '2018-09-06'
+    precision: day
+    title: First published package
+    evidence:
+      - src-2
 sources:
-- id: src-1
-  title: dbt 0.11 release evidence
-  url: https://github.com/dbt-labs/dbt/releases/tag/v0.11.0
-  retrieved: '2026-09-21'
-  supports: Tagged release changes; package upload and public announcement remain distinct.
-- id: src-2
-  title: dbt 0.11 package evidence
-  url: https://pypi.org/project/dbt/0.11.0/
-  retrieved: '2026-09-21'
-  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
-    from the package.
-  rechecked: '2026-09-22'
+  - id: src-1
+    title: dbt 0.11 release evidence
+    url: https://github.com/dbt-labs/dbt/releases/tag/v0.11.0
+    retrieved: '2026-09-21'
+    supports: Tagged release changes; package upload and public announcement remain distinct.
+  - id: src-2
+    title: dbt 0.11 package evidence
+    url: https://pypi.org/project/dbt/0.11.0/
+    retrieved: '2026-09-21'
+    supports: >-
+      Package existence and upload timestamp. Implementation claims refer to the original source archive
+      linked from the package.
+    rechecked: '2026-09-22'
 narrative_evidence:
-- src-1
-- src-2
+  - src-1
+  - src-2
 walkthrough:
   id: wt-0.11
-  learning_objective: |
-    Find the revenue definition and its upstream dependencies.
-  context: |
-    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
+  learning_objective: >
+    Read a model description written next to the code, then follow the lineage graph to see which tables feed
+    the revenue number.
+  context: >
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
+    Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
   dataset_variant: base
   steps:
-  - id: meaning
-    title: Write down the measure
-    explanation: |
-      The description makes the unit and refund treatment explicit.
-    state:
-      kind: table
-      title: 'Order 1042: partial refund'
-      columns:
-      - order_id
-      - location
-      - payment_cents
-      - refund_cents
-      - revenue_cents
-      rows:
-      - - 1042
-        - Old Port
-        - 1200
-        - 200
-        - 1000
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      Documentation turns an implicit assumption into a visible definition.
-    code:
-    - language: yaml
-      filename: models/schema.yml
-      content: |
-        version: 2
-        models:
-          - name: order_revenue
-            description: One row per order.
-            columns:
-              - name: revenue_cents
-                description: Successful payments minus refunds, in cents.
-      highlight_lines:
-      - 1
-      - 2
-      - 3
-      - 4
-    evidence:
-    - src-1
-    - src-2
-  - id: lineage
-    title: Trace the inputs
-    explanation: |
-      Payments and refunds are aggregated before joining orders.
-    state:
-      kind: diagram
-      title: Revenue lineage
-      columns: []
-      rows: []
-      result_status: null
-      diagram:
-        nodes:
-        - id: orders
-          label: orders
-        - id: payments
-          label: payments_by_order
-        - id: refunds
-          label: refunds_by_order
-        - id: revenue
-          label: order_revenue
-        edges:
-        - from: orders
-          to: revenue
-        - from: payments
-          to: revenue
-        - from: refunds
-          to: revenue
-        highlight: []
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      A reader can follow where the number came from.
-    evidence:
-    - src-1
-    - src-2
-    code:
-    - language: sql
-      filename: models/payments_by_order.sql
-      content: |
-        select order_id, sum(amount_cents) as payment_cents
-        from {{ ref("payments") }}
-        group by order_id
-      highlight_lines:
-      - 1
-      - 2
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/refunds_by_order.sql
-      content: |
-        select order_id, sum(amount_cents) as refund_cents
-        from {{ ref("refunds") }}
-        group by order_id
-      highlight_lines:
-      - 1
-      - 2
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/order_revenue.sql
-      content: |
-        select o.order_id, o.location_id,
-            coalesce(p.payment_cents, 0) - coalesce(r.refund_cents, 0) as revenue_cents
-        from {{ ref("orders") }} as o
-        left join {{ ref("payments_by_order") }} as p on o.order_id = p.order_id
-        left join {{ ref("refunds_by_order") }} as r on o.order_id = r.order_id
-      highlight_lines:
-      - 3
-      - 4
-      - 5
-      purpose: authored executable syntax; illustration only
-  - id: publish
-    title: Generate project documentation
-    explanation: |
-      Commands are presented as historical examples; the app does not execute them.
-    state:
-      kind: comparison
-      title: Generate project documentation
-      columns:
-      - artifact view
-      - reader learns
-      rows:
-      - - model page
-        - definition and columns
-      - - lineage graph
-        - upstream and downstream relationships
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      Documentation becomes a project output.
-    code:
-    - language: yaml
-      filename: models/schema.yml
-      content: |
-        version: 2
-        models:
-          - name: revenue_by_location
-            description: Payments minus refunds, in cents.
-            columns:
-              - name: revenue_cents
-                description: Net successful payments after refunds.
-      highlight_lines:
-      - 4
-      - 6
-      - 7
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/revenue_by_location.sql
-      content: |
-        select
-            r.location_id, l.name as location,
-            sum(r.payment_cents) as payment_cents,
-            sum(r.refund_cents) as refund_cents,
-            sum(r.revenue_cents) as revenue_cents
-        from {{ ref("order_revenue") }} as r
-        join raw.locations as l on r.location_id = l.location_id
-        group by r.location_id, l.name
-        order by r.location_id
-      highlight_lines:
-      - 3
-      - 4
-      - 5
-      purpose: authored executable syntax; illustration only
-    - language: shell
-      filename: commands.sh
-      content: |
-        dbt docs generate
-        dbt docs serve
-      highlight_lines:
-      - 1
-      - 2
-    evidence:
-    - src-1
-    - src-2
+    - id: meaning
+      title: Write down what the revenue column means
+      explanation: >
+        You are looking at a YAML file that describes a model. The highlighted lines 1 to 4 start a version 2
+        schema file and name the order_revenue model with a one-line description. Below, lines 6 and 7
+        describe the revenue_cents column: successful payments minus refunds, in cents. The result panel shows
+        one order that makes the rule concrete. Order 1042 paid 1,200 cents, refunded 200, so revenue is
+        1,000.
+      state:
+        kind: table
+        title: One order that shows the refund rule
+        columns:
+          - order_id
+          - location
+          - payment_cents
+          - refund_cents
+          - revenue_cents
+        rows:
+          - - 1042
+            - Old Port
+            - 1200
+            - 200
+            - 1000
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: >
+        The refund rule is now written next to the column it describes, so a reader does not have to guess it
+        from the SQL.
+      code:
+        - language: yaml
+          filename: models/schema.yml
+          content: |
+            version: 2
+            models:
+              - name: order_revenue
+                description: One row per order.
+                columns:
+                  - name: revenue_cents
+                    description: Successful payments minus refunds, in cents.
+          highlight_lines:
+            - 1
+            - 2
+            - 3
+            - 4
+      evidence:
+        - src-1
+        - src-2
+    - id: lineage
+      title: Follow the inputs behind the number
+      explanation: >
+        Three model files are shown. The first two, highlighted on lines 1 and 2, add up payments and refunds
+        per order. The third, highlighted on lines 3 to 5, joins orders to those two totals. Each ref call is
+        a link from one model to the model it reads from. dbt collects those links into the lineage graph in
+        the result panel: orders, payments and refunds all flow into order_revenue.
+      state:
+        kind: diagram
+        title: 'Lineage graph: what feeds order_revenue'
+        columns: []
+        rows: []
+        result_status: null
+        diagram:
+          nodes:
+            - id: orders
+              label: orders
+            - id: payments
+              label: payments_by_order
+            - id: refunds
+              label: refunds_by_order
+            - id: revenue
+              label: order_revenue
+          edges:
+            - from: orders
+              to: revenue
+            - from: payments
+              to: revenue
+            - from: refunds
+              to: revenue
+          highlight: []
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: >
+        The lineage graph is built from the ref calls in the SQL, so it shows exactly which tables feed the
+        revenue number.
+      evidence:
+        - src-1
+        - src-2
+      code:
+        - language: sql
+          filename: models/payments_by_order.sql
+          content: |
+            select order_id, sum(amount_cents) as payment_cents
+            from {{ ref("payments") }}
+            group by order_id
+          highlight_lines:
+            - 1
+            - 2
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/refunds_by_order.sql
+          content: |
+            select order_id, sum(amount_cents) as refund_cents
+            from {{ ref("refunds") }}
+            group by order_id
+          highlight_lines:
+            - 1
+            - 2
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/order_revenue.sql
+          content: |
+            select o.order_id, o.location_id,
+                coalesce(p.payment_cents, 0) - coalesce(r.refund_cents, 0) as revenue_cents
+            from {{ ref("orders") }} as o
+            left join {{ ref("payments_by_order") }} as p on o.order_id = p.order_id
+            left join {{ ref("refunds_by_order") }} as r on o.order_id = r.order_id
+          highlight_lines:
+            - 3
+            - 4
+            - 5
+          purpose: authored executable syntax; illustration only
+    - id: publish
+      title: Generate the documentation website
+      explanation: >
+        Three files are shown. The YAML file, highlighted on lines 4, 6 and 7, describes the
+        revenue-by-location model and its revenue column. The SQL file, highlighted on lines 3 to 5, sums
+        payments, refunds and revenue per location. The command file runs dbt docs generate, which builds the
+        documentation site, and dbt docs serve, which opens it in a browser. The result panel lists what a
+        reader finds there: a page per model with its description and columns, and a lineage graph. The
+        commands are shown as historical examples. The app does not run them.
+      state:
+        kind: comparison
+        title: What the generated documentation shows
+        columns:
+          - artifact view
+          - reader learns
+        rows:
+          - - model page
+            - definition and columns
+          - - lineage graph
+            - upstream and downstream relationships
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: >
+        One command turns the descriptions and ref links into a browsable website with a page per model and a
+        lineage graph.
+      code:
+        - language: yaml
+          filename: models/schema.yml
+          content: |
+            version: 2
+            models:
+              - name: revenue_by_location
+                description: Payments minus refunds, in cents.
+                columns:
+                  - name: revenue_cents
+                    description: Net successful payments after refunds.
+          highlight_lines:
+            - 4
+            - 6
+            - 7
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/revenue_by_location.sql
+          content: |
+            select
+                r.location_id, l.name as location,
+                sum(r.payment_cents) as payment_cents,
+                sum(r.refund_cents) as refund_cents,
+                sum(r.revenue_cents) as revenue_cents
+            from {{ ref("order_revenue") }} as r
+            join raw.locations as l on r.location_id = l.location_id
+            group by r.location_id, l.name
+            order by r.location_id
+          highlight_lines:
+            - 3
+            - 4
+            - 5
+          purpose: authored executable syntax; illustration only
+        - language: shell
+          filename: commands.sh
+          content: |
+            dbt docs generate
+            dbt docs serve
+          highlight_lines:
+            - 1
+            - 2
+      evidence:
+        - src-1
+        - src-2
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
-    - src-1
-    - src-2
-    limitations: |
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+      - src-1
+      - src-2
+    limitations: >
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
+      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
+      performance claims.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
       method: Original source/archive and release documentation inspection; no historical dbt execution.
   intro:
     can_now:
-    - Write model and column descriptions in version 2 schema YAML.
-    - Generate browsable project documentation with lineage.
-    scenario: |
-      The revenue calculation is correct, but another analyst needs to understand what the number means and where it came from. The shop documents the refund rule next to its column.
-    outcome: |
-      Read the definition and the SQL references behind the lineage graph.
+      - Write a plain-English description of each model and each column in a YAML file next to the code.
+      - Generate a website for the project that shows those descriptions.
+      - 'See a lineage graph in that website: a picture of which models feed which.'
+    scenario: >
+      The revenue number is right, but a second analyst asks two questions: what exactly does revenue_cents
+      mean, and which tables does it come from? Waffle Shop writes the refund rule as a description next to
+      the column and generates documentation that shows the answer and the lineage.
+    outcome: >
+      Read the description, follow the SQL references that make up the lineage, and see what the generated
+      documentation shows.
+  title: |
+    Demo: a written description and a lineage graph explain where the revenue number comes from
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

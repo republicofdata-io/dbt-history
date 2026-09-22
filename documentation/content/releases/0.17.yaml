@@ -1,283 +1,309 @@
 id: '0.17'
 label: v0.17
 title: Safer execution and configurable sources
-lead: |
-  Fail-fast gives teams a way to stop sooner when a run fails. Path selection and richer project configuration help manage larger projects.
-problem_then: |
-  After a serious failure, continuing to schedule work may spend resources without helping the immediate investigation.
+lead: >
+  Fail-fast gives teams a way to stop sooner when a run fails. Path selection and richer project configuration
+  help manage larger projects.
+problem_then: >
+  After a serious failure, continuing to schedule work may spend resources without helping the immediate
+  investigation.
 what_changed:
-- id: change-1
-  summary: fail-fast and path-based selection.
-  introduced_in: 0.17.0
-  adapter_constraints: null
-  evidence:
-  - src-1
-  confidence: high
-- id: change-2
-  summary: Source overrides/enablement; persist_docs support expands across warehouses.
-  introduced_in: 0.17.0
-  adapter_constraints: null
-  evidence:
-  - src-1
-  confidence: high
+  - id: change-1
+    summary: fail-fast and path-based selection.
+    introduced_in: 0.17.0
+    adapter_constraints: null
+    evidence:
+      - src-1
+    confidence: high
+  - id: change-2
+    summary: Source overrides/enablement; persist_docs support expands across warehouses.
+    introduced_in: 0.17.0
+    adapter_constraints: null
+    evidence:
+      - src-1
+    confidence: high
 in_practice: |
   Choose fail-fast deliberately for runs where early termination is useful.
-technical_detail: |
-  Fail-fast is not a transaction spanning the entire project and does not erase completed work. Work already running may have progressed. Persisted documentation remains adapter-dependent.
+technical_detail: >
+  Fail-fast is not a transaction spanning the entire project and does not erase completed work. Work already
+  running may have progressed. Persisted documentation remains adapter-dependent.
 milestones:
-- id: 0.17.0
-  kind: package
-  date: '2020-06-08'
-  precision: day
-  title: First published package
-  evidence:
-  - src-2
+  - id: 0.17.0
+    kind: package
+    date: '2020-06-08'
+    precision: day
+    title: First published package
+    evidence:
+      - src-2
 sources:
-- id: src-1
-  title: dbt 0.17 release evidence
-  url: https://github.com/dbt-labs/dbt/releases/tag/v0.17.0
-  retrieved: '2026-09-21'
-  supports: Tagged release changes; package upload and public announcement remain distinct.
-- id: src-2
-  title: dbt 0.17 package evidence
-  url: https://pypi.org/project/dbt/0.17.0/
-  retrieved: '2026-09-21'
-  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
-    from the package.
-- id: src-3
-  title: Historical source archive reviewed for example syntax
-  url: https://pypi.org/project/dbt-core/0.17.0/
-  retrieved: '2026-09-21'
-  supports: Original source package and tagged release evidence for the example’s syntax; review is not runtime
-    execution.
-  rechecked: '2026-09-22'
+  - id: src-1
+    title: dbt 0.17 release evidence
+    url: https://github.com/dbt-labs/dbt/releases/tag/v0.17.0
+    retrieved: '2026-09-21'
+    supports: Tagged release changes; package upload and public announcement remain distinct.
+  - id: src-2
+    title: dbt 0.17 package evidence
+    url: https://pypi.org/project/dbt/0.17.0/
+    retrieved: '2026-09-21'
+    supports: >-
+      Package existence and upload timestamp. Implementation claims refer to the original source archive
+      linked from the package.
+  - id: src-3
+    title: Historical source archive reviewed for example syntax
+    url: https://pypi.org/project/dbt-core/0.17.0/
+    retrieved: '2026-09-21'
+    supports: >-
+      Original source package and tagged release evidence for the example’s syntax; review is not runtime
+      execution.
+    rechecked: '2026-09-22'
 narrative_evidence:
-- src-1
-- src-2
-- src-3
+  - src-1
+  - src-2
+  - src-3
 walkthrough:
   id: wt-0.17
-  learning_objective: |
-    Compare ordinary failure handling with fail-fast.
-  context: |
-    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
+  learning_objective: >
+    Compare a normal run, where other models keep going after a failure, with a fail-fast run that stops right
+    away.
+  context: >
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
+    Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
   dataset_variant: base
   steps:
-  - id: failure
-    title: Introduce a hypothetical broken refund model
-    explanation: |
-      The fixture is unchanged; only the SQL is assumed invalid.
-    state:
-      kind: comparison
-      title: Introduce a hypothetical broken refund model
-      columns:
-      - model
-      - prepared outcome
-      rows:
-      - - refunds_by_order
-        - error
-      - - order_revenue
-        - cannot safely build
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      A broken dependency blocks its descendants.
-    evidence:
-    - src-1
-    - src-2
-    - src-3
-    code:
-    - language: sql
-      filename: models/refunds_by_order.sql (deliberately invalid)
-      content: |
-        select order_id, sum(refund_amount_cents) as refund_cents
-        from raw.refunds
-        group by order_id
-      highlight_lines:
-      - 1
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/order_revenue.sql
-      content: |
-        select *, payment_cents - refund_cents as revenue_cents
-        from {{ ref("order_amounts") }}
-      highlight_lines:
-      - 1
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/order_amounts.sql
-      content: |
-        select o.*, coalesce(p.payment_cents, 0) as payment_cents,
-            coalesce(r.refund_cents, 0) as refund_cents
-        from {{ ref("orders") }} as o
-        left join {{ ref("payments_by_order") }} as p
-          on o.order_id = p.order_id
-        left join {{ ref("refunds_by_order") }} as r
-          on o.order_id = r.order_id
-      highlight_lines:
-      - 3
-      - 4
-      - 6
-  - id: policy
-    title: Choose an early-stop policy
-    explanation: |
-      The comparison describes scheduling intent, not exact parallel timing.
-    state:
-      kind: comparison
-      title: Choose an early-stop policy
-      columns:
-      - policy
-      - intent
-      rows:
-      - - normal run
-        - independent branches may continue
-      - - fail-fast
-        - stop the invocation promptly after failure
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      Fail-fast is useful when further work should wait.
-    code:
-    - language: sql
-      filename: models/refunds_by_order.sql (deliberately invalid)
-      content: |
-        select order_id, sum(refund_amount_cents) as refund_cents
-        from raw.refunds
-        group by order_id
-      highlight_lines:
-      - 1
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/order_revenue.sql
-      content: |
-        select *, payment_cents - refund_cents as revenue_cents
-        from {{ ref("order_amounts") }}
-      highlight_lines:
-      - 1
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/order_amounts.sql
-      content: |
-        select o.*, coalesce(p.payment_cents, 0) as payment_cents,
-            coalesce(r.refund_cents, 0) as refund_cents
-        from {{ ref("orders") }} as o
-        left join {{ ref("payments_by_order") }} as p
-          on o.order_id = p.order_id
-        left join {{ ref("refunds_by_order") }} as r
-          on o.order_id = r.order_id
-      highlight_lines:
-      - 3
-      - 4
-      - 6
-    - language: shell
-      filename: commands.sh
-      content: |
-        dbt run --fail-fast
-      highlight_lines:
-      - 1
-    evidence:
-    - src-1
-    - src-2
-    - src-3
-  - id: repair
-    title: Repair before trying again
-    explanation: |
-      Completed database work is not automatically rolled back as one project transaction.
-    state:
-      kind: comparison
-      title: Repair before trying again
-      columns:
-      - next action
-      - reason
-      rows:
-      - - repair refund SQL
-        - remove the failure
-      - - rerun required models
-        - restore consistent outputs
-      - - 'check base total: 12500'
-        - verify the business expectation
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      Stopping early and rolling back everything are different operations.
-    evidence:
-    - src-1
-    - src-2
-    - src-3
-    code:
-    - language: sql
-      filename: models/refunds_by_order.sql
-      content: |
-        select order_id, sum(amount_cents) as refund_cents
-        from {{ ref("refunds") }}
-        group by order_id
-      highlight_lines:
-      - 1
-      - 2
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/order_amounts.sql
-      content: |
-        select o.*, coalesce(p.payment_cents, 0) as payment_cents,
-            coalesce(r.refund_cents, 0) as refund_cents
-        from {{ ref("orders") }} as o
-        left join {{ ref("payments_by_order") }} as p
-          on o.order_id = p.order_id
-        left join {{ ref("refunds_by_order") }} as r
-          on o.order_id = r.order_id
-      highlight_lines:
-      - 3
-      - 4
-      - 6
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/order_revenue.sql
-      content: |
-        select *, payment_cents - refund_cents as revenue_cents
-        from {{ ref("order_amounts") }}
-      highlight_lines:
-      - 1
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/revenue_by_location.sql
-      content: |
-        select
-            r.location_id, l.name as location,
-            sum(r.payment_cents) as payment_cents,
-            sum(r.refund_cents) as refund_cents,
-            sum(r.revenue_cents) as revenue_cents
-        from {{ ref("order_revenue") }} as r
-        join raw.locations as l on r.location_id = l.location_id
-        group by r.location_id, l.name
-        order by r.location_id
-      highlight_lines:
-      - 3
-      - 4
-      - 5
-      purpose: authored executable syntax; illustration only
+    - id: failure
+      title: A refund model with a typo
+      explanation: >
+        Three model files are shown. The first is the refund model, highlighted on line 1. It sums a column
+        called refund_amount_cents, which does not exist in the refunds table. The real column is
+        amount_cents. That model will fail. The order_amounts model, highlighted on lines 3, 4 and 6, joins
+        orders to payments and to this broken refund model. The order_revenue model then subtracts refunds
+        from payments. The result panel shows the outcome: the refund model errors, and revenue cannot be
+        built. The data itself is unchanged. Only the SQL is wrong.
+      state:
+        kind: comparison
+        title: The broken model and what it blocks
+        columns:
+          - model
+          - prepared outcome
+        rows:
+          - - refunds_by_order
+            - error
+          - - order_revenue
+            - cannot safely build
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        When one model fails, every model that reads from it cannot be built either.
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+      code:
+        - language: sql
+          filename: models/refunds_by_order.sql (deliberately invalid)
+          content: |
+            select order_id, sum(refund_amount_cents) as refund_cents
+            from raw.refunds
+            group by order_id
+          highlight_lines:
+            - 1
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/order_revenue.sql
+          content: |
+            select *, payment_cents - refund_cents as revenue_cents
+            from {{ ref("order_amounts") }}
+          highlight_lines:
+            - 1
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/order_amounts.sql
+          content: |
+            select o.*, coalesce(p.payment_cents, 0) as payment_cents,
+                coalesce(r.refund_cents, 0) as refund_cents
+            from {{ ref("orders") }} as o
+            left join {{ ref("payments_by_order") }} as p
+              on o.order_id = p.order_id
+            left join {{ ref("refunds_by_order") }} as r
+              on o.order_id = r.order_id
+          highlight_lines:
+            - 3
+            - 4
+            - 6
+    - id: policy
+      title: Choose to stop the run early
+      explanation: >
+        The same three model files are shown. The command file runs dbt with the fail-fast flag. In a normal
+        run, models that do not depend on the broken one keep building while the failure is reported. With
+        fail-fast, dbt stops the whole run as soon as the first failure happens. The result panel compares the
+        two. It describes the intent, not the exact timing of models running in parallel.
+      state:
+        kind: comparison
+        title: Normal run compared with fail-fast
+        columns:
+          - policy
+          - intent
+        rows:
+          - - normal run
+            - independent branches may continue
+          - - fail-fast
+            - stop the invocation promptly after failure
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        Fail-fast stops the run at the first failure, so nothing else builds until the problem is looked at.
+      code:
+        - language: sql
+          filename: models/refunds_by_order.sql (deliberately invalid)
+          content: |
+            select order_id, sum(refund_amount_cents) as refund_cents
+            from raw.refunds
+            group by order_id
+          highlight_lines:
+            - 1
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/order_revenue.sql
+          content: |
+            select *, payment_cents - refund_cents as revenue_cents
+            from {{ ref("order_amounts") }}
+          highlight_lines:
+            - 1
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/order_amounts.sql
+          content: |
+            select o.*, coalesce(p.payment_cents, 0) as payment_cents,
+                coalesce(r.refund_cents, 0) as refund_cents
+            from {{ ref("orders") }} as o
+            left join {{ ref("payments_by_order") }} as p
+              on o.order_id = p.order_id
+            left join {{ ref("refunds_by_order") }} as r
+              on o.order_id = r.order_id
+          highlight_lines:
+            - 3
+            - 4
+            - 6
+        - language: shell
+          filename: commands.sh
+          content: |
+            dbt run --fail-fast
+          highlight_lines:
+            - 1
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+    - id: repair
+      title: Fix the model, then run again
+      explanation: >
+        Four files are shown. The refund model, highlighted on lines 1 and 2, now sums amount_cents and reads
+        the refunds table through ref. The other three models are unchanged and are shown with their join and
+        sum lines highlighted. Stopping early does not undo the models that already finished. They stay in the
+        warehouse as they were. The result panel lists the next steps: fix the SQL, rerun the models that need
+        it, and check that the total is 12,500 cents again.
+      state:
+        kind: comparison
+        title: 'After the fix: what to run and why'
+        columns:
+          - next action
+          - reason
+        rows:
+          - - repair refund SQL
+            - remove the failure
+          - - rerun required models
+            - restore consistent outputs
+          - - 'check base total: 12500'
+            - verify the business expectation
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: >
+        Stopping early is not the same as undoing the run. After the fix, the affected models have to be
+        rebuilt.
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+      code:
+        - language: sql
+          filename: models/refunds_by_order.sql
+          content: |
+            select order_id, sum(amount_cents) as refund_cents
+            from {{ ref("refunds") }}
+            group by order_id
+          highlight_lines:
+            - 1
+            - 2
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/order_amounts.sql
+          content: |
+            select o.*, coalesce(p.payment_cents, 0) as payment_cents,
+                coalesce(r.refund_cents, 0) as refund_cents
+            from {{ ref("orders") }} as o
+            left join {{ ref("payments_by_order") }} as p
+              on o.order_id = p.order_id
+            left join {{ ref("refunds_by_order") }} as r
+              on o.order_id = r.order_id
+          highlight_lines:
+            - 3
+            - 4
+            - 6
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/order_revenue.sql
+          content: |
+            select *, payment_cents - refund_cents as revenue_cents
+            from {{ ref("order_amounts") }}
+          highlight_lines:
+            - 1
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/revenue_by_location.sql
+          content: |
+            select
+                r.location_id, l.name as location,
+                sum(r.payment_cents) as payment_cents,
+                sum(r.refund_cents) as refund_cents,
+                sum(r.revenue_cents) as revenue_cents
+            from {{ ref("order_revenue") }} as r
+            join raw.locations as l on r.location_id = l.location_id
+            group by r.location_id, l.name
+            order by r.location_id
+          highlight_lines:
+            - 3
+            - 4
+            - 5
+          purpose: authored executable syntax; illustration only
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
-    - src-1
-    - src-2
-    - src-3
-    limitations: |
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+      - src-1
+      - src-2
+      - src-3
+    limitations: >
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
+      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
+      performance claims.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
       method: Original source/archive and release documentation inspection; no historical dbt execution.
   intro:
     can_now:
-    - Stop a run promptly after a failure with fail-fast.
-    - Select models by their project path.
-    scenario: |
-      A broken refund model blocks a trustworthy revenue build. Waffle Shop chooses whether unrelated work should continue while the failure is investigated.
+      - Tell dbt to stop the whole run as soon as one model fails, with the fail-fast flag.
+      - Select models by the folder they live in.
+    scenario: >
+      The refund model has a typo and fails. Every model that depends on it, including revenue, cannot be
+      trusted until it is fixed. Waffle Shop decides whether the rest of the run should keep going or stop
+      right away.
     outcome: |
-      Read the faulty SQL, the early-stop command and the repaired model.
+      Read the faulty SQL, the command that stops early, and the repaired model.
+  title: |
+    Demo: a broken refund model, and a flag that stops the run as soon as it fails
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

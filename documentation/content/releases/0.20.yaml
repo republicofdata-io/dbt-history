@@ -1,232 +1,261 @@
 id: '0.20'
 label: v0.20
 title: Actionable data-test failures
-lead: |
-  Failed test rows can be stored for inspection. The shop can investigate the actual orphan payment instead of stopping at a failure count.
+lead: >
+  Failed test rows can be stored for inspection. The shop can investigate the actual orphan payment instead of
+  stopping at a failure count.
 problem_then: |
   A red test tells a team something is wrong, but finding the offending records can require another query.
 what_changed:
-- id: change-1
-  summary: Store test failures in the database.
-  introduced_in: 0.20.0
-  adapter_constraints: null
-  evidence:
-  - src-1
-  confidence: high
-- id: change-2
-  summary: Test where/limit/warn_if/error_if/fail_calc configuration; experimental parser.
-  introduced_in: 0.20.0
-  adapter_constraints: null
-  evidence:
-  - src-1
-  confidence: high
+  - id: change-1
+    summary: Store test failures in the database.
+    introduced_in: 0.20.0
+    adapter_constraints: null
+    evidence:
+      - src-1
+    confidence: high
+  - id: change-2
+    summary: Test where/limit/warn_if/error_if/fail_calc configuration; experimental parser.
+    introduced_in: 0.20.0
+    adapter_constraints: null
+    evidence:
+      - src-1
+    confidence: high
 in_practice: |
   Keep the failures as an inspectable relation where the adapter and permissions allow it.
-technical_detail: |
-  The singular test below returns violating rows. store_failures persists those rows; the displayed relation name is illustrative, not a promise about a target schema. Test thresholds and row filters are additional release features.
+technical_detail: >
+  The singular test below returns violating rows. store_failures persists those rows; the displayed relation
+  name is illustrative, not a promise about a target schema. Test thresholds and row filters are additional
+  release features.
 milestones:
-- id: 0.20.0
-  kind: package
-  date: '2021-07-12'
-  precision: day
-  title: First published package
-  evidence:
-  - src-2
+  - id: 0.20.0
+    kind: package
+    date: '2021-07-12'
+    precision: day
+    title: First published package
+    evidence:
+      - src-2
 sources:
-- id: src-1
-  title: dbt 0.20 release evidence
-  url: https://github.com/dbt-labs/dbt/releases/tag/v0.20.0
-  retrieved: '2026-09-21'
-  supports: Tagged release changes; package upload and public announcement remain distinct.
-- id: src-2
-  title: dbt 0.20 package evidence
-  url: https://pypi.org/project/dbt/0.20.0/
-  retrieved: '2026-09-21'
-  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
-    from the package.
-- id: src-3
-  title: Historical source archive reviewed for example syntax
-  url: https://pypi.org/project/dbt-core/0.20.0/
-  retrieved: '2026-09-21'
-  supports: Original source package and tagged release evidence for the example’s syntax; review is not runtime
-    execution.
-  rechecked: '2026-09-22'
+  - id: src-1
+    title: dbt 0.20 release evidence
+    url: https://github.com/dbt-labs/dbt/releases/tag/v0.20.0
+    retrieved: '2026-09-21'
+    supports: Tagged release changes; package upload and public announcement remain distinct.
+  - id: src-2
+    title: dbt 0.20 package evidence
+    url: https://pypi.org/project/dbt/0.20.0/
+    retrieved: '2026-09-21'
+    supports: >-
+      Package existence and upload timestamp. Implementation claims refer to the original source archive
+      linked from the package.
+  - id: src-3
+    title: Historical source archive reviewed for example syntax
+    url: https://pypi.org/project/dbt-core/0.20.0/
+    retrieved: '2026-09-21'
+    supports: >-
+      Original source package and tagged release evidence for the example’s syntax; review is not runtime
+      execution.
+    rechecked: '2026-09-22'
 narrative_evidence:
-- src-1
-- src-2
-- src-3
+  - src-1
+  - src-2
+  - src-3
 walkthrough:
   id: wt-0.20
   learning_objective: |
-    Move from a failure count to the offending record.
-  context: |
-    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is orphan-payment. Each state below is an authored illustration.
+    Go from a test that says one row failed to the actual row, kept in a table you can query.
+  context: >
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
+    Riverside 4,800. The selected fixture is orphan-payment. Each state below is an authored illustration.
      In this snippet, ref("payments") and ref("orders") mean pass-through staging models with exactly the corresponding raw fixture rows.
   dataset_variant: orphan-payment
   steps:
-  - id: count
-    title: See the failed relationship
-    explanation: |
-      The orphan-payment variant contains one missing order reference.
-    state:
-      kind: result
-      title: See the failed relationship
-      columns:
-      - assertion
-      - expected failures
-      - actual failures
-      rows:
-      - - payments have orders
-        - 0
-        - 1
-      result_status: fail
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      One failed row needs investigation.
-    evidence:
-    - src-1
-    - src-2
-    - src-3
-    code:
-    - language: sql
-      filename: tests/payments_have_orders.sql
-      content: |
-        select p.payment_id, p.order_id, p.amount_cents
-        from {{ ref("payments") }} as p
-        left join {{ ref("orders") }} as o on p.order_id = o.order_id
-        where o.order_id is null
-      highlight_lines:
-      - 3
-      - 4
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: analyses/count_orphans.sql
-      content: |
-        select count(*) as actual_violations
-        from {{ ref("payments") }} as p
-        left join {{ ref("orders") }} as o on p.order_id = o.order_id
-        where o.order_id is null
-      highlight_lines:
-      - 1
-      - 4
-      purpose: authored executable syntax; illustration only
-  - id: test
-    title: Store the failing rows
-    explanation: |
-      The test returns only payments without matching orders.
-    state:
-      kind: comparison
-      title: Store the failing rows
-      columns:
-      - test configuration
-      - value
-      rows:
-      - - store_failures
-        - true
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      The test query defines the records worth keeping.
-    code:
-    - language: sql
-      filename: tests/payments_have_orders.sql
-      content: |
-        {{ config(store_failures=true) }}
-        select p.payment_id, p.order_id, p.amount_cents
-        from {{ ref("payments") }} p
-        left join {{ ref("orders") }} o on p.order_id = o.order_id
-        where o.order_id is null
-      highlight_lines:
-      - 1
-      - 2
-      - 3
-      - 4
-    evidence:
-    - src-1
-    - src-2
-    - src-3
-  - id: inspect
-    title: Inspect the prepared failure relation
-    explanation: |
-      This is the one violation calculated from the fixture.
-       Expected violations: 0; actual violations: 1.
-    state:
-      kind: result
-      title: Inspect the prepared failure relation
-      columns:
-      - payment_id
-      - order_id
-      - amount_cents
-      rows:
-      - - 2099
-        - 9999
-        - 400
-      result_status: fail
-      diagram: null
-      expected_actual:
-        expected_violations: 0
-        actual_violations: 1
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      The 400 cents stay unattributed until the missing relationship is resolved.
-    evidence:
-    - src-1
-    - src-2
-    - src-3
-    code:
-    - language: sql
-      filename: tests/payments_have_orders.sql
-      content: |
-        {{ config(store_failures=true) }}
-        select p.payment_id, p.order_id, p.amount_cents
-        from {{ ref("payments") }} p
-        left join {{ ref("orders") }} o on p.order_id = o.order_id
-        where o.order_id is null
-      highlight_lines:
-      - 1
-      - 2
-      - 3
-      - 4
-    - language: sql
-      filename: inspection/stored_failures.sql
-      content: |
-        -- Default audit schema with target.schema = waffle.
-        select payment_id, order_id, amount_cents
-        from waffle_dbt_test__audit.payments_have_orders;
-      highlight_lines:
-      - 2
-      - 3
-      purpose: authored executable syntax; illustration only
-    - language: shell
-      filename: commands.sh
-      content: |
-        dbt test --select payments_have_orders
-      highlight_lines:
-      - 1
-      purpose: authored executable syntax; illustration only
+    - id: count
+      title: 'A test fails: one payment has no matching order'
+      explanation: >
+        A test in dbt is a query that returns the rows that break a rule. Zero rows means pass. The first file
+        is that test. The highlighted lines 3 and 4 do the work: line 3 tries to match each payment to its
+        order, and line 4 keeps only payments where no order was found. The second file is the same logic
+        wrapped in a count. The highlighted lines 1 and 4 show it counts those unmatched rows. The result
+        panel shows the outcome: 0 failures expected, 1 found. The test fails, but the panel does not tell you
+        which payment.
+      state:
+        kind: result
+        title: One payment has no matching order
+        columns:
+          - assertion
+          - expected failures
+          - actual failures
+        rows:
+          - - payments have orders
+            - 0
+            - 1
+        result_status: fail
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        The test found one broken payment, but a count alone does not say which one.
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+      code:
+        - language: sql
+          filename: tests/payments_have_orders.sql
+          content: |
+            select p.payment_id, p.order_id, p.amount_cents
+            from {{ ref("payments") }} as p
+            left join {{ ref("orders") }} as o on p.order_id = o.order_id
+            where o.order_id is null
+          highlight_lines:
+            - 3
+            - 4
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: analyses/count_orphans.sql
+          content: |
+            select count(*) as actual_violations
+            from {{ ref("payments") }} as p
+            left join {{ ref("orders") }} as o on p.order_id = o.order_id
+            where o.order_id is null
+          highlight_lines:
+            - 1
+            - 4
+          purpose: authored executable syntax; illustration only
+    - id: test
+      title: Turn on store_failures so the failing row is kept
+      explanation: >
+        This is the same test file with one addition. Highlighted line 1 sets store_failures=true. The
+        highlighted lines 2 to 4 are the same query as before: pick the payment id, order id and amount, and
+        look for orders that are missing. With the setting on, dbt writes whatever rows this query returns
+        into a table instead of only counting them. The result panel confirms the setting.
+      state:
+        kind: comparison
+        title: The test is set to store its failing rows
+        columns:
+          - test configuration
+          - value
+        rows:
+          - - store_failures
+            - true
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        One config line makes dbt save the failing rows the test query returns.
+      code:
+        - language: sql
+          filename: tests/payments_have_orders.sql
+          content: |
+            {{ config(store_failures=true) }}
+            select p.payment_id, p.order_id, p.amount_cents
+            from {{ ref("payments") }} p
+            left join {{ ref("orders") }} o on p.order_id = o.order_id
+            where o.order_id is null
+          highlight_lines:
+            - 1
+            - 2
+            - 3
+            - 4
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+    - id: inspect
+      title: Run the test and read the stored failure
+      explanation: >
+        The command runs just this test. The test file is unchanged from the last step. The new file is a
+        plain query against the table dbt created. The highlighted lines 2 and 3 read from a schema named
+        after the project plus dbt_test__audit, in a table named after the test. The result panel shows the
+        single stored row: payment 2099, pointing at order 9999, for 400 cents. That is the payment the shop
+        needs to chase.
+      state:
+        kind: result
+        title: 'The stored failing row: payment 2099, order 9999, 400 cents'
+        columns:
+          - payment_id
+          - order_id
+          - amount_cents
+        rows:
+          - - 2099
+            - 9999
+            - 400
+        result_status: fail
+        diagram: null
+        expected_actual:
+          expected_violations: 0
+          actual_violations: 1
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: >
+        The failing 400-cent payment now sits in a table anyone can query until the missing order is sorted
+        out.
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+      code:
+        - language: sql
+          filename: tests/payments_have_orders.sql
+          content: |
+            {{ config(store_failures=true) }}
+            select p.payment_id, p.order_id, p.amount_cents
+            from {{ ref("payments") }} p
+            left join {{ ref("orders") }} o on p.order_id = o.order_id
+            where o.order_id is null
+          highlight_lines:
+            - 1
+            - 2
+            - 3
+            - 4
+        - language: sql
+          filename: inspection/stored_failures.sql
+          content: |
+            -- Default audit schema with target.schema = waffle.
+            select payment_id, order_id, amount_cents
+            from waffle_dbt_test__audit.payments_have_orders;
+          highlight_lines:
+            - 2
+            - 3
+          purpose: authored executable syntax; illustration only
+        - language: shell
+          filename: commands.sh
+          content: |
+            dbt test --select payments_have_orders
+          highlight_lines:
+            - 1
+          purpose: authored executable syntax; illustration only
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
-    - src-1
-    - src-2
-    - src-3
-    limitations: |
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
-      The stored-failure inspection assumes the default audit schema and target.schema=waffle; permissions must allow its creation. A custom schema macro would change the physical name.
+      - src-1
+      - src-2
+      - src-3
+    limitations: >
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
+      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
+      performance claims.
+
+      The stored-failure inspection assumes the default audit schema and target.schema=waffle; permissions
+      must allow its creation. A custom schema macro would change the physical name.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
       method: Original source/archive and release documentation inspection; no historical dbt execution.
   intro:
     can_now:
-    - Save failing test rows in the database for inspection.
-    - Configure test filters, limits and warning or error thresholds.
-    scenario: |
-      A relationship test finds one payment whose order is missing. The shop needs the offending row, not just a red test count.
-    outcome: |
-      See the test SQL, persistence setting and the exact 400-cent violation.
+      - Keep the rows that made a test fail in a table in the warehouse, instead of only a count.
+      - >-
+        Tell a test to look at only some rows, to stop after a set number, or to warn instead of fail below a
+        threshold.
+    scenario: >
+      One payment of 400 cents points at order 9999, which does not exist. A test catches it and reports one
+      failure. Until now the shop would have to rerun the test's query by hand to see which payment it was.
+      This version can save that failing row so anyone can look it up.
+    outcome: >
+      You will see the test query, the one-line setting that saves failures, and the exact 400-cent row it
+      saved.
+  title: |
+    Demo: a failing test stores the exact payment that has no order
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

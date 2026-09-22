@@ -1,400 +1,436 @@
 id: '0.3'
 label: v0.3
 title: Concurrent model builds
-lead: |
-  Independent models can build alongside one another. A failed branch no longer prevents every unrelated branch from making progress.
-problem_then: |
-  Running a growing project serially creates unnecessary waiting; one broken dependency should not disguise the status of unrelated work.
+lead: >
+  Independent models can build alongside one another. A failed branch no longer prevents every unrelated
+  branch from making progress.
+problem_then: >
+  Running a growing project serially creates unnecessary waiting; one broken dependency should not disguise
+  the status of unrelated work.
 what_changed:
-- id: change-1
-  summary: Parallel model creation with up to eight threads.
-  introduced_in: 0.3.0
-  adapter_constraints: null
-  evidence:
-  - src-1
-  confidence: high
-- id: change-2
-  summary: Failures skip descendants while independent branches continue; temporary relations reduce unavailable
-    time.
-  introduced_in: 0.3.0
-  adapter_constraints: null
-  evidence:
-  - src-1
-  confidence: high
+  - id: change-1
+    summary: Parallel model creation with up to eight threads.
+    introduced_in: 0.3.0
+    adapter_constraints: null
+    evidence:
+      - src-1
+    confidence: high
+  - id: change-2
+    summary: >-
+      Failures skip descendants while independent branches continue; temporary relations reduce unavailable
+      time.
+    introduced_in: 0.3.0
+    adapter_constraints: null
+    evidence:
+      - src-1
+    confidence: high
 in_practice: |
   Think in dependencies and runnable branches, not a handwritten sequence of SQL files.
-technical_detail: |
-  The release supports up to eight threads. Descendants of failed models are skipped while independent branches continue. The graph is a scheduling illustration, not a measured run or timing claim.
+technical_detail: >
+  The release supports up to eight threads. Descendants of failed models are skipped while independent
+  branches continue. The graph is a scheduling illustration, not a measured run or timing claim.
 milestones:
-- id: 0.3.0
-  kind: package
-  date: '2016-08-03'
-  precision: day
-  title: First published package
-  evidence:
-  - src-2
+  - id: 0.3.0
+    kind: package
+    date: '2016-08-03'
+    precision: day
+    title: First published package
+    evidence:
+      - src-2
 sources:
-- id: src-1
-  title: dbt 0.3 release evidence
-  url: https://github.com/dbt-labs/dbt/releases/tag/0.3.0
-  retrieved: '2026-09-21'
-  supports: Tagged release changes; package upload and public announcement remain distinct.
-- id: src-2
-  title: dbt 0.3 package evidence
-  url: https://pypi.org/project/dbt/0.3.0/
-  retrieved: '2026-09-21'
-  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
-    from the package.
-  rechecked: '2026-09-22'
-- id: src-3
-  title: 0.3.0 profile and target implementation
-  url: https://files.pythonhosted.org/packages/6e/7d/b3a8ed350b535130cd7954827b253d5b269ba94860790876ec43bc8274d3/dbt-0.3.0.tar.gz
-  retrieved: '2026-09-22'
-  supports: Original run-target configuration, default user profile and Boolean materialization.
-  historical_scope: Syntax at the named immutable version; research cutoff remains 2026-09-21.
-  source_path: dbt/project.py
-  sha256: ed9f278bd18dc3a71d11d18338c6a368c3040d8e6d397e2f888f195599849be7
+  - id: src-1
+    title: dbt 0.3 release evidence
+    url: https://github.com/dbt-labs/dbt/releases/tag/0.3.0
+    retrieved: '2026-09-21'
+    supports: Tagged release changes; package upload and public announcement remain distinct.
+  - id: src-2
+    title: dbt 0.3 package evidence
+    url: https://pypi.org/project/dbt/0.3.0/
+    retrieved: '2026-09-21'
+    supports: >-
+      Package existence and upload timestamp. Implementation claims refer to the original source archive
+      linked from the package.
+    rechecked: '2026-09-22'
+  - id: src-3
+    title: 0.3.0 profile and target implementation
+    url: >-
+      https://files.pythonhosted.org/packages/6e/7d/b3a8ed350b535130cd7954827b253d5b269ba94860790876ec43bc8274d3/dbt-0.3.0.tar.gz
+    retrieved: '2026-09-22'
+    supports: Original run-target configuration, default user profile and Boolean materialization.
+    historical_scope: Syntax at the named immutable version; research cutoff remains 2026-09-21.
+    source_path: dbt/project.py
+    sha256: ed9f278bd18dc3a71d11d18338c6a368c3040d8e6d397e2f888f195599849be7
 narrative_evidence:
-- src-1
-- src-2
-- src-3
+  - src-1
+  - src-2
+  - src-3
 walkthrough:
   id: wt-0.3
-  learning_objective: |
-    Understand parallel work without pretending dependencies disappear.
-  context: |
-    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
+  learning_objective: >
+    See how dbt runs independent models at the same time, and why a failed model only holds back the models
+    that depend on it.
+  context: >
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
+    Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
   dataset_variant: base
   steps:
-  - id: branches
-    title: Find independent work
-    explanation: |
-      Payments and refunds can be aggregated separately.
-    state:
-      kind: diagram
-      title: Ready branches
-      columns: []
-      rows: []
-      result_status: null
-      diagram:
-        nodes:
-        - id: payments
-          label: payments_by_order
-        - id: refunds
-          label: refunds_by_order
-        - id: revenue
-          label: order_revenue
-        edges:
-        - from: payments
-          to: revenue
-        - from: refunds
-          to: revenue
-        highlight:
-        - payments
-        - refunds
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      The revenue model must wait for both inputs.
-    evidence:
-    - src-1
-    - src-2
-    - src-3
-    code:
-    - language: sql
-      filename: models/payments_by_order.sql
-      content: |
-        select order_id, sum(amount_cents) as payment_cents
-        from {{ ref("payments") }}
-        group by order_id
-      highlight_lines:
-      - 1
-      - 2
-      purpose: authored executable syntax; illustration only
-    - language: yaml
-      filename: profiles.yml (target excerpt)
-      content: |
-        user:
-          run-target: dev
-          outputs:
-            dev:
-              type: redshift
-              threads: 2
-      highlight_lines:
-      - 1
-      - 2
-      - 6
-      purpose: authored executable syntax; illustration only
-    - language: yaml
-      filename: dbt_project.yml (excerpt)
-      content: |
-        name: waffle_shop
-        version: "1.0"
-        model-defaults:
-          materialized: true
-      highlight_lines:
-      - 3
-      - 4
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/refunds_by_order.sql
-      content: |
-        select order_id, sum(amount_cents) as refund_cents
-        from {{ ref("refunds") }}
-        group by order_id
-      highlight_lines:
-      - 1
-      - 2
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/refunds.sql
-      content: |
-        select refund_id, order_id, amount_cents from raw.refunds
-      highlight_lines:
-      - 1
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/order_amounts.sql
-      content: |
-        select o.*, coalesce(p.payment_cents, 0) as payment_cents,
-            coalesce(r.refund_cents, 0) as refund_cents
-        from {{ ref("orders") }} as o
-        left join {{ ref("payments_by_order") }} as p
-          on o.order_id = p.order_id
-        left join {{ ref("refunds_by_order") }} as r
-          on o.order_id = r.order_id
-      highlight_lines:
-      - 3
-      - 4
-      - 6
-  - id: failure
-    title: Isolate a broken branch
-    explanation: |
-      Assume the refund model contains invalid SQL; this does not alter the fixture.
-    state:
-      kind: comparison
-      title: Isolate a broken branch
-      columns:
-      - model
-      - prepared scheduling outcome
-      rows:
-      - - refunds_by_order
-        - failed
-      - - order_revenue
-        - 'skipped: depends on refunds'
-      - - payments_by_order
-        - independent work may finish
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      Failure follows dependencies, not file order.
-    evidence:
-    - src-1
-    - src-2
-    - src-3
-    code:
-    - language: sql
-      filename: models/payments_by_order.sql
-      content: |
-        select order_id, sum(amount_cents) as payment_cents
-        from {{ ref("payments") }}
-        group by order_id
-      highlight_lines:
-      - 1
-      - 2
-      purpose: authored executable syntax; illustration only
-    - language: yaml
-      filename: profiles.yml (target excerpt)
-      content: |
-        user:
-          run-target: dev
-          outputs:
-            dev:
-              type: redshift
-              threads: 2
-      highlight_lines:
-      - 1
-      - 2
-      - 6
-      purpose: authored executable syntax; illustration only
-    - language: yaml
-      filename: dbt_project.yml (excerpt)
-      content: |
-        name: waffle_shop
-        version: "1.0"
-        model-defaults:
-          materialized: true
-      highlight_lines:
-      - 3
-      - 4
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/refunds_by_order.sql (deliberately invalid)
-      content: |
-        select order_id, sum(refund_amount_cents) as refund_cents
-        from raw.refunds
-        group by order_id
-      highlight_lines:
-      - 1
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/order_revenue.sql
-      content: |
-        select *, payment_cents - refund_cents as revenue_cents
-        from {{ ref("order_amounts") }}
-      highlight_lines:
-      - 1
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/order_amounts.sql
-      content: |
-        select o.*, coalesce(p.payment_cents, 0) as payment_cents,
-            coalesce(r.refund_cents, 0) as refund_cents
-        from {{ ref("orders") }} as o
-        left join {{ ref("payments_by_order") }} as p
-          on o.order_id = p.order_id
-        left join {{ ref("refunds_by_order") }} as r
-          on o.order_id = r.order_id
-      highlight_lines:
-      - 3
-      - 4
-      - 6
-  - id: fixed
-    title: Restore the dependency
-    explanation: |
-      After repairing the hypothetical SQL problem, the same business rules still apply.
-    state:
-      kind: table
-      title: Base revenue by location
-      columns:
-      - location_id
-      - location
-      - payment_cents
-      - refund_cents
-      - revenue_cents
-      rows:
-      - - 1
-        - Old Port
-        - 4400
-        - 1000
-        - 3400
-      - - 2
-        - Mile End
-        - 4600
-        - 300
-        - 4300
-      - - 3
-        - Riverside
-        - 4800
-        - 0
-        - 4800
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      Parallel scheduling changes the workflow, not the answer.
-    evidence:
-    - src-1
-    - src-2
-    - src-3
-    code:
-    - language: sql
-      filename: models/payments_by_order.sql
-      content: |
-        select order_id, sum(amount_cents) as payment_cents
-        from {{ ref("payments") }}
-        group by order_id
-      highlight_lines:
-      - 1
-      - 2
-      purpose: authored executable syntax; illustration only
-    - language: yaml
-      filename: profiles.yml (target excerpt)
-      content: |
-        user:
-          run-target: dev
-          outputs:
-            dev:
-              type: redshift
-              threads: 2
-      highlight_lines:
-      - 1
-      - 2
-      - 6
-      purpose: authored executable syntax; illustration only
-    - language: yaml
-      filename: dbt_project.yml (excerpt)
-      content: |
-        name: waffle_shop
-        version: "1.0"
-        model-defaults:
-          materialized: true
-      highlight_lines:
-      - 3
-      - 4
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/order_amounts.sql
-      content: |
-        select o.*, coalesce(p.payment_cents, 0) as payment_cents,
-            coalesce(r.refund_cents, 0) as refund_cents
-        from {{ ref("orders") }} as o
-        left join {{ ref("payments_by_order") }} as p
-          on o.order_id = p.order_id
-        left join {{ ref("refunds_by_order") }} as r
-          on o.order_id = r.order_id
-      highlight_lines:
-      - 3
-      - 4
-      - 6
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/order_revenue.sql
-      content: |
-        select *, payment_cents - refund_cents as revenue_cents
-        from {{ ref("order_amounts") }}
-      highlight_lines:
-      - 1
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/revenue_by_location.sql
-      content: |
-        select
-            r.location_id, l.name as location,
-            sum(r.payment_cents) as payment_cents,
-            sum(r.refund_cents) as refund_cents,
-            sum(r.revenue_cents) as revenue_cents
-        from {{ ref("order_revenue") }} as r
-        join raw.locations as l on r.location_id = l.location_id
-        group by r.location_id, l.name
-        order by r.location_id
-      highlight_lines:
-      - 3
-      - 4
-      - 5
-      purpose: authored executable syntax; illustration only
+    - id: branches
+      title: Two branches that do not need each other
+      explanation: >
+        Look at the two small models first. Highlighted lines 1 and 2 of payments_by_order total payments per
+        order. The same lines of refunds_by_order total refunds. Neither reads the other. The connection file
+        matters too: highlighted line 6 of profiles.yml allows 2 threads, meaning two models can build at the
+        same time. Highlighted lines 3, 4 and 6 of order_amounts show the join that needs both branches. The
+        diagram shows the shape: two branches feeding one revenue model.
+      state:
+        kind: diagram
+        title: Two branches feed one revenue model
+        columns: []
+        rows: []
+        result_status: null
+        diagram:
+          nodes:
+            - id: payments
+              label: payments_by_order
+            - id: refunds
+              label: refunds_by_order
+            - id: revenue
+              label: order_revenue
+          edges:
+            - from: payments
+              to: revenue
+            - from: refunds
+              to: revenue
+          highlight:
+            - payments
+            - refunds
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        Payments and refunds can build at the same time, but revenue has to wait for both.
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+      code:
+        - language: sql
+          filename: models/payments_by_order.sql
+          content: |
+            select order_id, sum(amount_cents) as payment_cents
+            from {{ ref("payments") }}
+            group by order_id
+          highlight_lines:
+            - 1
+            - 2
+          purpose: authored executable syntax; illustration only
+        - language: yaml
+          filename: profiles.yml (target excerpt)
+          content: |
+            user:
+              run-target: dev
+              outputs:
+                dev:
+                  type: redshift
+                  threads: 2
+          highlight_lines:
+            - 1
+            - 2
+            - 6
+          purpose: authored executable syntax; illustration only
+        - language: yaml
+          filename: dbt_project.yml (excerpt)
+          content: |
+            name: waffle_shop
+            version: "1.0"
+            model-defaults:
+              materialized: true
+          highlight_lines:
+            - 3
+            - 4
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/refunds_by_order.sql
+          content: |
+            select order_id, sum(amount_cents) as refund_cents
+            from {{ ref("refunds") }}
+            group by order_id
+          highlight_lines:
+            - 1
+            - 2
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/refunds.sql
+          content: |
+            select refund_id, order_id, amount_cents from raw.refunds
+          highlight_lines:
+            - 1
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/order_amounts.sql
+          content: |
+            select o.*, coalesce(p.payment_cents, 0) as payment_cents,
+                coalesce(r.refund_cents, 0) as refund_cents
+            from {{ ref("orders") }} as o
+            left join {{ ref("payments_by_order") }} as p
+              on o.order_id = p.order_id
+            left join {{ ref("refunds_by_order") }} as r
+              on o.order_id = r.order_id
+          highlight_lines:
+            - 3
+            - 4
+            - 6
+    - id: failure
+      title: Break the refund branch on purpose
+      explanation: >
+        The refund model now has a deliberate mistake. Highlighted line 1 sums a column called
+        refund_amount_cents, which does not exist, so the database rejects the query. The data itself is
+        unchanged. Highlighted lines 4 and 6 of order_amounts show that it needs both branches, and
+        highlighted line 1 of order_revenue shows that it needs order_amounts. The result panel shows what dbt
+        does: the refund model fails, the revenue model is skipped because it depends on refunds, and the
+        payment model finishes on its own.
+      state:
+        kind: comparison
+        title: What happens when one branch fails
+        columns:
+          - model
+          - prepared scheduling outcome
+        rows:
+          - - refunds_by_order
+            - failed
+          - - order_revenue
+            - 'skipped: depends on refunds'
+          - - payments_by_order
+            - independent work may finish
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        A failure stops only the models downstream of it; unrelated work still completes.
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+      code:
+        - language: sql
+          filename: models/payments_by_order.sql
+          content: |
+            select order_id, sum(amount_cents) as payment_cents
+            from {{ ref("payments") }}
+            group by order_id
+          highlight_lines:
+            - 1
+            - 2
+          purpose: authored executable syntax; illustration only
+        - language: yaml
+          filename: profiles.yml (target excerpt)
+          content: |
+            user:
+              run-target: dev
+              outputs:
+                dev:
+                  type: redshift
+                  threads: 2
+          highlight_lines:
+            - 1
+            - 2
+            - 6
+          purpose: authored executable syntax; illustration only
+        - language: yaml
+          filename: dbt_project.yml (excerpt)
+          content: |
+            name: waffle_shop
+            version: "1.0"
+            model-defaults:
+              materialized: true
+          highlight_lines:
+            - 3
+            - 4
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/refunds_by_order.sql (deliberately invalid)
+          content: |
+            select order_id, sum(refund_amount_cents) as refund_cents
+            from raw.refunds
+            group by order_id
+          highlight_lines:
+            - 1
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/order_revenue.sql
+          content: |
+            select *, payment_cents - refund_cents as revenue_cents
+            from {{ ref("order_amounts") }}
+          highlight_lines:
+            - 1
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/order_amounts.sql
+          content: |
+            select o.*, coalesce(p.payment_cents, 0) as payment_cents,
+                coalesce(r.refund_cents, 0) as refund_cents
+            from {{ ref("orders") }} as o
+            left join {{ ref("payments_by_order") }} as p
+              on o.order_id = p.order_id
+            left join {{ ref("refunds_by_order") }} as r
+              on o.order_id = r.order_id
+          highlight_lines:
+            - 3
+            - 4
+            - 6
+    - id: fixed
+      title: Fix the refund model and read the totals
+      explanation: >
+        With the column name corrected, the same files build in full. Highlighted lines 4 and 6 of
+        order_amounts join both branches back in, and highlighted lines 3 to 5 of the location model add up
+        payments, refunds and revenue per location. The result panel shows the familiar figures: 12,500 cents
+        across the three locations.
+      state:
+        kind: table
+        title: Revenue by location after the repair
+        columns:
+          - location_id
+          - location
+          - payment_cents
+          - refund_cents
+          - revenue_cents
+        rows:
+          - - 1
+            - Old Port
+            - 4400
+            - 1000
+            - 3400
+          - - 2
+            - Mile End
+            - 4600
+            - 300
+            - 4300
+          - - 3
+            - Riverside
+            - 4800
+            - 0
+            - 4800
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        Building in parallel changes how fast the work runs, not the answer it produces.
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+      code:
+        - language: sql
+          filename: models/payments_by_order.sql
+          content: |
+            select order_id, sum(amount_cents) as payment_cents
+            from {{ ref("payments") }}
+            group by order_id
+          highlight_lines:
+            - 1
+            - 2
+          purpose: authored executable syntax; illustration only
+        - language: yaml
+          filename: profiles.yml (target excerpt)
+          content: |
+            user:
+              run-target: dev
+              outputs:
+                dev:
+                  type: redshift
+                  threads: 2
+          highlight_lines:
+            - 1
+            - 2
+            - 6
+          purpose: authored executable syntax; illustration only
+        - language: yaml
+          filename: dbt_project.yml (excerpt)
+          content: |
+            name: waffle_shop
+            version: "1.0"
+            model-defaults:
+              materialized: true
+          highlight_lines:
+            - 3
+            - 4
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/order_amounts.sql
+          content: |
+            select o.*, coalesce(p.payment_cents, 0) as payment_cents,
+                coalesce(r.refund_cents, 0) as refund_cents
+            from {{ ref("orders") }} as o
+            left join {{ ref("payments_by_order") }} as p
+              on o.order_id = p.order_id
+            left join {{ ref("refunds_by_order") }} as r
+              on o.order_id = r.order_id
+          highlight_lines:
+            - 3
+            - 4
+            - 6
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/order_revenue.sql
+          content: |
+            select *, payment_cents - refund_cents as revenue_cents
+            from {{ ref("order_amounts") }}
+          highlight_lines:
+            - 1
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/revenue_by_location.sql
+          content: |
+            select
+                r.location_id, l.name as location,
+                sum(r.payment_cents) as payment_cents,
+                sum(r.refund_cents) as refund_cents,
+                sum(r.revenue_cents) as revenue_cents
+            from {{ ref("order_revenue") }} as r
+            join raw.locations as l on r.location_id = l.location_id
+            group by r.location_id, l.name
+            order by r.location_id
+          highlight_lines:
+            - 3
+            - 4
+            - 5
+          purpose: authored executable syntax; illustration only
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
-    - src-1
-    - src-2
-    - src-3
-    limitations: |
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
-      Profiles are excerpts: warehouse credentials and database/schema are omitted. The deliberately invalid refund_amount_cents column is absent from the fixture; no original error log or timing is claimed. Boolean materialized is retained before 0.4.
-      The 0.3.0 loader merges the default user profile and selects outputs using run-target, not the later target key. This early profile shape was checked directly in project.py and targets.py.
+      - src-1
+      - src-2
+      - src-3
+    limitations: >
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
+      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
+      performance claims.
+
+      Profiles are excerpts: warehouse credentials and database/schema are omitted. The deliberately invalid
+      refund_amount_cents column is absent from the fixture; no original error log or timing is claimed.
+      Boolean materialized is retained before 0.4.
+
+      The 0.3.0 loader merges the default user profile and selects outputs using run-target, not the later
+      target key. This early profile shape was checked directly in project.py and targets.py.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
       method: Original source/archive and release documentation inspection; no historical dbt execution.
   intro:
     can_now:
-    - Build independent models concurrently with up to eight threads.
-    - Skip descendants of a failed model while unrelated branches can continue.
-    scenario: |
-      Payments and refunds can be aggregated separately before calculating revenue. A broken refund model shows why parallel work still needs dependency-aware failure handling.
-    outcome: |
-      Follow two independent branches, a blocked dependent model and the repaired revenue result.
+      - >-
+        Build models that do not depend on each other at the same time, using up to eight parallel workers,
+        called threads.
+      - >-
+        When one model fails, let dbt skip only the models that depend on it while unrelated models keep
+        going.
+    scenario: >
+      Payments per order and refunds per order can be totalled separately; neither needs the other. Revenue
+      needs both. The walkthrough breaks the refund model on purpose to show that the payment branch still
+      finishes, the revenue model is skipped, and the totals come back once the refund model is fixed.
+    outcome: >
+      Follow two independent branches, see the revenue model wait when one of them fails, and get the
+      12,500-cent result after the repair.
+  title: |
+    Demo: independent models build side by side, and a broken one only blocks what depends on it
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

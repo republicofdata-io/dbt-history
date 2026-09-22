@@ -1,232 +1,261 @@
 id: '1.3'
 label: v1.3
 title: Python models
-lead: |
-  Python models join SQL models on supported platforms. Both can participate in the project’s dependency graph.
-problem_then: |
-  Some transformations are more natural in a dataframe API, but separate notebooks can lose the project’s dependency context.
+lead: >
+  Python models join SQL models on supported platforms. Both can participate in the project’s dependency
+  graph.
+problem_then: >
+  Some transformations are more natural in a dataframe API, but separate notebooks can lose the project’s
+  dependency context.
 what_changed:
-- id: change-1
-  summary: Python models, including incremental support where implemented.
-  introduced_in: 1.3.0
-  adapter_constraints: Supported Python platforms include Snowflake, BigQuery and Databricks; APIs and materializations
-    differ.
-  evidence:
-  - src-1
-  confidence: high
-- id: change-2
-  summary: Additional portable macros and .dbtignore.
-  introduced_in: 1.3.0
-  adapter_constraints: null
-  evidence:
-  - src-1
-  confidence: high
+  - id: change-1
+    summary: Python models, including incremental support where implemented.
+    introduced_in: 1.3.0
+    adapter_constraints: Supported Python platforms include Snowflake, BigQuery and Databricks; APIs and materializations differ.
+    evidence:
+      - src-1
+    confidence: high
+  - id: change-2
+    summary: Additional portable macros and .dbtignore.
+    introduced_in: 1.3.0
+    adapter_constraints: null
+    evidence:
+      - src-1
+    confidence: high
 in_practice: |
   Use Python where it earns its place and keep the upstream references visible.
-technical_detail: |
-  Python model support depends on the adapter; initial supported platforms include Snowflake, BigQuery and Databricks. This Snowpark-shaped example is not a PostgreSQL or universal Python example. No Python runtime was executed.
+technical_detail: >
+  Python model support depends on the adapter; initial supported platforms include Snowflake, BigQuery and
+  Databricks. This Snowpark-shaped example is not a PostgreSQL or universal Python example. No Python runtime
+  was executed.
 milestones:
-- id: 1.3.0
-  kind: package
-  date: '2022-10-12'
-  precision: day
-  title: First published package
-  evidence:
-  - src-2
+  - id: 1.3.0
+    kind: package
+    date: '2022-10-12'
+    precision: day
+    title: First published package
+    evidence:
+      - src-2
 sources:
-- id: src-1
-  title: dbt 1.3 release evidence
-  url: https://github.com/dbt-labs/dbt/releases/tag/v1.3.0
-  retrieved: '2026-09-21'
-  supports: Tagged release changes; package upload and public announcement remain distinct.
-- id: src-2
-  title: dbt 1.3 package evidence
-  url: https://pypi.org/project/dbt-core/1.3.0/
-  retrieved: '2026-09-21'
-  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
-    from the package.
-  rechecked: '2026-09-22'
+  - id: src-1
+    title: dbt 1.3 release evidence
+    url: https://github.com/dbt-labs/dbt/releases/tag/v1.3.0
+    retrieved: '2026-09-21'
+    supports: Tagged release changes; package upload and public announcement remain distinct.
+  - id: src-2
+    title: dbt 1.3 package evidence
+    url: https://pypi.org/project/dbt-core/1.3.0/
+    retrieved: '2026-09-21'
+    supports: >-
+      Package existence and upload timestamp. Implementation claims refer to the original source archive
+      linked from the package.
+    rechecked: '2026-09-22'
 narrative_evidence:
-- src-1
-- src-2
+  - src-1
+  - src-2
 walkthrough:
   id: wt-1.3
-  learning_objective: |
-    Recognize a Python model as another graph node.
-  context: |
-    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
+  learning_objective: >
+    See a model written in Python sit in the same chain as the SQL models, reading from one and producing the
+    same numbers.
+  context: >
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
+    Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
   dataset_variant: base
   steps:
-  - id: input
-    title: Start from the SQL model
-    explanation: |
-      The input is the derived order_revenue relation.
-    state:
-      kind: table
-      title: 'Order 1042: partial refund'
-      columns:
-      - order_id
-      - location
-      - payment_cents
-      - refund_cents
-      - revenue_cents
-      rows:
-      - - 1042
-        - Old Port
-        - 1200
-        - 200
-        - 1000
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      Python receives a defined upstream dataset.
-    evidence:
-    - src-1
-    - src-2
-    code:
-    - language: sql
-      filename: models/order_amounts.sql
-      content: |
-        with paid as (
-            select order_id, sum(amount_cents) as payment_cents
-            from raw.payments group by order_id
-        ), refunded as (
-            select order_id, sum(amount_cents) as refund_cents
-            from raw.refunds group by order_id
-        )
-        select o.*, coalesce(p.payment_cents, 0) as payment_cents,
-            coalesce(r.refund_cents, 0) as refund_cents
-        from raw.orders as o
-        left join paid as p on o.order_id = p.order_id
-        left join refunded as r on o.order_id = r.order_id
-      highlight_lines:
-      - 2
-      - 5
-      - 8
-      - 9
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/order_revenue.sql
-      content: |
-        select *, payment_cents - refund_cents as revenue_cents
-        from {{ ref("order_amounts") }}
-      highlight_lines:
-      - 1
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: analyses/order_1042.sql
-      content: |
-        select order_id, payment_cents, refund_cents,
-            payment_cents - refund_cents as revenue_cents
-        from {{ ref("order_amounts") }}
-        where order_id = 1042
-      highlight_lines:
-      - 2
-      - 4
-      purpose: authored executable syntax; illustration only
-  - id: python
-    title: Add a simple dataframe step
-    explanation: |
-      The example selects the order key and net revenue without changing either.
-    state:
-      kind: comparison
-      title: Add a simple dataframe step
-      columns:
-      - selected columns
-      - source
-      rows:
-      - - order_id, revenue_cents
-        - order_revenue
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      The ref call keeps the dependency explicit.
-    code:
-    - language: python
-      filename: models/python_order_revenue.py
-      content: |
-        def model(dbt, session):
-            dbt.config(materialized="table")
-            orders = dbt.ref("order_revenue")
-            return orders.select("order_id", "revenue_cents")
-      highlight_lines:
-      - 1
-      - 2
-      - 3
-      - 4
-    evidence:
-    - src-1
-    - src-2
-  - id: scope
-    title: Keep adapter support visible
-    explanation: |
-      The identity transformation preserves the fixture values.
-    state:
-      kind: comparison
-      title: Keep adapter support visible
-      columns:
-      - check
-      - expected
-      rows:
-      - - order 1042 revenue_cents
-        - 1000
-      - - all 12 orders total_cents
-        - 12500
-      - - example adapter
-        - Snowflake / Snowpark
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      Language choice does not remove warehouse-specific requirements.
-    evidence:
-    - src-1
-    - src-2
-    code:
-    - language: python
-      filename: models/python_order_revenue.py
-      content: |
-        def model(dbt, session):
-            dbt.config(materialized="table")
-            orders = dbt.ref("order_revenue")
-            return orders.select("order_id", "revenue_cents")
-      highlight_lines:
-      - 1
-      - 2
-      - 3
-      - 4
-    - language: sql
-      filename: inspection/python_totals.sql
-      content: |
-        select sum(revenue_cents) as total_cents
-        from python_order_revenue;
-        select order_id, revenue_cents from python_order_revenue
-        where order_id = 1042;
-      highlight_lines:
-      - 1
-      - 4
-      purpose: authored executable syntax; illustration only
+    - id: input
+      title: The SQL model that the Python model will read
+      explanation: >
+        Three SQL files. The first sums payments and refunds per order (highlighted lines 2 and 5) and
+        attaches them to each order (highlighted lines 8 and 9). The second subtracts refunds to get net
+        revenue per order (highlighted line 1). The third is a check on one order. Highlighted line 2 does the
+        subtraction and line 4 picks order 1042. The result panel shows that order: 1,200 cents paid, 200
+        refunded, 1,000 net. This is the data the Python model will receive.
+      state:
+        kind: table
+        title: 'Order 1042: partial refund'
+        columns:
+          - order_id
+          - location
+          - payment_cents
+          - refund_cents
+          - revenue_cents
+        rows:
+          - - 1042
+            - Old Port
+            - 1200
+            - 200
+            - 1000
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: >
+        Before any Python runs, net revenue per order is already defined in SQL, and order 1042 is worth 1,000
+        cents.
+      evidence:
+        - src-1
+        - src-2
+      code:
+        - language: sql
+          filename: models/order_amounts.sql
+          content: |
+            with paid as (
+                select order_id, sum(amount_cents) as payment_cents
+                from raw.payments group by order_id
+            ), refunded as (
+                select order_id, sum(amount_cents) as refund_cents
+                from raw.refunds group by order_id
+            )
+            select o.*, coalesce(p.payment_cents, 0) as payment_cents,
+                coalesce(r.refund_cents, 0) as refund_cents
+            from raw.orders as o
+            left join paid as p on o.order_id = p.order_id
+            left join refunded as r on o.order_id = r.order_id
+          highlight_lines:
+            - 2
+            - 5
+            - 8
+            - 9
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/order_revenue.sql
+          content: |
+            select *, payment_cents - refund_cents as revenue_cents
+            from {{ ref("order_amounts") }}
+          highlight_lines:
+            - 1
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: analyses/order_1042.sql
+          content: |
+            select order_id, payment_cents, refund_cents,
+                payment_cents - refund_cents as revenue_cents
+            from {{ ref("order_amounts") }}
+            where order_id = 1042
+          highlight_lines:
+            - 2
+            - 4
+          purpose: authored executable syntax; illustration only
+    - id: python
+      title: A four-line Python model
+      explanation: >
+        This is the whole Python model. Highlighted line 1 defines a function named model, which dbt calls.
+        Line 2 says to save the output as a table. Line 3 reads the order_revenue SQL model using dbt.ref, the
+        same reference SQL models use, so dbt knows this model depends on it. Line 4 keeps two columns,
+        order_id and revenue_cents, and returns them. The result panel shows those two columns and where they
+        came from.
+      state:
+        kind: comparison
+        title: Two columns kept, read from order_revenue
+        columns:
+          - selected columns
+          - source
+        rows:
+          - - order_id, revenue_cents
+            - order_revenue
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: >
+        The Python model reads a SQL model through the same ref mechanism, so dbt places it in the chain like
+        any other model.
+      code:
+        - language: python
+          filename: models/python_order_revenue.py
+          content: |
+            def model(dbt, session):
+                dbt.config(materialized="table")
+                orders = dbt.ref("order_revenue")
+                return orders.select("order_id", "revenue_cents")
+          highlight_lines:
+            - 1
+            - 2
+            - 3
+            - 4
+      evidence:
+        - src-1
+        - src-2
+    - id: scope
+      title: Same numbers, and a note on which warehouses can run it
+      explanation: >
+        The Python file is unchanged, highlighted at lines 1 to 4. The second file checks its output.
+        Highlighted line 1 sums revenue across every row, and line 4 picks order 1042 again. The result panel
+        shows the expected values: order 1042 is still 1,000 cents, and all 12 orders total 12,500 cents. The
+        panel also names the platform this example is shaped for: Snowflake, using its Snowpark Python engine.
+        A warehouse without Python support cannot run this model, however simple it is.
+      state:
+        kind: comparison
+        title: Values unchanged; runs on Snowflake with Snowpark
+        columns:
+          - check
+          - expected
+        rows:
+          - - order 1042 revenue_cents
+            - 1000
+          - - all 12 orders total_cents
+            - 12500
+          - - example adapter
+            - Snowflake / Snowpark
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        The Python model changed no values, but it only works on a warehouse that can run Python.
+      evidence:
+        - src-1
+        - src-2
+      code:
+        - language: python
+          filename: models/python_order_revenue.py
+          content: |
+            def model(dbt, session):
+                dbt.config(materialized="table")
+                orders = dbt.ref("order_revenue")
+                return orders.select("order_id", "revenue_cents")
+          highlight_lines:
+            - 1
+            - 2
+            - 3
+            - 4
+        - language: sql
+          filename: inspection/python_totals.sql
+          content: |
+            select sum(revenue_cents) as total_cents
+            from python_order_revenue;
+            select order_id, revenue_cents from python_order_revenue
+            where order_id = 1042;
+          highlight_lines:
+            - 1
+            - 4
+          purpose: authored executable syntax; illustration only
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
-    - src-1
-    - src-2
-    limitations: |
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+      - src-1
+      - src-2
+    limitations: >
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
+      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
+      performance claims.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
       method: Original source/archive and release documentation inspection; no historical dbt execution.
   intro:
     can_now:
-    - Build Python models inside the dbt graph on supported adapters.
-    - Use supported incremental materializations for Python models.
-    scenario: |
-      The shop passes a defined SQL dataset into a small Python dataframe model. The selected columns and accounting values stay the same.
-    outcome: |
-      Read the SQL input and Snowpark-shaped Python model with its adapter boundary visible.
+      - Write a model in Python instead of SQL, on warehouses that can run Python, such as Snowflake.
+      - Have that Python model read from a SQL model and be read by others, exactly like any other model.
+      - Make a Python model incremental where the warehouse supports it.
+    scenario: >
+      The shop has its net revenue per order in a SQL model. It adds a small Python model that reads that
+      result, keeps two columns, and returns them unchanged. The values must stay the same. The point is to
+      show the Python file is just another link in the chain, and that it only runs on a warehouse that
+      supports Python.
+    outcome: >
+      You will see the SQL input, the Python model, and a check that order 1042 and the 12,500-cent total come
+      through untouched.
+  title: |
+    Demo: a Python model reads a SQL model and gives the same totals
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

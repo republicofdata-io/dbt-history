@@ -1,235 +1,260 @@
 id: '1.7'
 label: v1.7
 title: Reproducible dependencies and shareable docs
-lead: |
-  Package locking makes resolved dependencies explicit. Static documentation is easier to share as a single generated file.
+lead: >
+  Package locking makes resolved dependencies explicit. Static documentation is easier to share as a single
+  generated file.
 problem_then: |
   Two environments can resolve a package range differently, complicating review and reproduction.
 what_changed:
-- id: change-1
-  summary: Package dependency locking and static documentation.
-  introduced_in: 1.7.0
-  adapter_constraints: null
-  evidence:
-  - src-1
-  confidence: high
-- id: change-2
-  summary: Saved-query semantic metadata; configurable seed delimiters.
-  introduced_in: 1.7.0
-  adapter_constraints: null
-  evidence:
-  - src-1
-  confidence: high
+  - id: change-1
+    summary: Package dependency locking and static documentation.
+    introduced_in: 1.7.0
+    adapter_constraints: null
+    evidence:
+      - src-1
+    confidence: high
+  - id: change-2
+    summary: Saved-query semantic metadata; configurable seed delimiters.
+    introduced_in: 1.7.0
+    adapter_constraints: null
+    evidence:
+      - src-1
+    confidence: high
 in_practice: |
   Commit the dependency lock when appropriate, then share documentation without needing a docs server.
-technical_detail: |
-  package-lock.yml records resolved dependencies. Do not hand-author a fake checksum or claim a fictional package existed in 2023. The example is a workflow comparison; actual lock content is omitted.
+technical_detail: >
+  package-lock.yml records resolved dependencies. Do not hand-author a fake checksum or claim a fictional
+  package existed in 2023. The example is a workflow comparison; actual lock content is omitted.
 milestones:
-- id: 1.7.0
-  kind: package
-  date: '2023-11-02'
-  precision: day
-  title: First published package
-  evidence:
-  - src-2
+  - id: 1.7.0
+    kind: package
+    date: '2023-11-02'
+    precision: day
+    title: First published package
+    evidence:
+      - src-2
 sources:
-- id: src-1
-  title: dbt 1.7 release evidence
-  url: https://github.com/dbt-labs/dbt/releases/tag/v1.7.0
-  retrieved: '2026-09-21'
-  supports: Tagged release changes; package upload and public announcement remain distinct.
-- id: src-2
-  title: dbt 1.7 package evidence
-  url: https://pypi.org/project/dbt-core/1.7.0/
-  retrieved: '2026-09-21'
-  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
-    from the package.
-  rechecked: '2026-09-22'
+  - id: src-1
+    title: dbt 1.7 release evidence
+    url: https://github.com/dbt-labs/dbt/releases/tag/v1.7.0
+    retrieved: '2026-09-21'
+    supports: Tagged release changes; package upload and public announcement remain distinct.
+  - id: src-2
+    title: dbt 1.7 package evidence
+    url: https://pypi.org/project/dbt-core/1.7.0/
+    retrieved: '2026-09-21'
+    supports: >-
+      Package existence and upload timestamp. Implementation claims refer to the original source archive
+      linked from the package.
+    rechecked: '2026-09-22'
 narrative_evidence:
-- src-1
-- src-2
+  - src-1
+  - src-2
 walkthrough:
   id: wt-1.7
-  learning_objective: |
-    See how a project becomes easier to reproduce and share.
-  context: |
-    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
+  learning_objective: >
+    See how dbt records the exact packages it installed, and how documentation can be generated as a single
+    file to share.
+  context: >
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
+    Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
   dataset_variant: base
   steps:
-  - id: range
-    title: Separate request from resolution
-    explanation: |
-      The fictional shared shop package stands for a dependency in this example.
-    state:
-      kind: comparison
-      title: Separate request from resolution
-      columns:
-      - concept
-      - meaning
-      rows:
-      - - requested dependency
-        - allowed package/version specification
-      - - resolved dependency
-        - specific version selected by dependency resolution
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      A version range is not an exact resolved environment.
-    evidence:
-    - src-1
-    - src-2
-    code:
-    - language: yaml
-      filename: packages.yml
-      content: |
-        packages:
-          - local: ../shared_shop
-      highlight_lines:
-      - 1
-      - 2
-      purpose: authored executable syntax; illustration only
-    - language: yaml
-      filename: ../shared_shop/dbt_project.yml
-      content: |
-        name: shared_shop
-        version: "1.0"
-        config-version: 2
-        macro-paths: [macros]
-      highlight_lines:
-      - 1
-      - 3
-      purpose: authored executable syntax; illustration only
-  - id: lock
-    title: Record the resolved dependencies
-    explanation: |
-      dbt deps creates or updates the lock file as appropriate.
-    state:
-      kind: comparison
-      title: Record the resolved dependencies
-      columns:
-      - project file
-      - purpose
-      rows:
-      - - packages.yml
-        - requested dependencies
-      - - package-lock.yml
-        - resolved dependency record
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      Review the lock when dependency resolution changes.
-    code:
-    - language: yaml
-      filename: packages.yml
-      content: |
-        packages:
-          - local: ../shared_shop
-      highlight_lines:
-      - 1
-      - 2
-      purpose: authored executable syntax; illustration only
-    - language: yaml
-      filename: ../shared_shop/dbt_project.yml
-      content: |
-        name: shared_shop
-        version: "1.0"
-        config-version: 2
-        macro-paths: [macros]
-      highlight_lines:
-      - 1
-      - 3
-      purpose: authored executable syntax; illustration only
-    - language: shell
-      filename: commands.sh
-      content: |
-        dbt deps
-      highlight_lines:
-      - 1
-    evidence:
-    - src-1
-    - src-2
-  - id: share
-    title: Generate static documentation
-    explanation: |
-      The output can be shared as project documentation, subject to its contents.
-    state:
-      kind: comparison
-      title: Generate static documentation
-      columns:
-      - command output
-      - reader sees
-      rows:
-      - - static documentation HTML
-        - shop definitions and lineage
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      Documentation can travel without a running docs server.
-    code:
-    - language: yaml
-      filename: models/schema.yml
-      content: |
-        version: 2
-        models:
-          - name: revenue_by_location
-            description: Payments minus refunds, in cents.
-            columns:
-              - name: revenue_cents
-                description: Net successful payments after refunds.
-      highlight_lines:
-      - 4
-      - 6
-      - 7
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/revenue_by_location.sql
-      content: |
-        select
-            r.location_id, l.name as location,
-            sum(r.payment_cents) as payment_cents,
-            sum(r.refund_cents) as refund_cents,
-            sum(r.revenue_cents) as revenue_cents
-        from {{ ref("order_revenue") }} as r
-        join raw.locations as l on r.location_id = l.location_id
-        group by r.location_id, l.name
-        order by r.location_id
-      highlight_lines:
-      - 3
-      - 4
-      - 5
-      purpose: authored executable syntax; illustration only
-    - language: shell
-      filename: commands.sh
-      content: |
-        dbt docs generate --static
-      highlight_lines:
-      - 1
-    evidence:
-    - src-1
-    - src-2
+    - id: range
+      title: 'Two ideas: what you asked for and what you got'
+      explanation: >
+        You are looking at two files. The highlighted lines in packages.yml ask for a package. Here it is a
+        local folder called shared_shop, standing in for any shared package. The highlighted lines in the
+        package's own project file show its name and config version. The result panel separates two ideas: the
+        request written in packages.yml, and the exact version dbt settles on when it installs.
+      state:
+        kind: comparison
+        title: Request versus resolution
+        columns:
+          - concept
+          - meaning
+        rows:
+          - - requested dependency
+            - allowed package/version specification
+          - - resolved dependency
+            - specific version selected by dependency resolution
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        A package request says what is allowed. It does not, by itself, say what was installed.
+      evidence:
+        - src-1
+        - src-2
+      code:
+        - language: yaml
+          filename: packages.yml
+          content: |
+            packages:
+              - local: ../shared_shop
+          highlight_lines:
+            - 1
+            - 2
+          purpose: authored executable syntax; illustration only
+        - language: yaml
+          filename: ../shared_shop/dbt_project.yml
+          content: |
+            name: shared_shop
+            version: "1.0"
+            config-version: 2
+            macro-paths: [macros]
+          highlight_lines:
+            - 1
+            - 3
+          purpose: authored executable syntax; illustration only
+    - id: lock
+      title: Write the lock file with dbt deps
+      explanation: >
+        The package files are unchanged. The new line is the highlighted command, dbt deps. It installs the
+        packages and writes package-lock.yml next to packages.yml. The result panel shows the two files and
+        their jobs: packages.yml holds the request, package-lock.yml holds the exact result. Commit both, and
+        the next install matches this one.
+      state:
+        kind: comparison
+        title: Two files, two jobs
+        columns:
+          - project file
+          - purpose
+        rows:
+          - - packages.yml
+            - requested dependencies
+          - - package-lock.yml
+            - resolved dependency record
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        dbt deps now writes a lock file, so every install of the project gets the same packages.
+      code:
+        - language: yaml
+          filename: packages.yml
+          content: |
+            packages:
+              - local: ../shared_shop
+          highlight_lines:
+            - 1
+            - 2
+          purpose: authored executable syntax; illustration only
+        - language: yaml
+          filename: ../shared_shop/dbt_project.yml
+          content: |
+            name: shared_shop
+            version: "1.0"
+            config-version: 2
+            macro-paths: [macros]
+          highlight_lines:
+            - 1
+            - 3
+          purpose: authored executable syntax; illustration only
+        - language: shell
+          filename: commands.sh
+          content: |
+            dbt deps
+          highlight_lines:
+            - 1
+      evidence:
+        - src-1
+        - src-2
+    - id: share
+      title: Generate the docs as one file
+      explanation: >
+        The highlighted lines in schema.yml are the descriptions that will appear in the documentation. The
+        highlighted lines in the model are the totals they describe. The highlighted command, dbt docs
+        generate with the --static flag, builds the documentation as a single HTML file. The result panel
+        shows what a reader gets: the shop's definitions and the links between models, with no server to run.
+      state:
+        kind: comparison
+        title: What the static docs contain
+        columns:
+          - command output
+          - reader sees
+        rows:
+          - - static documentation HTML
+            - shop definitions and lineage
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        The --static flag produces one documentation file that can be emailed or put on any web host.
+      code:
+        - language: yaml
+          filename: models/schema.yml
+          content: |
+            version: 2
+            models:
+              - name: revenue_by_location
+                description: Payments minus refunds, in cents.
+                columns:
+                  - name: revenue_cents
+                    description: Net successful payments after refunds.
+          highlight_lines:
+            - 4
+            - 6
+            - 7
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/revenue_by_location.sql
+          content: |
+            select
+                r.location_id, l.name as location,
+                sum(r.payment_cents) as payment_cents,
+                sum(r.refund_cents) as refund_cents,
+                sum(r.revenue_cents) as revenue_cents
+            from {{ ref("order_revenue") }} as r
+            join raw.locations as l on r.location_id = l.location_id
+            group by r.location_id, l.name
+            order by r.location_id
+          highlight_lines:
+            - 3
+            - 4
+            - 5
+          purpose: authored executable syntax; illustration only
+        - language: shell
+          filename: commands.sh
+          content: |
+            dbt docs generate --static
+          highlight_lines:
+            - 1
+      evidence:
+        - src-1
+        - src-2
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
-    - src-1
-    - src-2
-    limitations: |
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
-      The local shared_shop dependency is authored teaching material; it must exist at the shown sibling path. dbt deps resolves the project’s declarations; no lock-file hash or historical public package version is invented.
+      - src-1
+      - src-2
+    limitations: >
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
+      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
+      performance claims.
+
+      The local shared_shop dependency is authored teaching material; it must exist at the shown sibling path.
+      dbt deps resolves the project’s declarations; no lock-file hash or historical public package version is
+      invented.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
       method: Original source/archive and release documentation inspection; no historical dbt execution.
   intro:
     can_now:
-    - Record resolved dependencies in package-lock.yml.
-    - Generate a self-contained static documentation page.
-    scenario: |
-      The shop wants a repeatable dependency choice and documentation that can be shared without a docs server. The example shows the configuration behind both outputs.
-    outcome: |
-      Follow dependency resolution and static documentation generation without fabricating lock-file hashes.
+      - Keep a lock file, package-lock.yml, that records exactly which package versions were installed.
+      - Get the same packages on every machine, because installs follow the lock file.
+      - Generate the documentation site as a single HTML file that opens without a server.
+    scenario: >
+      The shop uses a shared package for common macros. It wants every teammate to install the same version of
+      it. It also wants to send the project documentation to a colleague who cannot run a docs server. This
+      walkthrough shows the files behind both.
+    outcome: >
+      Read the package request, the command that writes the lock file and the command that produces a
+      standalone docs page. No lock-file hashes are shown, because none were captured.
+  title: |
+    Demo: a lock file pins packages, and docs ship as one HTML file
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

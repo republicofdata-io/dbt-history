@@ -1,298 +1,327 @@
 id: '1.12'
 label: v1.12
 title: Preparing for the Rust engine
-lead: |
-  The Python line gains an optional path toward the Rust parser. Project variables and ad hoc SQL also get new entry points.
+lead: >
+  The Python line gains an optional path toward the Rust parser. Project variables and ad hoc SQL also get new
+  entry points.
 problem_then: |
   Teams need a way to prepare for the next engine while keeping the current project understandable.
 what_changed:
-- id: change-1
-  summary: Opt-in v2 Rust parser; vars.yml and ad hoc run-operation --sql.
-  introduced_in: 1.12.0
-  adapter_constraints: null
-  evidence:
-  - src-1
-  confidence: high
-- id: change-2
-  summary: Expanded UDFs, semantic definitions and catalogue integration; on_error configuration.
-  introduced_in: 1.12.0
-  adapter_constraints: null
-  evidence:
-  - src-1
-  confidence: high
-in_practice: |
-  Compare project behavior carefully when enabling a new parser; use small inspections to validate business expectations.
-technical_detail: |
-  PyPI and GitHub publication are July 16. The blog’s August 17 edit date is not substituted for the release date. The v2 parser is opt-in and requires an additional binary; this content makes no equivalence or performance claim from execution.
+  - id: change-1
+    summary: Opt-in v2 Rust parser; vars.yml and ad hoc run-operation --sql.
+    introduced_in: 1.12.0
+    adapter_constraints: null
+    evidence:
+      - src-1
+    confidence: high
+  - id: change-2
+    summary: Expanded UDFs, semantic definitions and catalogue integration; on_error configuration.
+    introduced_in: 1.12.0
+    adapter_constraints: null
+    evidence:
+      - src-1
+    confidence: high
+in_practice: >
+  Compare project behavior carefully when enabling a new parser; use small inspections to validate business
+  expectations.
+technical_detail: >
+  PyPI and GitHub publication are July 16. The blog’s August 17 edit date is not substituted for the release
+  date. The v2 parser is opt-in and requires an additional binary; this content makes no equivalence or
+  performance claim from execution.
 milestones:
-- id: 1.12.0
-  kind: package
-  date: '2026-07-16'
-  precision: day
-  title: First published package
-  evidence:
-  - src-3
-- id: product-2026-07-24
-  kind: product_event
-  date: '2026-07-24'
-  precision: day
-  title: Native App maintenance notice
-  evidence:
-  - src-4
+  - id: 1.12.0
+    kind: package
+    date: '2026-07-16'
+    precision: day
+    title: First published package
+    evidence:
+      - src-3
+  - id: product-2026-07-24
+    kind: product_event
+    date: '2026-07-24'
+    precision: day
+    title: Native App maintenance notice
+    evidence:
+      - src-4
 sources:
-- id: src-1
-  title: dbt 1.12 release evidence
-  url: https://github.com/dbt-labs/dbt/releases/tag/v1.12.0
-  retrieved: '2026-09-21'
-  supports: Tagged release changes; package upload and public announcement remain distinct.
-- id: src-2
-  title: dbt 1.12 package evidence
-  url: https://www.getdbt.com/blog/dbt-core-v1-12-is-ga
-  retrieved: '2026-09-21'
-  supports: Tagged release changes; package upload and public announcement remain distinct.
-- id: src-3
-  title: dbt 1.12 package evidence
-  url: https://pypi.org/project/dbt-core/1.12.0/
-  retrieved: '2026-09-21'
-  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
-    from the package.
-  rechecked: '2026-09-22'
-- id: src-4
-  title: Native App maintenance notice
-  url: https://www.getdbt.com/blog/retiring-the-dbt-snowflake-native-app
-  retrieved: '2026-09-21'
-  supports: dbt Snowflake Native App enters maintenance; new installations disabled; November removal announced.
-    It is still in maintenance at this research cutoff, not already removed. This is distinct from Snowflake's own
-    dbt Projects product.
-- id: src-5
-  title: 1.12.0 parser switches
-  url: https://files.pythonhosted.org/packages/50/a8/da65cff9c221b944040b35122ffcbaf0e7b583c6f0729a473c63d15536c5/dbt_core-1.12.0.tar.gz
-  retrieved: '2026-09-22'
-  supports: --use-v2-parser option and experimental parser command.
-  historical_scope: Syntax at the named immutable version; research cutoff remains 2026-09-21.
-  source_path: dbt/cli/params.py
-  sha256: f7d6a34f6600a371b8771e813f6b1566ab6d1fb8cea691619c791f527b1f8d7e
+  - id: src-1
+    title: dbt 1.12 release evidence
+    url: https://github.com/dbt-labs/dbt/releases/tag/v1.12.0
+    retrieved: '2026-09-21'
+    supports: Tagged release changes; package upload and public announcement remain distinct.
+  - id: src-2
+    title: dbt 1.12 package evidence
+    url: https://www.getdbt.com/blog/dbt-core-v1-12-is-ga
+    retrieved: '2026-09-21'
+    supports: Tagged release changes; package upload and public announcement remain distinct.
+  - id: src-3
+    title: dbt 1.12 package evidence
+    url: https://pypi.org/project/dbt-core/1.12.0/
+    retrieved: '2026-09-21'
+    supports: >-
+      Package existence and upload timestamp. Implementation claims refer to the original source archive
+      linked from the package.
+    rechecked: '2026-09-22'
+  - id: src-4
+    title: Native App maintenance notice
+    url: https://www.getdbt.com/blog/retiring-the-dbt-snowflake-native-app
+    retrieved: '2026-09-21'
+    supports: >-
+      dbt Snowflake Native App enters maintenance; new installations disabled; November removal announced. It
+      is still in maintenance at this research cutoff, not already removed. This is distinct from Snowflake's
+      own dbt Projects product.
+  - id: src-5
+    title: 1.12.0 parser switches
+    url: >-
+      https://files.pythonhosted.org/packages/50/a8/da65cff9c221b944040b35122ffcbaf0e7b583c6f0729a473c63d15536c5/dbt_core-1.12.0.tar.gz
+    retrieved: '2026-09-22'
+    supports: '--use-v2-parser option and experimental parser command.'
+    historical_scope: Syntax at the named immutable version; research cutoff remains 2026-09-21.
+    source_path: dbt/cli/params.py
+    sha256: f7d6a34f6600a371b8771e813f6b1566ab6d1fb8cea691619c791f527b1f8d7e
 narrative_evidence:
-- src-1
-- src-2
-- src-3
-- src-4
-- src-5
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
 walkthrough:
   id: wt-1.12
-  learning_objective: |
-    Inspect a known answer while understanding an optional parser transition.
-  context: |
-    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
+  learning_objective: >
+    See how to opt into the new parser, and how a quick ad hoc query confirms the project still gives the same
+    total.
+  context: >
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
+    Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
   dataset_variant: base
   steps:
-  - id: parser
-    title: Separate parser from warehouse work
-    explanation: |
-      The same project can be inspected through different supported parsing paths.
-    state:
-      kind: comparison
-      title: Separate parser from warehouse work
-      columns:
-      - path
-      - status in 1.12
-      rows:
-      - - Python-line parser
-        - existing path
-      - - v2 Rust parser
-        - opt-in path, extra binary
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      Opting into parsing does not mean every v2 feature is present.
-    evidence:
-    - src-1
-    - src-2
-    - src-3
-    - src-5
-    code:
-    - language: sql
-      filename: models/order_revenue.sql
-      content: |
-        select *, payment_cents - refund_cents as revenue_cents
-        from {{ ref("order_amounts") }}
-      highlight_lines:
-      - 1
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/revenue_by_location.sql
-      content: |
-        select
-            r.location_id, l.name as location,
-            sum(r.payment_cents) as payment_cents,
-            sum(r.refund_cents) as refund_cents,
-            sum(r.revenue_cents) as revenue_cents
-        from {{ ref("order_revenue") }} as r
-        join raw.locations as l on r.location_id = l.location_id
-        group by r.location_id, l.name
-        order by r.location_id
-      highlight_lines:
-      - 3
-      - 4
-      - 5
-      purpose: authored executable syntax; illustration only
-    - language: yaml
-      filename: dbt_project.yml (excerpt)
-      content: |
-        name: waffle_shop
-        version: "1.0"
-        config-version: 2
-        flags:
-          use_v2_parser: true
-      highlight_lines:
-      - 4
-      - 5
-    - language: shell
-      filename: commands.sh
-      content: |
-        dbt parse --no-use-v2-parser
-        dbt parse --use-v2-parser
-      highlight_lines:
-      - 1
-      - 2
-      purpose: authored executable syntax; illustration only
-  - id: inspect
-    title: Ask a small ad hoc question
-    explanation: |
-      Assume the existing revenue_by_location relation is already built in the active schema.
-    state:
-      kind: comparison
-      title: Ask a small ad hoc question
-      columns:
-      - question
-      - expected cents
-      rows:
-      - - sum of location revenue
-        - 12500
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      The expected answer comes from the fixture, not a fabricated terminal run.
-    code:
-    - language: sql
-      filename: inspection/total_revenue.sql
-      content: |
-        select sum(revenue_cents) as total_cents
-        from revenue_by_location
-      highlight_lines:
-      - 1
-      purpose: authored executable syntax; illustration only
-    - language: shell
-      filename: commands.sh
-      content: |
-        dbt run-operation --sql "select sum(revenue_cents) as total_cents from revenue_by_location"
-      highlight_lines:
-      - 1
-    evidence:
-    - src-1
-    - src-2
-    - src-3
-    - src-5
-  - id: compare
-    title: Keep the migration checks explicit
-    explanation: |
-      These are authoring expectations, not completed runtime tests.
-    state:
-      kind: comparison
-      title: Keep the migration checks explicit
-      columns:
-      - check
-      - expected condition
-      rows:
-      - - model references
-        - same intended dependencies
-      - - business total
-        - 12500 cents
-      - - parser warnings
-        - review before adopting the optional path
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      The transition needs observable checks, not an assumed speedup.
-    evidence:
-    - src-1
-    - src-2
-    - src-3
-    - src-5
-    code:
-    - language: sql
-      filename: models/order_revenue.sql
-      content: |
-        select *, payment_cents - refund_cents as revenue_cents
-        from {{ ref("order_amounts") }}
-      highlight_lines:
-      - 1
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/revenue_by_location.sql
-      content: |
-        select
-            r.location_id, l.name as location,
-            sum(r.payment_cents) as payment_cents,
-            sum(r.refund_cents) as refund_cents,
-            sum(r.revenue_cents) as revenue_cents
-        from {{ ref("order_revenue") }} as r
-        join raw.locations as l on r.location_id = l.location_id
-        group by r.location_id, l.name
-        order by r.location_id
-      highlight_lines:
-      - 3
-      - 4
-      - 5
-      purpose: authored executable syntax; illustration only
-    - language: yaml
-      filename: dbt_project.yml (excerpt)
-      content: |
-        name: waffle_shop
-        version: "1.0"
-        config-version: 2
-        flags:
-          use_v2_parser: true
-      highlight_lines:
-      - 4
-      - 5
-    - language: shell
-      filename: commands.sh
-      content: |
-        dbt parse --no-use-v2-parser
-        dbt parse --use-v2-parser
-      highlight_lines:
-      - 1
-      - 2
-      purpose: authored executable syntax; illustration only
+    - id: parser
+      title: Turn on the new parser
+      explanation: >
+        You are looking at two unchanged models and a project file. The parser is the step that reads every
+        model and works out how they connect. It is separate from the database work. The highlighted lines in
+        dbt_project.yml set the use_v2_parser flag. The highlighted commands parse the project both ways, old
+        parser and new, so the two can be compared. The result panel shows the two paths: the existing Python
+        parser and the new opt-in Rust one, which needs an extra program installed.
+      state:
+        kind: comparison
+        title: Two parsers, one project
+        columns:
+          - path
+          - status in 1.12
+        rows:
+          - - Python-line parser
+            - existing path
+          - - v2 Rust parser
+            - opt-in path, extra binary
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        The new parser is a switch you can turn on and off. It does not change what the models compute.
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+        - src-5
+      code:
+        - language: sql
+          filename: models/order_revenue.sql
+          content: |
+            select *, payment_cents - refund_cents as revenue_cents
+            from {{ ref("order_amounts") }}
+          highlight_lines:
+            - 1
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/revenue_by_location.sql
+          content: |
+            select
+                r.location_id, l.name as location,
+                sum(r.payment_cents) as payment_cents,
+                sum(r.refund_cents) as refund_cents,
+                sum(r.revenue_cents) as revenue_cents
+            from {{ ref("order_revenue") }} as r
+            join raw.locations as l on r.location_id = l.location_id
+            group by r.location_id, l.name
+            order by r.location_id
+          highlight_lines:
+            - 3
+            - 4
+            - 5
+          purpose: authored executable syntax; illustration only
+        - language: yaml
+          filename: dbt_project.yml (excerpt)
+          content: |
+            name: waffle_shop
+            version: "1.0"
+            config-version: 2
+            flags:
+              use_v2_parser: true
+          highlight_lines:
+            - 4
+            - 5
+        - language: shell
+          filename: commands.sh
+          content: |
+            dbt parse --no-use-v2-parser
+            dbt parse --use-v2-parser
+          highlight_lines:
+            - 1
+            - 2
+          purpose: authored executable syntax; illustration only
+    - id: inspect
+      title: Ask the database one quick question
+      explanation: >
+        The highlighted line is a one-line query: the sum of revenue across locations. The highlighted command
+        runs it straight from the command line with run-operation and the --sql flag, with no model file
+        needed. The result panel shows the expected answer, 12,500 cents. The table it reads,
+        revenue_by_location, is assumed to be already built.
+      state:
+        kind: comparison
+        title: Expected total
+        columns:
+          - question
+          - expected cents
+        rows:
+          - - sum of location revenue
+            - 12500
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        A one-off query from the command line confirms the total is still 12,500 cents.
+      code:
+        - language: sql
+          filename: inspection/total_revenue.sql
+          content: |
+            select sum(revenue_cents) as total_cents
+            from revenue_by_location
+          highlight_lines:
+            - 1
+          purpose: authored executable syntax; illustration only
+        - language: shell
+          filename: commands.sh
+          content: |
+            dbt run-operation --sql "select sum(revenue_cents) as total_cents from revenue_by_location"
+          highlight_lines:
+            - 1
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+        - src-5
+    - id: compare
+      title: What to compare before switching
+      explanation: >
+        The same models and settings are shown again, this time as a checklist. The result panel lists what
+        should match between the two parsers: the same dependencies between models, the same 12,500-cent
+        total, and no unexplained parser warnings. These are the checks to run. None of them has been captured
+        here.
+      state:
+        kind: comparison
+        title: Checks before adopting the new parser
+        columns:
+          - check
+          - expected condition
+        rows:
+          - - model references
+            - same intended dependencies
+          - - business total
+            - 12500 cents
+          - - parser warnings
+            - review before adopting the optional path
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        Adopt the new parser once dependencies, totals and warnings check out, not because it is faster.
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+        - src-5
+      code:
+        - language: sql
+          filename: models/order_revenue.sql
+          content: |
+            select *, payment_cents - refund_cents as revenue_cents
+            from {{ ref("order_amounts") }}
+          highlight_lines:
+            - 1
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/revenue_by_location.sql
+          content: |
+            select
+                r.location_id, l.name as location,
+                sum(r.payment_cents) as payment_cents,
+                sum(r.refund_cents) as refund_cents,
+                sum(r.revenue_cents) as revenue_cents
+            from {{ ref("order_revenue") }} as r
+            join raw.locations as l on r.location_id = l.location_id
+            group by r.location_id, l.name
+            order by r.location_id
+          highlight_lines:
+            - 3
+            - 4
+            - 5
+          purpose: authored executable syntax; illustration only
+        - language: yaml
+          filename: dbt_project.yml (excerpt)
+          content: |
+            name: waffle_shop
+            version: "1.0"
+            config-version: 2
+            flags:
+              use_v2_parser: true
+          highlight_lines:
+            - 4
+            - 5
+        - language: shell
+          filename: commands.sh
+          content: |
+            dbt parse --no-use-v2-parser
+            dbt parse --use-v2-parser
+          highlight_lines:
+            - 1
+            - 2
+          purpose: authored executable syntax; illustration only
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
-    - src-1
-    - src-2
-    - src-3
-    - src-4
-    - src-5
-    limitations: |
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
-      The parser switches are verified in 1.12.0 CLI parameters. The opt-in path needs the experimental parser binary; the model SQL is shown so parser comparison has a concrete input. No equality of runtime behavior is asserted from these illustrations.
+      - src-1
+      - src-2
+      - src-3
+      - src-4
+      - src-5
+    limitations: >
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
+      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
+      performance claims.
+
+      The parser switches are verified in 1.12.0 CLI parameters. The opt-in path needs the experimental parser
+      binary; the model SQL is shown so parser comparison has a concrete input. No equality of runtime
+      behavior is asserted from these illustrations.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
       method: Original source/archive and release documentation inspection; no historical dbt execution.
   intro:
     can_now:
-    - Opt into the v2 Rust parser while using the Python engine line.
-    - Move project variables into vars.yml.
-    - Execute an ad hoc SQL statement through run-operation --sql.
-    scenario: |
-      The shop prepares for the next parser while retaining a known revenue expectation. A small inspection checks the same total rather than assuming migration correctness.
-    outcome: |
-      Read parser configuration and the SQL behind the 12,500-cent check.
+      - Switch on the new Rust-based parser with a flag, while staying on the Python version of dbt.
+      - Keep project variables in their own file, vars.yml.
+      - Run a one-off SQL statement from the command line with run-operation and the --sql flag.
+    scenario: >
+      The shop wants to try the new parser, the part of dbt that reads the project files, before the next
+      major version makes it standard. It turns the flag on, then runs a quick query to confirm the revenue
+      total is still 12,500 cents. Nothing about the models changes.
+    outcome: >
+      Read the parser flag, the one-line query that checks the total and the list of things to compare before
+      adopting the new parser.
+  title: |
+    Demo: try the new Rust parser and check the numbers still add up
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.
 default_milestone: 1.12.0

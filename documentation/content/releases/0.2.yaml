@@ -1,329 +1,364 @@
 id: '0.2'
 label: v0.2
 title: Tests and a project workflow
-lead: |
-  The project gains a way to check the data it builds. A later patch also brings small CSV files into the workflow.
-problem_then: |
-  A successful SQL query could still produce untrustworthy data. There was no dbt test command in the earliest package.
+lead: >
+  The project gains a way to check the data it builds. A later patch also brings small CSV files into the
+  workflow.
+problem_then: >
+  A successful SQL query could still produce untrustworthy data. There was no dbt test command in the earliest
+  package.
 what_changed:
-- id: change-1
-  summary: Project initialization, dependency installation and the test command are available.
-  introduced_in: 0.2.0
-  adapter_constraints: null
-  evidence:
-  - src-1
-  confidence: high
-- id: change-2
-  summary: CSV seeds and accepted-values tests are added.
-  introduced_in: 0.2.3.0
-  adapter_constraints: null
-  evidence:
-  - src-3
-  confidence: high
+  - id: change-1
+    summary: Project initialization, dependency installation and the test command are available.
+    introduced_in: 0.2.0
+    adapter_constraints: null
+    evidence:
+      - src-1
+    confidence: high
+  - id: change-2
+    summary: CSV seeds and accepted-values tests are added.
+    introduced_in: 0.2.3.0
+    adapter_constraints: null
+    evidence:
+      - src-3
+    confidence: high
 in_practice: |
   Build the project, then inspect explicit data assertions. Treat the first seed command as a patch milestone.
-technical_detail: |
-  The initial package is 0.2.0. CSV seeds and accepted-values tests arrive in the real four-component version 0.2.3.0. This walkthrough uses a relationship assertion conceptually rather than backporting modern schema YAML.
+technical_detail: >
+  The initial package is 0.2.0. CSV seeds and accepted-values tests arrive in the real four-component version
+  0.2.3.0. This walkthrough uses a relationship assertion conceptually rather than backporting modern schema
+  YAML.
 milestones:
-- id: 0.2.0
-  kind: package
-  date: '2016-06-22'
-  precision: day
-  title: First published package
-  evidence:
-  - src-1
-- id: 0.2.3.0
-  kind: patch
-  date: '2016-07-15'
-  precision: day
-  title: CSV seed command and accepted-values tests
-  evidence:
-  - src-3
+  - id: 0.2.0
+    kind: package
+    date: '2016-06-22'
+    precision: day
+    title: First published package
+    evidence:
+      - src-1
+  - id: 0.2.3.0
+    kind: patch
+    date: '2016-07-15'
+    precision: day
+    title: CSV seed command and accepted-values tests
+    evidence:
+      - src-3
 sources:
-- id: src-1
-  title: dbt 0.2 package evidence
-  url: https://pypi.org/project/dbt/0.2.0/
-  retrieved: '2026-09-21'
-  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
-    from the package.
-  rechecked: '2026-09-22'
-- id: src-2
-  title: dbt 0.2 package evidence
-  url: https://pypi.org/pypi/dbt/json
-  retrieved: '2026-09-21'
-  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
-    from the package.
-- id: src-3
-  title: dbt 0.2.3.0 patch evidence
-  url: https://github.com/dbt-labs/dbt/releases/tag/v0.2.3.0
-  retrieved: '2026-09-21'
-  supports: CSV seed command and accepted-values tests
-- id: src-4
-  title: dbt 0.2.0 relationship implementation
-  url: https://files.pythonhosted.org/packages/5d/9b/4abc524d5daff661ecb2abceb7f273506a4f4e0cb5cadb8b33b4e65be4a8/dbt-0.2.0.tar.gz
-  retrieved: '2026-09-22'
-  supports: validate_relationships maps the declaring model to parent_table and to to child_table; query checks
-    child NOT IN parent.
-  source_path: dbt/schema_tester.py
-  sha256: 17f1e5c279a1676b312c667b9933448532fd209058a7b28189f109f4b9a08cf6
-- id: src-5
-  title: 0.2.0 package source
-  url: https://pypi.org/pypi/dbt/0.2.0/json
-  retrieved: '2026-09-22'
-  supports: Original schema_tester.py confirms reverse relationship orientation.
-  historical_scope: Syntax at the named immutable version; research cutoff remains 2026-09-21.
+  - id: src-1
+    title: dbt 0.2 package evidence
+    url: https://pypi.org/project/dbt/0.2.0/
+    retrieved: '2026-09-21'
+    supports: >-
+      Package existence and upload timestamp. Implementation claims refer to the original source archive
+      linked from the package.
+    rechecked: '2026-09-22'
+  - id: src-2
+    title: dbt 0.2 package evidence
+    url: https://pypi.org/pypi/dbt/json
+    retrieved: '2026-09-21'
+    supports: >-
+      Package existence and upload timestamp. Implementation claims refer to the original source archive
+      linked from the package.
+  - id: src-3
+    title: dbt 0.2.3.0 patch evidence
+    url: https://github.com/dbt-labs/dbt/releases/tag/v0.2.3.0
+    retrieved: '2026-09-21'
+    supports: CSV seed command and accepted-values tests
+  - id: src-4
+    title: dbt 0.2.0 relationship implementation
+    url: >-
+      https://files.pythonhosted.org/packages/5d/9b/4abc524d5daff661ecb2abceb7f273506a4f4e0cb5cadb8b33b4e65be4a8/dbt-0.2.0.tar.gz
+    retrieved: '2026-09-22'
+    supports: >-
+      validate_relationships maps the declaring model to parent_table and to to child_table; query checks
+      child NOT IN parent.
+    source_path: dbt/schema_tester.py
+    sha256: 17f1e5c279a1676b312c667b9933448532fd209058a7b28189f109f4b9a08cf6
+  - id: src-5
+    title: 0.2.0 package source
+    url: https://pypi.org/pypi/dbt/0.2.0/json
+    retrieved: '2026-09-22'
+    supports: Original schema_tester.py confirms reverse relationship orientation.
+    historical_scope: Syntax at the named immutable version; research cutoff remains 2026-09-21.
 narrative_evidence:
-- src-1
-- src-2
-- src-3
-- src-4
-- src-5
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
 walkthrough:
   id: wt-0.2
   learning_objective: |
-    Recognize the difference between a successful build and valid relationships.
-  context: |
-    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is orphan-payment. Each state below is an authored illustration.
+    Tell a build that succeeds apart from data that is right, using the first dbt test command.
+  context: >
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
+    Riverside 4,800. The selected fixture is orphan-payment. Each state below is an authored illustration.
   dataset_variant: orphan-payment
   steps:
-  - id: feed
-    title: A payment without an order
-    explanation: |
-      The orphan-payment variant adds one bad reference.
-    state:
-      kind: comparison
-      title: A payment without an order
-      columns:
-      - payment_id
-      - order_id
-      - amount_cents
-      rows:
-      - - 2099
-        - 9999
-        - 400
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      A valid payment row can refer to an absent order.
-    evidence:
-    - src-1
-    - src-2
-    - src-3
-    - src-4
-    - src-5
-    code:
-    - language: sql
-      filename: models/payments.sql
-      content: |
-        select payment_id, order_id, amount_cents
-        from raw.payments
-      highlight_lines:
-      - 1
-      - 2
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/orders.sql
-      content: |
-        select order_id, customer_id, location_id, ordered_at
-        from raw.orders
-      highlight_lines:
-      - 1
-      - 2
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: analyses/orphan_payments.sql
-      content: |
-        select p.payment_id, p.order_id, p.amount_cents
-        from {{ ref("payments") }} as p
-        left join {{ ref("orders") }} as o on p.order_id = o.order_id
-        where o.order_id is null
-      highlight_lines:
-      - 3
-      - 4
-      purpose: authored executable syntax; illustration only
-  - id: test
-    title: Check the relationship
-    explanation: |
-      A relationship assertion expects every payment order_id to exist in orders.
-    state:
-      kind: result
-      title: Check the relationship
-      columns:
-      - assertion
-      - expected_missing
-      - actual_missing
-      - offending_order_id
-      rows:
-      - - payments → orders
-        - 0
-        - 1
-        - 9999
-      result_status: fail
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      The data fails even if SQL builds successfully.
-    code:
-    - language: sql
-      filename: models/payments.sql
-      content: |
-        select payment_id, order_id, amount_cents
-        from raw.payments
-      highlight_lines:
-      - 1
-      - 2
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/orders.sql
-      content: |
-        select order_id, customer_id, location_id, ordered_at
-        from raw.orders
-      highlight_lines:
-      - 1
-      - 2
-      purpose: authored executable syntax; illustration only
-    - language: yaml
-      filename: models/schema.yml
-      content: |
-        orders:
-          constraints:
-            relationships:
-              - {from: order_id, to: payments, field: order_id}
-        payments:
-          constraints:
-            not_null:
-              - payment_id
-              - order_id
-      highlight_lines:
-      - 1
-      - 3
-      - 4
-      purpose: authored executable syntax; illustration only
-    - language: shell
-      filename: commands.sh
-      content: |
-        dbt test
-      highlight_lines:
-      - 1
-    evidence:
-    - src-1
-    - src-2
-    - src-3
-    - src-4
-    - src-5
-  - id: boundary
-    title: Keep the money discrepancy visible
-    explanation: |
-      Do not silently add the orphan to a location. Seeds enter this chapter only at 0.2.3.0.
-    state:
-      kind: comparison
-      title: Keep the money discrepancy visible
-      columns:
-      - measure
-      - cents
-      rows:
-      - - raw payments
-        - 14200
-      - - refunds
-        - 1300
-      - - unattributed payment
-        - 400
-      - - order-based revenue
-        - 12500
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      Tests expose money the business result cannot safely attribute.
-    evidence:
-    - src-1
-    - src-2
-    - src-3
-    - src-4
-    - src-5
-    code:
-    - language: sql
-      filename: models/order_amounts.sql
-      content: |
-        with paid as (
-            select order_id, sum(amount_cents) as payment_cents
-            from raw.payments group by order_id
-        ), refunded as (
-            select order_id, sum(amount_cents) as refund_cents
-            from raw.refunds group by order_id
-        )
-        select o.*, coalesce(p.payment_cents, 0) as payment_cents,
-            coalesce(r.refund_cents, 0) as refund_cents
-        from raw.orders as o
-        left join paid as p on o.order_id = p.order_id
-        left join refunded as r on o.order_id = r.order_id
-      highlight_lines:
-      - 2
-      - 5
-      - 8
-      - 9
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/order_revenue.sql
-      content: |
-        select *, payment_cents - refund_cents as revenue_cents
-        from {{ ref("order_amounts") }}
-      highlight_lines:
-      - 1
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/revenue_by_location.sql
-      content: |
-        select
-            r.location_id, l.name as location,
-            sum(r.payment_cents) as payment_cents,
-            sum(r.refund_cents) as refund_cents,
-            sum(r.revenue_cents) as revenue_cents
-        from {{ ref("order_revenue") }} as r
-        join raw.locations as l on r.location_id = l.location_id
-        group by r.location_id, l.name
-        order by r.location_id
-      highlight_lines:
-      - 3
-      - 4
-      - 5
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: analyses/unattributed_money.sql
-      content: |
-        select sum(p.amount_cents) as unattributed_cents
-        from {{ ref("payments") }} as p
-        left join {{ ref("orders") }} as o on p.order_id = o.order_id
-        where o.order_id is null
-      highlight_lines:
-      - 1
-      - 4
-      purpose: authored executable syntax; illustration only
+    - id: feed
+      title: A payment arrives for an order that does not exist
+      explanation: >
+        Two small models read the raw payments and orders tables; highlighted lines 1 and 2 of each just pass
+        the columns through. The third file is a query that looks for trouble. Highlighted lines 3 and 4 join
+        payments to orders and keep only the payments where no order was found. The result panel shows one
+        such payment: 400 cents against order 9999.
+      state:
+        kind: comparison
+        title: One payment with no matching order
+        columns:
+          - payment_id
+          - order_id
+          - amount_cents
+        rows:
+          - - 2099
+            - 9999
+            - 400
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        A payment row can point at an order that does not exist, and nothing in the build stops it.
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+        - src-4
+        - src-5
+      code:
+        - language: sql
+          filename: models/payments.sql
+          content: |
+            select payment_id, order_id, amount_cents
+            from raw.payments
+          highlight_lines:
+            - 1
+            - 2
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/orders.sql
+          content: |
+            select order_id, customer_id, location_id, ordered_at
+            from raw.orders
+          highlight_lines:
+            - 1
+            - 2
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: analyses/orphan_payments.sql
+          content: |
+            select p.payment_id, p.order_id, p.amount_cents
+            from {{ ref("payments") }} as p
+            left join {{ ref("orders") }} as o on p.order_id = o.order_id
+            where o.order_id is null
+          highlight_lines:
+            - 3
+            - 4
+          purpose: authored executable syntax; illustration only
+    - id: test
+      title: Declare the link and run dbt test
+      explanation: >
+        The schema file describes what should be true about the data. Highlighted lines 1, 3 and 4 declare a
+        relationship: every order_id in one table must exist in the other. The command file runs dbt test,
+        which turns that declaration into a query and counts the rows that break it. The result panel shows
+        the check between payments and orders: 0 missing expected, 1 found, order 9999. The status is fail.
+      state:
+        kind: result
+        title: The relationship test fails on order 9999
+        columns:
+          - assertion
+          - expected_missing
+          - actual_missing
+          - offending_order_id
+        rows:
+          - - payments → orders
+            - 0
+            - 1
+            - 9999
+        result_status: fail
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        The build succeeded but the test failed, because the data broke a rule the SQL never checked.
+      code:
+        - language: sql
+          filename: models/payments.sql
+          content: |
+            select payment_id, order_id, amount_cents
+            from raw.payments
+          highlight_lines:
+            - 1
+            - 2
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/orders.sql
+          content: |
+            select order_id, customer_id, location_id, ordered_at
+            from raw.orders
+          highlight_lines:
+            - 1
+            - 2
+          purpose: authored executable syntax; illustration only
+        - language: yaml
+          filename: models/schema.yml
+          content: |
+            orders:
+              constraints:
+                relationships:
+                  - {from: order_id, to: payments, field: order_id}
+            payments:
+              constraints:
+                not_null:
+                  - payment_id
+                  - order_id
+          highlight_lines:
+            - 1
+            - 3
+            - 4
+          purpose: authored executable syntax; illustration only
+        - language: shell
+          filename: commands.sh
+          content: |
+            dbt test
+          highlight_lines:
+            - 1
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+        - src-4
+        - src-5
+    - id: boundary
+      title: Keep the stray 400 cents visible
+      explanation: >
+        The revenue models start from orders. Highlighted lines 2 and 5 of order_amounts total payments and
+        refunds per order, and lines 8 and 9 attach those totals to each order. A payment with no order never
+        joins, so it is left out of the sums in highlighted lines 3 to 5 of the location model. The last file
+        adds up the left-out money instead: highlighted lines 1 and 4 sum payments with no matching order. The
+        result panel reconciles everything: 14,200 cents of raw payments, 1,300 of refunds, 400 unattributed,
+        12,500 of order-based revenue.
+      state:
+        kind: comparison
+        title: Where every cent went
+        columns:
+          - measure
+          - cents
+        rows:
+          - - raw payments
+            - 14200
+          - - refunds
+            - 1300
+          - - unattributed payment
+            - 400
+          - - order-based revenue
+            - 12500
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: >
+        The location totals stay correct at 12,500 cents, and the 400 cents that cannot be placed is reported
+        separately instead of hidden.
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+        - src-4
+        - src-5
+      code:
+        - language: sql
+          filename: models/order_amounts.sql
+          content: |
+            with paid as (
+                select order_id, sum(amount_cents) as payment_cents
+                from raw.payments group by order_id
+            ), refunded as (
+                select order_id, sum(amount_cents) as refund_cents
+                from raw.refunds group by order_id
+            )
+            select o.*, coalesce(p.payment_cents, 0) as payment_cents,
+                coalesce(r.refund_cents, 0) as refund_cents
+            from raw.orders as o
+            left join paid as p on o.order_id = p.order_id
+            left join refunded as r on o.order_id = r.order_id
+          highlight_lines:
+            - 2
+            - 5
+            - 8
+            - 9
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/order_revenue.sql
+          content: |
+            select *, payment_cents - refund_cents as revenue_cents
+            from {{ ref("order_amounts") }}
+          highlight_lines:
+            - 1
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/revenue_by_location.sql
+          content: |
+            select
+                r.location_id, l.name as location,
+                sum(r.payment_cents) as payment_cents,
+                sum(r.refund_cents) as refund_cents,
+                sum(r.revenue_cents) as revenue_cents
+            from {{ ref("order_revenue") }} as r
+            join raw.locations as l on r.location_id = l.location_id
+            group by r.location_id, l.name
+            order by r.location_id
+          highlight_lines:
+            - 3
+            - 4
+            - 5
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: analyses/unattributed_money.sql
+          content: |
+            select sum(p.amount_cents) as unattributed_cents
+            from {{ ref("payments") }} as p
+            left join {{ ref("orders") }} as o on p.order_id = o.order_id
+            where o.order_id is null
+          highlight_lines:
+            - 1
+            - 4
+          purpose: authored executable syntax; illustration only
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
-    - src-1
-    - src-2
-    - src-3
-    - src-4
-    - src-5
-    limitations: |
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
-      0.2.0 schema_tester.py checks child-table IDs against the model declaring the relationship. The rule therefore belongs under orders with to: payments, the reverse of later child-oriented syntax. dbt test is a separate command here; dependency-blocking dbt build arrives in 0.21.
+      - src-1
+      - src-2
+      - src-3
+      - src-4
+      - src-5
+    limitations: >
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
+      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
+      performance claims.
+
+      0.2.0 schema_tester.py checks child-table IDs against the model declaring the relationship. The rule
+      therefore belongs under orders with to: payments, the reverse of later child-oriented syntax. dbt test
+      is a separate command here; dependency-blocking dbt build arrives in 0.21.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
       method: Original source/archive and release documentation inspection; no historical dbt execution.
   intro:
     can_now:
-    - Check missing values, duplicate keys and relationships with the new test command.
-    - Initialize a project with the supplied starter configuration.
-    - From 0.2.3.0, load a small CSV lookup table with the seed command.
-    scenario: |
-      A 400-cent payment arrives for order 9999, which does not exist. The revenue query can still run, so the shop needs a separate check for money that cannot be attributed to a location.
-    outcome: |
-      See the historical relationship definition identify one violation while valid order-based revenue remains 12,500 cents.
+      - >-
+        Run one command, dbt test, to check for missing values, duplicate keys and broken links between
+        tables.
+      - Start a new project from a ready-made starter layout.
+      - >-
+        From patch 0.2.3.0, load a small CSV file, such as a list of locations, as a table with the seed
+        command.
+    scenario: >
+      A 400-cent payment arrives tagged to order 9999. No such order exists. The revenue query still runs and
+      still reports 12,500 cents, because it starts from orders and never sees the stray payment. The shop
+      needs a separate check that flags money it cannot tie to a location.
+    outcome: >
+      Watch the test command report one broken link, while revenue by location stays at 12,500 cents and the
+      stray 400 cents is shown on its own.
+  title: |
+    Demo: a relationship test catches a payment with no matching order
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

@@ -1,299 +1,332 @@
 id: '0.4'
 label: v0.4
 title: Materialization choices
-lead: |
-  Models can now be incremental or ephemeral. Waffle Shop can process new orders without rebuilding its entire order history.
+lead: >
+  Models can now be incremental or ephemeral. Waffle Shop can process new orders without rebuilding its entire
+  order history.
 problem_then: |
   A full rebuild repeats old work. Reusable intermediate SQL also need not always become a warehouse table.
 what_changed:
-- id: change-1
-  summary: Incremental and ephemeral models introduced in 0.4.0.
-  introduced_in: 0.4.0
-  adapter_constraints: null
-  evidence:
-  - src-1
-  confidence: high
-- id: change-2
-  summary: In-model config and this variable; enum materializations replace Boolean configuration.
-  introduced_in: 0.4.0
-  adapter_constraints: null
-  evidence:
-  - src-1
-  confidence: high
+  - id: change-1
+    summary: Incremental and ephemeral models introduced in 0.4.0.
+    introduced_in: 0.4.0
+    adapter_constraints: null
+    evidence:
+      - src-1
+    confidence: high
+  - id: change-2
+    summary: In-model config and this variable; enum materializations replace Boolean configuration.
+    introduced_in: 0.4.0
+    adapter_constraints: null
+    evidence:
+      - src-1
+    confidence: high
 in_practice: |
   Choose how a model is built as part of the project.
-technical_detail: |
-  The historical incremental filter is sql_where, used with this; do not substitute the later is_incremental pattern. This simple increasing-ID example assumes new records only and does not solve changed refunds or late updates.
+technical_detail: >
+  The historical incremental filter is sql_where, used with this; do not substitute the later is_incremental
+  pattern. This simple increasing-ID example assumes new records only and does not solve changed refunds or
+  late updates.
 milestones:
-- id: 0.4.0
-  kind: package
-  date: '2016-08-16'
-  precision: day
-  title: First published package
-  evidence:
-  - src-2
+  - id: 0.4.0
+    kind: package
+    date: '2016-08-16'
+    precision: day
+    title: First published package
+    evidence:
+      - src-2
 sources:
-- id: src-1
-  title: dbt 0.4 release evidence
-  url: https://github.com/dbt-labs/dbt/releases/tag/v0.4.0
-  retrieved: '2026-09-21'
-  supports: Tagged release changes; package upload and public announcement remain distinct.
-- id: src-2
-  title: dbt 0.4 package evidence
-  url: https://pypi.org/project/dbt/0.4.0/
-  retrieved: '2026-09-21'
-  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
-    from the package.
-  rechecked: '2026-09-22'
+  - id: src-1
+    title: dbt 0.4 release evidence
+    url: https://github.com/dbt-labs/dbt/releases/tag/v0.4.0
+    retrieved: '2026-09-21'
+    supports: Tagged release changes; package upload and public announcement remain distinct.
+  - id: src-2
+    title: dbt 0.4 package evidence
+    url: https://pypi.org/project/dbt/0.4.0/
+    retrieved: '2026-09-21'
+    supports: >-
+      Package existence and upload timestamp. Implementation claims refer to the original source archive
+      linked from the package.
+    rechecked: '2026-09-22'
 narrative_evidence:
-- src-1
-- src-2
+  - src-1
+  - src-2
 walkthrough:
   id: wt-0.4
-  learning_objective: |
-    Follow a first incremental append.
-  context: |
-    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is second-day. Each state below is an authored illustration.
+  learning_objective: >
+    Follow one incremental run: what is already stored, which rows are new, and what the table holds
+    afterwards.
+  context: >
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
+    Riverside 4,800. The selected fixture is second-day. Each state below is an authored illustration.
      The illustrative order_revenue_input relation is a full recalculation of order_revenue over the selected raw fixture; it is the input to the incremental target.
   dataset_variant: second-day
   steps:
-  - id: existing
-    title: Start with the first day
-    explanation: |
-      The existing order_revenue table contains the 12 base orders.
-    state:
-      kind: comparison
-      title: Start with the first day
-      columns:
-      - existing_orders
-      - maximum_order_id
-      - revenue_cents
-      rows:
-      - - 12
-        - 1052
-        - 12500
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      The target already contains the first day.
-    evidence:
-    - src-1
-    - src-2
-    code:
-    - language: sql
-      filename: models/order_amounts.sql
-      content: |
-        -- Fixture phase: Existing incremental target before second-day rows arrive.
-        with paid as (
-            select order_id, sum(amount_cents) as payment_cents
-            from raw.payments group by order_id
-        ), refunded as (
-            select order_id, sum(amount_cents) as refund_cents
-            from raw.refunds group by order_id
-        )
-        select o.*, coalesce(p.payment_cents, 0) as payment_cents,
-            coalesce(r.refund_cents, 0) as refund_cents
-        from raw.orders as o
-        left join paid as p on o.order_id = p.order_id
-        left join refunded as r on o.order_id = r.order_id
-      highlight_lines:
-      - 3
-      - 6
-      - 9
-      - 10
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/order_revenue.sql
-      content: |
-        -- Fixture phase: Existing incremental target before second-day rows arrive.
-        select *, payment_cents - refund_cents as revenue_cents
-        from {{ ref("order_amounts") }}
-      highlight_lines:
-      - 2
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/revenue_by_location.sql
-      content: |
-        -- Fixture phase: Existing incremental target before second-day rows arrive.
-        select
-            r.location_id, l.name as location,
-            sum(r.payment_cents) as payment_cents,
-            sum(r.refund_cents) as refund_cents,
-            sum(r.revenue_cents) as revenue_cents
-        from {{ ref("order_revenue") }} as r
-        join raw.locations as l on r.location_id = l.location_id
-        group by r.location_id, l.name
-        order by r.location_id
-      highlight_lines:
-      - 4
-      - 5
-      - 6
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: analyses/existing_target.sql
-      content: |
-        -- Fixture phase: Existing incremental target before second-day rows arrive.
-        select count(*) as existing_orders, max(order_id) as maximum_order_id,
-            sum(revenue_cents) as revenue_cents
-        from {{ ref("order_revenue") }}
-      highlight_lines:
-      - 2
-      - 3
-      purpose: authored executable syntax; illustration only
-    data_context:
-      dataset_variant: base
-      phase: Existing incremental target before second-day rows arrive.
-  - id: filter
-    title: Select two new orders
-    explanation: |
-      The second-day variant adds IDs above the stored maximum.
-    state:
-      kind: comparison
-      title: Select two new orders
-      columns:
-      - order_id
-      - location_id
-      - revenue_cents
-      rows:
-      - - 1053
-        - 1
-        - 500
-      - - 1054
-        - 2
-        - 1400
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      The historical filter selects new rows.
-    code:
-    - language: sql
-      filename: models/order_revenue.sql
-      content: |
-        {{ config(materialized="incremental",
-            sql_where="order_id > (select max(order_id) from {{ this }})") }}
-        select * from {{ ref("order_revenue_input") }}
-      highlight_lines:
-      - 1
-      - 2
-    - language: sql
-      filename: models/order_revenue_input.sql
-      content: |
-        -- Fixture phase: Current raw inputs include the added orders; the target still contains the base day.
-        select *, payment_cents - refund_cents as revenue_cents
-        from {{ ref("order_amounts") }}
-      highlight_lines:
-      - 2
-      purpose: authored executable syntax; illustration only
-    evidence:
-    - src-1
-    - src-2
-    data_context:
-      dataset_variant: second-day
-      phase: Current raw inputs include the added orders; the target still contains the base day.
-  - id: append
-    title: Read the updated totals
-    explanation: |
-      Append the two selected rows to the existing result.
-    state:
-      kind: comparison
-      title: Read the updated totals
-      columns:
-      - location
-      - revenue_cents
-      rows:
-      - - Old Port
-        - 3900
-      - - Mile End
-        - 5700
-      - - Riverside
-        - 4800
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      The total becomes 14,400 cents; update handling is a separate design choice.
-    evidence:
-    - src-1
-    - src-2
-    code:
-    - language: sql
-      filename: models/order_amounts.sql
-      content: |
-        -- Fixture phase: Target after the incremental append.
-        with paid as (
-            select order_id, sum(amount_cents) as payment_cents
-            from raw.payments group by order_id
-        ), refunded as (
-            select order_id, sum(amount_cents) as refund_cents
-            from raw.refunds group by order_id
-        )
-        select o.*, coalesce(p.payment_cents, 0) as payment_cents,
-            coalesce(r.refund_cents, 0) as refund_cents
-        from raw.orders as o
-        left join paid as p on o.order_id = p.order_id
-        left join refunded as r on o.order_id = r.order_id
-      highlight_lines:
-      - 3
-      - 6
-      - 9
-      - 10
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/order_revenue.sql
-      content: |
-        -- Fixture phase: Target after the incremental append.
-        select *, payment_cents - refund_cents as revenue_cents
-        from {{ ref("order_amounts") }}
-      highlight_lines:
-      - 2
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/revenue_by_location.sql
-      content: |
-        -- Fixture phase: Target after the incremental append.
-        select
-            r.location_id, l.name as location,
-            sum(r.payment_cents) as payment_cents,
-            sum(r.refund_cents) as refund_cents,
-            sum(r.revenue_cents) as revenue_cents
-        from {{ ref("order_revenue") }} as r
-        join raw.locations as l on r.location_id = l.location_id
-        group by r.location_id, l.name
-        order by r.location_id
-      highlight_lines:
-      - 4
-      - 5
-      - 6
-      purpose: authored executable syntax; illustration only
-    data_context:
-      dataset_variant: second-day
-      phase: Target after the incremental append.
+    - id: existing
+      title: 'Day one: twelve orders already stored'
+      explanation: >
+        These are the models as they stand after day one, before any new orders. Highlighted lines 3 and 6 of
+        order_amounts total payments and refunds per order, and lines 9 and 10 attach those totals to each
+        order. Highlighted line 2 of order_revenue subtracts refunds from payments. Highlighted lines 4 to 6
+        of the location model sum everything per location. The last file is a quick count of what the stored
+        table holds, on highlighted lines 2 and 3. The result panel shows 12 orders, a highest order id of
+        1052, and 12,500 cents of revenue.
+      state:
+        kind: comparison
+        title: What the table holds after day one
+        columns:
+          - existing_orders
+          - maximum_order_id
+          - revenue_cents
+        rows:
+          - - 12
+            - 1052
+            - 12500
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        The revenue table already holds day one, so day two should not have to start over.
+      evidence:
+        - src-1
+        - src-2
+      code:
+        - language: sql
+          filename: models/order_amounts.sql
+          content: |
+            -- Fixture phase: Existing incremental target before second-day rows arrive.
+            with paid as (
+                select order_id, sum(amount_cents) as payment_cents
+                from raw.payments group by order_id
+            ), refunded as (
+                select order_id, sum(amount_cents) as refund_cents
+                from raw.refunds group by order_id
+            )
+            select o.*, coalesce(p.payment_cents, 0) as payment_cents,
+                coalesce(r.refund_cents, 0) as refund_cents
+            from raw.orders as o
+            left join paid as p on o.order_id = p.order_id
+            left join refunded as r on o.order_id = r.order_id
+          highlight_lines:
+            - 3
+            - 6
+            - 9
+            - 10
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/order_revenue.sql
+          content: |
+            -- Fixture phase: Existing incremental target before second-day rows arrive.
+            select *, payment_cents - refund_cents as revenue_cents
+            from {{ ref("order_amounts") }}
+          highlight_lines:
+            - 2
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/revenue_by_location.sql
+          content: |
+            -- Fixture phase: Existing incremental target before second-day rows arrive.
+            select
+                r.location_id, l.name as location,
+                sum(r.payment_cents) as payment_cents,
+                sum(r.refund_cents) as refund_cents,
+                sum(r.revenue_cents) as revenue_cents
+            from {{ ref("order_revenue") }} as r
+            join raw.locations as l on r.location_id = l.location_id
+            group by r.location_id, l.name
+            order by r.location_id
+          highlight_lines:
+            - 4
+            - 5
+            - 6
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: analyses/existing_target.sql
+          content: |
+            -- Fixture phase: Existing incremental target before second-day rows arrive.
+            select count(*) as existing_orders, max(order_id) as maximum_order_id,
+                sum(revenue_cents) as revenue_cents
+            from {{ ref("order_revenue") }}
+          highlight_lines:
+            - 2
+            - 3
+          purpose: authored executable syntax; illustration only
+      data_context:
+        dataset_variant: base
+        phase: Existing incremental target before second-day rows arrive.
+    - id: filter
+      title: Pick out only the orders that are new
+      explanation: >
+        Highlighted lines 1 and 2 of order_revenue are the new part. Line 1 marks the model as incremental.
+        Line 2 sets sql_where, a filter dbt adds when it runs the model: keep only orders whose id is higher
+        than the highest id already in this table. The placeholder this stands for the model's own table. The
+        input model, highlighted line 2, recalculates revenue for every order in the raw data, new ones
+        included. The result panel shows the two rows the filter lets through: order 1053 at Old Port for 500
+        cents and order 1054 at Mile End for 1,400 cents.
+      state:
+        kind: comparison
+        title: The two orders the filter selects
+        columns:
+          - order_id
+          - location_id
+          - revenue_cents
+        rows:
+          - - 1053
+            - 1
+            - 500
+          - - 1054
+            - 2
+            - 1400
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        The filter compares the fresh data with what is already stored and keeps only the two new orders.
+      code:
+        - language: sql
+          filename: models/order_revenue.sql
+          content: |
+            {{ config(materialized="incremental",
+                sql_where="order_id > (select max(order_id) from {{ this }})") }}
+            select * from {{ ref("order_revenue_input") }}
+          highlight_lines:
+            - 1
+            - 2
+        - language: sql
+          filename: models/order_revenue_input.sql
+          content: >
+            -- Fixture phase: Current raw inputs include the added orders; the target still contains the base
+            day.
+
+            select *, payment_cents - refund_cents as revenue_cents
+
+            from {{ ref("order_amounts") }}
+          highlight_lines:
+            - 2
+          purpose: authored executable syntax; illustration only
+      evidence:
+        - src-1
+        - src-2
+      data_context:
+        dataset_variant: second-day
+        phase: Current raw inputs include the added orders; the target still contains the base day.
+    - id: append
+      title: Add the two rows and read the new totals
+      explanation: >
+        dbt inserts the two selected rows into the existing table. The twelve old rows are untouched. The same
+        location model as before, highlighted lines 4 to 6, sums payments, refunds and revenue. The result
+        panel shows Old Port up 500 to 3,900 cents, Mile End up 1,400 to 5,700 cents, and Riverside unchanged
+        at 4,800 cents. The total is now 14,400 cents.
+      state:
+        kind: comparison
+        title: Revenue by location after day two
+        columns:
+          - location
+          - revenue_cents
+        rows:
+          - - Old Port
+            - 3900
+          - - Mile End
+            - 5700
+          - - Riverside
+            - 4800
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: >
+        The table grew by two rows and 1,900 cents without a full rebuild; changes to old orders would need a
+        different approach, since this only adds rows.
+      evidence:
+        - src-1
+        - src-2
+      code:
+        - language: sql
+          filename: models/order_amounts.sql
+          content: |
+            -- Fixture phase: Target after the incremental append.
+            with paid as (
+                select order_id, sum(amount_cents) as payment_cents
+                from raw.payments group by order_id
+            ), refunded as (
+                select order_id, sum(amount_cents) as refund_cents
+                from raw.refunds group by order_id
+            )
+            select o.*, coalesce(p.payment_cents, 0) as payment_cents,
+                coalesce(r.refund_cents, 0) as refund_cents
+            from raw.orders as o
+            left join paid as p on o.order_id = p.order_id
+            left join refunded as r on o.order_id = r.order_id
+          highlight_lines:
+            - 3
+            - 6
+            - 9
+            - 10
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/order_revenue.sql
+          content: |
+            -- Fixture phase: Target after the incremental append.
+            select *, payment_cents - refund_cents as revenue_cents
+            from {{ ref("order_amounts") }}
+          highlight_lines:
+            - 2
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/revenue_by_location.sql
+          content: |
+            -- Fixture phase: Target after the incremental append.
+            select
+                r.location_id, l.name as location,
+                sum(r.payment_cents) as payment_cents,
+                sum(r.refund_cents) as refund_cents,
+                sum(r.revenue_cents) as revenue_cents
+            from {{ ref("order_revenue") }} as r
+            join raw.locations as l on r.location_id = l.location_id
+            group by r.location_id, l.name
+            order by r.location_id
+          highlight_lines:
+            - 4
+            - 5
+            - 6
+          purpose: authored executable syntax; illustration only
+      data_context:
+        dataset_variant: second-day
+        phase: Target after the incremental append.
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
-    - src-1
-    - src-2
-    limitations: |
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+      - src-1
+      - src-2
+    limitations: >
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
+      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
+      performance claims.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
       method: Original source/archive and release documentation inspection; no historical dbt execution.
   prepared_relations:
-  - name: order_revenue_input
-    definition: The dataset’s order_revenue definition evaluated over raw inputs; separate from the incremental
-      target.
+    - name: order_revenue_input
+      definition: >-
+        The dataset’s order_revenue definition evaluated over raw inputs; separate from the incremental
+        target.
   intro:
     can_now:
-    - Append new records through an incremental model instead of rebuilding its complete history.
-    - Reuse intermediate SQL without creating a separate table by using an ephemeral model.
-    - Choose materialization inside a model with the new config call.
-    scenario: |
-      Two new orders arrive on the second trading day. Waffle Shop wants to add their 1,900 cents without rewriting the twelve existing orders.
-    outcome: |
-      Trace the original sql_where filter and the resulting 14,400-cent total.
+      - Mark a model as incremental, so each run adds only the new rows instead of rebuilding the whole table.
+      - Mark a model as ephemeral, so its SQL is folded into the models that use it and no table is created.
+      - >-
+        Put these choices at the top of the model file itself, with a config call, instead of in the project
+        settings.
+    scenario: >
+      Day one is done: twelve orders worth 12,500 cents sit in the revenue table. On day two, two more orders
+      arrive, worth 1,900 cents. The shop wants those two rows added on, not the whole table rebuilt from
+      scratch.
+    outcome: >
+      Follow the filter that picks out only the new orders, and see the total move from 12,500 to 14,400
+      cents.
+  title: |
+    Demo: an incremental model adds two new orders without rebuilding the whole table
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

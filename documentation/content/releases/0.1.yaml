@@ -1,244 +1,273 @@
 id: '0.1'
 label: v0.1
 title: Earliest SQL build workflow
-lead: |
-  SQL files become inputs to a repeatable build. This earliest series still looks quite different from modern dbt.
+lead: >
+  SQL files become inputs to a repeatable build. This earliest series still looks quite different from modern
+  dbt.
 problem_then: |
   The shop has a revenue query but must repeatedly turn it into a database object by hand.
 what_changed:
-- id: sql-build
-  summary: Jinja-templated SQL compiled into database models.
-  introduced_in: 0.1.1
-  adapter_constraints: Redshift-oriented implementation.
-  evidence:
-  - src-1
-  confidence: high
-- id: ref-known-present
-  summary: ref() and deps are present by 0.1.14; first introduction is unresolved.
-  introduced_in: null
-  adapter_constraints: null
-  evidence:
-  - src-3
-  confidence: qualified
-  known_present_in: 0.1.14
-  introduction_uncertainty: Not present in 0.1.1; confirmed by inspection of 0.1.14.
-in_practice: |
-  A project can compile and build SQL definitions. Later in this series, ref-based dependencies are visible in the source.
-technical_detail: |
-  The first observed 0.1 package is 0.1.1, not 0.1.0. It uses Boolean materialization configuration and lacks ref() and a test command. ref()/deps are present by 0.1.14; the exact first introducing patch is not established.
+  - id: sql-build
+    summary: Jinja-templated SQL compiled into database models.
+    introduced_in: 0.1.1
+    adapter_constraints: Redshift-oriented implementation.
+    evidence:
+      - src-1
+    confidence: high
+  - id: ref-known-present
+    summary: ref() and deps are present by 0.1.14; first introduction is unresolved.
+    introduced_in: null
+    adapter_constraints: null
+    evidence:
+      - src-3
+    confidence: qualified
+    known_present_in: 0.1.14
+    introduction_uncertainty: Not present in 0.1.1; confirmed by inspection of 0.1.14.
+in_practice: >
+  A project can compile and build SQL definitions. Later in this series, ref-based dependencies are visible in
+  the source.
+technical_detail: >
+  The first observed 0.1 package is 0.1.1, not 0.1.0. It uses Boolean materialization configuration and lacks
+  ref() and a test command. ref()/deps are present by 0.1.14; the exact first introducing patch is not
+  established.
 milestones:
-- id: 0.1.1
-  kind: package
-  date: '2016-04-03'
-  precision: day
-  title: First published package
-  evidence:
-  - src-1
-- id: 0.1.14
-  kind: patch
-  date: '2016-05-06'
-  precision: day
-  title: ref()/deps present by this package; absence in 0.1.1 source confirmed
-  evidence:
-  - src-3
+  - id: 0.1.1
+    kind: package
+    date: '2016-04-03'
+    precision: day
+    title: First published package
+    evidence:
+      - src-1
+  - id: 0.1.14
+    kind: patch
+    date: '2016-05-06'
+    precision: day
+    title: ref()/deps present by this package; absence in 0.1.1 source confirmed
+    evidence:
+      - src-3
 sources:
-- id: src-1
-  title: dbt 0.1 package evidence
-  url: https://pypi.org/project/dbt/0.1.1/
-  retrieved: '2026-09-21'
-  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
-    from the package.
-  rechecked: '2026-09-22'
-- id: src-2
-  title: dbt 0.1 package evidence
-  url: https://pypi.org/pypi/dbt/json
-  retrieved: '2026-09-21'
-  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
-    from the package.
-- id: src-3
-  title: dbt 0.1.14 patch evidence
-  url: https://pypi.org/project/dbt/0.1.14/
-  retrieved: '2026-09-21'
-  supports: ref()/deps present by this package; absence in 0.1.1 source confirmed
+  - id: src-1
+    title: dbt 0.1 package evidence
+    url: https://pypi.org/project/dbt/0.1.1/
+    retrieved: '2026-09-21'
+    supports: >-
+      Package existence and upload timestamp. Implementation claims refer to the original source archive
+      linked from the package.
+    rechecked: '2026-09-22'
+  - id: src-2
+    title: dbt 0.1 package evidence
+    url: https://pypi.org/pypi/dbt/json
+    retrieved: '2026-09-21'
+    supports: >-
+      Package existence and upload timestamp. Implementation claims refer to the original source archive
+      linked from the package.
+  - id: src-3
+    title: dbt 0.1.14 patch evidence
+    url: https://pypi.org/project/dbt/0.1.14/
+    retrieved: '2026-09-21'
+    supports: ref()/deps present by this package; absence in 0.1.1 source confirmed
 narrative_evidence:
-- src-1
-- src-2
-- src-3
+  - src-1
+  - src-2
+  - src-3
 walkthrough:
   id: wt-0.1
-  learning_objective: |
-    Recognize what the first build workflow did without borrowing later syntax.
-  context: |
-    Waffle Shop still earns 12,500 cents. The example compares how the same rule is represented in 0.1.1 and in the later 0.1.14 patch.
+  learning_objective: >
+    See how the first dbt turned a SQL file into a rebuilt table, and how a later 0.1 patch let one model
+    refer to another.
+  context: >
+    Waffle Shop still earns 12,500 cents. The example compares how the same rule is represented in 0.1.1 and
+    in the later 0.1.14 patch.
   dataset_variant: base
   steps:
-  - id: query
-    title: Start with a model file
-    explanation: |
-      In the 0.1.1 illustration, the model reads raw relations directly.
-    state:
-      kind: table
-      title: Base revenue by location
-      columns:
-      - location_id
-      - location
-      - payment_cents
-      - refund_cents
-      - revenue_cents
-      rows:
-      - - 1
-        - Old Port
-        - 4400
-        - 1000
-        - 3400
-      - - 2
-        - Mile End
-        - 4600
-        - 300
-        - 4300
-      - - 3
-        - Riverside
-        - 4800
-        - 0
-        - 4800
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      A model is a saved SQL definition.
-    code:
-    - language: sql
-      filename: models/revenue_by_location.sql
-      content: |
-        with payment_totals as (
+    - id: query
+      title: Start with one SQL file
+      explanation: >
+        This is the whole revenue query saved as a model. A model is one SQL file that dbt turns into a table
+        or view. Highlighted lines 1 to 4 add up payments per order straight from the raw payments table.
+        There is no dbt shorthand yet, just plain table names. The result panel shows what this rule produces
+        for the three locations: 12,500 cents in all.
+      state:
+        kind: table
+        title: Revenue by location from the saved query
+        columns:
+          - location_id
+          - location
+          - payment_cents
+          - refund_cents
+          - revenue_cents
+        rows:
+          - - 1
+            - Old Port
+            - 4400
+            - 1000
+            - 3400
+          - - 2
+            - Mile End
+            - 4600
+            - 300
+            - 4300
+          - - 3
+            - Riverside
+            - 4800
+            - 0
+            - 4800
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        A model is a SQL query saved in a file, and dbt builds the table from it.
+      code:
+        - language: sql
+          filename: models/revenue_by_location.sql
+          content: |
+            with payment_totals as (
+                select order_id, sum(amount_cents) as payment_cents
+                from raw.payments
+                group by order_id
+            ), refund_totals as (
+                select order_id, sum(amount_cents) as refund_cents
+                from raw.refunds
+                group by order_id
+            )
+            select
+                orders.location_id,
+                sum(coalesce(payment_totals.payment_cents, 0)
+                    - coalesce(refund_totals.refund_cents, 0)) as revenue_cents
+            from raw.orders as orders
+            left join payment_totals on orders.order_id = payment_totals.order_id
+            left join refund_totals on orders.order_id = refund_totals.order_id
+            group by orders.location_id
+          highlight_lines:
+            - 1
+            - 2
+            - 3
+            - 4
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+    - id: config
+      title: Tell dbt to store the result as a table
+      explanation: >
+        This is the project settings file plus a second, smaller model. Highlighted line 2 of the settings
+        file is the only choice this release offers: materialized true means every model is written as a real
+        table, false means a view. Highlighted lines 1 to 3 of the payment model show how small a model can
+        be. The result panel lists what this first release has and does not have: no ref() shorthand and no
+        test command.
+      state:
+        kind: comparison
+        title: What release 0.1.1 offers
+        columns:
+          - setting
+          - meaning
+        rows:
+          - - 'materialized: true'
+            - table-backed model
+          - - ref()
+            - not available in this package
+          - - test command
+            - not available in this package
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: >
+        The first release stores models as tables with a single true or false setting, and the later ways of
+        choosing do not exist yet.
+      code:
+        - language: yaml
+          filename: dbt_project.yml (excerpt)
+          content: |
+            model-defaults:
+              materialized: true
+          highlight_lines:
+            - 2
+        - language: sql
+          filename: models/order_payments.sql
+          content: |
             select order_id, sum(amount_cents) as payment_cents
             from raw.payments
             group by order_id
-        ), refund_totals as (
-            select order_id, sum(amount_cents) as refund_cents
-            from raw.refunds
-            group by order_id
-        )
-        select
-            orders.location_id,
-            sum(coalesce(payment_totals.payment_cents, 0)
-                - coalesce(refund_totals.refund_cents, 0)) as revenue_cents
-        from raw.orders as orders
-        left join payment_totals on orders.order_id = payment_totals.order_id
-        left join refund_totals on orders.order_id = refund_totals.order_id
-        group by orders.location_id
-      highlight_lines:
-      - 1
-      - 2
-      - 3
-      - 4
-    evidence:
-    - src-1
-    - src-2
-    - src-3
-  - id: config
-    title: Choose a stored result
-    explanation: |
-      This 0.1.1 project excerpt uses the historical Boolean setting, before named materializations.
-    state:
-      kind: comparison
-      title: 0.1.1 project choice
-      columns:
-      - setting
-      - meaning
-      rows:
-      - - 'materialized: true'
-        - table-backed model
-      - - ref()
-        - not available in this package
-      - - test command
-        - not available in this package
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      The first release has its own configuration language.
-    code:
-    - language: yaml
-      filename: dbt_project.yml (excerpt)
-      content: |
-        model-defaults:
-          materialized: true
-      highlight_lines:
-      - 2
-    - language: sql
-      filename: models/order_payments.sql
-      content: |
-        select order_id, sum(amount_cents) as payment_cents
-        from raw.payments
-        group by order_id
-      highlight_lines:
-      - 1
-      - 2
-      - 3
-      purpose: authored executable syntax; illustration only
-    evidence:
-    - src-1
-    - src-2
-    - src-3
-  - id: patch
-    title: Advance to patch 0.1.14
-    explanation: |
-      The downloaded 0.1.14 source includes ref(). This is a later patch, not evidence for 0.1.1.
-    state:
-      kind: diagram
-      title: 0.1.14 dependency illustration
-      columns: []
-      rows: []
-      result_status: null
-      diagram:
-        nodes:
-        - id: order_revenue
-          label: order_revenue
-        - id: revenue
-          label: revenue_by_location
-        edges:
-        - from: order_revenue
-          to: revenue
-        highlight:
-        - revenue
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      Record the patch when showing a feature added during a series.
-    code:
-    - language: sql
-      filename: models/revenue_by_location.sql
-      content: |
-        select location_id, sum(revenue_cents) as revenue_cents
-        from {{ ref('order_revenue') }}
-        group by location_id
-      highlight_lines:
-      - 2
-    evidence:
-    - src-1
-    - src-2
-    - src-3
+          highlight_lines:
+            - 1
+            - 2
+            - 3
+          purpose: authored executable syntax; illustration only
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+    - id: patch
+      title: 'Jump to patch 0.1.14: one model points at another'
+      explanation: >
+        Same revenue rule, now in patch 0.1.14. Highlighted line 2 no longer names a raw table. It uses
+        ref('order_revenue'), a placeholder that dbt swaps for the real table name. The placeholder also tells
+        dbt that this model depends on order_revenue. The diagram shows that dependency: order_revenue is
+        built first, revenue by location after it.
+      state:
+        kind: diagram
+        title: One model depends on another (patch 0.1.14)
+        columns: []
+        rows: []
+        result_status: null
+        diagram:
+          nodes:
+            - id: order_revenue
+              label: order_revenue
+            - id: revenue
+              label: revenue_by_location
+          edges:
+            - from: order_revenue
+              to: revenue
+          highlight:
+            - revenue
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: >
+        By patch 0.1.14 a model can point at another model by name, and dbt uses that link to build things in
+        the right order.
+      code:
+        - language: sql
+          filename: models/revenue_by_location.sql
+          content: |
+            select location_id, sum(revenue_cents) as revenue_cents
+            from {{ ref('order_revenue') }}
+            group by location_id
+          highlight_lines:
+            - 2
+      evidence:
+        - src-1
+        - src-2
+        - src-3
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
-    - src-1
-    - src-2
-    - src-3
-    limitations: |
-      Illustration only. Early engine code targets Redshift; no local compatibility is claimed. The 0.1.1 project setting and 0.1.14 ref helper were inspected in original package source; the exact ref introduction patch remains unknown.
+      - src-1
+      - src-2
+      - src-3
+    limitations: >
+      Illustration only. Early engine code targets Redshift; no local compatibility is claimed. The 0.1.1
+      project setting and 0.1.14 ref helper were inspected in original package source; the exact ref
+      introduction patch remains unknown.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
       method: Original source/archive and release documentation inspection; no historical dbt execution.
   intro:
     can_now:
-    - Turn SQL files into stored models with the early Boolean materialization setting.
-    - By 0.1.14, refer to another model by name and let dbt track the dependency; the first introducing patch remains
-      uncertain.
-    scenario: |
-      Waffle Shop needs the same revenue calculation rebuilt every day. The example starts with 0.1.1 and then advances explicitly to the later 0.1.14 dependency workflow.
-    outcome: |
-      See the same revenue rule represented in two historical checkpoints without importing modern configuration.
+      - Save a revenue query as a file and have dbt build it as a table in the warehouse.
+      - Use one project-wide switch, materialized true or false, to store every model as a table or a view.
+      - >-
+        By patch 0.1.14, point one model at another by name and let dbt work out the build order. Which patch
+        first added this is still unconfirmed.
+    scenario: >
+      Waffle Shop wants its revenue by location recalculated every day. Instead of pasting a query into a
+      database console, the query lives in a file and dbt rebuilds the table from it. The walkthrough starts
+      at the first release, 0.1.1, then jumps to patch 0.1.14 to show one model referring to another.
+    outcome: >
+      See the same revenue rule at two points in the 0.1 series: first as a standalone SQL file, then as a
+      model that refers to another model by name.
+  title: |
+    Demo: a plain SQL file becomes a table that dbt rebuilds, and by 0.1.14 one model can point at another
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

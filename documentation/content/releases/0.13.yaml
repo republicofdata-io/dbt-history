@@ -1,334 +1,367 @@
 id: '0.13'
 label: v0.13
 title: Sources and adapter plugins
-lead: |
-  Sources become named inputs with freshness checks. A correct calculation can now sit beside a warning that its feed is too old.
+lead: >
+  Sources become named inputs with freshness checks. A correct calculation can now sit beside a warning that
+  its feed is too old.
 problem_then: |
   A table can contain internally consistent data while missing the latest business activity.
 what_changed:
-- id: change-1
-  summary: Sources with freshness checks.
-  introduced_in: 0.13.0
-  adapter_constraints: null
-  evidence:
-  - src-1
-  confidence: high
-- id: change-2
-  summary: Stable adapter API and separate adapter plugins; Presto adapter.
-  introduced_in: 0.13.0
-  adapter_constraints: null
-  evidence:
-  - src-1
-  confidence: high
+  - id: change-1
+    summary: Sources with freshness checks.
+    introduced_in: 0.13.0
+    adapter_constraints: null
+    evidence:
+      - src-1
+    confidence: high
+  - id: change-2
+    summary: Stable adapter API and separate adapter plugins; Presto adapter.
+    introduced_in: 0.13.0
+    adapter_constraints: null
+    evidence:
+      - src-1
+    confidence: high
 in_practice: |
   Treat source timeliness as a separate question from model correctness.
-technical_detail: |
-  The stale-payments variant supplies fixed freshness observations, not an extra timestamp column in the base payment table. The result is a prepared age comparison. Adapter plugins also become separate packages. run-operation is present in inspected 0.13 source but announced in 0.14 notes; its exact introduction remains unresolved.
+technical_detail: >
+  The stale-payments variant supplies fixed freshness observations, not an extra timestamp column in the base
+  payment table. The result is a prepared age comparison. Adapter plugins also become separate packages.
+  run-operation is present in inspected 0.13 source but announced in 0.14 notes; its exact introduction
+  remains unresolved.
 milestones:
-- id: 0.13.0
-  kind: package
-  date: '2019-03-21'
-  precision: day
-  title: First published package
-  evidence:
-  - src-2
+  - id: 0.13.0
+    kind: package
+    date: '2019-03-21'
+    precision: day
+    title: First published package
+    evidence:
+      - src-2
 sources:
-- id: src-1
-  title: dbt 0.13 release evidence
-  url: https://github.com/dbt-labs/dbt/releases/tag/v0.13.0
-  retrieved: '2026-09-21'
-  supports: Tagged release changes; package upload and public announcement remain distinct.
-- id: src-2
-  title: dbt 0.13 package evidence
-  url: https://pypi.org/project/dbt/0.13.0/
-  retrieved: '2026-09-21'
-  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
-    from the package.
-- id: src-3
-  title: Historical source archive reviewed for example syntax
-  url: https://pypi.org/project/dbt-core/0.13.0/
-  retrieved: '2026-09-21'
-  supports: Original source package and tagged release evidence for the example’s syntax; review is not runtime
-    execution.
-  rechecked: '2026-09-22'
-- id: src-4
-  title: 0.13.0 source freshness contracts
-  url: https://files.pythonhosted.org/packages/bf/a3/17c1ae78c3e92a23705a10193984952a8a2e67d1b8fd03d0b7cbbc883658/dbt-core-0.13.0.tar.gz
-  retrieved: '2026-09-22'
-  supports: Source table identifier, loaded_at_field and freshness thresholds.
-  historical_scope: Syntax at the named immutable version; research cutoff remains 2026-09-21.
-  source_path: dbt/contracts/graph/unparsed.py
-  sha256: cccd4beae7368aca61e44fb8e840da33085e549113e3f434f74e02be80af416f
+  - id: src-1
+    title: dbt 0.13 release evidence
+    url: https://github.com/dbt-labs/dbt/releases/tag/v0.13.0
+    retrieved: '2026-09-21'
+    supports: Tagged release changes; package upload and public announcement remain distinct.
+  - id: src-2
+    title: dbt 0.13 package evidence
+    url: https://pypi.org/project/dbt/0.13.0/
+    retrieved: '2026-09-21'
+    supports: >-
+      Package existence and upload timestamp. Implementation claims refer to the original source archive
+      linked from the package.
+  - id: src-3
+    title: Historical source archive reviewed for example syntax
+    url: https://pypi.org/project/dbt-core/0.13.0/
+    retrieved: '2026-09-21'
+    supports: >-
+      Original source package and tagged release evidence for the example’s syntax; review is not runtime
+      execution.
+    rechecked: '2026-09-22'
+  - id: src-4
+    title: 0.13.0 source freshness contracts
+    url: >-
+      https://files.pythonhosted.org/packages/bf/a3/17c1ae78c3e92a23705a10193984952a8a2e67d1b8fd03d0b7cbbc883658/dbt-core-0.13.0.tar.gz
+    retrieved: '2026-09-22'
+    supports: Source table identifier, loaded_at_field and freshness thresholds.
+    historical_scope: Syntax at the named immutable version; research cutoff remains 2026-09-21.
+    source_path: dbt/contracts/graph/unparsed.py
+    sha256: cccd4beae7368aca61e44fb8e840da33085e549113e3f434f74e02be80af416f
 narrative_evidence:
-- src-1
-- src-2
-- src-3
-- src-4
+  - src-1
+  - src-2
+  - src-3
+  - src-4
 walkthrough:
   id: wt-0.13
   learning_objective: |
-    Distinguish fresh data from valid arithmetic.
-  context: |
-    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is stale-payments. Each state below is an authored illustration.
+    Tell the difference between data that adds up correctly and data that arrived on time.
+  context: >
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
+    Riverside 4,800. The selected fixture is stale-payments. Each state below is an authored illustration.
   dataset_variant: stale-payments
   steps:
-  - id: clock
-    title: Inspect the feed observation
-    explanation: |
-      At noon on March 9 the last recorded payment load is 08:00.
-    state:
-      kind: comparison
-      title: Inspect the feed observation
-      columns:
-      - evaluation_utc
-      - last_loaded_utc
-      - age_hours
-      rows:
-      - - 2016-03-09 12:00
-        - 2016-03-09 08:00
-        - 4
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      Freshness measures elapsed time since a source update.
-    evidence:
-    - src-1
-    - src-2
-    - src-3
-    - src-4
-    code:
-    - language: sql
-      filename: setup/payments_feed.sql
-      content: |
-        create view raw.payments_feed as
-        select p.*, cast(
-            '2016-03-09 08:00:00' as timestamp
-        ) as loaded_at
-        from raw.payments as p;
-      highlight_lines:
-      - 2
-      - 3
-      - 4
-      purpose: authored executable syntax; illustration only
-    - language: yaml
-      filename: models/sources.yml
-      content: |
-        version: 2
-        sources:
-          - name: raw
-            schema: raw
-            tables:
-              - name: payments
-                identifier: payments_feed
-                loaded_at_field: loaded_at
-                freshness:
-                  warn_after: {count: 1, period: hour}
-                  error_after: {count: 3, period: hour}
-      highlight_lines:
-      - 7
-      - 8
-      - 9
-      - 10
-      - 11
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: analyses/payment_feed_age.sql
-      content: |
-        select max(loaded_at) as last_loaded_utc,
-            cast('2016-03-09 12:00:00' as timestamp) as evaluation_utc,
-            datediff(hour, max(loaded_at),
-                cast('2016-03-09 12:00:00' as timestamp)) as age_hours
-        from {{ source("raw", "payments") }}
-      highlight_lines:
-      - 2
-      - 3
-      - 4
-      purpose: authored executable syntax; illustration only
-  - id: threshold
-    title: Compare the thresholds
-    explanation: |
-      The fictional feed allows one hour before warning and three before error.
-    state:
-      kind: result
-      title: Compare the thresholds
-      columns:
-      - check
-      - expected
-      - actual
-      rows:
-      - - age before error
-        - at most 3 hours
-        - 4 hours
-      result_status: fail
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      This feed fails its timeliness expectation.
-    evidence:
-    - src-1
-    - src-2
-    - src-3
-    - src-4
-    code:
-    - language: yaml
-      filename: models/sources.yml
-      content: |
-        version: 2
-        sources:
-          - name: raw
-            schema: raw
-            tables:
-              - name: payments
-                identifier: payments_feed
-                loaded_at_field: loaded_at
-                freshness:
-                  warn_after: {count: 1, period: hour}
-                  error_after: {count: 3, period: hour}
-      highlight_lines:
-      - 7
-      - 8
-      - 9
-      - 10
-      - 11
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: analyses/payment_feed_age.sql
-      content: |
-        select max(loaded_at) as last_loaded_utc,
-            cast('2016-03-09 12:00:00' as timestamp) as evaluation_utc,
-            datediff(hour, max(loaded_at),
-                cast('2016-03-09 12:00:00' as timestamp)) as age_hours
-        from {{ source("raw", "payments") }}
-      highlight_lines:
-      - 2
-      - 3
-      - 4
-      purpose: authored executable syntax; illustration only
-    - language: shell
-      filename: commands.sh
-      content: |
-        dbt source snapshot-freshness
-      highlight_lines:
-      - 1
-      purpose: authored executable syntax; illustration only
-  - id: business
-    title: Separate two trust questions
-    explanation: |
-      The base rows still sum correctly even though the feed is stale.
-    state:
-      kind: table
-      title: Base revenue by location
-      columns:
-      - location_id
-      - location
-      - payment_cents
-      - refund_cents
-      - revenue_cents
-      rows:
-      - - 1
-        - Old Port
-        - 4400
-        - 1000
-        - 3400
-      - - 2
-        - Mile End
-        - 4600
-        - 300
-        - 4300
-      - - 3
-        - Riverside
-        - 4800
-        - 0
-        - 4800
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      Correct arithmetic is not proof that today’s data has arrived.
-    evidence:
-    - src-1
-    - src-2
-    - src-3
-    - src-4
-    code:
-    - language: sql
-      filename: models/payments.sql
-      content: |
-        select payment_id, order_id, amount_cents
-        from {{ source("raw", "payments") }}
-      highlight_lines:
-      - 2
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/order_amounts.sql
-      content: |
-        with paid as (
-            select order_id, sum(amount_cents) as payment_cents
-            from raw.payments group by order_id
-        ), refunded as (
-            select order_id, sum(amount_cents) as refund_cents
-            from raw.refunds group by order_id
-        )
-        select o.*, coalesce(p.payment_cents, 0) as payment_cents,
-            coalesce(r.refund_cents, 0) as refund_cents
-        from raw.orders as o
-        left join paid as p on o.order_id = p.order_id
-        left join refunded as r on o.order_id = r.order_id
-      highlight_lines:
-      - 2
-      - 5
-      - 8
-      - 9
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/order_revenue.sql
-      content: |
-        select *, payment_cents - refund_cents as revenue_cents
-        from {{ ref("order_amounts") }}
-      highlight_lines:
-      - 1
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/revenue_by_location.sql
-      content: |
-        select
-            r.location_id, l.name as location,
-            sum(r.payment_cents) as payment_cents,
-            sum(r.refund_cents) as refund_cents,
-            sum(r.revenue_cents) as revenue_cents
-        from {{ ref("order_revenue") }} as r
-        join raw.locations as l on r.location_id = l.location_id
-        group by r.location_id, l.name
-        order by r.location_id
-      highlight_lines:
-      - 3
-      - 4
-      - 5
-      purpose: authored executable syntax; illustration only
+    - id: clock
+      title: Check when the payment feed last loaded
+      explanation: >
+        Three files are shown. The first, highlighted on lines 2 to 4, stamps every payment row with the time
+        it was loaded: 08:00 on March 9. The YAML file, highlighted on lines 7 to 11, tells dbt which column
+        holds that timestamp and how old is too old. The third file is a query, highlighted on lines 2 to 4,
+        that compares the last load time to noon. The result panel shows the answer: the feed is four hours
+        old.
+      state:
+        kind: comparison
+        title: Age of the payment feed at noon
+        columns:
+          - evaluation_utc
+          - last_loaded_utc
+          - age_hours
+        rows:
+          - - 2016-03-09 12:00
+            - 2016-03-09 08:00
+            - 4
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        Freshness is simply how much time has passed since the raw table was last loaded.
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+        - src-4
+      code:
+        - language: sql
+          filename: setup/payments_feed.sql
+          content: |
+            create view raw.payments_feed as
+            select p.*, cast(
+                '2016-03-09 08:00:00' as timestamp
+            ) as loaded_at
+            from raw.payments as p;
+          highlight_lines:
+            - 2
+            - 3
+            - 4
+          purpose: authored executable syntax; illustration only
+        - language: yaml
+          filename: models/sources.yml
+          content: |
+            version: 2
+            sources:
+              - name: raw
+                schema: raw
+                tables:
+                  - name: payments
+                    identifier: payments_feed
+                    loaded_at_field: loaded_at
+                    freshness:
+                      warn_after: {count: 1, period: hour}
+                      error_after: {count: 3, period: hour}
+          highlight_lines:
+            - 7
+            - 8
+            - 9
+            - 10
+            - 11
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: analyses/payment_feed_age.sql
+          content: |
+            select max(loaded_at) as last_loaded_utc,
+                cast('2016-03-09 12:00:00' as timestamp) as evaluation_utc,
+                datediff(hour, max(loaded_at),
+                    cast('2016-03-09 12:00:00' as timestamp)) as age_hours
+            from {{ source("raw", "payments") }}
+          highlight_lines:
+            - 2
+            - 3
+            - 4
+          purpose: authored executable syntax; illustration only
+    - id: threshold
+      title: Compare the age with the allowed limits
+      explanation: >
+        The same YAML file is shown, with lines 7 to 11 highlighted. Line 10 says warn after one hour. Line 11
+        says error after three hours. The command file runs the dbt freshness check. The result panel compares
+        the limit with the actual age: at most three hours allowed, four hours observed. The check fails.
+      state:
+        kind: result
+        title: 'Freshness check: three hours allowed, four observed'
+        columns:
+          - check
+          - expected
+          - actual
+        rows:
+          - - age before error
+            - at most 3 hours
+            - 4 hours
+        result_status: fail
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        The payment feed is older than the three-hour limit, so its freshness check fails.
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+        - src-4
+      code:
+        - language: yaml
+          filename: models/sources.yml
+          content: |
+            version: 2
+            sources:
+              - name: raw
+                schema: raw
+                tables:
+                  - name: payments
+                    identifier: payments_feed
+                    loaded_at_field: loaded_at
+                    freshness:
+                      warn_after: {count: 1, period: hour}
+                      error_after: {count: 3, period: hour}
+          highlight_lines:
+            - 7
+            - 8
+            - 9
+            - 10
+            - 11
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: analyses/payment_feed_age.sql
+          content: |
+            select max(loaded_at) as last_loaded_utc,
+                cast('2016-03-09 12:00:00' as timestamp) as evaluation_utc,
+                datediff(hour, max(loaded_at),
+                    cast('2016-03-09 12:00:00' as timestamp)) as age_hours
+            from {{ source("raw", "payments") }}
+          highlight_lines:
+            - 2
+            - 3
+            - 4
+          purpose: authored executable syntax; illustration only
+        - language: shell
+          filename: commands.sh
+          content: |
+            dbt source snapshot-freshness
+          highlight_lines:
+            - 1
+          purpose: authored executable syntax; illustration only
+    - id: business
+      title: The arithmetic is still right
+      explanation: >
+        Four model files are shown. The payments model, highlighted on line 2, now reads the raw table through
+        source instead of naming it directly. The order_amounts model, highlighted on lines 2, 5, 8 and 9,
+        adds up payments and refunds per order. The last two models compute revenue per order and per
+        location. The result panel shows the usual three rows adding to 12,500 cents. Nothing is wrong with
+        the math. The data is simply four hours old.
+      state:
+        kind: table
+        title: Revenue by location on the stale feed
+        columns:
+          - location_id
+          - location
+          - payment_cents
+          - refund_cents
+          - revenue_cents
+        rows:
+          - - 1
+            - Old Port
+            - 4400
+            - 1000
+            - 3400
+          - - 2
+            - Mile End
+            - 4600
+            - 300
+            - 4300
+          - - 3
+            - Riverside
+            - 4800
+            - 0
+            - 4800
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: >
+        Correct arithmetic and fresh data are two separate questions, and this feed passes the first but fails
+        the second.
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+        - src-4
+      code:
+        - language: sql
+          filename: models/payments.sql
+          content: |
+            select payment_id, order_id, amount_cents
+            from {{ source("raw", "payments") }}
+          highlight_lines:
+            - 2
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/order_amounts.sql
+          content: |
+            with paid as (
+                select order_id, sum(amount_cents) as payment_cents
+                from raw.payments group by order_id
+            ), refunded as (
+                select order_id, sum(amount_cents) as refund_cents
+                from raw.refunds group by order_id
+            )
+            select o.*, coalesce(p.payment_cents, 0) as payment_cents,
+                coalesce(r.refund_cents, 0) as refund_cents
+            from raw.orders as o
+            left join paid as p on o.order_id = p.order_id
+            left join refunded as r on o.order_id = r.order_id
+          highlight_lines:
+            - 2
+            - 5
+            - 8
+            - 9
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/order_revenue.sql
+          content: |
+            select *, payment_cents - refund_cents as revenue_cents
+            from {{ ref("order_amounts") }}
+          highlight_lines:
+            - 1
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/revenue_by_location.sql
+          content: |
+            select
+                r.location_id, l.name as location,
+                sum(r.payment_cents) as payment_cents,
+                sum(r.refund_cents) as refund_cents,
+                sum(r.revenue_cents) as revenue_cents
+            from {{ ref("order_revenue") }} as r
+            join raw.locations as l on r.location_id = l.location_id
+            group by r.location_id, l.name
+            order by r.location_id
+          highlight_lines:
+            - 3
+            - 4
+            - 5
+          purpose: authored executable syntax; illustration only
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
-    - src-1
-    - src-2
-    - src-3
-    - src-4
-    limitations: |
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
-      The derived raw.payments_feed view adds the variant’s fixed loaded_at observation without altering base rows. The displayed four-hour age is computed by the Redshift analysis at the declared historical evaluation time; native freshness uses the actual warehouse clock, so running that command today would not produce four hours.
+      - src-1
+      - src-2
+      - src-3
+      - src-4
+    limitations: >
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
+      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
+      performance claims.
+
+      The derived raw.payments_feed view adds the variant’s fixed loaded_at observation without altering base
+      rows. The displayed four-hour age is computed by the Redshift analysis at the declared historical
+      evaluation time; native freshness uses the actual warehouse clock, so running that command today would
+      not produce four hours.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
       method: Original source/archive and release documentation inspection; no historical dbt execution.
   intro:
     can_now:
-    - Name raw inputs as sources and reference them with source.
-    - Set freshness thresholds and check whether a feed is too old.
-    - Install supported adapter plugins separately from Core.
-    scenario: |
-      At noon, the latest recorded payment load is four hours old. Its rows still reconcile, but the shop’s three-hour error threshold means the feed cannot be treated as current.
+      - >-
+        Give the raw tables a name in a YAML file and point models at them with source, so dbt knows where the
+        project's inputs come from.
+      - Say how old a raw table may be before dbt warns, and before it errors, then run one command to check.
+      - >-
+        Install the connector for your database (dbt calls it an adapter) as a separate package from dbt
+        itself.
+    scenario: >
+      It is noon on March 9. The last batch of payments landed at 08:00, four hours ago. The rows still add up
+      to the expected revenue. But Waffle Shop has said the payment feed must be no more than three hours old,
+      so the feed fails its freshness check.
     outcome: |
-      Compare correct arithmetic with a separately failing freshness expectation.
+      Compare a revenue calculation that is correct with a freshness check that fails on the same data.
+  title: |
+    Demo: the payment feed is four hours old, so a freshness check fails even though the numbers add up
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

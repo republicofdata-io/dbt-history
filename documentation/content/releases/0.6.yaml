@@ -6,218 +6,237 @@ lead: |
 problem_then: |
   Copying a calculation into several models makes later corrections easy to miss.
 what_changed:
-- id: change-1
-  summary: Macros, full-refresh control for incrementals and target context.
-  introduced_in: 0.6.0
-  adapter_constraints: null
-  evidence:
-  - src-1
-  confidence: high
-- id: change-2
-  summary: Run-level hooks and additional runtime materialization controls.
-  introduced_in: 0.6.0
-  adapter_constraints: null
-  evidence:
-  - src-1
-  confidence: high
+  - id: change-1
+    summary: Macros, full-refresh control for incrementals and target context.
+    introduced_in: 0.6.0
+    adapter_constraints: null
+    evidence:
+      - src-1
+    confidence: high
+  - id: change-2
+    summary: Run-level hooks and additional runtime materialization controls.
+    introduced_in: 0.6.0
+    adapter_constraints: null
+    evidence:
+      - src-1
+    confidence: high
 in_practice: |
   Change one macro, then compile the models that use it.
-technical_detail: |
-  Use a simple expression macro compatible with this era. Richer adapter/ref/var macro context belongs to later releases. Full-refresh is another change in this release; it rebuilds incremental tables when needed.
+technical_detail: >
+  Use a simple expression macro compatible with this era. Richer adapter/ref/var macro context belongs to
+  later releases. Full-refresh is another change in this release; it rebuilds incremental tables when needed.
 milestones:
-- id: 0.6.0
-  kind: package
-  date: '2016-12-22'
-  precision: day
-  title: First published package
-  evidence:
-  - src-3
-- id: product-2017-01
-  kind: product_event
-  date: 2017-01
-  precision: month
-  title: Sinter hosted experiment
-  evidence:
-  - src-4
+  - id: 0.6.0
+    kind: package
+    date: '2016-12-22'
+    precision: day
+    title: First published package
+    evidence:
+      - src-3
+  - id: product-2017-01
+    kind: product_event
+    date: 2017-01
+    precision: month
+    title: Sinter hosted experiment
+    evidence:
+      - src-4
 sources:
-- id: src-1
-  title: dbt 0.6 release evidence
-  url: https://github.com/dbt-labs/dbt/releases/tag/v0.6.0
-  retrieved: '2026-09-21'
-  supports: Tagged release changes; package upload and public announcement remain distinct.
-- id: src-2
-  title: dbt 0.6 release evidence
-  url: https://github.com/dbt-labs/dbt-core/blob/v0.13.0/CHANGELOG.md
-  retrieved: '2026-09-21'
-  supports: Tagged release changes; package upload and public announcement remain distinct.
-- id: src-3
-  title: dbt 0.6 package evidence
-  url: https://pypi.org/project/dbt/0.6.0/
-  retrieved: '2026-09-21'
-  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
-    from the package.
-  rechecked: '2026-09-22'
-- id: src-4
-  title: Sinter hosted experiment
-  url: https://www.getdbt.com/blog/whats-in-a-name
-  retrieved: '2026-09-21'
-  supports: Sinter launched as a hosted-services experiment and increasingly focused on scheduling/monitoring dbt.
-    Do not retroactively name it Cloud.
+  - id: src-1
+    title: dbt 0.6 release evidence
+    url: https://github.com/dbt-labs/dbt/releases/tag/v0.6.0
+    retrieved: '2026-09-21'
+    supports: Tagged release changes; package upload and public announcement remain distinct.
+  - id: src-2
+    title: dbt 0.6 release evidence
+    url: https://github.com/dbt-labs/dbt-core/blob/v0.13.0/CHANGELOG.md
+    retrieved: '2026-09-21'
+    supports: Tagged release changes; package upload and public announcement remain distinct.
+  - id: src-3
+    title: dbt 0.6 package evidence
+    url: https://pypi.org/project/dbt/0.6.0/
+    retrieved: '2026-09-21'
+    supports: >-
+      Package existence and upload timestamp. Implementation claims refer to the original source archive
+      linked from the package.
+    rechecked: '2026-09-22'
+  - id: src-4
+    title: Sinter hosted experiment
+    url: https://www.getdbt.com/blog/whats-in-a-name
+    retrieved: '2026-09-21'
+    supports: >-
+      Sinter launched as a hosted-services experiment and increasingly focused on scheduling/monitoring dbt.
+      Do not retroactively name it Cloud.
 narrative_evidence:
-- src-1
-- src-2
-- src-3
-- src-4
+  - src-1
+  - src-2
+  - src-3
+  - src-4
 walkthrough:
   id: wt-0.6
   learning_objective: |
-    See how a macro produces SQL rather than storing data.
-  context: |
-    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
+    See how a macro produces SQL text that models reuse, rather than storing data.
+  context: >
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
+    Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
   dataset_variant: base
   steps:
-  - id: repeat
-    title: Spot the repeated rule
-    explanation: |
-      Order 1042 has a partial refund.
-    state:
-      kind: comparison
-      title: Spot the repeated rule
-      columns:
-      - order_id
-      - payment_cents
-      - refund_cents
-      - net_cents
-      rows:
-      - - 1042
-        - 1200
-        - 200
-        - 1000
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      The same subtraction may appear in several models.
-    evidence:
-    - src-1
-    - src-2
-    - src-3
-    code:
-    - language: sql
-      filename: analyses/order_1042.sql
-      content: |
-        select order_id, payment_cents, refund_cents,
-            payment_cents - refund_cents as revenue_cents
-        from {{ ref("order_amounts") }}
-        where order_id = 1042
-      highlight_lines:
-      - 2
-      - 4
-      purpose: authored executable syntax; illustration only
-  - id: macro
-    title: Name the SQL expression
-    explanation: |
-      The macro accepts SQL expressions and emits subtraction.
-    state:
-      kind: comparison
-      title: Name the SQL expression
-      columns:
-      - macro
-      - input expressions
-      - emitted expression
-      rows:
-      - - net_cents
-        - payment_cents, refund_cents
-        - (payment_cents - refund_cents)
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      A macro generates SQL; it is not a warehouse table.
-    code:
-    - language: jinja
-      filename: macros/net_cents.sql
-      content: |
-        {% macro net_cents(payment, refund) %}
-            ({{ payment }} - {{ refund }})
-        {% endmacro %}
-      highlight_lines:
-      - 1
-      - 2
-      - 3
-    evidence:
-    - src-1
-    - src-2
-    - src-3
-  - id: use
-    title: Apply the shared definition
-    explanation: |
-      The input has already aggregated each payment and refund per order.
-    state:
-      kind: table
-      title: 'Order 1042: partial refund'
-      columns:
-      - order_id
-      - location
-      - payment_cents
-      - refund_cents
-      - revenue_cents
-      rows:
-      - - 1042
-        - Old Port
-        - 1200
-        - 200
-        - 1000
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      One definition preserves the 1,000-cent result.
-    code:
-    - language: sql
-      filename: models/order_revenue.sql
-      content: |
-        select order_id, {{ net_cents("payment_cents", "refund_cents") }} as revenue_cents
-        from {{ ref("order_amounts") }}
-      highlight_lines:
-      - 1
-      - 2
-    - language: jinja
-      filename: macros/net_cents.sql
-      content: |
-        {% macro net_cents(payment, refund) %}
-            ({{ payment }} - {{ refund }})
-        {% endmacro %}
-      highlight_lines:
-      - 1
-      - 2
-      - 3
-    evidence:
-    - src-1
-    - src-2
-    - src-3
+    - id: repeat
+      title: The same subtraction in every report
+      explanation: >
+        This query looks at one order. Highlighted line 2 is the rule that keeps getting retyped: payments
+        minus refunds. Highlighted line 4 narrows the query to order 1042. The result panel shows that the
+        order paid 1,200 cents and refunded 200, so its net is 1,000 cents.
+      state:
+        kind: comparison
+        title: Order 1042, worked by hand
+        columns:
+          - order_id
+          - payment_cents
+          - refund_cents
+          - net_cents
+        rows:
+          - - 1042
+            - 1200
+            - 200
+            - 1000
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: >
+        Payments minus refunds is typed out in several models, and each copy is a place a mistake could creep
+        in.
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+      code:
+        - language: sql
+          filename: analyses/order_1042.sql
+          content: |
+            select order_id, payment_cents, refund_cents,
+                payment_cents - refund_cents as revenue_cents
+            from {{ ref("order_amounts") }}
+            where order_id = 1042
+          highlight_lines:
+            - 2
+            - 4
+          purpose: authored executable syntax; illustration only
+    - id: macro
+      title: Give the expression a name
+      explanation: >
+        This file defines a macro. A macro is a small template: it takes inputs and produces text, here a
+        piece of SQL. Highlighted lines 1 to 3 name it net_cents, take two inputs, and produce the subtraction
+        in brackets. Nothing is stored in the database at this point. The result panel shows what goes in and
+        what comes out.
+      state:
+        kind: comparison
+        title: What the macro takes in and gives back
+        columns:
+          - macro
+          - input expressions
+          - emitted expression
+        rows:
+          - - net_cents
+            - payment_cents, refund_cents
+            - (payment_cents - refund_cents)
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        A macro produces SQL text; it is not a table and holds no data.
+      code:
+        - language: jinja
+          filename: macros/net_cents.sql
+          content: |
+            {% macro net_cents(payment, refund) %}
+                ({{ payment }} - {{ refund }})
+            {% endmacro %}
+          highlight_lines:
+            - 1
+            - 2
+            - 3
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+    - id: use
+      title: Call the macro from the revenue model
+      explanation: >
+        Highlighted line 1 of order_revenue calls net_cents with the two column names instead of typing the
+        subtraction. Before the query runs, dbt replaces that call with the SQL from highlighted lines 1 to 3
+        of the macro file. Highlighted line 2 reads from order_amounts, where payments and refunds are already
+        totalled per order. The result panel shows order 1042 again: 1,000 cents net, the same as before.
+      state:
+        kind: table
+        title: Order 1042 through the macro
+        columns:
+          - order_id
+          - location
+          - payment_cents
+          - refund_cents
+          - revenue_cents
+        rows:
+          - - 1042
+            - Old Port
+            - 1200
+            - 200
+            - 1000
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        The model now uses the shared definition and gets the same 1,000-cent answer.
+      code:
+        - language: sql
+          filename: models/order_revenue.sql
+          content: |
+            select order_id, {{ net_cents("payment_cents", "refund_cents") }} as revenue_cents
+            from {{ ref("order_amounts") }}
+          highlight_lines:
+            - 1
+            - 2
+        - language: jinja
+          filename: macros/net_cents.sql
+          content: |
+            {% macro net_cents(payment, refund) %}
+                ({{ payment }} - {{ refund }})
+            {% endmacro %}
+          highlight_lines:
+            - 1
+            - 2
+            - 3
+      evidence:
+        - src-1
+        - src-2
+        - src-3
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
-    - src-1
-    - src-2
-    - src-3
-    - src-4
-    limitations: |
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+      - src-1
+      - src-2
+      - src-3
+      - src-4
+    limitations: >
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
+      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
+      performance claims.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
       method: Original source/archive and release documentation inspection; no historical dbt execution.
   intro:
     can_now:
-    - Define a SQL expression once in a macro and reuse it in models.
-    - Rebuild an incremental model completely with full-refresh control.
-    scenario: |
-      Several reports subtract refunds from payments. Waffle Shop moves that repeated expression into a macro so the definition is easier to keep consistent.
+      - Write a piece of SQL once as a macro, a small template, and drop it into any model.
+      - Force an incremental model to rebuild from scratch with the full-refresh flag.
+    scenario: >
+      Several reports subtract refunds from payments. Each one types the subtraction by hand, so a change to
+      the rule means editing them all. The shop moves the expression into one macro. Order 1042, paid 1,200
+      cents and refunded 200, is the test case.
     outcome: |
-      See the macro definition, its call and the 1,000-cent net value of order 1042.
+      See the macro's definition, the line that calls it, and the same 1,000-cent net for order 1042.
+  title: |
+    Demo: a macro writes the payments-minus-refunds expression once and reuses it
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.
 default_milestone: 0.6.0

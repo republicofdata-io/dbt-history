@@ -6,370 +6,410 @@ lead: |
 problem_then: |
   One large incremental query can make backfills and repairs hard to isolate.
 what_changed:
-- id: change-1
-  summary: Microbatch incremental strategy and batch retry.
-  introduced_in: 1.9.0
-  adapter_constraints: Requires supported adapter and correctly configured event-time inputs; concurrency support
-    varies.
-  evidence:
-  - src-1
-  confidence: high
-- id: change-2
-  summary: YAML snapshots and new snapshot configuration.
-  introduced_in: 1.9.0
-  adapter_constraints: null
-  evidence:
-  - src-1
-  confidence: high
+  - id: change-1
+    summary: Microbatch incremental strategy and batch retry.
+    introduced_in: 1.9.0
+    adapter_constraints: Requires supported adapter and correctly configured event-time inputs; concurrency support varies.
+    evidence:
+      - src-1
+    confidence: high
+  - id: change-2
+    summary: YAML snapshots and new snapshot configuration.
+    introduced_in: 1.9.0
+    adapter_constraints: null
+    evidence:
+      - src-1
+    confidence: high
 in_practice: |
   Define event time and batch policy, then reason about which windows need rebuilding.
-technical_detail: |
-  Microbatch execution and parallelism depend on adapter support and event-time configuration on inputs. This walkthrough is a logical batch comparison, not a runnable cross-adapter recipe. YAML snapshot definitions are another release feature.
+technical_detail: >
+  Microbatch execution and parallelism depend on adapter support and event-time configuration on inputs. This
+  walkthrough is a logical batch comparison, not a runnable cross-adapter recipe. YAML snapshot definitions
+  are another release feature.
 milestones:
-- id: 1.9.0
-  kind: package
-  date: '2024-12-09'
-  precision: day
-  title: First published package
-  evidence:
+  - id: 1.9.0
+    kind: package
+    date: '2024-12-09'
+    precision: day
+    title: First published package
+    evidence:
+      - src-2
+  - id: product-2025-01-14
+    kind: product_event
+    date: '2025-01-14'
+    precision: day
+    title: SDF acquisition announced
+    evidence:
+      - src-3
+  - id: product-2025-04-23
+    kind: product_event
+    date: '2025-04-23'
+    precision: day
+    title: Datadog acquires Metaplane
+    evidence:
+      - src-4
+  - id: product-2025-05-28
+    kind: product_event
+    date: '2025-05-28'
+    precision: day
+    title: Fusion beta and platform naming
+    evidence:
+      - src-5
+      - src-6
+sources:
+  - id: src-1
+    title: dbt 1.9 release evidence
+    url: https://github.com/dbt-labs/dbt/releases/tag/v1.9.0
+    retrieved: '2026-09-21'
+    supports: Tagged release changes; package upload and public announcement remain distinct.
+  - id: src-2
+    title: dbt 1.9 package evidence
+    url: https://pypi.org/project/dbt-core/1.9.0/
+    retrieved: '2026-09-21'
+    supports: >-
+      Package existence and upload timestamp. Implementation claims refer to the original source archive
+      linked from the package.
+    rechecked: '2026-09-22'
+  - id: src-3
+    title: SDF acquisition announced
+    url: https://www.getdbt.com/blog/dbt-labs-announces-sdf-labs-acquisition
+    retrieved: '2026-09-21'
+    supports: >-
+      SDF Labs acquisition. Fusion's SQL comprehension lineage comes from SDF; a product-family diagram must
+      not imply every product was a fork of Core's code.
+  - id: src-4
+    title: Datadog acquires Metaplane
+    url: >-
+      https://investors.datadoghq.com/news-releases/news-release-details/datadog-brings-observability-data-teams-acquiring-metaplane
+    retrieved: '2026-09-21'
+    supports: >-
+      Datadog acquires Metaplane. [Datadog
+      announcement](https://investors.datadoghq.com/news-releases/news-release-details/datadog-brings-observability-data-teams-acquiring-metaplane)
+  - id: src-5
+    title: Fusion beta and platform naming
+    url: https://www.getdbt.com/blog/dbt-labs-redefines-dbt-with-new-fusion-engine
+    retrieved: '2026-09-21'
+    supports: Fusion and VS Code extension public beta. New development engine coexists with Python Core.
+  - id: src-6
+    title: Fusion beta and platform naming
+    url: https://www.getdbt.com/fusion-in-bloom
+    retrieved: '2026-09-21'
+    supports: Fusion and VS Code extension public beta. New development engine coexists with Python Core.
+  - id: src-7
+    title: 1.9.0 batch model configuration
+    url: >-
+      https://files.pythonhosted.org/packages/95/d9/f08c5459e0e84f9ba46a4a39970ccf743f24a53d6dbbc707b6e22cfb1e07/dbt_core-1.9.0.tar.gz
+    retrieved: '2026-09-22'
+    supports: Microbatch event_time, batch_size, begin and lookback fields.
+    historical_scope: Syntax at the named immutable version; research cutoff remains 2026-09-21.
+    source_path: dbt/artifacts/resources/v1/config.py
+    sha256: 2b4c19f190abff4280837ea8bab4e3e1e70b9a846bed397df970b628dd6c51cc
+narrative_evidence:
+  - src-1
   - src-2
-- id: product-2025-01-14
-  kind: product_event
-  date: '2025-01-14'
-  precision: day
-  title: SDF acquisition announced
-  evidence:
   - src-3
-- id: product-2025-04-23
-  kind: product_event
-  date: '2025-04-23'
-  precision: day
-  title: Datadog acquires Metaplane
-  evidence:
   - src-4
-- id: product-2025-05-28
-  kind: product_event
-  date: '2025-05-28'
-  precision: day
-  title: Fusion beta and platform naming
-  evidence:
   - src-5
   - src-6
-sources:
-- id: src-1
-  title: dbt 1.9 release evidence
-  url: https://github.com/dbt-labs/dbt/releases/tag/v1.9.0
-  retrieved: '2026-09-21'
-  supports: Tagged release changes; package upload and public announcement remain distinct.
-- id: src-2
-  title: dbt 1.9 package evidence
-  url: https://pypi.org/project/dbt-core/1.9.0/
-  retrieved: '2026-09-21'
-  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
-    from the package.
-  rechecked: '2026-09-22'
-- id: src-3
-  title: SDF acquisition announced
-  url: https://www.getdbt.com/blog/dbt-labs-announces-sdf-labs-acquisition
-  retrieved: '2026-09-21'
-  supports: SDF Labs acquisition. Fusion's SQL comprehension lineage comes from SDF; a product-family diagram must
-    not imply every product was a fork of Core's code.
-- id: src-4
-  title: Datadog acquires Metaplane
-  url: https://investors.datadoghq.com/news-releases/news-release-details/datadog-brings-observability-data-teams-acquiring-metaplane
-  retrieved: '2026-09-21'
-  supports: Datadog acquires Metaplane. [Datadog announcement](https://investors.datadoghq.com/news-releases/news-release-details/datadog-brings-observability-data-teams-acquiring-metaplane)
-- id: src-5
-  title: Fusion beta and platform naming
-  url: https://www.getdbt.com/blog/dbt-labs-redefines-dbt-with-new-fusion-engine
-  retrieved: '2026-09-21'
-  supports: Fusion and VS Code extension public beta. New development engine coexists with Python Core.
-- id: src-6
-  title: Fusion beta and platform naming
-  url: https://www.getdbt.com/fusion-in-bloom
-  retrieved: '2026-09-21'
-  supports: Fusion and VS Code extension public beta. New development engine coexists with Python Core.
-- id: src-7
-  title: 1.9.0 batch model configuration
-  url: https://files.pythonhosted.org/packages/95/d9/f08c5459e0e84f9ba46a4a39970ccf743f24a53d6dbbc707b6e22cfb1e07/dbt_core-1.9.0.tar.gz
-  retrieved: '2026-09-22'
-  supports: Microbatch event_time, batch_size, begin and lookback fields.
-  historical_scope: Syntax at the named immutable version; research cutoff remains 2026-09-21.
-  source_path: dbt/artifacts/resources/v1/config.py
-  sha256: 2b4c19f190abff4280837ea8bab4e3e1e70b9a846bed397df970b628dd6c51cc
-narrative_evidence:
-- src-1
-- src-2
-- src-3
-- src-4
-- src-5
-- src-6
-- src-7
+  - src-7
 walkthrough:
   id: wt-1.9
-  learning_objective: |
-    Repair a late order by revisiting its event-time day.
-  context: |
-    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is late-order. Each state below is an authored illustration.
+  learning_objective: >
+    See how a model split into daily batches can rebuild one past day when a late order arrives, without
+    touching the other days.
+  context: >
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
+    Riverside 4,800. The selected fixture is late-order. Each state below is an authored illustration.
   dataset_variant: late-order
   steps:
-  - id: days
-    title: Separate the first two trading days
-    explanation: |
-      The late-order variant extends the second day and adds one late first-day order.
-    state:
-      kind: comparison
-      title: Separate the first two trading days
-      columns:
-      - day
-      - before late order revenue_cents
-      rows:
-      - - '2016-03-08'
-        - 12500
-      - - '2016-03-09'
-        - 1900
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      Batch boundaries follow event time, not arrival time.
-    evidence:
-    - src-1
-    - src-2
-    - src-7
-    code:
-    - language: yaml
-      filename: models/order_revenue.yml
-      content: |
-        version: 2
-        models:
-          - name: order_revenue
-            config:
-              event_time: ordered_at
-      highlight_lines:
-      - 3
-      - 4
-      - 5
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/daily_revenue.sql
-      content: |
-        -- Fixture phase: Existing daily_revenue before late order 1055 arrives.
-        {{ config(materialized="incremental",
-            incremental_strategy="microbatch",
-            event_time="ordered_at", batch_size="day",
-            begin="2016-03-08", lookback=1) }}
-        select order_id, location_id, ordered_at, revenue_cents
-        from {{ ref("order_revenue") }}
-      highlight_lines:
-      - 2
-      - 3
-      - 4
-      - 5
-      - 7
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: analyses/revenue_by_day.sql
-      content: |
-        -- Fixture phase: Existing daily_revenue before late order 1055 arrives.
-        select cast(ordered_at as date) as trading_day,
-            sum(revenue_cents) as revenue_cents
-        from {{ ref("daily_revenue") }}
-        group by cast(ordered_at as date)
-        order by trading_day
-      highlight_lines:
-      - 2
-      - 3
-      purpose: authored executable syntax; illustration only
-    data_context:
-      dataset_variant: second-day
-      phase: Existing daily_revenue before late order 1055 arrives.
-  - id: late
-    title: Assign the late order to its original day
-    explanation: |
-      Order 1055 arrives on March 9 but belongs to March 8.
-    state:
-      kind: comparison
-      title: Assign the late order to its original day
-      columns:
-      - order_id
-      - event_day
-      - arrival_day
-      - revenue_cents
-      rows:
-      - - 1055
-        - '2016-03-08'
-        - '2016-03-09'
-        - 600
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      A lookback or explicit backfill must include the affected day.
-    evidence:
-    - src-1
-    - src-2
-    - src-7
-    code:
-    - language: yaml
-      filename: models/order_revenue.yml
-      content: |
-        version: 2
-        models:
-          - name: order_revenue
-            config:
-              event_time: ordered_at
-      highlight_lines:
-      - 3
-      - 4
-      - 5
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/daily_revenue.sql
-      content: |
-        -- Fixture phase: Upstream order_revenue has the late order; the batch target has not been repaired.
-        {{ config(materialized="incremental",
-            incremental_strategy="microbatch",
-            event_time="ordered_at", batch_size="day",
-            begin="2016-03-08", lookback=1) }}
-        select order_id, location_id, ordered_at, revenue_cents
-        from {{ ref("order_revenue") }}
-      highlight_lines:
-      - 2
-      - 3
-      - 4
-      - 5
-      - 7
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: analyses/late_order.sql
-      content: |
-        -- Fixture phase: Upstream order_revenue has the late order; the batch target has not been repaired.
-        select order_id, cast(ordered_at as date) as event_day,
-            revenue_cents
-        from {{ ref("order_revenue") }}
-        where order_id = 1055
-      highlight_lines:
-      - 2
-      - 5
-      purpose: authored executable syntax; illustration only
-    data_context:
-      dataset_variant: late-order
-      phase: Upstream order_revenue has the late order; the batch target has not been repaired.
-  - id: repair
-    title: Replace the affected batch result
-    explanation: |
-      Recomputing March 8 adds 600 cents without duplicating March 9.
-    state:
-      kind: comparison
-      title: Replace the affected batch result
-      columns:
-      - day
-      - after repair revenue_cents
-      rows:
-      - - '2016-03-08'
-        - 13100
-      - - '2016-03-09'
-        - 1900
-      - - all days
-        - 15000
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      The repaired location totals are 4,500, 5,700 and 4,800 cents.
-    evidence:
-    - src-1
-    - src-2
-    - src-7
-    code:
-    - language: yaml
-      filename: models/order_revenue.yml
-      content: |
-        version: 2
-        models:
-          - name: order_revenue
-            config:
-              event_time: ordered_at
-      highlight_lines:
-      - 3
-      - 4
-      - 5
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/daily_revenue.sql
-      content: |
-        -- Fixture phase: After refreshing the input and rebuilding the March 8 batch.
-        {{ config(materialized="incremental",
-            incremental_strategy="microbatch",
-            event_time="ordered_at", batch_size="day",
-            begin="2016-03-08", lookback=1) }}
-        select order_id, location_id, ordered_at, revenue_cents
-        from {{ ref("order_revenue") }}
-      highlight_lines:
-      - 2
-      - 3
-      - 4
-      - 5
-      - 7
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: analyses/revenue_by_day.sql
-      content: |
-        -- Fixture phase: After refreshing the input and rebuilding the March 8 batch.
-        select cast(ordered_at as date) as trading_day,
-            sum(revenue_cents) as revenue_cents
-        from {{ ref("daily_revenue") }}
-        group by cast(ordered_at as date)
-        order by trading_day
-      highlight_lines:
-      - 2
-      - 3
-      purpose: authored executable syntax; illustration only
-    - language: shell
-      filename: commands.sh
-      content: |
-        # First refresh order_revenue from the late-order fixture.
-        dbt run --select +order_revenue
-        dbt run --select daily_revenue \
-          --event-time-start "2016-03-08" \
-          --event-time-end "2016-03-09"
-      highlight_lines:
-      - 2
-      - 3
-      - 4
-      - 5
-      purpose: authored executable syntax; illustration only
-    data_context:
-      dataset_variant: late-order
-      phase: After refreshing the input and rebuilding the March 8 batch.
+    - id: days
+      title: Two trading days, before the late order
+      explanation: >
+        You are looking at three files. The highlighted lines in order_revenue.yml tell dbt that the
+        ordered_at column is the event time, the moment the order happened. The highlighted lines in
+        daily_revenue make the model incremental, meaning it only processes new data, and set it to microbatch
+        mode: one batch per day, starting on March 8, looking back one day on each run. The small query below
+        adds up revenue per day. The result panel shows the position before the late order: 12,500 cents on
+        March 8 and 1,900 on March 9.
+      state:
+        kind: comparison
+        title: Revenue per day before the late order
+        columns:
+          - day
+          - before late order revenue_cents
+        rows:
+          - - '2016-03-08'
+            - 12500
+          - - '2016-03-09'
+            - 1900
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        Each order lands in the batch for the day it happened, not the day it showed up in the database.
+      evidence:
+        - src-1
+        - src-2
+        - src-7
+      code:
+        - language: yaml
+          filename: models/order_revenue.yml
+          content: |
+            version: 2
+            models:
+              - name: order_revenue
+                config:
+                  event_time: ordered_at
+          highlight_lines:
+            - 3
+            - 4
+            - 5
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/daily_revenue.sql
+          content: |
+            -- Fixture phase: Existing daily_revenue before late order 1055 arrives.
+            {{ config(materialized="incremental",
+                incremental_strategy="microbatch",
+                event_time="ordered_at", batch_size="day",
+                begin="2016-03-08", lookback=1) }}
+            select order_id, location_id, ordered_at, revenue_cents
+            from {{ ref("order_revenue") }}
+          highlight_lines:
+            - 2
+            - 3
+            - 4
+            - 5
+            - 7
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: analyses/revenue_by_day.sql
+          content: |
+            -- Fixture phase: Existing daily_revenue before late order 1055 arrives.
+            select cast(ordered_at as date) as trading_day,
+                sum(revenue_cents) as revenue_cents
+            from {{ ref("daily_revenue") }}
+            group by cast(ordered_at as date)
+            order by trading_day
+          highlight_lines:
+            - 2
+            - 3
+          purpose: authored executable syntax; illustration only
+      data_context:
+        dataset_variant: second-day
+        phase: Existing daily_revenue before late order 1055 arrives.
+    - id: late
+      title: The late order belongs to March 8
+      explanation: >
+        The settings are unchanged. The highlighted lines in the small query pick out order 1055 and the day
+        it was placed. The result panel shows the clash: the order arrived on March 9, but its event day is
+        March 8, and it is worth 600 cents. The March 8 batch was already built, so it does not include this
+        order yet.
+      state:
+        kind: comparison
+        title: 'Order 1055: event day versus arrival day'
+        columns:
+          - order_id
+          - event_day
+          - arrival_day
+          - revenue_cents
+        rows:
+          - - 1055
+            - '2016-03-08'
+            - '2016-03-09'
+            - 600
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: >
+        A late order needs its original day rebuilt. The one-day lookback or an explicit date range has to
+        cover that day.
+      evidence:
+        - src-1
+        - src-2
+        - src-7
+      code:
+        - language: yaml
+          filename: models/order_revenue.yml
+          content: |
+            version: 2
+            models:
+              - name: order_revenue
+                config:
+                  event_time: ordered_at
+          highlight_lines:
+            - 3
+            - 4
+            - 5
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/daily_revenue.sql
+          content: >
+            -- Fixture phase: Upstream order_revenue has the late order; the batch target has not been
+            repaired.
+
+            {{ config(materialized="incremental",
+                incremental_strategy="microbatch",
+                event_time="ordered_at", batch_size="day",
+                begin="2016-03-08", lookback=1) }}
+            select order_id, location_id, ordered_at, revenue_cents
+
+            from {{ ref("order_revenue") }}
+          highlight_lines:
+            - 2
+            - 3
+            - 4
+            - 5
+            - 7
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: analyses/late_order.sql
+          content: >
+            -- Fixture phase: Upstream order_revenue has the late order; the batch target has not been
+            repaired.
+
+            select order_id, cast(ordered_at as date) as event_day,
+                revenue_cents
+            from {{ ref("order_revenue") }}
+
+            where order_id = 1055
+          highlight_lines:
+            - 2
+            - 5
+          purpose: authored executable syntax; illustration only
+      data_context:
+        dataset_variant: late-order
+        phase: Upstream order_revenue has the late order; the batch target has not been repaired.
+    - id: repair
+      title: Rebuild only March 8
+      explanation: >
+        The highlighted commands do the repair. The first refreshes order_revenue so it includes the late
+        order. The second runs daily_revenue for one batch only, from March 8 up to but not including March 9.
+        The result panel shows March 8 rising from 12,500 to 13,100 cents, March 9 staying at 1,900, and the
+        total now at 15,000.
+      state:
+        kind: comparison
+        title: Revenue per day after the repair
+        columns:
+          - day
+          - after repair revenue_cents
+        rows:
+          - - '2016-03-08'
+            - 13100
+          - - '2016-03-09'
+            - 1900
+          - - all days
+            - 15000
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: >
+        Rebuilding the March 8 batch adds the 600 cents, leaves March 9 untouched and brings the total to
+        15,000 cents.
+      evidence:
+        - src-1
+        - src-2
+        - src-7
+      code:
+        - language: yaml
+          filename: models/order_revenue.yml
+          content: |
+            version: 2
+            models:
+              - name: order_revenue
+                config:
+                  event_time: ordered_at
+          highlight_lines:
+            - 3
+            - 4
+            - 5
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/daily_revenue.sql
+          content: |
+            -- Fixture phase: After refreshing the input and rebuilding the March 8 batch.
+            {{ config(materialized="incremental",
+                incremental_strategy="microbatch",
+                event_time="ordered_at", batch_size="day",
+                begin="2016-03-08", lookback=1) }}
+            select order_id, location_id, ordered_at, revenue_cents
+            from {{ ref("order_revenue") }}
+          highlight_lines:
+            - 2
+            - 3
+            - 4
+            - 5
+            - 7
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: analyses/revenue_by_day.sql
+          content: |
+            -- Fixture phase: After refreshing the input and rebuilding the March 8 batch.
+            select cast(ordered_at as date) as trading_day,
+                sum(revenue_cents) as revenue_cents
+            from {{ ref("daily_revenue") }}
+            group by cast(ordered_at as date)
+            order by trading_day
+          highlight_lines:
+            - 2
+            - 3
+          purpose: authored executable syntax; illustration only
+        - language: shell
+          filename: commands.sh
+          content: |
+            # First refresh order_revenue from the late-order fixture.
+            dbt run --select +order_revenue
+            dbt run --select daily_revenue \
+              --event-time-start "2016-03-08" \
+              --event-time-end "2016-03-09"
+          highlight_lines:
+            - 2
+            - 3
+            - 4
+            - 5
+          purpose: authored executable syntax; illustration only
+      data_context:
+        dataset_variant: late-order
+        phase: After refreshing the input and rebuilding the March 8 batch.
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
-    - src-1
-    - src-2
-    - src-3
-    - src-4
-    - src-5
-    - src-6
-    - src-7
-    limitations: |
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
-      The added recipe targets Snowflake with a matching 1.9 adapter that implements microbatch. order_revenue must be refreshed from the selected fixture before the bounded repair; event_time is declared on that immediate input so automatic filtering applies. The March 8 repair ends at the exclusive March 9 boundary and leaves the existing March 9 batch intact.
+      - src-1
+      - src-2
+      - src-3
+      - src-4
+      - src-5
+      - src-6
+      - src-7
+    limitations: >
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
+      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
+      performance claims.
+
+      The added recipe targets Snowflake with a matching 1.9 adapter that implements microbatch. order_revenue
+      must be refreshed from the selected fixture before the bounded repair; event_time is declared on that
+      immediate input so automatic filtering applies. The March 8 repair ends at the exclusive March 9
+      boundary and leaves the existing March 9 batch intact.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
       method: Original source/archive and release documentation inspection; no historical dbt execution.
   intro:
     can_now:
-    - Build incremental models in event-time batches on supported adapters.
-    - Retry or backfill particular batch windows.
-    - Define snapshots in YAML.
-    scenario: |
-      A 600-cent order arrives late, after the shop has processed the second trading day. Its event timestamp still places the money in the first day’s batch.
-    outcome: |
-      Follow event-time configuration and a bounded repair to the 15,000-cent total.
+      - Build a large model in batches, one per day, based on when each event happened.
+      - Rebuild only the days affected by late data, by naming a start and end date on the command line.
+      - Retry just the batches that failed instead of the whole model.
+      - Define snapshots, the tables that keep a history of changes, in YAML instead of SQL.
+    scenario: >
+      The shop has processed two trading days. Then a 600-cent order from the first day arrives late, during
+      the second day. The daily revenue model needs to add it to March 8, not March 9, and it should not
+      disturb the March 9 figures while doing so.
+    outcome: >
+      Read the event-time settings, see which day the late order belongs to, and follow the one-day rebuild
+      that brings the total to 15,000 cents.
+  title: |
+    Demo: a late order is added back to its own trading day
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.
 default_milestone: 1.9.0

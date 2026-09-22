@@ -1,337 +1,369 @@
 id: '1.8'
 label: v1.8
 title: Native unit tests
-lead: |
-  Small input fixtures can test SQL logic before a full data build. A refund edge case becomes a focused unit test.
-problem_then: |
-  Tests over existing warehouse data can miss a case that has not arrived yet, or make the cause hard to isolate.
+lead: >
+  Small input fixtures can test SQL logic before a full data build. A refund edge case becomes a focused unit
+  test.
+problem_then: >
+  Tests over existing warehouse data can miss a case that has not arrived yet, or make the cause hard to
+  isolate.
 what_changed:
-- id: unit-tests
-  summary: Native SQL unit tests with controlled YAML fixtures.
-  introduced_in: 1.8.0
-  adapter_constraints: SQL model execution uses a supported target adapter; fixture/type limitations are adapter-specific.
-  evidence:
-  - src-1
-  confidence: high
-- id: empty
-  summary: Schema-only --empty builds and independently evolving Core/adapter internals.
-  introduced_in: 1.8.0
-  adapter_constraints: --empty still connects to and executes on a database.
-  evidence:
-  - src-1
-  confidence: high
-in_practice: |
-  The author specifies inputs and expected rows next to the model. A failure points directly to the business rule under test.
-technical_detail: |
-  Native SQL unit tests arrive in 1.8.0. They execute SQL through the target adapter; they are not an offline SQL validator. The fixture below isolates an existing order from the base data. --empty is also introduced here and still uses a database.
+  - id: unit-tests
+    summary: Native SQL unit tests with controlled YAML fixtures.
+    introduced_in: 1.8.0
+    adapter_constraints: SQL model execution uses a supported target adapter; fixture/type limitations are adapter-specific.
+    evidence:
+      - src-1
+    confidence: high
+  - id: empty
+    summary: Schema-only --empty builds and independently evolving Core/adapter internals.
+    introduced_in: 1.8.0
+    adapter_constraints: '--empty still connects to and executes on a database.'
+    evidence:
+      - src-1
+    confidence: high
+in_practice: >
+  The author specifies inputs and expected rows next to the model. A failure points directly to the business
+  rule under test.
+technical_detail: >
+  Native SQL unit tests arrive in 1.8.0. They execute SQL through the target adapter; they are not an offline
+  SQL validator. The fixture below isolates an existing order from the base data. --empty is also introduced
+  here and still uses a database.
 milestones:
-- id: 1.8.0
-  kind: package
-  date: '2024-05-09'
-  precision: day
-  title: First published package
-  evidence:
-  - src-2
-- id: product-2024-05-14
-  kind: product_event
-  date: '2024-05-14'
-  precision: day
-  title: Mesh, Explorer and Cloud CLI GA
-  evidence:
-  - src-4
-- id: product-2024-10-08
-  kind: product_event
-  date: '2024-10-08'
-  precision: day
-  title: Copilot announcement
-  evidence:
-  - src-5
+  - id: 1.8.0
+    kind: package
+    date: '2024-05-09'
+    precision: day
+    title: First published package
+    evidence:
+      - src-2
+  - id: product-2024-05-14
+    kind: product_event
+    date: '2024-05-14'
+    precision: day
+    title: Mesh, Explorer and Cloud CLI GA
+    evidence:
+      - src-4
+  - id: product-2024-10-08
+    kind: product_event
+    date: '2024-10-08'
+    precision: day
+    title: Copilot announcement
+    evidence:
+      - src-5
 sources:
-- id: src-1
-  title: dbt 1.8 release evidence
-  url: https://github.com/dbt-labs/dbt/releases/tag/v1.8.0
-  retrieved: '2026-09-21'
-  supports: Tagged release changes; package upload and public announcement remain distinct.
-- id: src-2
-  title: dbt 1.8 package evidence
-  url: https://pypi.org/project/dbt-core/1.8.0/
-  retrieved: '2026-09-21'
-  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
-    from the package.
-  rechecked: '2026-09-22'
-- id: src-3
-  title: Upgrade to dbt Core 1.8
-  url: https://docs.getdbt.com/docs/dbt-versions/dbt-upgrade/upgrading-to-v1.8
-  retrieved: '2026-09-21'
-  supports: Unit-test syntax, empty execution and adapter decoupling, as researched at cutoff.
-- id: src-4
-  title: Mesh, Explorer and Cloud CLI GA
-  url: https://www.getdbt.com/blog/new-dbt-cloud-enhancements-empower-organizations-with-trustworthy-data-at-scale
-  retrieved: '2026-09-21'
-  supports: Press announcement establishes GA Cloud CLI, Explorer's existing capabilities including column lineage,
-    and Mesh multi-project support. Assist and visual editor are beta. Advanced CI and automatic exposures are described
-    as beta coming soon.
-- id: src-5
-  title: Copilot announcement
-  url: https://www.getdbt.com/blog/dbt-labs-unveils-ai-innovations-and-new-features-to-improve-collaboration-and-multi-platform
-  retrieved: '2026-09-21'
-  supports: Copilot and expanded visual/multi-platform development announced at Coalesce. Don't automatically treat
-    all named capabilities as separately sold products or all previews as GA.
+  - id: src-1
+    title: dbt 1.8 release evidence
+    url: https://github.com/dbt-labs/dbt/releases/tag/v1.8.0
+    retrieved: '2026-09-21'
+    supports: Tagged release changes; package upload and public announcement remain distinct.
+  - id: src-2
+    title: dbt 1.8 package evidence
+    url: https://pypi.org/project/dbt-core/1.8.0/
+    retrieved: '2026-09-21'
+    supports: >-
+      Package existence and upload timestamp. Implementation claims refer to the original source archive
+      linked from the package.
+    rechecked: '2026-09-22'
+  - id: src-3
+    title: Upgrade to dbt Core 1.8
+    url: https://docs.getdbt.com/docs/dbt-versions/dbt-upgrade/upgrading-to-v1.8
+    retrieved: '2026-09-21'
+    supports: Unit-test syntax, empty execution and adapter decoupling, as researched at cutoff.
+  - id: src-4
+    title: Mesh, Explorer and Cloud CLI GA
+    url: >-
+      https://www.getdbt.com/blog/new-dbt-cloud-enhancements-empower-organizations-with-trustworthy-data-at-scale
+    retrieved: '2026-09-21'
+    supports: >-
+      Press announcement establishes GA Cloud CLI, Explorer's existing capabilities including column lineage,
+      and Mesh multi-project support. Assist and visual editor are beta. Advanced CI and automatic exposures
+      are described as beta coming soon.
+  - id: src-5
+    title: Copilot announcement
+    url: >-
+      https://www.getdbt.com/blog/dbt-labs-unveils-ai-innovations-and-new-features-to-improve-collaboration-and-multi-platform
+    retrieved: '2026-09-21'
+    supports: >-
+      Copilot and expanded visual/multi-platform development announced at Coalesce. Don't automatically treat
+      all named capabilities as separately sold products or all previews as GA.
 narrative_evidence:
-- src-1
-- src-2
-- src-3
-- src-4
-- src-5
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
 walkthrough:
   id: wt-1.8
-  learning_objective: |
-    See a controlled fixture catch an incorrect refund calculation.
-  context: |
-    Order 1042 at Old Port has a 1,200-cent payment and a 200-cent partial refund. Its correct revenue is 1,000 cents.
+  learning_objective: >
+    See how a small, fixed set of input rows can prove a model's calculation right or wrong without building
+    the whole project.
+  context: >
+    Order 1042 at Old Port has a 1,200-cent payment and a 200-cent partial refund. Its correct revenue is
+    1,000 cents.
   dataset_variant: base
   steps:
-  - id: refund
-    title: The refund problem
-    explanation: |
-      Revenue must subtract the refund from the successful payment.
-    state:
-      kind: table
-      title: 'Order 1042: partial refund'
-      columns:
-      - order_id
-      - location
-      - payment_cents
-      - refund_cents
-      - revenue_cents
-      rows:
-      - - 1042
-        - Old Port
-        - 1200
-        - 200
-        - 1000
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      The business expectation is 1,200 - 200 = 1,000 cents.
-    evidence:
-    - src-1
-    - src-2
-    - src-3
-    code:
-    - language: sql
-      filename: models/order_amounts.sql
-      content: |
-        with paid as (
-            select order_id, sum(amount_cents) as payment_cents
-            from raw.payments group by order_id
-        ), refunded as (
-            select order_id, sum(amount_cents) as refund_cents
-            from raw.refunds group by order_id
-        )
-        select o.*, coalesce(p.payment_cents, 0) as payment_cents,
-            coalesce(r.refund_cents, 0) as refund_cents
-        from raw.orders as o
-        left join paid as p on o.order_id = p.order_id
-        left join refunded as r on o.order_id = r.order_id
-      highlight_lines:
-      - 2
-      - 5
-      - 8
-      - 9
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: analyses/order_1042.sql
-      content: |
-        select order_id, payment_cents, refund_cents,
-            payment_cents - refund_cents as revenue_cents
-        from {{ ref("order_amounts") }}
-        where order_id = 1042
-      highlight_lines:
-      - 2
-      - 4
-      purpose: authored executable syntax; illustration only
-  - id: bug
-    title: The calculation has a bug
-    explanation: |
-      The plus sign produces 1,400 cents for this order.
-    state:
-      kind: result
-      title: Incorrect result
-      columns:
-      - order_id
-      - expected_cents
-      - actual_cents
-      rows:
-      - - 1042
-        - 1000
-        - 1400
-      result_status: fail
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      A plausible-looking query can apply the wrong business rule.
-    code:
-    - language: sql
-      filename: models/order_revenue.sql
-      content: |
-        select
-            order_id,
-            payment_cents + refund_cents as revenue_cents
-        from {{ ref('order_amounts') }}
-      highlight_lines:
-      - 3
-    - language: yaml
-      filename: models/order_revenue.yml
-      content: |
-        version: 2
-        unit_tests:
-          - name: subtract_partial_refund
-            model: order_revenue
-            given:
-              - input: ref('order_amounts')
-                rows:
-                  - {order_id: 1042, payment_cents: 1200, refund_cents: 200}
-            expect:
-              rows:
-                - {order_id: 1042, revenue_cents: 1000}
-      highlight_lines:
-      - 8
-      - 11
-    evidence:
-    - src-1
-    - src-2
-    - src-3
-  - id: fixture
-    title: Describe the case in YAML
-    explanation: |
-      The fixture supplies the input and the expected output for this model.
-    state:
-      kind: result
-      title: Unit-test expectation
-      columns:
-      - order_id
-      - payment_cents
-      - refund_cents
-      - expected_cents
-      - actual_buggy_cents
-      rows:
-      - - 1042
-        - 1200
-        - 200
-        - 1000
-        - 1400
-      result_status: fail
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      A small fixture makes the failure easy to explain.
-    code:
-    - language: yaml
-      filename: models/order_revenue.yml
-      content: |
-        version: 2
-        unit_tests:
-          - name: subtract_partial_refund
-            model: order_revenue
-            given:
-              - input: ref('order_amounts')
-                rows:
-                  - {order_id: 1042, payment_cents: 1200, refund_cents: 200}
-            expect:
-              rows:
-                - {order_id: 1042, revenue_cents: 1000}
-      highlight_lines:
-      - 8
-      - 11
-    - language: sql
-      filename: models/order_revenue.sql
-      content: |
-        select
-            order_id,
-            payment_cents + refund_cents as revenue_cents
-        from {{ ref('order_amounts') }}
-      highlight_lines:
-      - 3
-    evidence:
-    - src-1
-    - src-2
-    - src-3
-  - id: fixed
-    title: Apply the corrected calculation
-    explanation: |
-      Subtracting the refund gives the expected result for the same input.
-    state:
-      kind: result
-      title: Corrected unit-test illustration
-      columns:
-      - order_id
-      - expected_cents
-      - actual_cents
-      rows:
-      - - 1042
-        - 1000
-        - 1000
-      result_status: pass
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      The test protects the refund rule when the model changes again.
-    code:
-    - language: sql
-      filename: models/order_revenue.sql
-      content: |
-        select
-            order_id,
-            payment_cents - refund_cents as revenue_cents
-        from {{ ref('order_amounts') }}
-      highlight_lines:
-      - 3
-    - language: yaml
-      filename: models/order_revenue.yml
-      content: |
-        version: 2
-        unit_tests:
-          - name: subtract_partial_refund
-            model: order_revenue
-            given:
-              - input: ref('order_amounts')
-                rows:
-                  - {order_id: 1042, payment_cents: 1200, refund_cents: 200}
-            expect:
-              rows:
-                - {order_id: 1042, revenue_cents: 1000}
-      highlight_lines:
-      - 8
-      - 11
-    evidence:
-    - src-1
-    - src-2
-    - src-3
+    - id: refund
+      title: What the right answer looks like
+      explanation: >
+        You are looking at the model that assembles each order's payment and refund totals. The highlighted
+        lines sum payments and refunds per order and attach them to the order, using zero when there is none.
+        The small query below it pulls out order 1042. The result panel shows the correct picture: 1,200 paid,
+        200 refunded, 1,000 cents of revenue.
+      state:
+        kind: table
+        title: Order 1042 with its partial refund
+        columns:
+          - order_id
+          - location
+          - payment_cents
+          - refund_cents
+          - revenue_cents
+        rows:
+          - - 1042
+            - Old Port
+            - 1200
+            - 200
+            - 1000
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: >
+        Revenue for order 1042 must be 1,200 minus 200, or 1,000 cents. That is the rule the test will
+        protect.
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+      code:
+        - language: sql
+          filename: models/order_amounts.sql
+          content: |
+            with paid as (
+                select order_id, sum(amount_cents) as payment_cents
+                from raw.payments group by order_id
+            ), refunded as (
+                select order_id, sum(amount_cents) as refund_cents
+                from raw.refunds group by order_id
+            )
+            select o.*, coalesce(p.payment_cents, 0) as payment_cents,
+                coalesce(r.refund_cents, 0) as refund_cents
+            from raw.orders as o
+            left join paid as p on o.order_id = p.order_id
+            left join refunded as r on o.order_id = r.order_id
+          highlight_lines:
+            - 2
+            - 5
+            - 8
+            - 9
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: analyses/order_1042.sql
+          content: |
+            select order_id, payment_cents, refund_cents,
+                payment_cents - refund_cents as revenue_cents
+            from {{ ref("order_amounts") }}
+            where order_id = 1042
+          highlight_lines:
+            - 2
+            - 4
+          purpose: authored executable syntax; illustration only
+    - id: bug
+      title: A plus sign creeps in
+      explanation: >
+        The highlighted line in order_revenue now adds the refund instead of subtracting it. Below it is a
+        unit test written in YAML. Its highlighted lines give one input row for order 1042 and one expected
+        output row with revenue of 1,000 cents. The result panel compares expected to actual: the buggy model
+        returns 1,400 cents, so the test fails.
+      state:
+        kind: result
+        title: Test result on the buggy model
+        columns:
+          - order_id
+          - expected_cents
+          - actual_cents
+        rows:
+          - - 1042
+            - 1000
+            - 1400
+        result_status: fail
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        A one-character mistake in the SQL gives a wrong answer, and a unit test with one row exposes it.
+      code:
+        - language: sql
+          filename: models/order_revenue.sql
+          content: |
+            select
+                order_id,
+                payment_cents + refund_cents as revenue_cents
+            from {{ ref('order_amounts') }}
+          highlight_lines:
+            - 3
+        - language: yaml
+          filename: models/order_revenue.yml
+          content: |
+            version: 2
+            unit_tests:
+              - name: subtract_partial_refund
+                model: order_revenue
+                given:
+                  - input: ref('order_amounts')
+                    rows:
+                      - {order_id: 1042, payment_cents: 1200, refund_cents: 200}
+                expect:
+                  rows:
+                    - {order_id: 1042, revenue_cents: 1000}
+          highlight_lines:
+            - 8
+            - 11
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+    - id: fixture
+      title: How the test describes the case
+      explanation: >
+        This step reads the unit test file more slowly. The first highlighted line, under given, is the input
+        row: order 1042, 1,200 cents paid, 200 refunded. The second highlighted line, under expect, is the row
+        dbt should get back: 1,000 cents. dbt runs the model against only that one row, so no real data is
+        needed. The result panel puts the input, the expected value and the buggy value side by side.
+      state:
+        kind: result
+        title: Input row, expected row, buggy result
+        columns:
+          - order_id
+          - payment_cents
+          - refund_cents
+          - expected_cents
+          - actual_buggy_cents
+        rows:
+          - - 1042
+            - 1200
+            - 200
+            - 1000
+            - 1400
+        result_status: fail
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        A unit test is a tiny worked example: this row in, that row out. It makes the failure easy to read.
+      code:
+        - language: yaml
+          filename: models/order_revenue.yml
+          content: |
+            version: 2
+            unit_tests:
+              - name: subtract_partial_refund
+                model: order_revenue
+                given:
+                  - input: ref('order_amounts')
+                    rows:
+                      - {order_id: 1042, payment_cents: 1200, refund_cents: 200}
+                expect:
+                  rows:
+                    - {order_id: 1042, revenue_cents: 1000}
+          highlight_lines:
+            - 8
+            - 11
+        - language: sql
+          filename: models/order_revenue.sql
+          content: |
+            select
+                order_id,
+                payment_cents + refund_cents as revenue_cents
+            from {{ ref('order_amounts') }}
+          highlight_lines:
+            - 3
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+    - id: fixed
+      title: Restore the minus sign and the test passes
+      explanation: >
+        The highlighted line in order_revenue subtracts the refund again. The unit test is unchanged. The
+        result panel shows the test now passing: expected 1,000 cents, actual 1,000 cents.
+      state:
+        kind: result
+        title: Test result on the corrected model
+        columns:
+          - order_id
+          - expected_cents
+          - actual_cents
+        rows:
+          - - 1042
+            - 1000
+            - 1000
+        result_status: pass
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: >
+        With the subtraction restored the test passes, and it will fail again if anyone breaks the refund rule
+        later.
+      code:
+        - language: sql
+          filename: models/order_revenue.sql
+          content: |
+            select
+                order_id,
+                payment_cents - refund_cents as revenue_cents
+            from {{ ref('order_amounts') }}
+          highlight_lines:
+            - 3
+        - language: yaml
+          filename: models/order_revenue.yml
+          content: |
+            version: 2
+            unit_tests:
+              - name: subtract_partial_refund
+                model: order_revenue
+                given:
+                  - input: ref('order_amounts')
+                    rows:
+                      - {order_id: 1042, payment_cents: 1200, refund_cents: 200}
+                expect:
+                  rows:
+                    - {order_id: 1042, revenue_cents: 1000}
+          highlight_lines:
+            - 8
+            - 11
+      evidence:
+        - src-1
+        - src-2
+        - src-3
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
-    - src-1
-    - src-2
-    - src-3
-    - src-4
-    - src-5
-    limitations: |
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+      - src-1
+      - src-2
+      - src-3
+      - src-4
+      - src-5
+    limitations: >
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
+      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
+      performance claims.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
       method: Original source/archive and release documentation inspection; no historical dbt execution.
   intro:
     can_now:
-    - Write native SQL unit tests with small, controlled input fixtures.
-    - Run schema-only builds with --empty while still using a database.
-    scenario: |
-      Order 1042 has a 1,200-cent payment and a 200-cent refund. A plus sign mistakenly turns its correct 1,000-cent revenue into 1,400 cents.
-    outcome: |
-      See the model, fixture and expected rows catch the error, then pass after subtraction is restored.
+      - 'Write a unit test for a model: give it a few input rows and the rows you expect back.'
+      - Run those tests quickly, without loading the real data.
+      - Build every model with zero rows using the --empty flag, to check the SQL is valid before a full run.
+    scenario: >
+      Order 1042 at Old Port has a 1,200-cent payment and a 200-cent partial refund, so its revenue should be
+      1,000 cents. Someone edits the revenue model and types a plus where a minus belongs. Revenue for that
+      order jumps to 1,400 cents. A unit test with one input row catches the mistake.
+    outcome: >
+      See the correct expectation, the buggy model, the unit test that fails on it, and the same test passing
+      once the minus sign is back.
+  title: |
+    Demo: a unit test catches a refund bug before a full build
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.
 default_milestone: 1.8.0

@@ -1,342 +1,374 @@
 id: '2.0'
 label: v2.0
 title: One engine, two distributions
-lead: |
-  The Rust engine becomes dbt v2. Its full distribution and open-source subset share a lineage but expose different capabilities.
+lead: >
+  The Rust engine becomes dbt v2. Its full distribution and open-source subset share a lineage but expose
+  different capabilities.
 problem_then: |
   Teams face two engine names and must understand when SQL mistakes will be detected.
 what_changed:
-- id: rust-v2
-  summary: Rust-based dbt v2 is distributed as full dbt and dbt OSS.
-  introduced_in: 2.0.0
-  adapter_constraints: GA adapter coverage differs from v1; PostgreSQL is coming soon in the Summit announcement.
-  evidence:
-  - src-1
-  confidence: high
-- id: sql-comprehension
-  summary: Full-distribution SQL comprehension supports earlier SQL feedback.
-  introduced_in: 2.0.0
-  adapter_constraints: Full distribution plus documented login/access and adapter requirements; not a dbt OSS promise.
-  evidence:
-  - src-2
-  - src-5
-  confidence: high
-in_practice: |
-  The full distribution can provide SQL comprehension, while dbt OSS contains the Apache-licensed subset. The shop still asks the same revenue question.
-technical_detail: |
-  Keep the September 14 artifact, September 15 naming change and September 16 GA announcement separate. Full SQL analysis has a documented login gate; do not attribute it to OSS or promise it works unauthenticated. DuckDB is a local target at GA; PostgreSQL is listed as coming soon. v1 remains maintained.
+  - id: rust-v2
+    summary: Rust-based dbt v2 is distributed as full dbt and dbt OSS.
+    introduced_in: 2.0.0
+    adapter_constraints: GA adapter coverage differs from v1; PostgreSQL is coming soon in the Summit announcement.
+    evidence:
+      - src-1
+    confidence: high
+  - id: sql-comprehension
+    summary: Full-distribution SQL comprehension supports earlier SQL feedback.
+    introduced_in: 2.0.0
+    adapter_constraints: Full distribution plus documented login/access and adapter requirements; not a dbt OSS promise.
+    evidence:
+      - src-2
+      - src-5
+    confidence: high
+in_practice: >
+  The full distribution can provide SQL comprehension, while dbt OSS contains the Apache-licensed subset. The
+  shop still asks the same revenue question.
+technical_detail: >
+  Keep the September 14 artifact, September 15 naming change and September 16 GA announcement separate. Full
+  SQL analysis has a documented login gate; do not attribute it to OSS or promise it works unauthenticated.
+  DuckDB is a local target at GA; PostgreSQL is listed as coming soon. v1 remains maintained.
 milestones:
-- id: 2.0.0
-  kind: package
-  date: '2026-09-14'
-  precision: day
-  title: First published package
-  evidence:
-  - src-4
-- id: v2-naming
-  kind: announcement
-  date: '2026-09-15'
-  precision: day
-  title: Full dbt and dbt OSS naming
-  evidence:
-  - src-3
-- id: summit-ga
-  kind: announcement
-  date: '2026-09-16'
-  precision: day
-  title: Summit GA announcement
-  evidence:
-  - src-2
-- id: research-snapshot
-  kind: announcement
-  date: '2026-09-21'
-  precision: day
-  title: Research snapshot
-  evidence:
+  - id: 2.0.0
+    kind: package
+    date: '2026-09-14'
+    precision: day
+    title: First published package
+    evidence:
+      - src-4
+  - id: v2-naming
+    kind: announcement
+    date: '2026-09-15'
+    precision: day
+    title: Full dbt and dbt OSS naming
+    evidence:
+      - src-3
+  - id: summit-ga
+    kind: announcement
+    date: '2026-09-16'
+    precision: day
+    title: Summit GA announcement
+    evidence:
+      - src-2
+  - id: research-snapshot
+    kind: announcement
+    date: '2026-09-21'
+    precision: day
+    title: Research snapshot
+    evidence:
+      - src-1
+      - src-2
+      - src-3
+    date_basis: editorial cutoff; not another vendor launch
+sources:
+  - id: src-1
+    title: dbt 2.0 release evidence
+    url: https://github.com/dbt-labs/dbt/releases/tag/v2.0.0
+    retrieved: '2026-09-21'
+    supports: Tagged release changes; package upload and public announcement remain distinct.
+  - id: src-2
+    title: dbt 2.0 package evidence
+    url: https://www.getdbt.com/blog/dbt-summit-2026-product-announcements
+    retrieved: '2026-09-21'
+    supports: Tagged release changes; package upload and public announcement remain distinct.
+  - id: src-3
+    title: dbt 2.0 package evidence
+    url: https://www.getdbt.com/licenses-faq
+    retrieved: '2026-09-21'
+    supports: Tagged release changes; package upload and public announcement remain distinct.
+  - id: src-4
+    title: dbt 2.0 package evidence
+    url: https://pypi.org/project/dbt/2.0.0/
+    retrieved: '2026-09-21'
+    supports: >-
+      Package existence and upload timestamp. Implementation claims refer to the original source archive
+      linked from the package.
+  - id: src-5
+    title: dbt feature availability
+    url: https://docs.getdbt.com/docs/dbt/dbt-availability
+    retrieved: '2026-09-21'
+    supports: Detailed login/access requirements recorded in the v2 runtime research.
+  - id: src-6
+    title: Historical source archive reviewed for example syntax
+    url: https://pypi.org/project/dbt/2.0.2/
+    retrieved: '2026-09-21'
+    supports: >-
+      Original source package and tagged release evidence for the example’s syntax; review is not runtime
+      execution.
+    rechecked: '2026-09-22'
+  - id: src-7
+    title: dbt OSS 2.0.2 package metadata
+    url: https://pypi.org/pypi/dbt-oss/2.0.2/json
+    retrieved: '2026-09-22'
+    supports: OSS package pin exists on September 15, independently of full dbt.
+    historical_scope: Syntax at the named immutable version; research cutoff remains 2026-09-21.
+narrative_evidence:
   - src-1
   - src-2
   - src-3
-  date_basis: editorial cutoff; not another vendor launch
-sources:
-- id: src-1
-  title: dbt 2.0 release evidence
-  url: https://github.com/dbt-labs/dbt/releases/tag/v2.0.0
-  retrieved: '2026-09-21'
-  supports: Tagged release changes; package upload and public announcement remain distinct.
-- id: src-2
-  title: dbt 2.0 package evidence
-  url: https://www.getdbt.com/blog/dbt-summit-2026-product-announcements
-  retrieved: '2026-09-21'
-  supports: Tagged release changes; package upload and public announcement remain distinct.
-- id: src-3
-  title: dbt 2.0 package evidence
-  url: https://www.getdbt.com/licenses-faq
-  retrieved: '2026-09-21'
-  supports: Tagged release changes; package upload and public announcement remain distinct.
-- id: src-4
-  title: dbt 2.0 package evidence
-  url: https://pypi.org/project/dbt/2.0.0/
-  retrieved: '2026-09-21'
-  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
-    from the package.
-- id: src-5
-  title: dbt feature availability
-  url: https://docs.getdbt.com/docs/dbt/dbt-availability
-  retrieved: '2026-09-21'
-  supports: Detailed login/access requirements recorded in the v2 runtime research.
-- id: src-6
-  title: Historical source archive reviewed for example syntax
-  url: https://pypi.org/project/dbt/2.0.2/
-  retrieved: '2026-09-21'
-  supports: Original source package and tagged release evidence for the example’s syntax; review is not runtime
-    execution.
-  rechecked: '2026-09-22'
-- id: src-7
-  title: dbt OSS 2.0.2 package metadata
-  url: https://pypi.org/pypi/dbt-oss/2.0.2/json
-  retrieved: '2026-09-22'
-  supports: OSS package pin exists on September 15, independently of full dbt.
-  historical_scope: Syntax at the named immutable version; research cutoff remains 2026-09-21.
-narrative_evidence:
-- src-1
-- src-2
-- src-3
-- src-4
-- src-5
-- src-6
-- src-7
+  - src-4
+  - src-5
+  - src-6
+  - src-7
 walkthrough:
   id: wt-2.0
-  learning_objective: |
-    Separate engine convergence, distribution choice and earlier SQL feedback.
-  context: |
-    The prepared order_revenue relation contains revenue_cents, not revenue_amount_cents. Waffle Shop base revenue remains 12,500 cents.
+  learning_objective: >
+    See the two ways to install dbt v2, and how the full version reads SQL closely enough to catch a missing
+    column early.
+  context: >
+    The prepared order_revenue relation contains revenue_cents, not revenue_amount_cents. Waffle Shop base
+    revenue remains 12,500 cents.
   dataset_variant: base
   steps:
-  - id: distributions
-    title: Choose the distribution
-    explanation: |
-      Full dbt and dbt OSS are distinct packages; this illustration makes no installer or timing claim.
-    state:
-      kind: comparison
-      title: v2 choices
-      columns:
-      - distribution
-      - licence category
-      - SQL comprehension
-      rows:
-      - - dbt
-        - Product Licensing Agreement
-        - full features with documented access conditions
-      - - dbt OSS
-        - Apache 2.0 subset
-        - not the proprietary SQL-comprehension feature set
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      One engine story still has two distributions.
-    evidence:
-    - src-1
-    - src-2
-    - src-3
-    - src-4
-    - src-5
-    - src-6
-    - src-7
-    code:
-    - language: text
-      filename: requirements-full.txt
-      content: |
-        dbt==2.0.2
-      highlight_lines:
-      - 1
-      purpose: authored executable syntax; illustration only
-    - language: text
-      filename: requirements-oss.txt
-      content: |
-        dbt-oss==2.0.2
-      highlight_lines:
-      - 1
-      purpose: authored executable syntax; illustration only
-    - language: yaml
-      filename: dbt_project.yml
-      content: |
-        name: waffle_shop
-        version: "1.0"
-        config-version: 2
-        model-paths: [models]
-      highlight_lines:
-      - 1
-      - 3
-      - 4
-      purpose: authored executable syntax; illustration only
-  - id: typo
-    title: Reference a missing column
-    explanation: |
-      The model asks for a name absent from the upstream schema.
-    state:
-      kind: result
-      title: Prepared schema mismatch
-      columns:
-      - requested_column
-      - available_column
-      - assessment
-      rows:
-      - - revenue_amount_cents
-        - revenue_cents
-        - missing column
-      result_status: fail
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      This illustrates the kind of SQL problem the full engine can detect.
-    code:
-    - language: sql
-      filename: models/revenue_by_location.sql
-      content: |
-        select location_id, sum(revenue_amount_cents) as revenue_cents
-        from {{ ref('order_revenue') }}
-        group by location_id
-      highlight_lines:
-      - 1
-    evidence:
-    - src-1
-    - src-2
-    - src-3
-    - src-4
-    - src-5
-    - src-6
-    - src-7
-  - id: correction
-    title: Use the known column
-    explanation: |
-      With the model definition corrected, the same base fixture has the same business result.
-    state:
-      kind: table
-      title: Base revenue by location
-      columns:
-      - location_id
-      - location
-      - payment_cents
-      - refund_cents
-      - revenue_cents
-      rows:
-      - - 1
-        - Old Port
-        - 4400
-        - 1000
-        - 3400
-      - - 2
-        - Mile End
-        - 4600
-        - 300
-        - 4300
-      - - 3
-        - Riverside
-        - 4800
-        - 0
-        - 4800
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      Earlier feedback changes the workflow, not the revenue definition.
-    code:
-    - language: sql
-      filename: models/revenue_by_location.sql
-      content: |
-        select location_id, sum(revenue_cents) as revenue_cents
-        from {{ ref('order_revenue') }}
-        group by location_id
-      highlight_lines:
-      - 1
-    evidence:
-    - src-1
-    - src-2
-    - src-3
-    - src-4
-    - src-5
-    - src-6
-    - src-7
-  - id: boundary
-    title: Read the wider offering carefully
-    explanation: |
-      GA engine availability does not make every adjacent product GA.
-    state:
-      kind: comparison
-      title: At the September 16 Summit
-      columns:
-      - offering
-      - status
-      rows:
-      - - dbt v2
-        - GA
-      - - dbt State
-        - GA
-      - - Lake Compute
-        - private beta in detailed announcement
-      - - dbt Charts
-        - public beta
-      - - Fivetran Context Layer
-        - private beta
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      The catalogue and ecosystem tabs show the expanding footprint and its limits.
-    evidence:
-    - src-1
-    - src-2
-    - src-3
-    - src-4
-    - src-5
-    - src-6
-    - src-7
-    code:
-    - language: yaml
-      filename: reference/summit-availability.yml
-      content: |
-        as_of: "2026-09-16"
-        products:
-          - {name: dbt v2, maturity: ga}
-          - {name: dbt State, maturity: ga}
-          - {name: Lake Compute, maturity: beta, scope: private}
-          - {name: dbt Charts, maturity: beta, scope: public}
-          - {name: Fivetran Context Layer, maturity: beta, scope: private}
-      highlight_lines:
-      - 3
-      - 4
-      - 5
-      - 6
-      - 7
-      purpose: authored executable syntax; illustration only
+    - id: distributions
+      title: Two ways to install one engine
+      explanation: >
+        You are looking at two install files and the project file. The highlighted line in each requirements
+        file names a different package: dbt for the full distribution, dbt-oss for the open-source one. Both
+        run the same Rust engine. The highlighted lines in dbt_project.yml are unchanged from before, which is
+        the point: the project does not need rewriting. The result panel compares the two on licence and on
+        SQL comprehension, the feature that reads SQL and checks it before it runs. Only the full distribution
+        has it, and it comes with its own access conditions.
+      state:
+        kind: comparison
+        title: Full dbt versus dbt OSS
+        columns:
+          - distribution
+          - licence category
+          - SQL comprehension
+        rows:
+          - - dbt
+            - Product Licensing Agreement
+            - full features with documented access conditions
+          - - dbt OSS
+            - Apache 2.0 subset
+            - not the proprietary SQL-comprehension feature set
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        One engine, two packages: full dbt with the SQL checks, and dbt OSS without them.
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+        - src-4
+        - src-5
+        - src-6
+        - src-7
+      code:
+        - language: text
+          filename: requirements-full.txt
+          content: |
+            dbt==2.0.2
+          highlight_lines:
+            - 1
+          purpose: authored executable syntax; illustration only
+        - language: text
+          filename: requirements-oss.txt
+          content: |
+            dbt-oss==2.0.2
+          highlight_lines:
+            - 1
+          purpose: authored executable syntax; illustration only
+        - language: yaml
+          filename: dbt_project.yml
+          content: |
+            name: waffle_shop
+            version: "1.0"
+            config-version: 2
+            model-paths: [models]
+          highlight_lines:
+            - 1
+            - 3
+            - 4
+          purpose: authored executable syntax; illustration only
+    - id: typo
+      title: Ask for a column that does not exist
+      explanation: >
+        The highlighted line sums revenue_amount_cents. The table it reads, order_revenue, has no such column.
+        The real name is revenue_cents. The result panel shows what SQL comprehension can report: the column
+        requested, the column available and the verdict, missing column. In earlier versions this mistake
+        would only surface when the database rejected the query.
+      state:
+        kind: result
+        title: Missing column caught
+        columns:
+          - requested_column
+          - available_column
+          - assessment
+        rows:
+          - - revenue_amount_cents
+            - revenue_cents
+            - missing column
+        result_status: fail
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        Full dbt can flag a missing column while reading the SQL, before anything runs in the database.
+      code:
+        - language: sql
+          filename: models/revenue_by_location.sql
+          content: |
+            select location_id, sum(revenue_amount_cents) as revenue_cents
+            from {{ ref('order_revenue') }}
+            group by location_id
+          highlight_lines:
+            - 1
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+        - src-4
+        - src-5
+        - src-6
+        - src-7
+    - id: correction
+      title: Use the real column name
+      explanation: >
+        The highlighted line now sums revenue_cents. The result panel shows the base figures again: 3,400,
+        4,300 and 4,800 cents, 12,500 in total. Earlier feedback changed how quickly the mistake was found,
+        not what revenue means.
+      state:
+        kind: table
+        title: Base revenue by location
+        columns:
+          - location_id
+          - location
+          - payment_cents
+          - refund_cents
+          - revenue_cents
+        rows:
+          - - 1
+            - Old Port
+            - 4400
+            - 1000
+            - 3400
+          - - 2
+            - Mile End
+            - 4600
+            - 300
+            - 4300
+          - - 3
+            - Riverside
+            - 4800
+            - 0
+            - 4800
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        With the column name fixed, the model gives the base total of 12,500 cents.
+      code:
+        - language: sql
+          filename: models/revenue_by_location.sql
+          content: |
+            select location_id, sum(revenue_cents) as revenue_cents
+            from {{ ref('order_revenue') }}
+            group by location_id
+          highlight_lines:
+            - 1
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+        - src-4
+        - src-5
+        - src-6
+        - src-7
+    - id: boundary
+      title: Not everything announced is finished
+      explanation: >
+        The highlighted lines list the products announced alongside dbt v2 at the September 16 Summit, each
+        with its maturity. The result panel reads them out. dbt v2 and dbt State are generally available,
+        meaning released for everyone. Lake Compute, dbt Charts and the Fivetran Context Layer are still in
+        beta. A finished engine does not make its neighbours finished too.
+      state:
+        kind: comparison
+        title: Product status at the September 16 Summit
+        columns:
+          - offering
+          - status
+        rows:
+          - - dbt v2
+            - GA
+          - - dbt State
+            - GA
+          - - Lake Compute
+            - private beta in detailed announcement
+          - - dbt Charts
+            - public beta
+          - - Fivetran Context Layer
+            - private beta
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        dbt v2 is released for everyone, but three of the products announced with it are still in beta.
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+        - src-4
+        - src-5
+        - src-6
+        - src-7
+      code:
+        - language: yaml
+          filename: reference/summit-availability.yml
+          content: |
+            as_of: "2026-09-16"
+            products:
+              - {name: dbt v2, maturity: ga}
+              - {name: dbt State, maturity: ga}
+              - {name: Lake Compute, maturity: beta, scope: private}
+              - {name: dbt Charts, maturity: beta, scope: public}
+              - {name: Fivetran Context Layer, maturity: beta, scope: private}
+          highlight_lines:
+            - 3
+            - 4
+            - 5
+            - 6
+            - 7
+          purpose: authored executable syntax; illustration only
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
-    - src-1
-    - src-2
-    - src-3
-    - src-4
-    - src-5
-    - src-6
-    - src-7
-    limitations: |
-      All states are authored illustrations. No full/OSS engine was run and no diagnostic text is an original terminal log. SQL-comprehension behavior depends on the full distribution, login, metadata and supported adapter. No speed comparison is claimed.
-      The distribution requirements are alternative environments at the 2.0.2 September 15 checkpoint, never a combined installation instruction. reference/summit-availability.yml is the authored data behind the product-status comparison, not dbt project syntax or output. Product maturity comes from the cited announcement, not SQL execution.
+      - src-1
+      - src-2
+      - src-3
+      - src-4
+      - src-5
+      - src-6
+      - src-7
+    limitations: >
+      All states are authored illustrations. No full/OSS engine was run and no diagnostic text is an original
+      terminal log. SQL-comprehension behavior depends on the full distribution, login, metadata and supported
+      adapter. No speed comparison is claimed.
+
+      The distribution requirements are alternative environments at the 2.0.2 September 15 checkpoint, never a
+      combined installation instruction. reference/summit-availability.yml is the authored data behind the
+      product-status comparison, not dbt project syntax or output. Product maturity comes from the cited
+      announcement, not SQL execution.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
       method: Original source/archive and release documentation inspection; no historical dbt execution.
   intro:
     can_now:
-    - Use the GA Rust engine through separate full dbt and dbt OSS distributions.
-    - With full dbt and its documented access requirements, catch SQL column problems through SQL comprehension.
-    scenario: |
-      The location model asks for revenue_amount_cents, but its input contains revenue_cents. The example fixes that mismatch and distinguishes the engine release from adjacent products with different maturity.
-    outcome: |
-      Compare the distribution choices, inspect the column reference and retain the 12,500-cent business expectation.
+      - Install the new Rust-based dbt v2 as either full dbt or the open-source dbt OSS.
+      - With full dbt, get told about a column that does not exist before the query is sent to the database.
+    scenario: >
+      The location revenue model asks for a column called revenue_amount_cents, but the table it reads from
+      has revenue_cents. The walkthrough shows the two distributions, the mistake, the fix, and where the new
+      engine sits among the other products announced with it.
+    outcome: >
+      Compare the two distributions, watch the column mistake get caught and fixed, and confirm the base total
+      is still 12,500 cents.
+  title: |
+    Demo: dbt v2 spots a misspelled column before the query runs
 default_milestone: summit-ga
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

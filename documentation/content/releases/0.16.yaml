@@ -1,241 +1,261 @@
 id: '0.16'
 label: v0.16
 title: Richer metadata
-lead: |
-  Custom metadata lets a project carry context such as who maintains a model. Documentation reaches more resource types.
+lead: >
+  Custom metadata lets a project carry context such as who maintains a model. Documentation reaches more
+  resource types.
 problem_then: |
   A lineage graph can show what depends on a model without explaining who understands its business meaning.
 what_changed:
-- id: change-1
-  summary: meta and richer resource documentation.
-  introduced_in: 0.16.0
-  adapter_constraints: null
-  evidence:
-  - src-1
-  confidence: high
-- id: change-2
-  summary: Documentation for macros, analyses, snapshots and seeds; source/column tags.
-  introduced_in: 0.16.0
-  adapter_constraints: null
-  evidence:
-  - src-1
-  confidence: high
+  - id: change-1
+    summary: meta and richer resource documentation.
+    introduced_in: 0.16.0
+    adapter_constraints: null
+    evidence:
+      - src-1
+    confidence: high
+  - id: change-2
+    summary: Documentation for macros, analyses, snapshots and seeds; source/column tags.
+    introduced_in: 0.16.0
+    adapter_constraints: null
+    evidence:
+      - src-1
+    confidence: high
 in_practice: |
   Attach team context to the resource alongside its technical definition.
-technical_detail: |
-  meta is project metadata; it does not itself create access control, approval workflows or a governance service. This example’s finance owner is fictional.
+technical_detail: >
+  meta is project metadata; it does not itself create access control, approval workflows or a governance
+  service. This example’s finance owner is fictional.
 milestones:
-- id: 0.16.0
-  kind: package
-  date: '2020-03-23'
-  precision: day
-  title: First published package
-  evidence:
-  - src-2
+  - id: 0.16.0
+    kind: package
+    date: '2020-03-23'
+    precision: day
+    title: First published package
+    evidence:
+      - src-2
 sources:
-- id: src-1
-  title: dbt 0.16 release evidence
-  url: https://github.com/dbt-labs/dbt/releases/tag/v0.16.0
-  retrieved: '2026-09-21'
-  supports: Tagged release changes; package upload and public announcement remain distinct.
-- id: src-2
-  title: dbt 0.16 package evidence
-  url: https://pypi.org/project/dbt/0.16.0/
-  retrieved: '2026-09-21'
-  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
-    from the package.
-- id: src-3
-  title: Historical source archive reviewed for example syntax
-  url: https://pypi.org/project/dbt-core/0.16.0/
-  retrieved: '2026-09-21'
-  supports: Original source package and tagged release evidence for the example’s syntax; review is not runtime
-    execution.
-  rechecked: '2026-09-22'
+  - id: src-1
+    title: dbt 0.16 release evidence
+    url: https://github.com/dbt-labs/dbt/releases/tag/v0.16.0
+    retrieved: '2026-09-21'
+    supports: Tagged release changes; package upload and public announcement remain distinct.
+  - id: src-2
+    title: dbt 0.16 package evidence
+    url: https://pypi.org/project/dbt/0.16.0/
+    retrieved: '2026-09-21'
+    supports: >-
+      Package existence and upload timestamp. Implementation claims refer to the original source archive
+      linked from the package.
+  - id: src-3
+    title: Historical source archive reviewed for example syntax
+    url: https://pypi.org/project/dbt-core/0.16.0/
+    retrieved: '2026-09-21'
+    supports: >-
+      Original source package and tagged release evidence for the example’s syntax; review is not runtime
+      execution.
+    rechecked: '2026-09-22'
 narrative_evidence:
-- src-1
-- src-2
-- src-3
+  - src-1
+  - src-2
+  - src-3
 walkthrough:
   id: wt-0.16
-  learning_objective: |
-    Add ownership context without mistaking it for enforcement.
-  context: |
-    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
+  learning_objective: >
+    Attach an owner to a model as descriptive information, and understand that this does not control who can
+    query it.
+  context: >
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
+    Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
   dataset_variant: base
   steps:
-  - id: question
-    title: Find a question the schema cannot answer
-    explanation: |
-      Old Port revenue is correct, but someone must explain the refund rule.
-    state:
-      kind: comparison
-      title: Find a question the schema cannot answer
-      columns:
-      - model
-      - revenue_cents
-      - question
-      rows:
-      - - 'revenue_by_location: Old Port'
-        - 3400
-        - Who maintains this definition?
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      A data type is not business ownership.
-    evidence:
-    - src-1
-    - src-2
-    - src-3
-    code:
-    - language: sql
-      filename: models/revenue_by_location.sql
-      content: |
-        select
-            r.location_id, l.name as location,
-            sum(r.payment_cents) as payment_cents,
-            sum(r.refund_cents) as refund_cents,
-            sum(r.revenue_cents) as revenue_cents
-        from {{ ref("order_revenue") }} as r
-        join raw.locations as l on r.location_id = l.location_id
-        group by r.location_id, l.name
-        order by r.location_id
-      highlight_lines:
-      - 3
-      - 4
-      - 5
-      purpose: authored executable syntax; illustration only
-    - language: yaml
-      filename: models/schema.yml
-      content: |
-        version: 2
-        models:
-          - name: revenue_by_location
-            meta:
-              owner: finance
-              unit: cents
-      highlight_lines:
-      - 1
-      - 2
-      - 3
-      - 4
-  - id: meta
-    title: Attach project context
-    explanation: |
-      The metadata names the responsible fictional team.
-    state:
-      kind: comparison
-      title: Attach project context
-      columns:
-      - model
-      - owner
-      - unit
-      rows:
-      - - revenue_by_location
-        - finance
-        - cents
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      Metadata can travel with the model.
-    code:
-    - language: yaml
-      filename: models/schema.yml
-      content: |
-        version: 2
-        models:
-          - name: revenue_by_location
-            meta:
-              owner: finance
-              unit: cents
-      highlight_lines:
-      - 1
-      - 2
-      - 3
-      - 4
-    evidence:
-    - src-1
-    - src-2
-    - src-3
-  - id: boundary
-    title: Understand what metadata does
-    explanation: |
-      The same model retains its SQL and permissions.
-    state:
-      kind: comparison
-      title: Understand what metadata does
-      columns:
-      - property
-      - effect
-      rows:
-      - - 'owner: finance'
-        - informational context
-      - - warehouse permissions
-        - not changed by this metadata
-      - - base revenue
-        - 12,500 cents
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      Documented ownership and enforced permissions are separate.
-    evidence:
-    - src-1
-    - src-2
-    - src-3
-    code:
-    - language: sql
-      filename: models/revenue_by_location.sql
-      content: |
-        select
-            r.location_id, l.name as location,
-            sum(r.payment_cents) as payment_cents,
-            sum(r.refund_cents) as refund_cents,
-            sum(r.revenue_cents) as revenue_cents
-        from {{ ref("order_revenue") }} as r
-        join raw.locations as l on r.location_id = l.location_id
-        group by r.location_id, l.name
-        order by r.location_id
-      highlight_lines:
-      - 3
-      - 4
-      - 5
-      purpose: authored executable syntax; illustration only
-    - language: yaml
-      filename: models/schema.yml
-      content: |
-        version: 2
-        models:
-          - name: revenue_by_location
-            meta:
-              owner: finance
-              unit: cents
-      highlight_lines:
-      - 1
-      - 2
-      - 3
-      - 4
+    - id: question
+      title: A question the SQL cannot answer
+      explanation: >
+        Two files are shown. The SQL file, highlighted on lines 3 to 5, sums payments, refunds and revenue per
+        location. The YAML file, highlighted on lines 1 to 4, describes the same model and opens a meta block.
+        The result panel shows Old Port revenue of 3,400 cents, which is correct, next to the question nobody
+        can answer from the SQL: who maintains this definition?
+      state:
+        kind: comparison
+        title: Correct number, unanswered question
+        columns:
+          - model
+          - revenue_cents
+          - question
+        rows:
+          - - 'revenue_by_location: Old Port'
+            - 3400
+            - Who maintains this definition?
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        The SQL says how revenue is computed, but not who is responsible for the rule.
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+      code:
+        - language: sql
+          filename: models/revenue_by_location.sql
+          content: |
+            select
+                r.location_id, l.name as location,
+                sum(r.payment_cents) as payment_cents,
+                sum(r.refund_cents) as refund_cents,
+                sum(r.revenue_cents) as revenue_cents
+            from {{ ref("order_revenue") }} as r
+            join raw.locations as l on r.location_id = l.location_id
+            group by r.location_id, l.name
+            order by r.location_id
+          highlight_lines:
+            - 3
+            - 4
+            - 5
+          purpose: authored executable syntax; illustration only
+        - language: yaml
+          filename: models/schema.yml
+          content: |
+            version: 2
+            models:
+              - name: revenue_by_location
+                meta:
+                  owner: finance
+                  unit: cents
+          highlight_lines:
+            - 1
+            - 2
+            - 3
+            - 4
+    - id: meta
+      title: Record the owner next to the model
+      explanation: >
+        The YAML file is shown, highlighted on lines 1 to 4. Below the meta line, lines 5 and 6 record two
+        facts: the owner is the finance team, and the unit is cents. Any key and value can go here. The result
+        panel shows the model with its owner and unit.
+      state:
+        kind: comparison
+        title: Owner and unit recorded on the model
+        columns:
+          - model
+          - owner
+          - unit
+        rows:
+          - - revenue_by_location
+            - finance
+            - cents
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        The owner and the unit are now written next to the model and travel with it.
+      code:
+        - language: yaml
+          filename: models/schema.yml
+          content: |
+            version: 2
+            models:
+              - name: revenue_by_location
+                meta:
+                  owner: finance
+                  unit: cents
+          highlight_lines:
+            - 1
+            - 2
+            - 3
+            - 4
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+    - id: boundary
+      title: What the meta field does and does not do
+      explanation: >
+        The same SQL and YAML files are shown with the same highlights. The meta block is information for
+        people and tools that read the project. It does not change the SQL, and it does not change who can
+        query the table in the warehouse. The result panel spells this out: owner is informational,
+        permissions are unchanged, and revenue is still 12,500 cents.
+      state:
+        kind: comparison
+        title: What the metadata changes and what it leaves alone
+        columns:
+          - property
+          - effect
+        rows:
+          - - 'owner: finance'
+            - informational context
+          - - warehouse permissions
+            - not changed by this metadata
+          - - base revenue
+            - 12,500 cents
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        Writing owner: finance documents who is responsible. It does not grant or restrict access.
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+      code:
+        - language: sql
+          filename: models/revenue_by_location.sql
+          content: |
+            select
+                r.location_id, l.name as location,
+                sum(r.payment_cents) as payment_cents,
+                sum(r.refund_cents) as refund_cents,
+                sum(r.revenue_cents) as revenue_cents
+            from {{ ref("order_revenue") }} as r
+            join raw.locations as l on r.location_id = l.location_id
+            group by r.location_id, l.name
+            order by r.location_id
+          highlight_lines:
+            - 3
+            - 4
+            - 5
+          purpose: authored executable syntax; illustration only
+        - language: yaml
+          filename: models/schema.yml
+          content: |
+            version: 2
+            models:
+              - name: revenue_by_location
+                meta:
+                  owner: finance
+                  unit: cents
+          highlight_lines:
+            - 1
+            - 2
+            - 3
+            - 4
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
-    - src-1
-    - src-2
-    - src-3
-    limitations: |
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+      - src-1
+      - src-2
+      - src-3
+    limitations: >
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
+      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
+      performance claims.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
       method: Original source/archive and release documentation inspection; no historical dbt execution.
   intro:
     can_now:
-    - Attach custom metadata such as a model’s responsible team.
-    - Document more resource types, including macros, seeds and snapshots.
-    scenario: |
-      A finance team needs to know who maintains the shop’s revenue definition. The model carries that context alongside its SQL.
-    outcome: |
-      See metadata describe responsibility without pretending to grant warehouse permissions.
+      - Add custom facts to a model in YAML, such as which team owns it or what unit its numbers are in.
+      - Write descriptions for more kinds of project files, including macros, seeds and snapshots.
+    scenario: >
+      The finance team asks who maintains the revenue definition. The SQL and column types cannot answer that.
+      Waffle Shop records the owner and the unit next to the model, so the answer travels with the code.
+    outcome: >
+      See the owner recorded as metadata, and see that it describes responsibility without changing warehouse
+      permissions.
+  title: |
+    Demo: a meta field records that the finance team owns the revenue model
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

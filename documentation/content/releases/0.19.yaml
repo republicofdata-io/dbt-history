@@ -1,253 +1,283 @@
 id: '0.19'
 label: v0.19
 title: More complete history and artifacts
-lead: |
-  Snapshots can invalidate rows when records disappear from a source. A deleted customer need not look current forever.
+lead: >
+  Snapshots can invalidate rows when records disappear from a source. A deleted customer need not look current
+  forever.
 problem_then: |
   A change-tracking table can retain an open record even after the source row is removed.
 what_changed:
-- id: change-1
-  summary: Snapshot hard-delete invalidation and revival.
-  introduced_in: 0.19.0
-  adapter_constraints: null
-  evidence:
-  - src-1
-  confidence: high
-- id: change-2
-  summary: Deferral extends to tests; versioned artifact schemas and project config migrations.
-  introduced_in: 0.19.0
-  adapter_constraints: null
-  evidence:
-  - src-1
-  confidence: high
+  - id: change-1
+    summary: Snapshot hard-delete invalidation and revival.
+    introduced_in: 0.19.0
+    adapter_constraints: null
+    evidence:
+      - src-1
+    confidence: high
+  - id: change-2
+    summary: Deferral extends to tests; versioned artifact schemas and project config migrations.
+    introduced_in: 0.19.0
+    adapter_constraints: null
+    evidence:
+      - src-1
+    confidence: high
 in_practice: |
   Choose how the snapshot represents hard deletes instead of leaving the meaning implicit.
-technical_detail: |
-  invalidate_hard_deletes closes the active interval when disappearance is observed. It does not remove historical records or erase existing orders. Artifact schemas also become versioned; deferral extends to tests.
+technical_detail: >
+  invalidate_hard_deletes closes the active interval when disappearance is observed. It does not remove
+  historical records or erase existing orders. Artifact schemas also become versioned; deferral extends to
+  tests.
 milestones:
-- id: 0.19.0
-  kind: package
-  date: '2021-01-27'
-  precision: day
-  title: First published package
-  evidence:
-  - src-2
-- id: product-2021-06-30
-  kind: product_event
-  date: '2021-06-30'
-  precision: day
-  title: Company becomes dbt Labs
-  evidence:
-  - src-3
+  - id: 0.19.0
+    kind: package
+    date: '2021-01-27'
+    precision: day
+    title: First published package
+    evidence:
+      - src-2
+  - id: product-2021-06-30
+    kind: product_event
+    date: '2021-06-30'
+    precision: day
+    title: Company becomes dbt Labs
+    evidence:
+      - src-3
 sources:
-- id: src-1
-  title: dbt 0.19 release evidence
-  url: https://github.com/dbt-labs/dbt/releases/tag/v0.19.0
-  retrieved: '2026-09-21'
-  supports: Tagged release changes; package upload and public announcement remain distinct.
-- id: src-2
-  title: dbt 0.19 package evidence
-  url: https://pypi.org/project/dbt/0.19.0/
-  retrieved: '2026-09-21'
-  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
-    from the package.
-- id: src-3
-  title: Company becomes dbt Labs
-  url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
-  retrieved: '2026-09-21'
-  supports: Fishtown Analytics renames to dbt Labs. This is a company rename, not a new engine.
-- id: src-4
-  title: Historical source archive reviewed for example syntax
-  url: https://pypi.org/project/dbt-core/0.19.0/
-  retrieved: '2026-09-21'
-  supports: Original source package and tagged release evidence for the example’s syntax; review is not runtime
-    execution.
-  rechecked: '2026-09-22'
+  - id: src-1
+    title: dbt 0.19 release evidence
+    url: https://github.com/dbt-labs/dbt/releases/tag/v0.19.0
+    retrieved: '2026-09-21'
+    supports: Tagged release changes; package upload and public announcement remain distinct.
+  - id: src-2
+    title: dbt 0.19 package evidence
+    url: https://pypi.org/project/dbt/0.19.0/
+    retrieved: '2026-09-21'
+    supports: >-
+      Package existence and upload timestamp. Implementation claims refer to the original source archive
+      linked from the package.
+  - id: src-3
+    title: Company becomes dbt Labs
+    url: >-
+      https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+    supports: Fishtown Analytics renames to dbt Labs. This is a company rename, not a new engine.
+  - id: src-4
+    title: Historical source archive reviewed for example syntax
+    url: https://pypi.org/project/dbt-core/0.19.0/
+    retrieved: '2026-09-21'
+    supports: >-
+      Original source package and tagged release evidence for the example’s syntax; review is not runtime
+      execution.
+    rechecked: '2026-09-22'
 narrative_evidence:
-- src-1
-- src-2
-- src-3
-- src-4
+  - src-1
+  - src-2
+  - src-3
+  - src-4
 walkthrough:
   id: wt-0.19
   learning_objective: |
-    Distinguish deleted current data from retained history.
-  context: |
-    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is customer-removed. Each state below is an authored illustration.
+    See how a snapshot records that a customer disappeared from the source, without erasing their past.
+  context: >
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
+    Riverside 4,800. The selected fixture is customer-removed. Each state below is an authored illustration.
   dataset_variant: customer-removed
   steps:
-  - id: current
-    title: Read the last customer observation
-    explanation: |
-      Finn is customer 6 in the base fixture.
-    state:
-      kind: comparison
-      title: Read the last customer observation
-      columns:
-      - customer_id
-      - name
-      - city
-      rows:
-      - - 6
-        - Finn
-        - Montréal
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      The snapshot has an active version before deletion.
-    evidence:
-    - src-1
-    - src-2
-    - src-4
-    code:
-    - language: sql
-      filename: snapshots/customers_history.sql
-      content: |
-        -- Fixture phase: Before the declared customer deletion.
-        {% snapshot customers_history %}
-        {{ config(target_schema="snapshots", unique_key="customer_id",
-            strategy="check", check_cols=["city"], invalidate_hard_deletes=True) }}
-        select * from raw.customers
-        {% endsnapshot %}
-      highlight_lines:
-      - 2
-      - 3
-      - 4
-      - 5
-    - language: sql
-      filename: analyses/customer_before_delete.sql
-      content: |
-        -- Fixture phase: Before the declared customer deletion.
-        select customer_id, name, city from raw.customers
-        where customer_id = 6
-      highlight_lines:
-      - 3
-      purpose: authored executable syntax; illustration only
-    data_context:
-      dataset_variant: base
-      phase: Before the declared customer deletion.
-  - id: missing
-    title: Observe a hard delete
-    explanation: |
-      The customer-removed variant deletes only the customer feed row.
-    state:
-      kind: comparison
-      title: Observe a hard delete
-      columns:
-      - customer_id
-      - current feed
-      - existing orders
-      rows:
-      - - 6
-        - absent
-        - 1046 and 1052 retained
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      Source deletion is different from refunding an order.
-    code:
-    - language: sql
-      filename: snapshots/customers_history.sql
-      content: |
-        {% snapshot customers_history %}
-        {{ config(target_schema="snapshots", unique_key="customer_id",
-            strategy="check", check_cols=["city"], invalidate_hard_deletes=True) }}
-        select * from raw.customers
-        {% endsnapshot %}
-      highlight_lines:
-      - 1
-      - 2
-      - 3
-      - 4
-    evidence:
-    - src-1
-    - src-2
-    - src-4
-  - id: close
-    title: Close the observed active interval
-    explanation: |
-      The historical row remains, with an end boundary at the deletion observation.
-    state:
-      kind: comparison
-      title: Close the observed active interval
-      columns:
-      - customer_id
-      - history status
-      - revenue total
-      rows:
-      - - 6
-        - closed at March 9 09:00
-        - 12500
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      The past remains queryable without claiming the customer is still current.
-    evidence:
-    - src-1
-    - src-2
-    - src-4
-    code:
-    - language: sql
-      filename: snapshots/customers_history.sql
-      content: |
-        -- Fixture phase: After deletion has been observed by the snapshot.
-        {% snapshot customers_history %}
-        {{ config(target_schema="snapshots", unique_key="customer_id",
-            strategy="check", check_cols=["city"], invalidate_hard_deletes=True) }}
-        select * from raw.customers
-        {% endsnapshot %}
-      highlight_lines:
-      - 2
-      - 3
-      - 4
-      - 5
-    - language: sql
-      filename: analyses/closed_customer.sql
-      content: |
-        -- Fixture phase: After deletion has been observed by the snapshot.
-        select customer_id, city, dbt_valid_from, dbt_valid_to
-        from snapshots.customers_history
-        where customer_id = 6
-        order by dbt_valid_from
-      highlight_lines:
-      - 2
-      - 4
-      purpose: authored executable syntax; illustration only
-    - language: shell
-      filename: commands.sh
-      content: |
-        dbt snapshot
-      highlight_lines:
-      - 1
-      purpose: authored executable syntax; illustration only
-    data_context:
-      dataset_variant: customer-removed
-      phase: After deletion has been observed by the snapshot.
+    - id: current
+      title: 'Before the deletion: the customer is still in the feed'
+      explanation: >
+        You are looking at two files. The first is the snapshot definition. The highlighted lines 2 to 5 set
+        it up: it watches the customers table, keyed by customer_id, and records a new version whenever the
+        city changes. The setting invalidate_hard_deletes=True is the new part. It tells dbt to also react
+        when a row disappears. The second file is a plain query for customer 6. The highlighted line 3 picks
+        that customer. The result panel shows the row as it is today: Finn, in Montréal.
+      state:
+        kind: comparison
+        title: Customer 6 as seen before the deletion
+        columns:
+          - customer_id
+          - name
+          - city
+        rows:
+          - - 6
+            - Finn
+            - Montréal
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        Before anything is deleted, the snapshot holds one open, current version of customer 6.
+      evidence:
+        - src-1
+        - src-2
+        - src-4
+      code:
+        - language: sql
+          filename: snapshots/customers_history.sql
+          content: |
+            -- Fixture phase: Before the declared customer deletion.
+            {% snapshot customers_history %}
+            {{ config(target_schema="snapshots", unique_key="customer_id",
+                strategy="check", check_cols=["city"], invalidate_hard_deletes=True) }}
+            select * from raw.customers
+            {% endsnapshot %}
+          highlight_lines:
+            - 2
+            - 3
+            - 4
+            - 5
+        - language: sql
+          filename: analyses/customer_before_delete.sql
+          content: |
+            -- Fixture phase: Before the declared customer deletion.
+            select customer_id, name, city from raw.customers
+            where customer_id = 6
+          highlight_lines:
+            - 3
+          purpose: authored executable syntax; illustration only
+      data_context:
+        dataset_variant: base
+        phase: Before the declared customer deletion.
+    - id: missing
+      title: The source row disappears, but the orders stay
+      explanation: >
+        The snapshot code is unchanged. The highlighted lines 1 to 4 are the same definition as before, still
+        with the hard-delete setting on. What changed is the data. In this dataset variant, customer 6 has
+        been removed from the customer feed only. The result panel shows the two sides: the customer is absent
+        from the feed, while orders 1046 and 1052 still exist. Nobody refunded them and nobody deleted them.
+      state:
+        kind: comparison
+        title: Customer 6 is gone from the feed, orders 1046 and 1052 remain
+        columns:
+          - customer_id
+          - current feed
+          - existing orders
+        rows:
+          - - 6
+            - absent
+            - 1046 and 1052 retained
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        Deleting a customer from the source feed is not the same as removing or refunding their orders.
+      code:
+        - language: sql
+          filename: snapshots/customers_history.sql
+          content: |
+            {% snapshot customers_history %}
+            {{ config(target_schema="snapshots", unique_key="customer_id",
+                strategy="check", check_cols=["city"], invalidate_hard_deletes=True) }}
+            select * from raw.customers
+            {% endsnapshot %}
+          highlight_lines:
+            - 1
+            - 2
+            - 3
+            - 4
+      evidence:
+        - src-1
+        - src-2
+        - src-4
+    - id: close
+      title: 'Run the snapshot: the history row gets an end date'
+      explanation: >
+        The command dbt snapshot runs the snapshot again and compares the feed with what it recorded last
+        time. The highlighted lines 2 to 5 of the snapshot are the same definition. The hard-delete setting is
+        what makes the next part happen. The query in the second file reads the snapshot table for customer 6.
+        The highlighted lines 2 and 4 pick the customer and the two date columns, dbt_valid_from and
+        dbt_valid_to, which mark when each version started and ended. The result panel shows the outcome: the
+        history row for customer 6 is closed at March 9, 09:00. Nothing was deleted from the snapshot. Revenue
+        is still 12,500 cents because the orders were never touched.
+      state:
+        kind: comparison
+        title: Customer 6 history closed, revenue unchanged
+        columns:
+          - customer_id
+          - history status
+          - revenue total
+        rows:
+          - - 6
+            - closed at March 9 09:00
+            - 12500
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: >
+        The snapshot now says customer 6 was real until March 9 and is no longer current, and every past order
+        keeps its history.
+      evidence:
+        - src-1
+        - src-2
+        - src-4
+      code:
+        - language: sql
+          filename: snapshots/customers_history.sql
+          content: |
+            -- Fixture phase: After deletion has been observed by the snapshot.
+            {% snapshot customers_history %}
+            {{ config(target_schema="snapshots", unique_key="customer_id",
+                strategy="check", check_cols=["city"], invalidate_hard_deletes=True) }}
+            select * from raw.customers
+            {% endsnapshot %}
+          highlight_lines:
+            - 2
+            - 3
+            - 4
+            - 5
+        - language: sql
+          filename: analyses/closed_customer.sql
+          content: |
+            -- Fixture phase: After deletion has been observed by the snapshot.
+            select customer_id, city, dbt_valid_from, dbt_valid_to
+            from snapshots.customers_history
+            where customer_id = 6
+            order by dbt_valid_from
+          highlight_lines:
+            - 2
+            - 4
+          purpose: authored executable syntax; illustration only
+        - language: shell
+          filename: commands.sh
+          content: |
+            dbt snapshot
+          highlight_lines:
+            - 1
+          purpose: authored executable syntax; illustration only
+      data_context:
+        dataset_variant: customer-removed
+        phase: After deletion has been observed by the snapshot.
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
-    - src-1
-    - src-2
-    - src-3
-    - src-4
-    limitations: |
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+      - src-1
+      - src-2
+      - src-3
+      - src-4
+    limitations: >
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
+      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
+      performance claims.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
       method: Original source/archive and release documentation inspection; no historical dbt execution.
   intro:
     can_now:
-    - Close a snapshot’s active record when the source row disappears.
-    - Apply deferral to tests as well as model builds.
-    scenario: |
-      Finn disappears from the current customer feed, but the shop’s old orders remain. The example distinguishes a hard delete from removing history or refunding those orders.
-    outcome: |
-      Inspect the hard-delete setting and the closed customer-history interval.
+      - Have a snapshot mark a record as no longer current when its row vanishes from the source.
+      - Keep the old versions of that record, so past orders still have a customer behind them.
+      - Point tests at production tables while working locally, the same way models already could.
+    scenario: >
+      Customer 6, Finn, drops out of the customer feed. Their two old orders are still on the books. A
+      snapshot is a table dbt keeps that records each version of a row over time. Before this version, a
+      deleted customer stayed marked as current forever. Now the snapshot can close that record while keeping
+      its history.
+    outcome: >
+      By the end you will have seen the one setting that turns this on, and the closed history row it
+      produces.
+  title: |
+    Demo: a snapshot closes a customer's history when the source row is deleted
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.
 default_milestone: 0.19.0

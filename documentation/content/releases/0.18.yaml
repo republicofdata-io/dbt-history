@@ -1,344 +1,378 @@
 id: '0.18'
 label: v0.18
 title: State-aware selection and downstream context
-lead: |
-  Saved project state helps select changed work and reuse existing relations. A later patch makes dashboards visible as exposures.
-problem_then: |
-  A small change often needs only part of a project rebuilt, but the project still needs valid upstream relations.
+lead: >
+  Saved project state helps select changed work and reuse existing relations. A later patch makes dashboards
+  visible as exposures.
+problem_then: >
+  A small change often needs only part of a project rebuilt, but the project still needs valid upstream
+  relations.
 what_changed:
-- id: change-1
-  summary: State selection, deferral and YAML selectors.
-  introduced_in: 0.18.0
-  adapter_constraints: null
-  evidence:
-  - src-1
-  confidence: high
-- id: change-2
-  summary: Exposures represent downstream consumers.
-  introduced_in: 0.18.1
-  adapter_constraints: null
-  evidence:
-  - src-4
-  confidence: high
+  - id: change-1
+    summary: State selection, deferral and YAML selectors.
+    introduced_in: 0.18.0
+    adapter_constraints: null
+    evidence:
+      - src-1
+    confidence: high
+  - id: change-2
+    summary: Exposures represent downstream consumers.
+    introduced_in: 0.18.1
+    adapter_constraints: null
+    evidence:
+      - src-4
+    confidence: high
 in_practice: |
   Compare the current project with saved artifacts, then choose a bounded development build.
-technical_detail: |
-  state:modified compares project definitions, not new business rows. --defer resolves eligible unselected references through saved state. Exposures arrive in 0.18.1. Keep saved state separate from the current output directory.
+technical_detail: >
+  state:modified compares project definitions, not new business rows. --defer resolves eligible unselected
+  references through saved state. Exposures arrive in 0.18.1. Keep saved state separate from the current
+  output directory.
 milestones:
-- id: 0.18.0
-  kind: package
-  date: '2020-09-03'
-  precision: day
-  title: First published package
-  evidence:
-  - src-3
-- id: 0.18.1
-  kind: patch
-  date: '2020-10-13'
-  precision: day
-  title: Exposures
-  evidence:
-  - src-4
+  - id: 0.18.0
+    kind: package
+    date: '2020-09-03'
+    precision: day
+    title: First published package
+    evidence:
+      - src-3
+  - id: 0.18.1
+    kind: patch
+    date: '2020-10-13'
+    precision: day
+    title: Exposures
+    evidence:
+      - src-4
 sources:
-- id: src-1
-  title: dbt 0.18 release evidence
-  url: https://github.com/dbt-labs/dbt/releases/tag/v0.18.0
-  retrieved: '2026-09-21'
-  supports: Tagged release changes; package upload and public announcement remain distinct.
-- id: src-2
-  title: dbt 0.18 release evidence
-  url: https://github.com/dbt-labs/dbt-core/releases/tag/v0.18.1
-  retrieved: '2026-09-21'
-  supports: Tagged release changes; package upload and public announcement remain distinct.
-- id: src-3
-  title: dbt 0.18 package evidence
-  url: https://pypi.org/project/dbt/0.18.0/
-  retrieved: '2026-09-21'
-  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
-    from the package.
-- id: src-4
-  title: dbt 0.18.1 patch evidence
-  url: https://github.com/dbt-labs/dbt/releases/tag/v0.18.1
-  retrieved: '2026-09-21'
-  supports: Exposures
-- id: src-5
-  title: Historical source archive reviewed for example syntax
-  url: https://pypi.org/project/dbt-core/0.18.0/
-  retrieved: '2026-09-21'
-  supports: Original source package and tagged release evidence for the example’s syntax; review is not runtime
-    execution.
-  rechecked: '2026-09-22'
-- id: src-6
-  title: 0.18.1 exposure schema
-  url: https://github.com/dbt-labs/dbt-core/blob/v0.18.1/core/dbt/contracts/graph/unparsed.py
-  retrieved: '2026-09-22'
-  supports: Patch-specific exposures, owner and dependency definition.
-  historical_scope: Syntax at the named immutable version; research cutoff remains 2026-09-21.
+  - id: src-1
+    title: dbt 0.18 release evidence
+    url: https://github.com/dbt-labs/dbt/releases/tag/v0.18.0
+    retrieved: '2026-09-21'
+    supports: Tagged release changes; package upload and public announcement remain distinct.
+  - id: src-2
+    title: dbt 0.18 release evidence
+    url: https://github.com/dbt-labs/dbt-core/releases/tag/v0.18.1
+    retrieved: '2026-09-21'
+    supports: Tagged release changes; package upload and public announcement remain distinct.
+  - id: src-3
+    title: dbt 0.18 package evidence
+    url: https://pypi.org/project/dbt/0.18.0/
+    retrieved: '2026-09-21'
+    supports: >-
+      Package existence and upload timestamp. Implementation claims refer to the original source archive
+      linked from the package.
+  - id: src-4
+    title: dbt 0.18.1 patch evidence
+    url: https://github.com/dbt-labs/dbt/releases/tag/v0.18.1
+    retrieved: '2026-09-21'
+    supports: Exposures
+  - id: src-5
+    title: Historical source archive reviewed for example syntax
+    url: https://pypi.org/project/dbt-core/0.18.0/
+    retrieved: '2026-09-21'
+    supports: >-
+      Original source package and tagged release evidence for the example’s syntax; review is not runtime
+      execution.
+    rechecked: '2026-09-22'
+  - id: src-6
+    title: 0.18.1 exposure schema
+    url: https://github.com/dbt-labs/dbt-core/blob/v0.18.1/core/dbt/contracts/graph/unparsed.py
+    retrieved: '2026-09-22'
+    supports: Patch-specific exposures, owner and dependency definition.
+    historical_scope: Syntax at the named immutable version; research cutoff remains 2026-09-21.
 narrative_evidence:
-- src-1
-- src-2
-- src-3
-- src-4
-- src-5
-- src-6
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - src-6
 walkthrough:
   id: wt-0.18
-  learning_objective: |
-    Separate changed code, deferred references and downstream consumers.
-  context: |
-    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
+  learning_objective: >
+    Use a saved copy of the production project to find what changed, build only that branch, and name the
+    dashboard that depends on it.
+  context: >
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
+    Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
   dataset_variant: base
   steps:
-  - id: change
-    title: Change the refund definition
-    explanation: |
-      Assume the refund model SQL changes while orders and payments remain unchanged.
-    state:
-      kind: comparison
-      title: Change the refund definition
-      columns:
-      - resource
-      - definition status
-      rows:
-      - - refunds_by_order
-        - modified
-      - - order_revenue
-        - downstream
-      - - revenue_by_location
-        - downstream
-      - - orders
-        - unchanged
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      Saved state identifies a code-change boundary.
-    evidence:
-    - src-1
-    - src-2
-    - src-3
-    - src-4
-    - src-5
-    - src-6
-    code:
-    - language: sql
-      filename: models/refunds_by_order.sql
-      content: |
-        select order_id, sum(amount_cents) as refund_cents
-        from {{ ref("refunds") }}
-        group by order_id
-      highlight_lines:
-      - 1
-      - 2
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/order_revenue.sql
-      content: |
-        select *, payment_cents - refund_cents as revenue_cents
-        from {{ ref("order_amounts") }}
-      highlight_lines:
-      - 1
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/revenue_by_location.sql
-      content: |
-        select
-            r.location_id, l.name as location,
-            sum(r.payment_cents) as payment_cents,
-            sum(r.refund_cents) as refund_cents,
-            sum(r.revenue_cents) as revenue_cents
-        from {{ ref("order_revenue") }} as r
-        join raw.locations as l on r.location_id = l.location_id
-        group by r.location_id, l.name
-        order by r.location_id
-      highlight_lines:
-      - 3
-      - 4
-      - 5
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/order_amounts.sql
-      content: |
-        select o.*, coalesce(p.payment_cents, 0) as payment_cents,
-            coalesce(r.refund_cents, 0) as refund_cents
-        from {{ ref("orders") }} as o
-        left join {{ ref("payments_by_order") }} as p
-          on o.order_id = p.order_id
-        left join {{ ref("refunds_by_order") }} as r
-          on o.order_id = r.order_id
-      highlight_lines:
-      - 3
-      - 4
-      - 6
-  - id: build
-    title: Build the affected branch
-    explanation: |
-      The prepared selection includes descendants; eligible unselected parents resolve using saved state.
-    state:
-      kind: comparison
-      title: Build the affected branch
-      columns:
-      - behavior
-      - prepared choice
-      rows:
-      - - build
-        - refunds_by_order, order_revenue, revenue_by_location
-      - - reuse eligible parent
-        - orders from saved production state
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      Deferral supports a smaller development build.
-    code:
-    - language: sql
-      filename: models/refunds_by_order.sql
-      content: |
-        select order_id, sum(amount_cents) as refund_cents
-        from {{ ref("refunds") }}
-        group by order_id
-      highlight_lines:
-      - 1
-      - 2
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/order_revenue.sql
-      content: |
-        select *, payment_cents - refund_cents as revenue_cents
-        from {{ ref("order_amounts") }}
-      highlight_lines:
-      - 1
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/revenue_by_location.sql
-      content: |
-        select
-            r.location_id, l.name as location,
-            sum(r.payment_cents) as payment_cents,
-            sum(r.refund_cents) as refund_cents,
-            sum(r.revenue_cents) as revenue_cents
-        from {{ ref("order_revenue") }} as r
-        join raw.locations as l on r.location_id = l.location_id
-        group by r.location_id, l.name
-        order by r.location_id
-      highlight_lines:
-      - 3
-      - 4
-      - 5
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/order_amounts.sql
-      content: |
-        select o.*, coalesce(p.payment_cents, 0) as payment_cents,
-            coalesce(r.refund_cents, 0) as refund_cents
-        from {{ ref("orders") }} as o
-        left join {{ ref("payments_by_order") }} as p
-          on o.order_id = p.order_id
-        left join {{ ref("refunds_by_order") }} as r
-          on o.order_id = r.order_id
-      highlight_lines:
-      - 3
-      - 4
-      - 6
-    - language: shell
-      filename: commands.sh
-      content: |
-        dbt run --models state:modified+ --state ./state-prod --defer
-      highlight_lines:
-      - 1
-    evidence:
-    - src-1
-    - src-2
-    - src-3
-    - src-4
-    - src-5
-    - src-6
-  - id: consumer
-    title: Name the dashboard at 0.18.1
-    explanation: |
-      The fictional daily dashboard consumes the location result.
-    state:
-      kind: comparison
-      title: Name the dashboard at 0.18.1
-      columns:
-      - resource
-      - kind
-      - depends on
-      rows:
-      - - shop_daily_dashboard
-        - exposure at 0.18.1
-        - revenue_by_location
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      Exposures describe downstream use; they do not build the dashboard.
-    evidence:
-    - src-1
-    - src-2
-    - src-3
-    - src-4
-    - src-5
-    - src-6
-    code:
-    - language: yaml
-      filename: models/exposures.yml (0.18.1)
-      content: |
-        version: 2
-        exposures:
-          - name: shop_daily_dashboard
-            type: dashboard
-            depends_on:
-              - ref("revenue_by_location")
-            owner:
-              name: Waffle Shop finance
-              email: finance@example.invalid
-      highlight_lines:
-      - 2
-      - 5
-      - 6
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/revenue_by_location.sql
-      content: |
-        select
-            r.location_id, l.name as location,
-            sum(r.payment_cents) as payment_cents,
-            sum(r.refund_cents) as refund_cents,
-            sum(r.revenue_cents) as revenue_cents
-        from {{ ref("order_revenue") }} as r
-        join raw.locations as l on r.location_id = l.location_id
-        group by r.location_id, l.name
-        order by r.location_id
-      highlight_lines:
-      - 3
-      - 4
-      - 5
-      purpose: authored executable syntax; illustration only
+    - id: change
+      title: The refund model changes
+      explanation: >
+        Four model files are shown. The refund model, highlighted on lines 1 and 2, is the one that was
+        edited. Its SQL is compared to a saved copy of the project from the last production run. The other
+        three models are unchanged, but the highlighted lines show how they read from the refund model,
+        directly or through order_amounts. The result panel classifies each model: the refund model is
+        modified, order_revenue and revenue_by_location are downstream of it, and orders is unchanged.
+      state:
+        kind: comparison
+        title: Which models changed and which depend on them
+        columns:
+          - resource
+          - definition status
+        rows:
+          - - refunds_by_order
+            - modified
+          - - order_revenue
+            - downstream
+          - - revenue_by_location
+            - downstream
+          - - orders
+            - unchanged
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: >
+        Comparing against the saved production state tells dbt which model changed and which models sit
+        downstream of it.
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+        - src-4
+        - src-5
+        - src-6
+      code:
+        - language: sql
+          filename: models/refunds_by_order.sql
+          content: |
+            select order_id, sum(amount_cents) as refund_cents
+            from {{ ref("refunds") }}
+            group by order_id
+          highlight_lines:
+            - 1
+            - 2
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/order_revenue.sql
+          content: |
+            select *, payment_cents - refund_cents as revenue_cents
+            from {{ ref("order_amounts") }}
+          highlight_lines:
+            - 1
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/revenue_by_location.sql
+          content: |
+            select
+                r.location_id, l.name as location,
+                sum(r.payment_cents) as payment_cents,
+                sum(r.refund_cents) as refund_cents,
+                sum(r.revenue_cents) as revenue_cents
+            from {{ ref("order_revenue") }} as r
+            join raw.locations as l on r.location_id = l.location_id
+            group by r.location_id, l.name
+            order by r.location_id
+          highlight_lines:
+            - 3
+            - 4
+            - 5
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/order_amounts.sql
+          content: |
+            select o.*, coalesce(p.payment_cents, 0) as payment_cents,
+                coalesce(r.refund_cents, 0) as refund_cents
+            from {{ ref("orders") }} as o
+            left join {{ ref("payments_by_order") }} as p
+              on o.order_id = p.order_id
+            left join {{ ref("refunds_by_order") }} as r
+              on o.order_id = r.order_id
+          highlight_lines:
+            - 3
+            - 4
+            - 6
+    - id: build
+      title: Build only the changed branch
+      explanation: >
+        The same four model files are shown. The command file runs dbt with three options. state:modified+
+        selects the changed model and everything downstream of it. The state option points at the saved
+        production copy to compare against. The defer option tells dbt that unselected inputs, such as orders,
+        should be read from the production tables instead of being rebuilt. The result panel lists what gets
+        built and what gets reused.
+      state:
+        kind: comparison
+        title: What is built and what is reused
+        columns:
+          - behavior
+          - prepared choice
+        rows:
+          - - build
+            - refunds_by_order, order_revenue, revenue_by_location
+          - - reuse eligible parent
+            - orders from saved production state
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: >
+        The changed branch is rebuilt, and unchanged inputs are borrowed from production, so the development
+        build stays small.
+      code:
+        - language: sql
+          filename: models/refunds_by_order.sql
+          content: |
+            select order_id, sum(amount_cents) as refund_cents
+            from {{ ref("refunds") }}
+            group by order_id
+          highlight_lines:
+            - 1
+            - 2
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/order_revenue.sql
+          content: |
+            select *, payment_cents - refund_cents as revenue_cents
+            from {{ ref("order_amounts") }}
+          highlight_lines:
+            - 1
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/revenue_by_location.sql
+          content: |
+            select
+                r.location_id, l.name as location,
+                sum(r.payment_cents) as payment_cents,
+                sum(r.refund_cents) as refund_cents,
+                sum(r.revenue_cents) as revenue_cents
+            from {{ ref("order_revenue") }} as r
+            join raw.locations as l on r.location_id = l.location_id
+            group by r.location_id, l.name
+            order by r.location_id
+          highlight_lines:
+            - 3
+            - 4
+            - 5
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/order_amounts.sql
+          content: |
+            select o.*, coalesce(p.payment_cents, 0) as payment_cents,
+                coalesce(r.refund_cents, 0) as refund_cents
+            from {{ ref("orders") }} as o
+            left join {{ ref("payments_by_order") }} as p
+              on o.order_id = p.order_id
+            left join {{ ref("refunds_by_order") }} as r
+              on o.order_id = r.order_id
+          highlight_lines:
+            - 3
+            - 4
+            - 6
+        - language: shell
+          filename: commands.sh
+          content: |
+            dbt run --models state:modified+ --state ./state-prod --defer
+          highlight_lines:
+            - 1
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+        - src-4
+        - src-5
+        - src-6
+    - id: consumer
+      title: Name the dashboard that uses the result (added in 0.18.1)
+      explanation: >
+        Two files are shown. The YAML file, highlighted on lines 2, 5 and 6, declares an exposure: a named
+        downstream use of the project, here a daily dashboard, with the model it depends on. The SQL file is
+        the revenue-by-location model it reads, highlighted on its sum lines. The result panel shows the
+        exposure and its dependency. Exposures were added in patch 0.18.1, after the main release.
+      state:
+        kind: comparison
+        title: The dashboard as an exposure
+        columns:
+          - resource
+          - kind
+          - depends on
+        rows:
+          - - shop_daily_dashboard
+            - exposure at 0.18.1
+            - revenue_by_location
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: >
+        An exposure records that the daily dashboard reads revenue_by_location. It documents the dependency
+        but does not build the dashboard.
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+        - src-4
+        - src-5
+        - src-6
+      code:
+        - language: yaml
+          filename: models/exposures.yml (0.18.1)
+          content: |
+            version: 2
+            exposures:
+              - name: shop_daily_dashboard
+                type: dashboard
+                depends_on:
+                  - ref("revenue_by_location")
+                owner:
+                  name: Waffle Shop finance
+                  email: finance@example.invalid
+          highlight_lines:
+            - 2
+            - 5
+            - 6
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/revenue_by_location.sql
+          content: |
+            select
+                r.location_id, l.name as location,
+                sum(r.payment_cents) as payment_cents,
+                sum(r.refund_cents) as refund_cents,
+                sum(r.revenue_cents) as revenue_cents
+            from {{ ref("order_revenue") }} as r
+            join raw.locations as l on r.location_id = l.location_id
+            group by r.location_id, l.name
+            order by r.location_id
+          highlight_lines:
+            - 3
+            - 4
+            - 5
+          purpose: authored executable syntax; illustration only
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
-    - src-1
-    - src-2
-    - src-3
-    - src-4
-    - src-5
-    - src-6
-    limitations: |
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+      - src-1
+      - src-2
+      - src-3
+      - src-4
+      - src-5
+      - src-6
+    limitations: >
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
+      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
+      performance claims.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
       method: Original source/archive and release documentation inspection; no historical dbt execution.
   intro:
     can_now:
-    - Select changed model definitions by comparing saved project state.
-    - Reuse eligible unselected production relations through deferral.
-    - From 0.18.1, describe downstream dashboards as exposures.
-    scenario: |
-      The refund model changes while its other inputs stay stable. The shop builds the affected branch and records which dashboard consumes the result.
-    outcome: |
-      Connect the model edit, state-based command and patch-specific exposure definition.
+      - Compare the project to a saved copy from production and select only the models whose code changed.
+      - >-
+        Build those changed models in a development schema while reading unchanged inputs from production,
+        instead of rebuilding them. dbt calls this deferral.
+      - >-
+        From version 0.18.1, list a dashboard or report in YAML as an exposure, so the lineage shows who uses
+        a model.
+    scenario: >
+      The refund model changes. Orders and payments do not. Waffle Shop wants to rebuild only the refund model
+      and the models that depend on it, reuse the rest from production, and record that the daily dashboard
+      reads the result.
+    outcome: >
+      See the edited model, the command that builds only the changed branch, and the exposure that names the
+      dashboard.
+  title: >
+    Demo: dbt builds only the models changed since the last production run, and records which dashboard uses
+    the result
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

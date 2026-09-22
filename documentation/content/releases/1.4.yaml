@@ -1,224 +1,251 @@
 id: '1.4'
 label: v1.4
 title: Fine-tuning incremental work
-lead: |
-  Deferral gains more explicit control over which existing relations to prefer. This helps avoid accidentally reading a stale development copy.
-problem_then: |
-  An unselected parent may exist in both development and saved production state. Existence alone does not tell a developer which copy they intended.
+lead: >
+  Deferral gains more explicit control over which existing relations to prefer. This helps avoid accidentally
+  reading a stale development copy.
+problem_then: >
+  An unselected parent may exist in both development and saved production state. Existence alone does not tell
+  a developer which copy they intended.
 what_changed:
-- id: change-1
-  summary: Incremental predicates and favor-state deferral.
-  introduced_in: 1.4.0
-  adapter_constraints: null
-  evidence:
-  - src-1
-  confidence: high
-- id: change-2
-  summary: Buildable indirect test selection; richer structured logs and warning controls.
-  introduced_in: 1.4.0
-  adapter_constraints: null
-  evidence:
-  - src-1
-  confidence: high
+  - id: change-1
+    summary: Incremental predicates and favor-state deferral.
+    introduced_in: 1.4.0
+    adapter_constraints: null
+    evidence:
+      - src-1
+    confidence: high
+  - id: change-2
+    summary: Buildable indirect test selection; richer structured logs and warning controls.
+    introduced_in: 1.4.0
+    adapter_constraints: null
+    evidence:
+      - src-1
+    confidence: high
 in_practice: |
   Use favor-state when the saved-state relation should win for eligible deferred references.
-technical_detail: |
-  --favor-state modifies deferral resolution; it does not force selected models to run in production. Incremental predicates and buildable indirect test selection are other additions.
+technical_detail: >
+  --favor-state modifies deferral resolution; it does not force selected models to run in production.
+  Incremental predicates and buildable indirect test selection are other additions.
 milestones:
-- id: 1.4.0
-  kind: package
-  date: '2023-01-25'
-  precision: day
-  title: First published package
-  evidence:
-  - src-2
-- id: product-2023-02-08
-  kind: product_event
-  date: '2023-02-08'
-  precision: day
-  title: Transform acquisition agreement
-  evidence:
-  - src-3
+  - id: 1.4.0
+    kind: package
+    date: '2023-01-25'
+    precision: day
+    title: First published package
+    evidence:
+      - src-2
+  - id: product-2023-02-08
+    kind: product_event
+    date: '2023-02-08'
+    precision: day
+    title: Transform acquisition agreement
+    evidence:
+      - src-3
 sources:
-- id: src-1
-  title: dbt 1.4 release evidence
-  url: https://github.com/dbt-labs/dbt/releases/tag/v1.4.0
-  retrieved: '2026-09-21'
-  supports: Tagged release changes; package upload and public announcement remain distinct.
-- id: src-2
-  title: dbt 1.4 package evidence
-  url: https://pypi.org/project/dbt-core/1.4.0/
-  retrieved: '2026-09-21'
-  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
-    from the package.
-  rechecked: '2026-09-22'
-- id: src-3
-  title: Transform acquisition agreement
-  url: https://www.getdbt.com/blog/press-release-dbt-acquisition-transform
-  retrieved: '2026-09-21'
-  supports: Agreement to acquire Transform and integrate MetricFlow. Record agreement separately from legal completion;
-    exact completion date not established here.
+  - id: src-1
+    title: dbt 1.4 release evidence
+    url: https://github.com/dbt-labs/dbt/releases/tag/v1.4.0
+    retrieved: '2026-09-21'
+    supports: Tagged release changes; package upload and public announcement remain distinct.
+  - id: src-2
+    title: dbt 1.4 package evidence
+    url: https://pypi.org/project/dbt-core/1.4.0/
+    retrieved: '2026-09-21'
+    supports: >-
+      Package existence and upload timestamp. Implementation claims refer to the original source archive
+      linked from the package.
+    rechecked: '2026-09-22'
+  - id: src-3
+    title: Transform acquisition agreement
+    url: https://www.getdbt.com/blog/press-release-dbt-acquisition-transform
+    retrieved: '2026-09-21'
+    supports: >-
+      Agreement to acquire Transform and integrate MetricFlow. Record agreement separately from legal
+      completion; exact completion date not established here.
 narrative_evidence:
-- src-1
-- src-2
-- src-3
+  - src-1
+  - src-2
+  - src-3
 walkthrough:
   id: wt-1.4
   learning_objective: |
-    Choose the correct upstream relation during development.
-  context: |
-    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is second-day. Each state below is an authored illustration.
+    See how to choose which copy of a parent table a development build reads.
+  context: >
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
+    Riverside 4,800. The selected fixture is second-day. Each state below is an authored illustration.
   dataset_variant: second-day
   steps:
-  - id: copies
-    title: Notice two copies
-    explanation: |
-      Both relation names are fictional deployment names for the same logical parent.
-    state:
-      kind: comparison
-      title: Notice two copies
-      columns:
-      - relation
-      - prepared data state
-      rows:
-      - - dev.order_revenue
-        - 'old copy: first day'
-      - - prod.order_revenue
-        - 'current saved-state relation: two days'
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      The development copy exists but is stale.
-    evidence:
-    - src-1
-    - src-2
-    code:
-    - language: sql
-      filename: inspection/compare_parent_relations.sql
-      content: |
-        -- Fixture phase: dev.order_revenue uses base; prod.order_revenue uses second-day.
-        select 'development' as environment, sum(revenue_cents) as total_cents
-        from dev.order_revenue
-        union all
-        select 'production', sum(revenue_cents)
-        from prod.order_revenue;
-      highlight_lines:
-      - 3
-      - 6
-      purpose: authored executable syntax; illustration only
-    data_context:
-      dataset_variant: second-day
-      phase: dev.order_revenue uses base; prod.order_revenue uses second-day.
-  - id: favor
-    title: Prefer the saved-state parent
-    explanation: |
-      Build only the location aggregation, deferring its unselected parent.
-    state:
-      kind: comparison
-      title: Prefer the saved-state parent
-      columns:
-      - selected child
-      - resolved parent
-      rows:
-      - - dev.revenue_by_location
-        - prod.order_revenue
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      The choice of relation can change what data a model sees.
-    code:
-    - language: sql
-      filename: models/revenue_by_location.sql
-      content: |
-        select
-            r.location_id, l.name as location,
-            sum(r.payment_cents) as payment_cents,
-            sum(r.refund_cents) as refund_cents,
-            sum(r.revenue_cents) as revenue_cents
-        from {{ ref("order_revenue") }} as r
-        join raw.locations as l on r.location_id = l.location_id
-        group by r.location_id, l.name
-        order by r.location_id
-      highlight_lines:
-      - 3
-      - 4
-      - 5
-      purpose: authored executable syntax; illustration only
-    - language: shell
-      filename: commands.sh
-      content: |
-        dbt run --select revenue_by_location --defer --favor-state --state ./state-prod
-      highlight_lines:
-      - 1
-    evidence:
-    - src-1
-    - src-2
-  - id: expected
-    title: Aggregate the selected parent
-    explanation: |
-      The production parent in this illustration has the second-day fixture.
-    state:
-      kind: comparison
-      title: Aggregate the selected parent
-      columns:
-      - location
-      - revenue_cents
-      rows:
-      - - Old Port
-        - 3900
-      - - Mile End
-        - 5700
-      - - Riverside
-        - 4800
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      The expected total is 14,400 cents because that parent contains both days.
-    evidence:
-    - src-1
-    - src-2
-    code:
-    - language: sql
-      filename: models/revenue_by_location.sql
-      content: |
-        select
-            r.location_id, l.name as location,
-            sum(r.payment_cents) as payment_cents,
-            sum(r.refund_cents) as refund_cents,
-            sum(r.revenue_cents) as revenue_cents
-        from {{ ref("order_revenue") }} as r
-        join raw.locations as l on r.location_id = l.location_id
-        group by r.location_id, l.name
-        order by r.location_id
-      highlight_lines:
-      - 3
-      - 4
-      - 5
-      purpose: authored executable syntax; illustration only
+    - id: copies
+      title: Two copies of the same parent, one stale
+      explanation: >
+        This query compares the two copies. Highlighted line 3 reads the dev copy, and highlighted line 6
+        reads the production copy. Both are the same model, order_revenue, built into two different schemas.
+        The result panel shows their state: the dev copy has only the first trading day, while production has
+        both days.
+      state:
+        kind: comparison
+        title: Dev copy has one day, production has two
+        columns:
+          - relation
+          - prepared data state
+        rows:
+          - - dev.order_revenue
+            - 'old copy: first day'
+          - - prod.order_revenue
+            - 'current saved-state relation: two days'
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        The dev copy of order_revenue exists, but it is a day behind production.
+      evidence:
+        - src-1
+        - src-2
+      code:
+        - language: sql
+          filename: inspection/compare_parent_relations.sql
+          content: |
+            -- Fixture phase: dev.order_revenue uses base; prod.order_revenue uses second-day.
+            select 'development' as environment, sum(revenue_cents) as total_cents
+            from dev.order_revenue
+            union all
+            select 'production', sum(revenue_cents)
+            from prod.order_revenue;
+          highlight_lines:
+            - 3
+            - 6
+          purpose: authored executable syntax; illustration only
+      data_context:
+        dataset_variant: second-day
+        phase: dev.order_revenue uses base; prod.order_revenue uses second-day.
+    - id: favor
+      title: Build the child and tell dbt to prefer the production parent
+      explanation: >
+        The first file is the model to rebuild. Highlighted lines 3 to 5 sum payments, refunds and revenue per
+        location. The second file is the command. It selects only this model. The defer and state flags ask
+        dbt to borrow any unselected parent from the saved production state in the state-prod folder. The new
+        flag, favor-state, says to use the production copy even though a dev copy exists. The result panel
+        shows the resolution: the dev revenue-by-location model will read prod.order_revenue.
+      state:
+        kind: comparison
+        title: Child reads the production parent
+        columns:
+          - selected child
+          - resolved parent
+        rows:
+          - - dev.revenue_by_location
+            - prod.order_revenue
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        With --favor-state, the development build reads the production parent instead of the stale dev copy.
+      code:
+        - language: sql
+          filename: models/revenue_by_location.sql
+          content: |
+            select
+                r.location_id, l.name as location,
+                sum(r.payment_cents) as payment_cents,
+                sum(r.refund_cents) as refund_cents,
+                sum(r.revenue_cents) as revenue_cents
+            from {{ ref("order_revenue") }} as r
+            join raw.locations as l on r.location_id = l.location_id
+            group by r.location_id, l.name
+            order by r.location_id
+          highlight_lines:
+            - 3
+            - 4
+            - 5
+          purpose: authored executable syntax; illustration only
+        - language: shell
+          filename: commands.sh
+          content: |
+            dbt run --select revenue_by_location --defer --favor-state --state ./state-prod
+          highlight_lines:
+            - 1
+      evidence:
+        - src-1
+        - src-2
+    - id: expected
+      title: The result reflects both days
+      explanation: >
+        Same model, highlighted at lines 3 to 5. Because it read the production parent, its output includes
+        the second day of orders. The result panel shows revenue per location: Old Port 3,900, Mile End 5,700,
+        Riverside 4,800. Had it read the dev copy, Old Port would be 3,400 and Mile End 4,300.
+      state:
+        kind: comparison
+        title: Revenue by location from the two-day parent
+        columns:
+          - location
+          - revenue_cents
+        rows:
+          - - Old Port
+            - 3900
+          - - Mile End
+            - 5700
+          - - Riverside
+            - 4800
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: >
+        The total is 14,400 cents because the build read the two-day production parent, not the one-day dev
+        copy.
+      evidence:
+        - src-1
+        - src-2
+      code:
+        - language: sql
+          filename: models/revenue_by_location.sql
+          content: |
+            select
+                r.location_id, l.name as location,
+                sum(r.payment_cents) as payment_cents,
+                sum(r.refund_cents) as refund_cents,
+                sum(r.revenue_cents) as revenue_cents
+            from {{ ref("order_revenue") }} as r
+            join raw.locations as l on r.location_id = l.location_id
+            group by r.location_id, l.name
+            order by r.location_id
+          highlight_lines:
+            - 3
+            - 4
+            - 5
+          purpose: authored executable syntax; illustration only
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
-    - src-1
-    - src-2
-    - src-3
-    limitations: |
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+      - src-1
+      - src-2
+      - src-3
+    limitations: >
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
+      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
+      performance claims.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
       method: Original source/archive and release documentation inspection; no historical dbt execution.
   intro:
     can_now:
-    - Prefer saved-state relations over existing development copies during deferral.
-    - Limit supported incremental target scans with incremental predicates.
-    scenario: |
-      An old development copy contains only the first trading day, while the saved production relation has both days. The shop deliberately chooses which parent the development aggregation reads.
+      - >-
+        When building one model in development, borrow its parents from production, and prefer production even
+        if an old dev copy exists.
+      - >-
+        Limit how much of a big incremental table dbt scans when merging new rows, on warehouses that support
+        it.
+    scenario: >
+      A developer wants to rebuild only the revenue-by-location model. Its parent, order_revenue, exists
+      twice: an old copy in the dev schema with one day of orders, and the production copy with two days.
+      Deferral is dbt's way of borrowing a parent from another environment instead of rebuilding it. Until
+      now, dbt used the dev copy if one existed. The new --favor-state flag makes it prefer production.
     outcome: |
-      Compare the two parents and the favor-state command that produces the two-day expectation.
+      You will see the two copies, the command that picks production, and the two-day result of 14,400 cents.
+  title: |
+    Demo: --favor-state makes a dev build read the production parent, not a stale dev copy
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.
 default_milestone: 1.4.0

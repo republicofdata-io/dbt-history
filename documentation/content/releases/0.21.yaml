@@ -1,312 +1,347 @@
 id: '0.21'
 label: v0.21
 title: Build in dependency order
-lead: |
-  dbt build brings models and tests into one dependency-aware workflow. Downstream work can wait for upstream validation.
-problem_then: |
-  Running models and tests as unrelated commands makes it easier to publish a downstream result before noticing an upstream failure.
+lead: >
+  dbt build brings models and tests into one dependency-aware workflow. Downstream work can wait for upstream
+  validation.
+problem_then: >
+  Running models and tests as unrelated commands makes it easier to publish a downstream result before
+  noticing an upstream failure.
 what_changed:
-- id: change-1
-  summary: dbt build runs seeds, snapshots, models and tests in DAG order.
-  introduced_in: 0.21.0
-  adapter_constraints: null
-  evidence:
-  - src-1
-  confidence: high
-- id: change-2
-  summary: on_schema_change for incremental models; state detects macro changes.
-  introduced_in: 0.21.0
-  adapter_constraints: null
-  evidence:
-  - src-1
-  confidence: high
+  - id: change-1
+    summary: dbt build runs seeds, snapshots, models and tests in DAG order.
+    introduced_in: 0.21.0
+    adapter_constraints: null
+    evidence:
+      - src-1
+    confidence: high
+  - id: change-2
+    summary: on_schema_change for incremental models; state detects macro changes.
+    introduced_in: 0.21.0
+    adapter_constraints: null
+    evidence:
+      - src-1
+    confidence: high
 in_practice: |
   Build the selected graph with its checks in the relevant order.
-technical_detail: |
-  The illustration assumes a selected upstream relationship test on the payment staging model and an ordinary single-parent failure barrier. Actual blocking rules depend on test dependencies and selection. Incremental schema-change handling is another feature, not a historical backfill guarantee.
+technical_detail: >
+  The illustration assumes a selected upstream relationship test on the payment staging model and an ordinary
+  single-parent failure barrier. Actual blocking rules depend on test dependencies and selection. Incremental
+  schema-change handling is another feature, not a historical backfill guarantee.
 milestones:
-- id: 0.21.0
-  kind: package
-  date: '2021-10-04'
-  precision: day
-  title: First published package
-  evidence:
-  - src-2
+  - id: 0.21.0
+    kind: package
+    date: '2021-10-04'
+    precision: day
+    title: First published package
+    evidence:
+      - src-2
 sources:
-- id: src-1
-  title: dbt 0.21 release evidence
-  url: https://github.com/dbt-labs/dbt/releases/tag/v0.21.0
-  retrieved: '2026-09-21'
-  supports: Tagged release changes; package upload and public announcement remain distinct.
-- id: src-2
-  title: dbt 0.21 package evidence
-  url: https://pypi.org/project/dbt/0.21.0/
-  retrieved: '2026-09-21'
-  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
-    from the package.
-- id: src-3
-  title: Historical source archive reviewed for example syntax
-  url: https://pypi.org/project/dbt-core/0.21.0/
-  retrieved: '2026-09-21'
-  supports: Original source package and tagged release evidence for the example’s syntax; review is not runtime
-    execution.
-  rechecked: '2026-09-22'
+  - id: src-1
+    title: dbt 0.21 release evidence
+    url: https://github.com/dbt-labs/dbt/releases/tag/v0.21.0
+    retrieved: '2026-09-21'
+    supports: Tagged release changes; package upload and public announcement remain distinct.
+  - id: src-2
+    title: dbt 0.21 package evidence
+    url: https://pypi.org/project/dbt/0.21.0/
+    retrieved: '2026-09-21'
+    supports: >-
+      Package existence and upload timestamp. Implementation claims refer to the original source archive
+      linked from the package.
+  - id: src-3
+    title: Historical source archive reviewed for example syntax
+    url: https://pypi.org/project/dbt-core/0.21.0/
+    retrieved: '2026-09-21'
+    supports: >-
+      Original source package and tagged release evidence for the example’s syntax; review is not runtime
+      execution.
+    rechecked: '2026-09-22'
 narrative_evidence:
-- src-1
-- src-2
-- src-3
+  - src-1
+  - src-2
+  - src-3
 walkthrough:
   id: wt-0.21
   learning_objective: |
-    See a test prevent an untrustworthy downstream build.
-  context: |
-    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is orphan-payment. Each state below is an authored illustration.
+    See one command run models and tests in order, and refuse to build revenue on top of a failed check.
+  context: >
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
+    Riverside 4,800. The selected fixture is orphan-payment. Each state below is an authored illustration.
   dataset_variant: orphan-payment
   steps:
-  - id: graph
-    title: Place a check before revenue
-    explanation: |
-      The selected payment staging model includes the orphan row.
-    state:
-      kind: comparison
-      title: Place a check before revenue
-      columns:
-      - stage
-      - dependency
-      rows:
-      - - stage payments
-        - raw payments
-      - - payments-have-orders test
-        - staged payments
-      - - order_revenue
-        - staged payments
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      The test is part of the build graph.
-    evidence:
-    - src-1
-    - src-2
-    - src-3
-    code:
-    - language: sql
-      filename: models/payments.sql
-      content: |
-        select payment_id, order_id, amount_cents
-        from raw.payments
-      highlight_lines:
-      - 1
-      - 2
-      purpose: authored executable syntax; illustration only
-    - language: yaml
-      filename: models/schema.yml
-      content: |
-        version: 2
-        models:
-          - name: payments
-            columns:
-              - name: order_id
-                tests:
-                  - not_null
-                  - relationships:
-                      to: ref("orders")
-                      field: order_id
-      highlight_lines:
-      - 8
-      - 9
-      - 10
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/order_revenue.sql
-      content: |
-        select *, payment_cents - refund_cents as revenue_cents
-        from {{ ref("order_amounts") }}
-      highlight_lines:
-      - 1
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/order_amounts.sql
-      content: |
-        select o.*, coalesce(p.payment_cents, 0) as payment_cents,
-            coalesce(r.refund_cents, 0) as refund_cents
-        from {{ ref("orders") }} as o
-        left join {{ ref("payments_by_order") }} as p
-          on o.order_id = p.order_id
-        left join {{ ref("refunds_by_order") }} as r
-          on o.order_id = r.order_id
-      highlight_lines:
-      - 3
-      - 4
-      - 6
-    - language: sql
-      filename: models/payments_by_order.sql
-      content: |
-        select order_id, sum(amount_cents) as payment_cents
-        from {{ ref("payments") }}
-        group by order_id
-      highlight_lines:
-      - 2
-  - id: build
-    title: Build with the failing assertion
-    explanation: |
-      Expected missing references are zero; actual is one.
-    state:
-      kind: result
-      title: Build with the failing assertion
-      columns:
-      - resource
-      - prepared result
-      rows:
-      - - payment relationship test
-        - 'fail: expected 0, actual 1'
-      - - dependent revenue model
-        - skip because upstream test failed
-      result_status: fail
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      The shop should not publish a fresh-looking result from a failed branch.
-    code:
-    - language: sql
-      filename: models/payments.sql
-      content: |
-        select payment_id, order_id, amount_cents
-        from raw.payments
-      highlight_lines:
-      - 1
-      - 2
-      purpose: authored executable syntax; illustration only
-    - language: yaml
-      filename: models/schema.yml
-      content: |
-        version: 2
-        models:
-          - name: payments
-            columns:
-              - name: order_id
-                tests:
-                  - not_null
-                  - relationships:
-                      to: ref("orders")
-                      field: order_id
-      highlight_lines:
-      - 8
-      - 9
-      - 10
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/order_revenue.sql
-      content: |
-        select *, payment_cents - refund_cents as revenue_cents
-        from {{ ref("order_amounts") }}
-      highlight_lines:
-      - 1
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/order_amounts.sql
-      content: |
-        select o.*, coalesce(p.payment_cents, 0) as payment_cents,
-            coalesce(r.refund_cents, 0) as refund_cents
-        from {{ ref("orders") }} as o
-        left join {{ ref("payments_by_order") }} as p
-          on o.order_id = p.order_id
-        left join {{ ref("refunds_by_order") }} as r
-          on o.order_id = r.order_id
-      highlight_lines:
-      - 3
-      - 4
-      - 6
-    - language: sql
-      filename: models/payments_by_order.sql
-      content: |
-        select order_id, sum(amount_cents) as payment_cents
-        from {{ ref("payments") }}
-        group by order_id
-      highlight_lines:
-      - 2
-    - language: shell
-      filename: commands.sh
-      content: |
-        dbt build
-      highlight_lines:
-      - 1
-    evidence:
-    - src-1
-    - src-2
-    - src-3
-  - id: limit
-    title: Read the existing result carefully
-    explanation: |
-      An old relation may still exist after the new build is blocked.
-    state:
-      kind: comparison
-      title: Read the existing result carefully
-      columns:
-      - existing base total
-      - freshly validated output
-      rows:
-      - - 12500
-        - not produced by this failed build
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      A table’s existence is not proof that the latest build passed.
-    evidence:
-    - src-1
-    - src-2
-    - src-3
-    code:
-    - language: sql
-      filename: inspection/existing_revenue.sql
-      content: |
-        -- Read the relation retained from the last successful build.
-        select sum(revenue_cents) as existing_total_cents
-        from waffle.revenue_by_location;
-      highlight_lines:
-      - 2
-      - 3
-      purpose: authored executable syntax; illustration only
-    - language: yaml
-      filename: models/schema.yml
-      content: |
-        version: 2
-        models:
-          - name: payments
-            columns:
-              - name: order_id
-                tests:
-                  - not_null
-                  - relationships:
-                      to: ref("orders")
-                      field: order_id
-      highlight_lines:
-      - 8
-      - 9
-      - 10
-      purpose: authored executable syntax; illustration only
+    - id: graph
+      title: Where the test sits in the chain
+      explanation: >
+        Five files show the chain from raw payments to revenue. The first is the payments model: the
+        highlighted lines 1 and 2 read the raw payments as they are, including the bad row. The second file
+        attaches tests to that model. The highlighted lines 8 to 10 say every order_id in payments must exist
+        in the orders model. The other three files build revenue on top. payments_by_order sums payments per
+        order (highlighted line 2 reads from payments). order_amounts joins those sums and the refunds to each
+        order (highlighted lines 3, 4 and 6). order_revenue subtracts refunds (highlighted line 1). The result
+        panel shows the order of dependence: the test depends on the payments model, and revenue depends on
+        the same payments model.
+      state:
+        kind: comparison
+        title: The test sits between payments and revenue
+        columns:
+          - stage
+          - dependency
+        rows:
+          - - stage payments
+            - raw payments
+          - - payments-have-orders test
+            - staged payments
+          - - order_revenue
+            - staged payments
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        The test is a step in the chain, sitting between the payments model and the revenue models.
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+      code:
+        - language: sql
+          filename: models/payments.sql
+          content: |
+            select payment_id, order_id, amount_cents
+            from raw.payments
+          highlight_lines:
+            - 1
+            - 2
+          purpose: authored executable syntax; illustration only
+        - language: yaml
+          filename: models/schema.yml
+          content: |
+            version: 2
+            models:
+              - name: payments
+                columns:
+                  - name: order_id
+                    tests:
+                      - not_null
+                      - relationships:
+                          to: ref("orders")
+                          field: order_id
+          highlight_lines:
+            - 8
+            - 9
+            - 10
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/order_revenue.sql
+          content: |
+            select *, payment_cents - refund_cents as revenue_cents
+            from {{ ref("order_amounts") }}
+          highlight_lines:
+            - 1
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/order_amounts.sql
+          content: |
+            select o.*, coalesce(p.payment_cents, 0) as payment_cents,
+                coalesce(r.refund_cents, 0) as refund_cents
+            from {{ ref("orders") }} as o
+            left join {{ ref("payments_by_order") }} as p
+              on o.order_id = p.order_id
+            left join {{ ref("refunds_by_order") }} as r
+              on o.order_id = r.order_id
+          highlight_lines:
+            - 3
+            - 4
+            - 6
+        - language: sql
+          filename: models/payments_by_order.sql
+          content: |
+            select order_id, sum(amount_cents) as payment_cents
+            from {{ ref("payments") }}
+            group by order_id
+          highlight_lines:
+            - 2
+    - id: build
+      title: 'Run dbt build: the test fails and revenue is skipped'
+      explanation: >
+        The code is unchanged. The new file is the command, dbt build, which runs models and tests together in
+        the order shown in the last step. The highlighted lines are the same as before: the payments model,
+        the relationship test, and the revenue models that depend on it. The result panel shows what dbt build
+        reports. The test fails: 0 missing orders expected, 1 found. The revenue model is skipped, because a
+        test before it failed.
+      state:
+        kind: result
+        title: Test fails, revenue model skipped
+        columns:
+          - resource
+          - prepared result
+        rows:
+          - - payment relationship test
+            - 'fail: expected 0, actual 1'
+          - - dependent revenue model
+            - skip because upstream test failed
+        result_status: fail
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        Because the payments test failed, dbt build did not rebuild the revenue model at all.
+      code:
+        - language: sql
+          filename: models/payments.sql
+          content: |
+            select payment_id, order_id, amount_cents
+            from raw.payments
+          highlight_lines:
+            - 1
+            - 2
+          purpose: authored executable syntax; illustration only
+        - language: yaml
+          filename: models/schema.yml
+          content: |
+            version: 2
+            models:
+              - name: payments
+                columns:
+                  - name: order_id
+                    tests:
+                      - not_null
+                      - relationships:
+                          to: ref("orders")
+                          field: order_id
+          highlight_lines:
+            - 8
+            - 9
+            - 10
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/order_revenue.sql
+          content: |
+            select *, payment_cents - refund_cents as revenue_cents
+            from {{ ref("order_amounts") }}
+          highlight_lines:
+            - 1
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/order_amounts.sql
+          content: |
+            select o.*, coalesce(p.payment_cents, 0) as payment_cents,
+                coalesce(r.refund_cents, 0) as refund_cents
+            from {{ ref("orders") }} as o
+            left join {{ ref("payments_by_order") }} as p
+              on o.order_id = p.order_id
+            left join {{ ref("refunds_by_order") }} as r
+              on o.order_id = r.order_id
+          highlight_lines:
+            - 3
+            - 4
+            - 6
+        - language: sql
+          filename: models/payments_by_order.sql
+          content: |
+            select order_id, sum(amount_cents) as payment_cents
+            from {{ ref("payments") }}
+            group by order_id
+          highlight_lines:
+            - 2
+        - language: shell
+          filename: commands.sh
+          content: |
+            dbt build
+          highlight_lines:
+            - 1
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+    - id: limit
+      title: The old revenue table still exists, so read it carefully
+      explanation: >
+        The first file queries the revenue-by-location table that is still in the warehouse from the last
+        successful build. The highlighted lines 2 and 3 sum its revenue column. The second file is the same
+        test definition, highlighted at lines 8 to 10 as a reminder of what failed. The result panel shows the
+        total that table holds: 12,500 cents, the correct base figure. But this build produced nothing new.
+        That table is from before the bad payment arrived.
+      state:
+        kind: comparison
+        title: Old total 12,500 cents; nothing new was produced
+        columns:
+          - existing base total
+          - freshly validated output
+        rows:
+          - - 12500
+            - not produced by this failed build
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: >
+        A revenue table that exists is not proof the latest build passed. This one is left over from before
+        the failure.
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+      code:
+        - language: sql
+          filename: inspection/existing_revenue.sql
+          content: |
+            -- Read the relation retained from the last successful build.
+            select sum(revenue_cents) as existing_total_cents
+            from waffle.revenue_by_location;
+          highlight_lines:
+            - 2
+            - 3
+          purpose: authored executable syntax; illustration only
+        - language: yaml
+          filename: models/schema.yml
+          content: |
+            version: 2
+            models:
+              - name: payments
+                columns:
+                  - name: order_id
+                    tests:
+                      - not_null
+                      - relationships:
+                          to: ref("orders")
+                          field: order_id
+          highlight_lines:
+            - 8
+            - 9
+            - 10
+          purpose: authored executable syntax; illustration only
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
-    - src-1
-    - src-2
-    - src-3
-    limitations: |
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
-      The concrete relationships test references both payments and orders; both are ancestors of order_revenue in the shown graph. It is therefore eligible to block that dependent branch. This clarifies the earlier simplified single-parent description without removing it.
+      - src-1
+      - src-2
+      - src-3
+    limitations: >
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
+      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
+      performance claims.
+
+      The concrete relationships test references both payments and orders; both are ancestors of order_revenue
+      in the shown graph. It is therefore eligible to block that dependent branch. This clarifies the earlier
+      simplified single-parent description without removing it.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
       method: Original source/archive and release documentation inspection; no historical dbt execution.
   intro:
     can_now:
-    - Build seeds, snapshots, models and tests together in dependency order.
-    - Choose how an incremental model handles schema changes.
-    scenario: |
-      An orphan payment reaches the staging model. The shop needs its upstream check to block a fresh-looking downstream revenue build.
-    outcome: |
-      Follow the test definition and build command, and distinguish an existing old table from newly validated output.
+      - Run seeds, snapshots, models and tests with one command, each in the order the data flows.
+      - Let a failed test stop the models that sit after it, so bad data does not spread.
+      - Tell an incremental model what to do when new columns show up in its source.
+    scenario: >
+      A payment for a missing order sits in the payments data. A test on the payments model catches it. Before
+      this version, dbt run built every model and dbt test checked afterwards, so the revenue table would be
+      rebuilt with the bad row before anyone knew. Now dbt build runs the test right after the payments model
+      and skips everything after it if the test fails.
+    outcome: >
+      You will see where the test sits in the chain, what dbt build reports, and why the old revenue table
+      still in the warehouse should not be trusted.
+  title: |
+    Demo: dbt build stops the revenue model when an upstream test fails
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

@@ -1,281 +1,303 @@
 id: '0.5'
 label: v0.5
 title: Configuration, history and custom tests
-lead: |
-  Project variables make shared SQL configurable. This series also adds archives, PostgreSQL support and custom SQL tests in separate patches.
-problem_then: |
-  A reusable model needs a safe way to accept project-specific values, while teams also need more targets and checks.
+lead: >
+  Project variables make shared SQL configurable. This series also adds archives, PostgreSQL support and
+  custom SQL tests in separate patches.
+problem_then: >
+  A reusable model needs a safe way to accept project-specific values, while teams also need more targets and
+  checks.
 what_changed:
-- id: change-1
-  summary: Project variables and safer incremental writes.
-  introduced_in: 0.5.0
-  adapter_constraints: null
-  evidence:
-  - src-1
-  confidence: high
-- id: change-2
-  summary: Archives and first-class PostgreSQL support.
-  introduced_in: 0.5.1
-  adapter_constraints: PostgreSQL becomes a first-class target here, not at project origin.
-  evidence:
-  - src-4
-  confidence: high
-- id: change-3
-  summary: Custom SQL data tests.
-  introduced_in: 0.5.4
-  adapter_constraints: null
-  evidence:
-  - src-5
-  confidence: high
-in_practice: |
-  Separate reusable calculations from configuration. Select the patch that actually contains the feature being discussed.
-technical_detail: |
-  Variables arrive in 0.5.0; archives and first-class PostgreSQL support in 0.5.1; custom SQL data tests in 0.5.4. The cents conversion is presentation only and does not change the accounting definition.
+  - id: change-1
+    summary: Project variables and safer incremental writes.
+    introduced_in: 0.5.0
+    adapter_constraints: null
+    evidence:
+      - src-1
+    confidence: high
+  - id: change-2
+    summary: Archives and first-class PostgreSQL support.
+    introduced_in: 0.5.1
+    adapter_constraints: PostgreSQL becomes a first-class target here, not at project origin.
+    evidence:
+      - src-4
+    confidence: high
+  - id: change-3
+    summary: Custom SQL data tests.
+    introduced_in: 0.5.4
+    adapter_constraints: null
+    evidence:
+      - src-5
+    confidence: high
+in_practice: >
+  Separate reusable calculations from configuration. Select the patch that actually contains the feature being
+  discussed.
+technical_detail: >
+  Variables arrive in 0.5.0; archives and first-class PostgreSQL support in 0.5.1; custom SQL data tests in
+  0.5.4. The cents conversion is presentation only and does not change the accounting definition.
 milestones:
-- id: 0.5.0
-  kind: package
-  date: '2016-09-28'
-  precision: day
-  title: First published package
-  evidence:
-  - src-3
-- id: 0.5.1
-  kind: patch
-  date: '2016-10-21'
-  precision: day
-  title: Archives; first-class Postgres
-  evidence:
-  - src-4
-- id: 0.5.4
-  kind: patch
-  date: '2016-11-29'
-  precision: day
-  title: Custom SQL data tests
-  evidence:
-  - src-5
+  - id: 0.5.0
+    kind: package
+    date: '2016-09-28'
+    precision: day
+    title: First published package
+    evidence:
+      - src-3
+  - id: 0.5.1
+    kind: patch
+    date: '2016-10-21'
+    precision: day
+    title: Archives; first-class Postgres
+    evidence:
+      - src-4
+  - id: 0.5.4
+    kind: patch
+    date: '2016-11-29'
+    precision: day
+    title: Custom SQL data tests
+    evidence:
+      - src-5
 sources:
-- id: src-1
-  title: dbt 0.5 release evidence
-  url: https://github.com/dbt-labs/dbt/releases/tag/v0.5.0
-  retrieved: '2026-09-22'
-  supports: Tagged release changes; package upload and public announcement remain distinct.
-  historical_scope: Syntax at the named immutable version; research cutoff remains 2026-09-21.
-- id: src-2
-  title: dbt 0.5 release evidence
-  url: https://github.com/dbt-labs/dbt-core/blob/v0.13.0/CHANGELOG.md
-  retrieved: '2026-09-21'
-  supports: Tagged release changes; package upload and public announcement remain distinct.
-- id: src-3
-  title: dbt 0.5 package evidence
-  url: https://pypi.org/project/dbt/0.5.0/
-  retrieved: '2026-09-21'
-  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
-    from the package.
-  rechecked: '2026-09-22'
-- id: src-4
-  title: dbt 0.5.1 patch evidence
-  url: https://github.com/dbt-labs/dbt/releases/tag/v0.5.1
-  retrieved: '2026-09-21'
-  supports: Archives; first-class Postgres
-- id: src-5
-  title: dbt 0.5.4 patch evidence
-  url: https://github.com/dbt-labs/dbt/releases/tag/v0.5.4
-  retrieved: '2026-09-21'
-  supports: Custom SQL data tests
+  - id: src-1
+    title: dbt 0.5 release evidence
+    url: https://github.com/dbt-labs/dbt/releases/tag/v0.5.0
+    retrieved: '2026-09-22'
+    supports: Tagged release changes; package upload and public announcement remain distinct.
+    historical_scope: Syntax at the named immutable version; research cutoff remains 2026-09-21.
+  - id: src-2
+    title: dbt 0.5 release evidence
+    url: https://github.com/dbt-labs/dbt-core/blob/v0.13.0/CHANGELOG.md
+    retrieved: '2026-09-21'
+    supports: Tagged release changes; package upload and public announcement remain distinct.
+  - id: src-3
+    title: dbt 0.5 package evidence
+    url: https://pypi.org/project/dbt/0.5.0/
+    retrieved: '2026-09-21'
+    supports: >-
+      Package existence and upload timestamp. Implementation claims refer to the original source archive
+      linked from the package.
+    rechecked: '2026-09-22'
+  - id: src-4
+    title: dbt 0.5.1 patch evidence
+    url: https://github.com/dbt-labs/dbt/releases/tag/v0.5.1
+    retrieved: '2026-09-21'
+    supports: Archives; first-class Postgres
+  - id: src-5
+    title: dbt 0.5.4 patch evidence
+    url: https://github.com/dbt-labs/dbt/releases/tag/v0.5.4
+    retrieved: '2026-09-21'
+    supports: Custom SQL data tests
 narrative_evidence:
-- src-1
-- src-2
-- src-3
-- src-4
-- src-5
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
 walkthrough:
   id: wt-0.5
   learning_objective: |
-    Use a project variable without changing the revenue measure.
-  context: |
-    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
+    Use a project variable to change how revenue is shown while leaving the revenue rule alone.
+  context: >
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
+    Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
   dataset_variant: base
   steps:
-  - id: units
-    title: Keep the source unit explicit
-    explanation: |
-      Amounts in the shared dataset are integer cents.
-    state:
-      kind: comparison
-      title: Keep the source unit explicit
-      columns:
-      - location
-      - revenue_cents
-      rows:
-      - - Old Port
-        - 3400
-      - - Mile End
-        - 4300
-      - - Riverside
-        - 4800
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      The source unit is part of the business contract.
-    evidence:
-    - src-1
-    - src-2
-    - src-3
-    - src-4
-    - src-5
-    code:
-    - language: sql
-      filename: models/order_revenue.sql
-      content: |
-        select *, payment_cents - refund_cents as revenue_cents
-        from {{ ref("order_amounts") }}
-      highlight_lines:
-      - 1
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/revenue_by_location.sql
-      content: |
-        select
-            r.location_id, l.name as location,
-            sum(r.payment_cents) as payment_cents,
-            sum(r.refund_cents) as refund_cents,
-            sum(r.revenue_cents) as revenue_cents
-        from {{ ref("order_revenue") }} as r
-        join raw.locations as l on r.location_id = l.location_id
-        group by r.location_id, l.name
-        order by r.location_id
-      highlight_lines:
-      - 3
-      - 4
-      - 5
-      purpose: authored executable syntax; illustration only
-  - id: variable
-    title: Apply a reusable conversion
-    explanation: |
-      The example provides cents_per_unit = 100 in project variables.
-    state:
-      kind: comparison
-      title: Apply a reusable conversion
-      columns:
-      - variable
-      - value
-      rows:
-      - - cents_per_unit
-        - 100
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      The calculation can read a named setting.
-    code:
-    - language: sql
-      filename: models/revenue_display.sql
-      content: |
-        select location_id, revenue_cents / {{ var("cents_per_unit") }}.0 as revenue_units
-        from {{ ref("revenue_by_location") }}
-      highlight_lines:
-      - 1
-      - 2
-    - language: yaml
-      filename: dbt_project.yml (excerpt)
-      content: |
-        name: waffle_shop
-        version: "1.0"
-        models:
-          waffle_shop:
-            vars:
-              cents_per_unit: 100
-      highlight_lines:
-      - 3
-      - 5
-      - 6
-      purpose: authored executable syntax; illustration only
-    evidence:
-    - src-1
-    - src-2
-    - src-3
-    - src-4
-    - src-5
-  - id: display
-    title: Keep cents and display values together
-    explanation: |
-      Decimal division avoids dropping fractional currency units.
-    state:
-      kind: comparison
-      title: Keep cents and display values together
-      columns:
-      - location
-      - cents
-      - display_units
-      rows:
-      - - Old Port
-        - 3400
-        - '34.00'
-      - - Mile End
-        - 4300
-        - '43.00'
-      - - Riverside
-        - 4800
-        - '48.00'
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      Configuration changes representation, not underlying revenue.
-    evidence:
-    - src-1
-    - src-2
-    - src-3
-    - src-4
-    - src-5
-    code:
-    - language: yaml
-      filename: dbt_project.yml (excerpt)
-      content: |
-        name: waffle_shop
-        version: "1.0"
-        models:
-          waffle_shop:
-            vars:
-              cents_per_unit: 100
-      highlight_lines:
-      - 3
-      - 5
-      - 6
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/revenue_display.sql
-      content: |
-        select location_id, revenue_cents,
-            revenue_cents / {{ var("cents_per_unit") }}.0 as revenue_units
-        from {{ ref("revenue_by_location") }}
-      highlight_lines:
-      - 2
-      purpose: authored executable syntax; illustration only
+    - id: units
+      title: The books are kept in cents
+      explanation: >
+        Two familiar models. Highlighted line 1 of order_revenue subtracts refunds from payments, in cents.
+        Highlighted lines 3 to 5 of the location model add those cents up per location. The result panel shows
+        the stored figures: 3,400, 4,300 and 4,800 cents.
+      state:
+        kind: comparison
+        title: Revenue stored in cents
+        columns:
+          - location
+          - revenue_cents
+        rows:
+          - - Old Port
+            - 3400
+          - - Mile End
+            - 4300
+          - - Riverside
+            - 4800
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: >
+        Every amount in the project is a whole number of cents, and that is the unit the business rule is
+        written in.
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+        - src-4
+        - src-5
+      code:
+        - language: sql
+          filename: models/order_revenue.sql
+          content: |
+            select *, payment_cents - refund_cents as revenue_cents
+            from {{ ref("order_amounts") }}
+          highlight_lines:
+            - 1
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/revenue_by_location.sql
+          content: |
+            select
+                r.location_id, l.name as location,
+                sum(r.payment_cents) as payment_cents,
+                sum(r.refund_cents) as refund_cents,
+                sum(r.revenue_cents) as revenue_cents
+            from {{ ref("order_revenue") }} as r
+            join raw.locations as l on r.location_id = l.location_id
+            group by r.location_id, l.name
+            order by r.location_id
+          highlight_lines:
+            - 3
+            - 4
+            - 5
+          purpose: authored executable syntax; illustration only
+    - id: variable
+      title: Put the conversion factor in one place
+      explanation: >
+        Highlighted lines 3, 5 and 6 of the project file define a variable named cents_per_unit with the value
+        100. Highlighted lines 1 and 2 of the new display model read it with var() and divide revenue by it.
+        The .0 after the variable turns 100 into 100.0, so the database does decimal division instead of
+        dropping the remainder. The result panel shows the single setting in play.
+      state:
+        kind: comparison
+        title: The one setting the model reads
+        columns:
+          - variable
+          - value
+        rows:
+          - - cents_per_unit
+            - 100
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        The model reads the conversion factor from a named setting instead of hard-coding the number 100.
+      code:
+        - language: sql
+          filename: models/revenue_display.sql
+          content: |
+            select location_id, revenue_cents / {{ var("cents_per_unit") }}.0 as revenue_units
+            from {{ ref("revenue_by_location") }}
+          highlight_lines:
+            - 1
+            - 2
+        - language: yaml
+          filename: dbt_project.yml (excerpt)
+          content: |
+            name: waffle_shop
+            version: "1.0"
+            models:
+              waffle_shop:
+                vars:
+                  cents_per_unit: 100
+          highlight_lines:
+            - 3
+            - 5
+            - 6
+          purpose: authored executable syntax; illustration only
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+        - src-4
+        - src-5
+    - id: display
+      title: Show cents and display amounts side by side
+      explanation: >
+        The display model now keeps both columns. Highlighted line 2 computes the display amount from the same
+        variable. The result panel shows each location's cents next to the converted figure: 3,400 becomes
+        34.00, 4,300 becomes 43.00, and 4,800 becomes 48.00. Revenue itself has not changed.
+      state:
+        kind: comparison
+        title: Cents next to display amounts
+        columns:
+          - location
+          - cents
+          - display_units
+        rows:
+          - - Old Port
+            - 3400
+            - '34.00'
+          - - Mile End
+            - 4300
+            - '43.00'
+          - - Riverside
+            - 4800
+            - '48.00'
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        The variable changes how the amount is shown, not the amount itself.
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+        - src-4
+        - src-5
+      code:
+        - language: yaml
+          filename: dbt_project.yml (excerpt)
+          content: |
+            name: waffle_shop
+            version: "1.0"
+            models:
+              waffle_shop:
+                vars:
+                  cents_per_unit: 100
+          highlight_lines:
+            - 3
+            - 5
+            - 6
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/revenue_display.sql
+          content: |
+            select location_id, revenue_cents,
+                revenue_cents / {{ var("cents_per_unit") }}.0 as revenue_units
+            from {{ ref("revenue_by_location") }}
+          highlight_lines:
+            - 2
+          purpose: authored executable syntax; illustration only
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
-    - src-1
-    - src-2
-    - src-3
-    - src-4
-    - src-5
-    limitations: |
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+      - src-1
+      - src-2
+      - src-3
+      - src-4
+      - src-5
+    limitations: >
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
+      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
+      performance claims.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
       method: Original source/archive and release documentation inspection; no historical dbt execution.
   intro:
     can_now:
-    - Pass named project variables into reusable model SQL.
-    - From 0.5.1, target PostgreSQL directly and preserve changing records with archives.
-    - From 0.5.4, write a custom SQL query that identifies failing data.
-    scenario: |
-      The shop keeps its accounting in cents but needs a currency-unit display. A shared variable supplies the conversion without changing the refund rule.
+      - Set a named value once in the project file, then read it inside any model with var().
+      - >-
+        From patch 0.5.1, run against PostgreSQL directly, and keep a history of rows as they change over time
+        with archives.
+      - 'From patch 0.5.4, write your own SQL query as a test: any rows it returns count as failures.'
+    scenario: >
+      The shop keeps its books in whole cents, which avoids rounding errors. People reading a report want to
+      see 34.00, not 3400. A single project variable, cents per unit, does the conversion, so the revenue rule
+      itself stays untouched.
     outcome: |
-      Compare the integer accounting values with their decimal presentation.
+      Compare the stored cents with the displayed amounts, side by side, for all three locations.
+  title: |
+    Demo: a project variable turns stored cents into a display amount without changing the revenue rule
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

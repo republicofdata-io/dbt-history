@@ -1,371 +1,407 @@
 id: '1.11'
 label: v1.11
 title: Functions become project resources
-lead: |
-  Warehouse functions become first-class project resources. A reusable calculation can appear as a dependency instead of living outside the project graph.
-problem_then: |
-  A warehouse function may be shared by many models while its definition and deployment order remain separate from the project.
+lead: >
+  Warehouse functions become first-class project resources. A reusable calculation can appear as a dependency
+  instead of living outside the project graph.
+problem_then: >
+  A warehouse function may be shared by many models while its definition and deployment order remain separate
+  from the project.
 what_changed:
-- id: change-1
-  summary: User-defined functions become DAG resources.
-  introduced_in: 1.11.0
-  adapter_constraints: Function languages and deployment support vary by adapter.
-  evidence:
-  - src-1
-  confidence: high
-- id: change-2
-  summary: Stricter config validation and DBT_ENGINE_ environment namespace.
-  introduced_in: 1.11.0
-  adapter_constraints: null
-  evidence:
-  - src-1
-  confidence: high
+  - id: change-1
+    summary: User-defined functions become DAG resources.
+    introduced_in: 1.11.0
+    adapter_constraints: Function languages and deployment support vary by adapter.
+    evidence:
+      - src-1
+    confidence: high
+  - id: change-2
+    summary: Stricter config validation and DBT_ENGINE_ environment namespace.
+    introduced_in: 1.11.0
+    adapter_constraints: null
+    evidence:
+      - src-1
+    confidence: high
 in_practice: |
   Manage supported function definitions with the project and make their consumers visible.
-technical_detail: |
-  UDF languages and deployment behavior depend on adapter support. This diagram demonstrates the resource relationship without inventing a portable CREATE FUNCTION statement. The first 1.11.0 and 1.11.1 artifacts were later yanked; 1.11.2 is the first non-yanked patch observed in this research.
+technical_detail: >
+  UDF languages and deployment behavior depend on adapter support. This diagram demonstrates the resource
+  relationship without inventing a portable CREATE FUNCTION statement. The first 1.11.0 and 1.11.1 artifacts
+  were later yanked; 1.11.2 is the first non-yanked patch observed in this research.
 milestones:
-- id: 1.11.0
-  kind: package
-  date: '2025-12-19'
-  precision: day
-  title: First published package
-  evidence:
+  - id: 1.11.0
+    kind: package
+    date: '2025-12-19'
+    precision: day
+    title: First published package
+    evidence:
+      - src-2
+  - id: product-2026-05-06
+    kind: product_event
+    date: '2026-05-06'
+    precision: day
+    title: Developer Agent preview
+    evidence:
+      - src-3
+  - id: product-2026-06-01
+    kind: product_event
+    date: '2026-06-01'
+    precision: day
+    title: Merger closes; State preview
+    evidence:
+      - src-4
+      - src-5
+sources:
+  - id: src-1
+    title: dbt 1.11 release evidence
+    url: https://github.com/dbt-labs/dbt/releases/tag/v1.11.0
+    retrieved: '2026-09-21'
+    supports: Tagged release changes; package upload and public announcement remain distinct.
+  - id: src-2
+    title: dbt 1.11 package evidence
+    url: https://pypi.org/project/dbt-core/1.11.0/
+    retrieved: '2026-09-21'
+    supports: >-
+      Package existence and upload timestamp. Implementation claims refer to the original source archive
+      linked from the package.
+    rechecked: '2026-09-22'
+  - id: src-3
+    title: Developer Agent preview
+    url: https://www.getdbt.com/blog/the-dbt-developer-agent-is-now-in-preview
+    retrieved: '2026-09-21'
+    supports: >-
+      Developer Agent preview in Studio, described as Copilot's next evolution. Original publication is May 6;
+      edited date May 7.
+  - id: src-4
+    title: Merger closes; State preview
+    url: >-
+      https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+    supports: Merger closes; Core v2 alpha and dbt State preview announced. Separate these from September GA.
+  - id: src-5
+    title: Merger closes; State preview
+    url: https://www.getdbt.com/blog/what-we-announced-at-snowflake-summit-and-why-it-matters
+    retrieved: '2026-09-21'
+    supports: Merger closes; Core v2 alpha and dbt State preview announced. Separate these from September GA.
+  - id: src-6
+    title: 1.11.0 function contracts
+    url: >-
+      https://files.pythonhosted.org/packages/ba/4f/f0a8689231b982d06c293e745ff3a800c6423a7fc32f19d08496e3a6c9ec/dbt_core-1.11.0.tar.gz
+    retrieved: '2026-09-22'
+    supports: Function arguments and returns contracts at this exact release.
+    historical_scope: Syntax at the named immutable version; research cutoff remains 2026-09-21.
+    source_path: dbt/artifacts/resources/v1/function.py
+    sha256: c943e4b59350a0d013708059f4dada0aa349c12942f39425803c1d0019879bd6
+  - id: src-7
+    title: 1.11.0 function context
+    url: >-
+      https://files.pythonhosted.org/packages/ba/4f/f0a8689231b982d06c293e745ff3a800c6423a7fc32f19d08496e3a6c9ec/dbt_core-1.11.0.tar.gz
+    retrieved: '2026-09-22'
+    supports: function() dependency and relation resolution.
+    historical_scope: Syntax at the named immutable version; research cutoff remains 2026-09-21.
+    source_path: dbt/context/providers.py
+    sha256: c943e4b59350a0d013708059f4dada0aa349c12942f39425803c1d0019879bd6
+  - id: src-8
+    title: SQL UDF configuration reference
+    url: https://docs.getdbt.com/docs/build/udfs
+    retrieved: '2026-09-22'
+    supports: >-
+      Snowflake expression-body example; fields cross-checked with 1.11.0 source, excluding later
+      overload/JavaScript additions.
+    historical_scope: Syntax at the named immutable version; research cutoff remains 2026-09-21.
+narrative_evidence:
+  - src-1
   - src-2
-- id: product-2026-05-06
-  kind: product_event
-  date: '2026-05-06'
-  precision: day
-  title: Developer Agent preview
-  evidence:
   - src-3
-- id: product-2026-06-01
-  kind: product_event
-  date: '2026-06-01'
-  precision: day
-  title: Merger closes; State preview
-  evidence:
   - src-4
   - src-5
-sources:
-- id: src-1
-  title: dbt 1.11 release evidence
-  url: https://github.com/dbt-labs/dbt/releases/tag/v1.11.0
-  retrieved: '2026-09-21'
-  supports: Tagged release changes; package upload and public announcement remain distinct.
-- id: src-2
-  title: dbt 1.11 package evidence
-  url: https://pypi.org/project/dbt-core/1.11.0/
-  retrieved: '2026-09-21'
-  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
-    from the package.
-  rechecked: '2026-09-22'
-- id: src-3
-  title: Developer Agent preview
-  url: https://www.getdbt.com/blog/the-dbt-developer-agent-is-now-in-preview
-  retrieved: '2026-09-21'
-  supports: Developer Agent preview in Studio, described as Copilot's next evolution. Original publication is May
-    6; edited date May 7.
-- id: src-4
-  title: Merger closes; State preview
-  url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
-  retrieved: '2026-09-21'
-  supports: Merger closes; Core v2 alpha and dbt State preview announced. Separate these from September GA.
-- id: src-5
-  title: Merger closes; State preview
-  url: https://www.getdbt.com/blog/what-we-announced-at-snowflake-summit-and-why-it-matters
-  retrieved: '2026-09-21'
-  supports: Merger closes; Core v2 alpha and dbt State preview announced. Separate these from September GA.
-- id: src-6
-  title: 1.11.0 function contracts
-  url: https://files.pythonhosted.org/packages/ba/4f/f0a8689231b982d06c293e745ff3a800c6423a7fc32f19d08496e3a6c9ec/dbt_core-1.11.0.tar.gz
-  retrieved: '2026-09-22'
-  supports: Function arguments and returns contracts at this exact release.
-  historical_scope: Syntax at the named immutable version; research cutoff remains 2026-09-21.
-  source_path: dbt/artifacts/resources/v1/function.py
-  sha256: c943e4b59350a0d013708059f4dada0aa349c12942f39425803c1d0019879bd6
-- id: src-7
-  title: 1.11.0 function context
-  url: https://files.pythonhosted.org/packages/ba/4f/f0a8689231b982d06c293e745ff3a800c6423a7fc32f19d08496e3a6c9ec/dbt_core-1.11.0.tar.gz
-  retrieved: '2026-09-22'
-  supports: function() dependency and relation resolution.
-  historical_scope: Syntax at the named immutable version; research cutoff remains 2026-09-21.
-  source_path: dbt/context/providers.py
-  sha256: c943e4b59350a0d013708059f4dada0aa349c12942f39425803c1d0019879bd6
-- id: src-8
-  title: SQL UDF configuration reference
-  url: https://docs.getdbt.com/docs/build/udfs
-  retrieved: '2026-09-22'
-  supports: Snowflake expression-body example; fields cross-checked with 1.11.0 source, excluding later overload/JavaScript
-    additions.
-  historical_scope: Syntax at the named immutable version; research cutoff remains 2026-09-21.
-narrative_evidence:
-- src-1
-- src-2
-- src-3
-- src-4
-- src-5
-- src-6
-- src-7
-- src-8
+  - src-6
+  - src-7
+  - src-8
 walkthrough:
   id: wt-1.11
-  learning_objective: |
-    Distinguish SQL-generating macros from deployed warehouse functions.
-  context: |
-    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
+  learning_objective: >
+    See how a function that lives in the database can be defined in the project, deployed by dbt and tracked
+    as a dependency of the models that call it.
+  context: >
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
+    Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
   dataset_variant: base
   steps:
-  - id: conversion
-    title: Define a presentation calculation
-    explanation: |
-      Keep accounting in cents and present decimal units when needed.
-    state:
-      kind: comparison
-      title: Define a presentation calculation
-      columns:
-      - cents
-      - units
-      rows:
-      - - 1000
-        - '10.00'
-      - - 3400
-        - '34.00'
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      Dividing by 100 is presentation, not a new revenue definition.
-    evidence:
-    - src-1
-    - src-2
-    - src-6
-    - src-7
-    - src-8
-    code:
-    - language: sql
-      filename: functions/cents_to_units.sql
-      content: |
-        amount_cents / 100.0
-      highlight_lines:
-      - 1
-      purpose: authored executable syntax; illustration only
-    - language: yaml
-      filename: functions/cents_to_units.yml
-      content: |
-        functions:
-          - name: cents_to_units
-            config:
-              schema: finance_functions
-            arguments:
-              - name: amount_cents
-                data_type: number
-            returns:
-              data_type: number(18, 2)
-      highlight_lines:
-      - 2
-      - 5
-      - 6
-      - 7
-      - 8
-      - 9
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/revenue_display.sql
-      content: |
-        select order_id, revenue_cents,
-            {{ function("cents_to_units") }}(revenue_cents) as revenue_units
-        from {{ ref("order_revenue") }}
-      highlight_lines:
-      - 2
-      purpose: authored executable syntax; illustration only
-  - id: function
-    title: Make the function a dependency
-    explanation: |
-      The fictional cents_to_units function is a warehouse resource on a supported adapter.
-    state:
-      kind: diagram
-      title: Function dependency
-      columns: []
-      rows: []
-      result_status: null
-      diagram:
-        nodes:
-        - id: fn
-          label: cents_to_units function
-        - id: revenue
-          label: order_revenue
-        - id: display
-          label: revenue_display
-        edges:
-        - from: fn
-          to: display
-        - from: revenue
-          to: display
-        highlight:
-        - fn
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      The graph can describe deployment order for a shared function.
-    evidence:
-    - src-1
-    - src-2
-    - src-6
-    - src-7
-    - src-8
-    code:
-    - language: sql
-      filename: functions/cents_to_units.sql
-      content: |
-        amount_cents / 100.0
-      highlight_lines:
-      - 1
-      purpose: authored executable syntax; illustration only
-    - language: yaml
-      filename: functions/cents_to_units.yml
-      content: |
-        functions:
-          - name: cents_to_units
-            config:
-              schema: finance_functions
-            arguments:
-              - name: amount_cents
-                data_type: number
-            returns:
-              data_type: number(18, 2)
-      highlight_lines:
-      - 2
-      - 5
-      - 6
-      - 7
-      - 8
-      - 9
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/revenue_display.sql
-      content: |
-        select order_id, revenue_cents,
-            {{ function("cents_to_units") }}(revenue_cents) as revenue_units
-        from {{ ref("order_revenue") }}
-      highlight_lines:
-      - 2
-      purpose: authored executable syntax; illustration only
-    - language: shell
-      filename: commands.sh
-      content: |
-        dbt build --select +revenue_display
-      highlight_lines:
-      - 1
-      purpose: authored executable syntax; illustration only
-  - id: distinction
-    title: Separate two reuse mechanisms
-    explanation: |
-      Both mechanisms can support the same calculation, but they operate at different stages.
-    state:
-      kind: comparison
-      title: Separate two reuse mechanisms
-      columns:
-      - mechanism
-      - where it acts
-      rows:
-      - - Jinja macro
-        - generates SQL during compilation
-      - - warehouse UDF
-        - deployed function called by warehouse SQL
-      - - base accounting total
-        - 12,500 cents remains unchanged
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      A function resource is not merely another spelling of a macro.
-    evidence:
-    - src-1
-    - src-2
-    - src-6
-    - src-7
-    - src-8
-    code:
-    - language: sql
-      filename: functions/cents_to_units.sql
-      content: |
-        amount_cents / 100.0
-      highlight_lines:
-      - 1
-      purpose: authored executable syntax; illustration only
-    - language: yaml
-      filename: functions/cents_to_units.yml
-      content: |
-        functions:
-          - name: cents_to_units
-            config:
-              schema: finance_functions
-            arguments:
-              - name: amount_cents
-                data_type: number
-            returns:
-              data_type: number(18, 2)
-      highlight_lines:
-      - 2
-      - 5
-      - 6
-      - 7
-      - 8
-      - 9
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/revenue_display.sql
-      content: |
-        select order_id, revenue_cents,
-            {{ function("cents_to_units") }}(revenue_cents) as revenue_units
-        from {{ ref("order_revenue") }}
-      highlight_lines:
-      - 2
-      purpose: authored executable syntax; illustration only
-    - language: jinja
-      filename: macros/cents_to_units.sql
-      content: |
-        {% macro cents_to_units_sql(column_name) %}
-          ({{ column_name }} / 100.0)
-        {% endmacro %}
-      highlight_lines:
-      - 2
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/revenue_display_macro.sql
-      content: |
-        select order_id,
-            {{ cents_to_units_sql("revenue_cents") }} as revenue_units
-        from {{ ref("order_revenue") }}
-      highlight_lines:
-      - 2
+    - id: conversion
+      title: Divide by 100, for display only
+      explanation: >
+        You are looking at three files. The highlighted line in cents_to_units.sql is the whole function body:
+        divide by 100. The highlighted lines in the YAML file name the function, its one argument and the
+        number type it returns. The highlighted line in revenue_display calls the function on revenue_cents.
+        The result panel shows the effect: 1,000 cents becomes 10.00, and 3,400 cents becomes 34.00.
+      state:
+        kind: comparison
+        title: Cents to units
+        columns:
+          - cents
+          - units
+        rows:
+          - - 1000
+            - '10.00'
+          - - 3400
+            - '34.00'
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        The function changes how revenue is shown, not how it is calculated. The accounting stays in cents.
+      evidence:
+        - src-1
+        - src-2
+        - src-6
+        - src-7
+        - src-8
+      code:
+        - language: sql
+          filename: functions/cents_to_units.sql
+          content: |
+            amount_cents / 100.0
+          highlight_lines:
+            - 1
+          purpose: authored executable syntax; illustration only
+        - language: yaml
+          filename: functions/cents_to_units.yml
+          content: |
+            functions:
+              - name: cents_to_units
+                config:
+                  schema: finance_functions
+                arguments:
+                  - name: amount_cents
+                    data_type: number
+                returns:
+                  data_type: number(18, 2)
+          highlight_lines:
+            - 2
+            - 5
+            - 6
+            - 7
+            - 8
+            - 9
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/revenue_display.sql
+          content: |
+            select order_id, revenue_cents,
+                {{ function("cents_to_units") }}(revenue_cents) as revenue_units
+            from {{ ref("order_revenue") }}
+          highlight_lines:
+            - 2
+          purpose: authored executable syntax; illustration only
+    - id: function
+      title: dbt builds the function before the model
+      explanation: >
+        The files are the same. The highlighted command builds revenue_display and everything it depends on.
+        The diagram shows that dependency: revenue_display needs both order_revenue and the cents_to_units
+        function, so dbt creates the function first. Until now, a function like this lived outside the
+        project, and dbt had no way to know a model depended on it.
+      state:
+        kind: diagram
+        title: Function dependency
+        columns: []
+        rows: []
+        result_status: null
+        diagram:
+          nodes:
+            - id: fn
+              label: cents_to_units function
+            - id: revenue
+              label: order_revenue
+            - id: display
+              label: revenue_display
+          edges:
+            - from: fn
+              to: display
+            - from: revenue
+              to: display
+          highlight:
+            - fn
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        Because the function is a project resource, dbt knows to deploy it before the model that calls it.
+      evidence:
+        - src-1
+        - src-2
+        - src-6
+        - src-7
+        - src-8
+      code:
+        - language: sql
+          filename: functions/cents_to_units.sql
+          content: |
+            amount_cents / 100.0
+          highlight_lines:
+            - 1
+          purpose: authored executable syntax; illustration only
+        - language: yaml
+          filename: functions/cents_to_units.yml
+          content: |
+            functions:
+              - name: cents_to_units
+                config:
+                  schema: finance_functions
+                arguments:
+                  - name: amount_cents
+                    data_type: number
+                returns:
+                  data_type: number(18, 2)
+          highlight_lines:
+            - 2
+            - 5
+            - 6
+            - 7
+            - 8
+            - 9
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/revenue_display.sql
+          content: |
+            select order_id, revenue_cents,
+                {{ function("cents_to_units") }}(revenue_cents) as revenue_units
+            from {{ ref("order_revenue") }}
+          highlight_lines:
+            - 2
+          purpose: authored executable syntax; illustration only
+        - language: shell
+          filename: commands.sh
+          content: |
+            dbt build --select +revenue_display
+          highlight_lines:
+            - 1
+          purpose: authored executable syntax; illustration only
+    - id: distinction
+      title: Function or macro?
+      explanation: >
+        Two extra files appear. The macro, in macros/cents_to_units.sql, is a template. When dbt compiles the
+        project it pastes the highlighted expression into the model's SQL, and the database never sees the
+        macro itself. The function, by contrast, is created in the database and called when the query runs.
+        The result panel sets the two side by side and confirms the base total is still 12,500 cents.
+      state:
+        kind: comparison
+        title: Macro versus function
+        columns:
+          - mechanism
+          - where it acts
+        rows:
+          - - Jinja macro
+            - generates SQL during compilation
+          - - warehouse UDF
+            - deployed function called by warehouse SQL
+          - - base accounting total
+            - 12,500 cents remains unchanged
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: >
+        A macro writes SQL before it runs. A function is stored in the database and runs there. Both give
+        34.00 for 3,400 cents.
+      evidence:
+        - src-1
+        - src-2
+        - src-6
+        - src-7
+        - src-8
+      code:
+        - language: sql
+          filename: functions/cents_to_units.sql
+          content: |
+            amount_cents / 100.0
+          highlight_lines:
+            - 1
+          purpose: authored executable syntax; illustration only
+        - language: yaml
+          filename: functions/cents_to_units.yml
+          content: |
+            functions:
+              - name: cents_to_units
+                config:
+                  schema: finance_functions
+                arguments:
+                  - name: amount_cents
+                    data_type: number
+                returns:
+                  data_type: number(18, 2)
+          highlight_lines:
+            - 2
+            - 5
+            - 6
+            - 7
+            - 8
+            - 9
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/revenue_display.sql
+          content: |
+            select order_id, revenue_cents,
+                {{ function("cents_to_units") }}(revenue_cents) as revenue_units
+            from {{ ref("order_revenue") }}
+          highlight_lines:
+            - 2
+          purpose: authored executable syntax; illustration only
+        - language: jinja
+          filename: macros/cents_to_units.sql
+          content: |
+            {% macro cents_to_units_sql(column_name) %}
+              ({{ column_name }} / 100.0)
+            {% endmacro %}
+          highlight_lines:
+            - 2
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/revenue_display_macro.sql
+          content: |
+            select order_id,
+                {{ cents_to_units_sql("revenue_cents") }} as revenue_units
+            from {{ ref("order_revenue") }}
+          highlight_lines:
+            - 2
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
-    - src-1
-    - src-2
-    - src-3
-    - src-4
-    - src-5
-    - src-6
-    - src-7
-    - src-8
-    limitations: |
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
-      The concrete UDF recipe is Snowflake SQL: an expression body, arguments/returns properties and function() reference. These fields were checked in the 1.11.0 parser/contracts; it is not a portable promise for every adapter. Function deployment still requires a compatible adapter and warehouse privileges.
+      - src-1
+      - src-2
+      - src-3
+      - src-4
+      - src-5
+      - src-6
+      - src-7
+      - src-8
+    limitations: >
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
+      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
+      performance claims.
+
+      The concrete UDF recipe is Snowflake SQL: an expression body, arguments/returns properties and
+      function() reference. These fields were checked in the 1.11.0 parser/contracts; it is not a portable
+      promise for every adapter. Function deployment still requires a compatible adapter and warehouse
+      privileges.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
       method: Original source/archive and release documentation inspection; no historical dbt execution.
   intro:
     can_now:
-    - Manage supported warehouse functions as project resources.
-    - Make model references to those functions visible in the dependency graph.
-    scenario: |
-      The shop keeps revenue in cents but wants a reusable warehouse function for currency-unit display. Unlike a macro, the deployed function can be called by warehouse SQL.
-    outcome: |
-      Read the function body, properties and consuming model on a named supported adapter.
+      - >-
+        Define a database function in the project, with its arguments and return type, on databases that
+        support this.
+      - Have dbt create the function for you, before the models that use it.
+      - See the function in the dependency graph next to the models that call it.
+    scenario: >
+      The shop stores revenue in cents. For reports it wants a reusable way to show whole units, like 34.00
+      instead of 3400. It creates a small database function, cents_to_units, and calls it from a display
+      model. The walkthrough also shows how this differs from a macro, which only writes SQL text.
+    outcome: >
+      Read the function body, its properties file and the model that calls it, and see where a function
+      differs from a macro.
+  title: |
+    Demo: a database function joins the project as a dependency
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.
 default_milestone: 1.11.0

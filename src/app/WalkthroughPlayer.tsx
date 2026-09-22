@@ -51,7 +51,7 @@ export default function WalkthroughPlayer({ release, walkthrough, step, onStep, 
           <h3 className="text-sm font-semibold">
             Waffle Shop <span className="font-normal text-muted-foreground">· {release.label}</span>
           </h3>
-          <small className="block truncate text-[11px] text-muted-foreground">{walkthrough.title ?? walkthrough.learning_objective.trim()}</small>
+          <small className="block text-[11px] leading-snug text-muted-foreground">{walkthrough.title ?? walkthrough.learning_objective.trim()}</small>
         </div>
         <ol className="flex items-center gap-1" aria-label="Steps">
           <li>

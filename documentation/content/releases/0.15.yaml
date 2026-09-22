@@ -1,315 +1,345 @@
 id: '0.15'
 label: v0.15
 title: Partial parsing and structured operations
-lead: |
-  Parsing can reuse earlier project work, and structured logs make runs easier to inspect programmatically. This is an operational release, not a new revenue formula.
+lead: >
+  Parsing can reuse earlier project work, and structured logs make runs easier to inspect programmatically.
+  This is an operational release, not a new revenue formula.
 problem_then: |
   Repeated project parsing adds overhead, while free-form logs are awkward for tools to consume.
 what_changed:
-- id: change-1
-  summary: Opt-in partial parsing; structured/JSON logging.
-  introduced_in: 0.15.0
-  adapter_constraints: null
-  evidence:
-  - src-1
-  confidence: high
-- id: change-2
-  summary: Python 2 support dropped; improved snapshot/docs/RPC behavior.
-  introduced_in: 0.15.0
-  adapter_constraints: null
-  evidence:
-  - src-1
-  confidence: high
+  - id: change-1
+    summary: Opt-in partial parsing; structured/JSON logging.
+    introduced_in: 0.15.0
+    adapter_constraints: null
+    evidence:
+      - src-1
+    confidence: high
+  - id: change-2
+    summary: Python 2 support dropped; improved snapshot/docs/RPC behavior.
+    introduced_in: 0.15.0
+    adapter_constraints: null
+    evidence:
+      - src-1
+    confidence: high
 in_practice: |
   Opt into partial parsing where suitable and use structured events for operational tooling.
-technical_detail: |
-  Partial parsing is opt-in at this point, not the later default. Python 2 support ends. No timing or original event payload is claimed in these prepared comparisons.
+technical_detail: >
+  Partial parsing is opt-in at this point, not the later default. Python 2 support ends. No timing or original
+  event payload is claimed in these prepared comparisons.
 milestones:
-- id: 0.15.0
-  kind: package
-  date: '2019-11-25'
-  precision: day
-  title: First published package
-  evidence:
+  - id: 0.15.0
+    kind: package
+    date: '2019-11-25'
+    precision: day
+    title: First published package
+    evidence:
+      - src-2
+  - id: product-2020-01-14
+    kind: product_event
+    date: '2020-01-14'
+    precision: day
+    title: Browser IDE GA
+    evidence:
+      - src-3
+      - src-4
+sources:
+  - id: src-1
+    title: dbt 0.15 release evidence
+    url: https://github.com/dbt-labs/dbt/releases/tag/v0.15.0
+    retrieved: '2026-09-21'
+    supports: Tagged release changes; package upload and public announcement remain distinct.
+  - id: src-2
+    title: dbt 0.15 package evidence
+    url: https://pypi.org/project/dbt/0.15.0/
+    retrieved: '2026-09-21'
+    supports: >-
+      Package existence and upload timestamp. Implementation claims refer to the original source archive
+      linked from the package.
+  - id: src-3
+    title: Browser IDE GA
+    url: https://www.getdbt.com/blog/announcing-the-dbt-ide
+    retrieved: '2026-09-21'
+    supports: >-
+      Browser IDE is a Cloud development surface. A retrospective places development in 2019; the GA article's
+      publication metadata is January 2020. Do not collapse those into one launch.
+  - id: src-4
+    title: Browser IDE GA
+    url: https://www.getdbt.com/blog/dbt-core-v1-is-here
+    retrieved: '2026-09-21'
+    supports: >-
+      Browser IDE is a Cloud development surface. A retrospective places development in 2019; the GA article's
+      publication metadata is January 2020. Do not collapse those into one launch.
+  - id: src-5
+    title: Historical source archive reviewed for example syntax
+    url: https://pypi.org/project/dbt-core/0.15.0/
+    retrieved: '2026-09-21'
+    supports: >-
+      Original source package and tagged release evidence for the example’s syntax; review is not runtime
+      execution.
+    rechecked: '2026-09-22'
+  - id: src-6
+    title: 0.15.0 CLI parser
+    url: >-
+      https://files.pythonhosted.org/packages/c4/c9/309f26f55d99a25c88ed7b649f6352f8457c7d2ab7c7c0644595a6a228d9/dbt-core-0.15.0.tar.gz
+    retrieved: '2026-09-22'
+    supports: Root --partial-parse and --log-format options.
+    historical_scope: Syntax at the named immutable version; research cutoff remains 2026-09-21.
+    source_path: dbt/main.py
+    sha256: 297113ddf1aa5b060016212d4802f5b950982c205f697cb09e024783b26e620a
+narrative_evidence:
+  - src-1
   - src-2
-- id: product-2020-01-14
-  kind: product_event
-  date: '2020-01-14'
-  precision: day
-  title: Browser IDE GA
-  evidence:
   - src-3
   - src-4
-sources:
-- id: src-1
-  title: dbt 0.15 release evidence
-  url: https://github.com/dbt-labs/dbt/releases/tag/v0.15.0
-  retrieved: '2026-09-21'
-  supports: Tagged release changes; package upload and public announcement remain distinct.
-- id: src-2
-  title: dbt 0.15 package evidence
-  url: https://pypi.org/project/dbt/0.15.0/
-  retrieved: '2026-09-21'
-  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
-    from the package.
-- id: src-3
-  title: Browser IDE GA
-  url: https://www.getdbt.com/blog/announcing-the-dbt-ide
-  retrieved: '2026-09-21'
-  supports: Browser IDE is a Cloud development surface. A retrospective places development in 2019; the GA article's
-    publication metadata is January 2020. Do not collapse those into one launch.
-- id: src-4
-  title: Browser IDE GA
-  url: https://www.getdbt.com/blog/dbt-core-v1-is-here
-  retrieved: '2026-09-21'
-  supports: Browser IDE is a Cloud development surface. A retrospective places development in 2019; the GA article's
-    publication metadata is January 2020. Do not collapse those into one launch.
-- id: src-5
-  title: Historical source archive reviewed for example syntax
-  url: https://pypi.org/project/dbt-core/0.15.0/
-  retrieved: '2026-09-21'
-  supports: Original source package and tagged release evidence for the example’s syntax; review is not runtime
-    execution.
-  rechecked: '2026-09-22'
-- id: src-6
-  title: 0.15.0 CLI parser
-  url: https://files.pythonhosted.org/packages/c4/c9/309f26f55d99a25c88ed7b649f6352f8457c7d2ab7c7c0644595a6a228d9/dbt-core-0.15.0.tar.gz
-  retrieved: '2026-09-22'
-  supports: Root --partial-parse and --log-format options.
-  historical_scope: Syntax at the named immutable version; research cutoff remains 2026-09-21.
-  source_path: dbt/main.py
-  sha256: 297113ddf1aa5b060016212d4802f5b950982c205f697cb09e024783b26e620a
-narrative_evidence:
-- src-1
-- src-2
-- src-3
-- src-4
-- src-5
-- src-6
+  - src-5
+  - src-6
 walkthrough:
   id: wt-0.15
-  learning_objective: |
-    See why project preparation and observability matter.
-  context: |
-    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
+  learning_objective: >
+    See that dbt reads the project before it runs SQL, that it can reuse the earlier read, and that run output
+    can be requested as structured JSON.
+  context: >
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
+    Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
   dataset_variant: base
   steps:
-  - id: project
-    title: Change one model
-    explanation: |
-      The example edit changes only a description attached to revenue.
-    state:
-      kind: comparison
-      title: Change one model
-      columns:
-      - project area
-      - prepared change
-      rows:
-      - - revenue_by_location description
-        - edited
-      - - business SQL
-        - unchanged
-      - - base fixture
-        - unchanged
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      Not every edit changes the business result.
-    evidence:
-    - src-1
-    - src-2
-    - src-5
-    - src-6
-    code:
-    - language: yaml
-      filename: models/schema.yml
-      content: |
-        version: 2
-        models:
-          - name: revenue_by_location
-            description: Payments minus refunds, in cents.
-            columns:
-              - name: revenue_cents
-                description: Net successful payments after refunds.
-      highlight_lines:
-      - 4
-      - 6
-      - 7
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/revenue_by_location.sql
-      content: |
-        select
-            r.location_id, l.name as location,
-            sum(r.payment_cents) as payment_cents,
-            sum(r.refund_cents) as refund_cents,
-            sum(r.revenue_cents) as revenue_cents
-        from {{ ref("order_revenue") }} as r
-        join raw.locations as l on r.location_id = l.location_id
-        group by r.location_id, l.name
-        order by r.location_id
-      highlight_lines:
-      - 3
-      - 4
-      - 5
-      purpose: authored executable syntax; illustration only
-  - id: parse
-    title: Reuse eligible parse work
-    explanation: |
-      Exact invalidation depends on the project and change.
-    state:
-      kind: comparison
-      title: Reuse eligible parse work
-      columns:
-      - mode
-      - behavior
-      rows:
-      - - full parsing
-        - read the whole project
-      - - partial parsing, opt-in
-        - reuse eligible prior parse information
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      Parsing is a distinct stage from warehouse execution.
-    evidence:
-    - src-1
-    - src-2
-    - src-5
-    - src-6
-    code:
-    - language: yaml
-      filename: models/schema.yml
-      content: |
-        version: 2
-        models:
-          - name: revenue_by_location
-            description: Payments minus refunds, in cents.
-            columns:
-              - name: revenue_cents
-                description: Net successful payments after refunds.
-      highlight_lines:
-      - 4
-      - 6
-      - 7
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/revenue_by_location.sql
-      content: |
-        select
-            r.location_id, l.name as location,
-            sum(r.payment_cents) as payment_cents,
-            sum(r.refund_cents) as refund_cents,
-            sum(r.revenue_cents) as revenue_cents
-        from {{ ref("order_revenue") }} as r
-        join raw.locations as l on r.location_id = l.location_id
-        group by r.location_id, l.name
-        order by r.location_id
-      highlight_lines:
-      - 3
-      - 4
-      - 5
-      purpose: authored executable syntax; illustration only
-    - language: shell
-      filename: commands.sh
-      content: |
-        dbt --partial-parse run
-      highlight_lines:
-      - 1
-      purpose: authored executable syntax; illustration only
-  - id: events
-    title: Make operational output easier to consume
-    explanation: |
-      This table describes fields conceptually, not a fabricated JSON log.
-    state:
-      kind: comparison
-      title: Make operational output easier to consume
-      columns:
-      - operational need
-      - structured-event benefit
-      rows:
-      - - identify event type
-        - machine-readable classification
-      - - associate event with model
-        - structured context
-      - - read revenue
-        - still query the model result
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      Logs describe execution; they do not replace the data result.
-    evidence:
-    - src-1
-    - src-2
-    - src-5
-    - src-6
-    code:
-    - language: yaml
-      filename: models/schema.yml
-      content: |
-        version: 2
-        models:
-          - name: revenue_by_location
-            description: Payments minus refunds, in cents.
-            columns:
-              - name: revenue_cents
-                description: Net successful payments after refunds.
-      highlight_lines:
-      - 4
-      - 6
-      - 7
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/revenue_by_location.sql
-      content: |
-        select
-            r.location_id, l.name as location,
-            sum(r.payment_cents) as payment_cents,
-            sum(r.refund_cents) as refund_cents,
-            sum(r.revenue_cents) as revenue_cents
-        from {{ ref("order_revenue") }} as r
-        join raw.locations as l on r.location_id = l.location_id
-        group by r.location_id, l.name
-        order by r.location_id
-      highlight_lines:
-      - 3
-      - 4
-      - 5
-      purpose: authored executable syntax; illustration only
-    - language: shell
-      filename: commands.sh
-      content: |
-        dbt --log-format json run
-      highlight_lines:
-      - 1
-      purpose: authored executable syntax; illustration only
+    - id: project
+      title: Edit only a description
+      explanation: >
+        Two files are shown. The YAML file, highlighted on lines 4, 6 and 7, holds the description of the
+        revenue-by-location model and its revenue column. This is the only thing edited. The SQL file,
+        highlighted on lines 3 to 5, is unchanged. The result panel lists what changed: the description was
+        edited, the SQL and the data were not.
+      state:
+        kind: comparison
+        title: What changed in this edit
+        columns:
+          - project area
+          - prepared change
+        rows:
+          - - revenue_by_location description
+            - edited
+          - - business SQL
+            - unchanged
+          - - base fixture
+            - unchanged
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        This edit changes the documentation, not the revenue number.
+      evidence:
+        - src-1
+        - src-2
+        - src-5
+        - src-6
+      code:
+        - language: yaml
+          filename: models/schema.yml
+          content: |
+            version: 2
+            models:
+              - name: revenue_by_location
+                description: Payments minus refunds, in cents.
+                columns:
+                  - name: revenue_cents
+                    description: Net successful payments after refunds.
+          highlight_lines:
+            - 4
+            - 6
+            - 7
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/revenue_by_location.sql
+          content: |
+            select
+                r.location_id, l.name as location,
+                sum(r.payment_cents) as payment_cents,
+                sum(r.refund_cents) as refund_cents,
+                sum(r.revenue_cents) as revenue_cents
+            from {{ ref("order_revenue") }} as r
+            join raw.locations as l on r.location_id = l.location_id
+            group by r.location_id, l.name
+            order by r.location_id
+          highlight_lines:
+            - 3
+            - 4
+            - 5
+          purpose: authored executable syntax; illustration only
+    - id: parse
+      title: Reuse the earlier read of the project
+      explanation: >
+        Before running any SQL, dbt reads every file in the project to learn the models and how they connect.
+        dbt calls this parsing. The command file runs dbt with the partial-parse flag, which tells it to reuse
+        the result of the last read for files that did not change. The YAML and SQL files are the same as in
+        the previous step. The result panel compares the two modes: a full parse reads the whole project, a
+        partial parse reuses what it can. How much it reuses depends on the project and the edit.
+      state:
+        kind: comparison
+        title: Full parse compared with partial parse
+        columns:
+          - mode
+          - behavior
+        rows:
+          - - full parsing
+            - read the whole project
+          - - partial parsing, opt-in
+            - reuse eligible prior parse information
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        dbt reads the project before it runs SQL, and partial parsing lets it reuse the last read.
+      evidence:
+        - src-1
+        - src-2
+        - src-5
+        - src-6
+      code:
+        - language: yaml
+          filename: models/schema.yml
+          content: |
+            version: 2
+            models:
+              - name: revenue_by_location
+                description: Payments minus refunds, in cents.
+                columns:
+                  - name: revenue_cents
+                    description: Net successful payments after refunds.
+          highlight_lines:
+            - 4
+            - 6
+            - 7
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/revenue_by_location.sql
+          content: |
+            select
+                r.location_id, l.name as location,
+                sum(r.payment_cents) as payment_cents,
+                sum(r.refund_cents) as refund_cents,
+                sum(r.revenue_cents) as revenue_cents
+            from {{ ref("order_revenue") }} as r
+            join raw.locations as l on r.location_id = l.location_id
+            group by r.location_id, l.name
+            order by r.location_id
+          highlight_lines:
+            - 3
+            - 4
+            - 5
+          purpose: authored executable syntax; illustration only
+        - language: shell
+          filename: commands.sh
+          content: |
+            dbt --partial-parse run
+          highlight_lines:
+            - 1
+          purpose: authored executable syntax; illustration only
+    - id: events
+      title: Print the run as machine-readable events
+      explanation: >
+        The command file runs dbt with the log format set to JSON. Each event in the run, such as a model
+        starting or finishing, is printed as one line of JSON that another program can read. The YAML and SQL
+        files are unchanged. The result panel describes what such events give an operator: the type of event
+        and which model it belongs to. The revenue numbers still come from the model table, not the log. The
+        panel describes the fields in words. It is not a copy of a real log.
+      state:
+        kind: comparison
+        title: What JSON log events give an operator
+        columns:
+          - operational need
+          - structured-event benefit
+        rows:
+          - - identify event type
+            - machine-readable classification
+          - - associate event with model
+            - structured context
+          - - read revenue
+            - still query the model result
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: >
+        JSON logs make the run easier for tools to read, while the revenue result still lives in the model
+        table.
+      evidence:
+        - src-1
+        - src-2
+        - src-5
+        - src-6
+      code:
+        - language: yaml
+          filename: models/schema.yml
+          content: |
+            version: 2
+            models:
+              - name: revenue_by_location
+                description: Payments minus refunds, in cents.
+                columns:
+                  - name: revenue_cents
+                    description: Net successful payments after refunds.
+          highlight_lines:
+            - 4
+            - 6
+            - 7
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/revenue_by_location.sql
+          content: |
+            select
+                r.location_id, l.name as location,
+                sum(r.payment_cents) as payment_cents,
+                sum(r.refund_cents) as refund_cents,
+                sum(r.revenue_cents) as revenue_cents
+            from {{ ref("order_revenue") }} as r
+            join raw.locations as l on r.location_id = l.location_id
+            group by r.location_id, l.name
+            order by r.location_id
+          highlight_lines:
+            - 3
+            - 4
+            - 5
+          purpose: authored executable syntax; illustration only
+        - language: shell
+          filename: commands.sh
+          content: |
+            dbt --log-format json run
+          highlight_lines:
+            - 1
+          purpose: authored executable syntax; illustration only
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
-    - src-1
-    - src-2
-    - src-3
-    - src-4
-    - src-5
-    - src-6
-    limitations: |
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+      - src-1
+      - src-2
+      - src-3
+      - src-4
+      - src-5
+      - src-6
+    limitations: >
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
+      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
+      performance claims.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
       method: Original source/archive and release documentation inspection; no historical dbt execution.
   intro:
     can_now:
-    - Opt into reusing eligible earlier parsing work.
-    - Request structured JSON logs for operational tools.
-    scenario: |
-      A description changes while the shop’s SQL and rows stay the same. The example separates parsing work from warehouse execution and shows how run events can be requested in a machine-readable form.
+      - >-
+        Ask dbt to reuse what it learned from the last read of the project, instead of reading every file
+        again from scratch.
+      - Ask dbt to print each run event as a line of JSON, so another program can read the log.
+    scenario: >
+      Someone edits the description of the revenue model. The SQL and the numbers do not change. Waffle Shop
+      uses this small edit to show two things: dbt can skip re-reading unchanged files, and it can report what
+      it did in a form that tools can parse.
     outcome: |
-      Compare parser settings and logging configuration without claiming a measured speedup.
+      Compare the two parser modes and the two log formats, without claiming a measured speedup.
+  title: >
+    Demo: change one description, and dbt can skip re-reading the whole project and report the run as
+    machine-readable events
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.
 default_milestone: 0.15.0

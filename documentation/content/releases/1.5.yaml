@@ -1,254 +1,278 @@
 id: '1.5'
 label: v1.5
 title: Models as governed interfaces
-lead: |
-  Contracts, versions and access settings give models a clearer interface. A consumer can depend on a named, typed output.
+lead: >
+  Contracts, versions and access settings give models a clearer interface. A consumer can depend on a named,
+  typed output.
 problem_then: |
   Changing a column silently can break dashboards and downstream models.
 what_changed:
-- id: change-1
-  summary: Model contracts, versions, groups and access.
-  introduced_in: 1.5.0
-  adapter_constraints: Contract types and constraints vary by adapter and materialization.
-  evidence:
-  - src-1
-  confidence: high
-- id: change-2
-  summary: dbt show and programmatic dbtRunner.
-  introduced_in: 1.5.0
-  adapter_constraints: null
-  evidence:
-  - src-1
-  confidence: high
-in_practice: |
-  Declare the interface and plan changes for consumers rather than treating every model as a private scratch table.
-technical_detail: |
-  Contract enforcement checks model shape where supported; it does not prove the revenue definition is correct. Versions and groups/access manage project interfaces, not a universal warehouse authorization system.
+  - id: change-1
+    summary: Model contracts, versions, groups and access.
+    introduced_in: 1.5.0
+    adapter_constraints: Contract types and constraints vary by adapter and materialization.
+    evidence:
+      - src-1
+    confidence: high
+  - id: change-2
+    summary: dbt show and programmatic dbtRunner.
+    introduced_in: 1.5.0
+    adapter_constraints: null
+    evidence:
+      - src-1
+    confidence: high
+in_practice: >
+  Declare the interface and plan changes for consumers rather than treating every model as a private scratch
+  table.
+technical_detail: >
+  Contract enforcement checks model shape where supported; it does not prove the revenue definition is
+  correct. Versions and groups/access manage project interfaces, not a universal warehouse authorization
+  system.
 milestones:
-- id: 1.5.0
-  kind: package
-  date: '2023-04-27'
-  precision: day
-  title: First published package
-  evidence:
-  - src-2
+  - id: 1.5.0
+    kind: package
+    date: '2023-04-27'
+    precision: day
+    title: First published package
+    evidence:
+      - src-2
 sources:
-- id: src-1
-  title: dbt 1.5 release evidence
-  url: https://github.com/dbt-labs/dbt/releases/tag/v1.5.0
-  retrieved: '2026-09-21'
-  supports: Tagged release changes; package upload and public announcement remain distinct.
-- id: src-2
-  title: dbt 1.5 package evidence
-  url: https://pypi.org/project/dbt-core/1.5.0/
-  retrieved: '2026-09-21'
-  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
-    from the package.
-  rechecked: '2026-09-22'
+  - id: src-1
+    title: dbt 1.5 release evidence
+    url: https://github.com/dbt-labs/dbt/releases/tag/v1.5.0
+    retrieved: '2026-09-21'
+    supports: Tagged release changes; package upload and public announcement remain distinct.
+  - id: src-2
+    title: dbt 1.5 package evidence
+    url: https://pypi.org/project/dbt-core/1.5.0/
+    retrieved: '2026-09-21'
+    supports: >-
+      Package existence and upload timestamp. Implementation claims refer to the original source archive
+      linked from the package.
+    rechecked: '2026-09-22'
 narrative_evidence:
-- src-1
-- src-2
+  - src-1
+  - src-2
 walkthrough:
   id: wt-1.5
   learning_objective: |
-    Catch a column-name change before treating it as the same interface.
-  context: |
-    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
+    See a contract reject a model whose output columns no longer match what it promised.
+  context: >
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
+    Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
   dataset_variant: base
   steps:
-  - id: promise
-    title: Declare the expected columns
-    explanation: |
-      The contract promises location_id and revenue_cents.
-    state:
-      kind: comparison
-      title: Declare the expected columns
-      columns:
-      - column
-      - declared type
-      rows:
-      - - location_id
-        - integer
-      - - revenue_cents
-        - bigint
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      A model interface includes names and types.
-    code:
-    - language: yaml
-      filename: models/schema.yml
-      content: |
-        version: 2
-        models:
-          - name: revenue_by_location
-            config:
-              contract:
-                enforced: true
-            columns:
-              - name: location_id
-                data_type: integer
-              - name: revenue_cents
-                data_type: bigint
-      highlight_lines:
-      - 1
-      - 2
-      - 3
-      - 4
-    - language: sql
-      filename: models/revenue_by_location.sql (corrected)
-      content: |
-        select cast(location_id as integer) as location_id,
-            cast(sum(revenue_cents) as bigint) as revenue_cents
-        from {{ ref("order_revenue") }}
-        group by location_id
-      highlight_lines:
-      - 2
-      purpose: authored executable syntax; illustration only
-    evidence:
-    - src-1
-    - src-2
-  - id: mismatch
-    title: Rename a column in the proposed SQL
-    explanation: |
-      Assume a proposed edit returns net_cents instead of the contracted name.
-    state:
-      kind: result
-      title: Rename a column in the proposed SQL
-      columns:
-      - expected column
-      - proposed column
-      - assessment
-      rows:
-      - - revenue_cents
-        - net_cents
-        - interface mismatch
-      result_status: fail
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      The issue is a broken interface even if values still sum correctly.
-    evidence:
-    - src-1
-    - src-2
-    code:
-    - language: yaml
-      filename: models/schema.yml
-      content: |
-        version: 2
-        models:
-          - name: revenue_by_location
-            config:
-              contract:
-                enforced: true
-            columns:
-              - name: location_id
-                data_type: integer
-              - name: revenue_cents
-                data_type: bigint
-      highlight_lines:
-      - 1
-      - 2
-      - 3
-      - 4
-    - language: sql
-      filename: models/revenue_by_location.sql (proposed edit)
-      content: |
-        select cast(location_id as integer) as location_id,
-            cast(sum(revenue_cents) as bigint) as net_cents
-        from {{ ref("order_revenue") }}
-        group by location_id
-      highlight_lines:
-      - 2
-      purpose: authored executable syntax; illustration only
-  - id: repair
-    title: Restore the public name
-    explanation: |
-      The corrected output again exposes revenue_cents.
-    state:
-      kind: table
-      title: Base revenue by location
-      columns:
-      - location_id
-      - location
-      - payment_cents
-      - refund_cents
-      - revenue_cents
-      rows:
-      - - 1
-        - Old Port
-        - 4400
-        - 1000
-        - 3400
-      - - 2
-        - Mile End
-        - 4600
-        - 300
-        - 4300
-      - - 3
-        - Riverside
-        - 4800
-        - 0
-        - 4800
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      An interface check complements the tests of business meaning.
-    evidence:
-    - src-1
-    - src-2
-    code:
-    - language: yaml
-      filename: models/schema.yml
-      content: |
-        version: 2
-        models:
-          - name: revenue_by_location
-            config:
-              contract:
-                enforced: true
-            columns:
-              - name: location_id
-                data_type: integer
-              - name: revenue_cents
-                data_type: bigint
-      highlight_lines:
-      - 1
-      - 2
-      - 3
-      - 4
-    - language: sql
-      filename: models/revenue_by_location.sql (corrected)
-      content: |
-        select cast(location_id as integer) as location_id,
-            cast(sum(revenue_cents) as bigint) as revenue_cents
-        from {{ ref("order_revenue") }}
-        group by location_id
-      highlight_lines:
-      - 2
-      purpose: authored executable syntax; illustration only
+    - id: promise
+      title: The model promises two columns
+      explanation: >
+        The first file is the model's yml. The highlighted lines 1 to 4 name the model and open its config.
+        Just below, lines 5 and 6 turn the contract on, and lines 8 to 11 list the promise: a column
+        location_id of type integer and a column revenue_cents of type bigint. The second file is the SQL that
+        keeps that promise. Highlighted line 2 produces revenue_cents as a bigint. The result panel lists the
+        two promised columns and their types.
+      state:
+        kind: comparison
+        title: The two promised columns and their types
+        columns:
+          - column
+          - declared type
+        rows:
+          - - location_id
+            - integer
+          - - revenue_cents
+            - bigint
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        The contract fixes both the names and the types of the model's output columns.
+      code:
+        - language: yaml
+          filename: models/schema.yml
+          content: |
+            version: 2
+            models:
+              - name: revenue_by_location
+                config:
+                  contract:
+                    enforced: true
+                columns:
+                  - name: location_id
+                    data_type: integer
+                  - name: revenue_cents
+                    data_type: bigint
+          highlight_lines:
+            - 1
+            - 2
+            - 3
+            - 4
+        - language: sql
+          filename: models/revenue_by_location.sql (corrected)
+          content: |
+            select cast(location_id as integer) as location_id,
+                cast(sum(revenue_cents) as bigint) as revenue_cents
+            from {{ ref("order_revenue") }}
+            group by location_id
+          highlight_lines:
+            - 2
+          purpose: authored executable syntax; illustration only
+      evidence:
+        - src-1
+        - src-2
+    - id: mismatch
+      title: An edit renames the column and the contract rejects it
+      explanation: >
+        The yml is unchanged, highlighted at lines 1 to 4. The SQL is a proposed edit. Highlighted line 2 now
+        calls the column net_cents instead of revenue_cents. The sum inside is the same, so the values would
+        be correct. The result panel shows what the contract check finds: expected revenue_cents, got
+        net_cents. The model does not match its promised interface, and the build fails.
+      state:
+        kind: result
+        title: 'Contract mismatch: revenue_cents expected, net_cents found'
+        columns:
+          - expected column
+          - proposed column
+          - assessment
+        rows:
+          - - revenue_cents
+            - net_cents
+            - interface mismatch
+        result_status: fail
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        The contract failed the build because a column name changed, even though the numbers were still right.
+      evidence:
+        - src-1
+        - src-2
+      code:
+        - language: yaml
+          filename: models/schema.yml
+          content: |
+            version: 2
+            models:
+              - name: revenue_by_location
+                config:
+                  contract:
+                    enforced: true
+                columns:
+                  - name: location_id
+                    data_type: integer
+                  - name: revenue_cents
+                    data_type: bigint
+          highlight_lines:
+            - 1
+            - 2
+            - 3
+            - 4
+        - language: sql
+          filename: models/revenue_by_location.sql (proposed edit)
+          content: |
+            select cast(location_id as integer) as location_id,
+                cast(sum(revenue_cents) as bigint) as net_cents
+            from {{ ref("order_revenue") }}
+            group by location_id
+          highlight_lines:
+            - 2
+          purpose: authored executable syntax; illustration only
+    - id: repair
+      title: Restore the column name and the build passes
+      explanation: >
+        The yml is still the same. The SQL is corrected. Highlighted line 2 names the column revenue_cents
+        again, matching the contract. The result panel shows the model's output: Old Port 3,400, Mile End
+        4,300, Riverside 4,800, totalling 12,500 cents, the same base values as always.
+      state:
+        kind: table
+        title: Base revenue by location
+        columns:
+          - location_id
+          - location
+          - payment_cents
+          - refund_cents
+          - revenue_cents
+        rows:
+          - - 1
+            - Old Port
+            - 4400
+            - 1000
+            - 3400
+          - - 2
+            - Mile End
+            - 4600
+            - 300
+            - 4300
+          - - 3
+            - Riverside
+            - 4800
+            - 0
+            - 4800
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: >
+        With the column name restored, the contract passes and the dashboard keeps reading the column it
+        expects.
+      evidence:
+        - src-1
+        - src-2
+      code:
+        - language: yaml
+          filename: models/schema.yml
+          content: |
+            version: 2
+            models:
+              - name: revenue_by_location
+                config:
+                  contract:
+                    enforced: true
+                columns:
+                  - name: location_id
+                    data_type: integer
+                  - name: revenue_cents
+                    data_type: bigint
+          highlight_lines:
+            - 1
+            - 2
+            - 3
+            - 4
+        - language: sql
+          filename: models/revenue_by_location.sql (corrected)
+          content: |
+            select cast(location_id as integer) as location_id,
+                cast(sum(revenue_cents) as bigint) as revenue_cents
+            from {{ ref("order_revenue") }}
+            group by location_id
+          highlight_lines:
+            - 2
+          purpose: authored executable syntax; illustration only
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
-    - src-1
-    - src-2
-    limitations: |
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+      - src-1
+      - src-2
+    limitations: >
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
+      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
+      performance claims.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
       method: Original source/archive and release documentation inspection; no historical dbt execution.
   intro:
     can_now:
-    - Declare a model’s column names and types as an enforced contract where supported.
-    - Version model interfaces and control access between project groups.
-    - Preview a model with dbt show.
-    scenario: |
-      A proposed edit renames revenue_cents to net_cents. The values may still be right, but the dashboard’s expected interface would break.
+      - >-
+        Write down the exact column names and types a model must produce, and have dbt refuse to build it if
+        the output differs.
+      - Publish more than one version of a model, and mark which models other teams may use.
+      - Preview a model's output from the command line with dbt show.
+    scenario: >
+      Someone edits the revenue-by-location model and renames its revenue_cents column to net_cents. The
+      numbers would still be right. But the dashboard reads a column called revenue_cents, so it would break.
+      A contract lets the model promise its columns up front, and dbt checks the promise at build time.
     outcome: |
-      See the contract, mismatching SQL and corrected public column name.
+      You will see the contract, the edit that breaks it, and the corrected model that keeps the promise.
+  title: |
+    Demo: a model contract catches a renamed column before the dashboard breaks
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

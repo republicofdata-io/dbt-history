@@ -1,285 +1,319 @@
 id: '1.1'
 label: v1.1
 title: Work only from fresher sources
-lead: |
-  Source freshness observations can guide model selection. The project can focus on descendants of feeds that became fresher.
-problem_then: |
-  Code can stay unchanged while new source data arrives. Code-state selection alone does not answer which feeds updated.
+lead: >
+  Source freshness observations can guide model selection. The project can focus on descendants of feeds that
+  became fresher.
+problem_then: >
+  Code can stay unchanged while new source data arrives. Code-state selection alone does not answer which
+  feeds updated.
 what_changed:
-- id: change-1
-  summary: source_status:fresher+ selection.
-  introduced_in: 1.1.0
-  adapter_constraints: null
-  evidence:
-  - src-1
-  confidence: high
-- id: change-2
-  summary: Composite unique_key lists and custom generic-test names.
-  introduced_in: 1.1.0
-  adapter_constraints: null
-  evidence:
-  - src-1
-  confidence: high
+  - id: change-1
+    summary: source_status:fresher+ selection.
+    introduced_in: 1.1.0
+    adapter_constraints: null
+    evidence:
+      - src-1
+    confidence: high
+  - id: change-2
+    summary: Composite unique_key lists and custom generic-test names.
+    introduced_in: 1.1.0
+    adapter_constraints: null
+    evidence:
+      - src-1
+    confidence: high
 in_practice: |
   Compare source observations and rebuild relevant descendants.
-technical_detail: |
-  source_status:fresher+ requires source freshness artifacts from the relevant observations. This is not row-level change detection or the later hosted State service. Composite unique keys and custom test names also arrive here.
+technical_detail: >
+  source_status:fresher+ requires source freshness artifacts from the relevant observations. This is not
+  row-level change detection or the later hosted State service. Composite unique keys and custom test names
+  also arrive here.
 milestones:
-- id: 1.1.0
-  kind: package
-  date: '2022-04-28'
-  precision: day
-  title: First published package
-  evidence:
-  - src-2
+  - id: 1.1.0
+    kind: package
+    date: '2022-04-28'
+    precision: day
+    title: First published package
+    evidence:
+      - src-2
 sources:
-- id: src-1
-  title: dbt 1.1 release evidence
-  url: https://github.com/dbt-labs/dbt/releases/tag/v1.1.0
-  retrieved: '2026-09-21'
-  supports: Tagged release changes; package upload and public announcement remain distinct.
-- id: src-2
-  title: dbt 1.1 package evidence
-  url: https://pypi.org/project/dbt-core/1.1.0/
-  retrieved: '2026-09-21'
-  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
-    from the package.
-  rechecked: '2026-09-22'
+  - id: src-1
+    title: dbt 1.1 release evidence
+    url: https://github.com/dbt-labs/dbt/releases/tag/v1.1.0
+    retrieved: '2026-09-21'
+    supports: Tagged release changes; package upload and public announcement remain distinct.
+  - id: src-2
+    title: dbt 1.1 package evidence
+    url: https://pypi.org/project/dbt-core/1.1.0/
+    retrieved: '2026-09-21'
+    supports: >-
+      Package existence and upload timestamp. Implementation claims refer to the original source archive
+      linked from the package.
+    rechecked: '2026-09-22'
 narrative_evidence:
-- src-1
-- src-2
+  - src-1
+  - src-2
 walkthrough:
   id: wt-1.1
   learning_objective: |
-    Select work based on a changed source observation.
-  context: |
-    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is orders-refreshed. Each state below is an authored illustration.
+    See dbt compare two freshness checks and rebuild only the branch whose source changed.
+  context: >
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
+    Riverside 4,800. The selected fixture is orders-refreshed. Each state below is an authored illustration.
   dataset_variant: orders-refreshed
   steps:
-  - id: observe
-    title: Compare source observations
-    explanation: |
-      The orders-refreshed variant includes two new orders and fixed source timestamps.
-    state:
-      kind: comparison
-      title: Compare source observations
-      columns:
-      - source
-      - prior UTC
-      - current UTC
-      rows:
-      - - orders
-        - March 8 14:00
-        - March 9 10:00
-      - - customers
-        - March 8 07:00
-        - March 8 07:00
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      Only the order feed became fresher in this comparison.
-    evidence:
-    - src-1
-    - src-2
-    code:
-    - language: sql
-      filename: setup/source_observations.sql
-      content: |
-        -- Current observation; prior orders value was 2016-03-08 14:00:00.
-        create view raw.orders_feed as
-        select o.*, cast('2016-03-09 10:00:00' as timestamp) as loaded_at
-        from raw.orders as o;
-        create view raw.customers_feed as
-        select c.*, cast('2016-03-08 07:00:00' as timestamp) as loaded_at
-        from raw.customers as c;
-      highlight_lines:
-      - 1
-      - 3
-      - 6
-      purpose: authored executable syntax; illustration only
-    - language: yaml
-      filename: models/sources.yml
-      content: |
-        version: 2
-        sources:
-          - name: raw
-            schema: raw
-            loaded_at_field: loaded_at
-            freshness:
-              warn_after: {count: 1, period: hour}
-              error_after: {count: 3, period: hour}
-            tables:
-              - name: orders
-                identifier: orders_feed
-              - name: customers
-                identifier: customers_feed
-      highlight_lines:
-      - 5
-      - 10
-      - 11
-      - 12
-      - 13
-      purpose: authored executable syntax; illustration only
-  - id: select
-    title: Select the refreshed branch
-    explanation: |
-      Saved freshness observations determine the prepared branch choice.
-    state:
-      kind: comparison
-      title: Select the refreshed branch
-      columns:
-      - source
-      - selection
-      rows:
-      - - orders
-        - descendants included
-      - - customers
-        - not selected because of freshness alone
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      New data and changed code are different selection signals.
-    code:
-    - language: yaml
-      filename: models/sources.yml
-      content: |
-        version: 2
-        sources:
-          - name: raw
-            schema: raw
-            loaded_at_field: loaded_at
-            freshness:
-              warn_after: {count: 1, period: hour}
-              error_after: {count: 3, period: hour}
-            tables:
-              - name: orders
-                identifier: orders_feed
-              - name: customers
-                identifier: customers_feed
-      highlight_lines:
-      - 5
-      - 10
-      - 11
-      - 12
-      - 13
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/orders.sql
-      content: |
-        select order_id, customer_id, location_id, ordered_at
-        from {{ source("raw", "orders") }}
-      highlight_lines:
-      - 2
-      purpose: authored executable syntax; illustration only
-    - language: shell
-      filename: freshness-command.sh
-      content: |
-        dbt source freshness
-      highlight_lines:
-      - 1
-    - language: shell
-      filename: commands.sh
-      content: |
-        dbt build --select source_status:fresher+ --state ./previous-freshness
-      highlight_lines:
-      - 1
-    evidence:
-    - src-1
-    - src-2
-  - id: result
-    title: Read the added trading day
-    explanation: |
-      The two added orders contribute 500 and 1,400 cents.
-    state:
-      kind: comparison
-      title: Read the added trading day
-      columns:
-      - location
-      - revenue_cents
-      rows:
-      - - Old Port
-        - 3900
-      - - Mile End
-        - 5700
-      - - Riverside
-        - 4800
-      result_status: null
-      diagram: null
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      The complete fixture now totals 14,400 cents.
-    evidence:
-    - src-1
-    - src-2
-    code:
-    - language: sql
-      filename: models/order_amounts.sql
-      content: |
-        with paid as (
-            select order_id, sum(amount_cents) as payment_cents
-            from raw.payments group by order_id
-        ), refunded as (
-            select order_id, sum(amount_cents) as refund_cents
-            from raw.refunds group by order_id
-        )
-        select o.*, coalesce(p.payment_cents, 0) as payment_cents,
-            coalesce(r.refund_cents, 0) as refund_cents
-        from raw.orders as o
-        left join paid as p on o.order_id = p.order_id
-        left join refunded as r on o.order_id = r.order_id
-      highlight_lines:
-      - 2
-      - 5
-      - 8
-      - 9
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/order_revenue.sql
-      content: |
-        select *, payment_cents - refund_cents as revenue_cents
-        from {{ ref("order_amounts") }}
-      highlight_lines:
-      - 1
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: models/revenue_by_location.sql
-      content: |
-        select
-            r.location_id, l.name as location,
-            sum(r.payment_cents) as payment_cents,
-            sum(r.refund_cents) as refund_cents,
-            sum(r.revenue_cents) as revenue_cents
-        from {{ ref("order_revenue") }} as r
-        join raw.locations as l on r.location_id = l.location_id
-        group by r.location_id, l.name
-        order by r.location_id
-      highlight_lines:
-      - 3
-      - 4
-      - 5
-      purpose: authored executable syntax; illustration only
+    - id: observe
+      title: 'Two freshness checks: only orders got newer'
+      explanation: >
+        The first file sets up the two source feeds with a loaded_at timestamp. Highlighted line 1 notes the
+        earlier orders timestamp, March 8 at 14:00. Highlighted line 3 gives the new one, March 9 at 10:00.
+        Highlighted line 6 shows the customers feed still at March 8, 07:00. The second file tells dbt which
+        column to read as the load time (highlighted line 5) and names the two feeds as sources (highlighted
+        lines 10 to 13). The result panel puts the two checks side by side: orders moved forward, customers
+        did not.
+      state:
+        kind: comparison
+        title: Orders got newer, customers did not
+        columns:
+          - source
+          - prior UTC
+          - current UTC
+        rows:
+          - - orders
+            - March 8 14:00
+            - March 9 10:00
+          - - customers
+            - March 8 07:00
+            - March 8 07:00
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        Only the orders source got newer between the saved check and the current one.
+      evidence:
+        - src-1
+        - src-2
+      code:
+        - language: sql
+          filename: setup/source_observations.sql
+          content: |
+            -- Current observation; prior orders value was 2016-03-08 14:00:00.
+            create view raw.orders_feed as
+            select o.*, cast('2016-03-09 10:00:00' as timestamp) as loaded_at
+            from raw.orders as o;
+            create view raw.customers_feed as
+            select c.*, cast('2016-03-08 07:00:00' as timestamp) as loaded_at
+            from raw.customers as c;
+          highlight_lines:
+            - 1
+            - 3
+            - 6
+          purpose: authored executable syntax; illustration only
+        - language: yaml
+          filename: models/sources.yml
+          content: |
+            version: 2
+            sources:
+              - name: raw
+                schema: raw
+                loaded_at_field: loaded_at
+                freshness:
+                  warn_after: {count: 1, period: hour}
+                  error_after: {count: 3, period: hour}
+                tables:
+                  - name: orders
+                    identifier: orders_feed
+                  - name: customers
+                    identifier: customers_feed
+          highlight_lines:
+            - 5
+            - 10
+            - 11
+            - 12
+            - 13
+          purpose: authored executable syntax; illustration only
+    - id: select
+      title: Select only what comes after the fresher source
+      explanation: >
+        The sources file is the same, highlighted at line 5 and lines 10 to 13. The orders model reads from
+        the orders source. Highlighted line 2 is that link, which is how dbt knows the model comes after the
+        source. The first command records a freshness check. The second command is the new part. It builds
+        every model after any source that is fresher than in the saved check kept in the previous-freshness
+        folder. The result panel shows the choice: models under orders are included, models under customers
+        are not, because that feed did not change.
+      state:
+        kind: comparison
+        title: Orders branch selected, customers branch left alone
+        columns:
+          - source
+          - selection
+        rows:
+          - - orders
+            - descendants included
+          - - customers
+            - not selected because of freshness alone
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: >
+        dbt picked the orders branch to rebuild because its source got newer, and left the customer branch
+        alone.
+      code:
+        - language: yaml
+          filename: models/sources.yml
+          content: |
+            version: 2
+            sources:
+              - name: raw
+                schema: raw
+                loaded_at_field: loaded_at
+                freshness:
+                  warn_after: {count: 1, period: hour}
+                  error_after: {count: 3, period: hour}
+                tables:
+                  - name: orders
+                    identifier: orders_feed
+                  - name: customers
+                    identifier: customers_feed
+          highlight_lines:
+            - 5
+            - 10
+            - 11
+            - 12
+            - 13
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/orders.sql
+          content: |
+            select order_id, customer_id, location_id, ordered_at
+            from {{ source("raw", "orders") }}
+          highlight_lines:
+            - 2
+          purpose: authored executable syntax; illustration only
+        - language: shell
+          filename: freshness-command.sh
+          content: |
+            dbt source freshness
+          highlight_lines:
+            - 1
+        - language: shell
+          filename: commands.sh
+          content: |
+            dbt build --select source_status:fresher+ --state ./previous-freshness
+          highlight_lines:
+            - 1
+      evidence:
+        - src-1
+        - src-2
+    - id: result
+      title: The rebuilt revenue includes the new day
+      explanation: >
+        Three files carry the new orders through to revenue. The first sums payments and refunds per order
+        (highlighted lines 2 and 5) and attaches them to each order (highlighted lines 8 and 9). The second
+        subtracts refunds (highlighted line 1). The third sums per location (highlighted lines 3 to 5). The
+        two new orders add 500 cents to Old Port and 1,400 cents to Mile End. The result panel shows the new
+        figures: Old Port 3,900, Mile End 5,700, Riverside 4,800 unchanged.
+      state:
+        kind: comparison
+        title: Revenue by location with the second day
+        columns:
+          - location
+          - revenue_cents
+        rows:
+          - - Old Port
+            - 3900
+          - - Mile End
+            - 5700
+          - - Riverside
+            - 4800
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: >
+        Revenue now totals 14,400 cents, up 1,900 from the base, because the two new orders flowed through the
+        rebuilt branch.
+      evidence:
+        - src-1
+        - src-2
+      code:
+        - language: sql
+          filename: models/order_amounts.sql
+          content: |
+            with paid as (
+                select order_id, sum(amount_cents) as payment_cents
+                from raw.payments group by order_id
+            ), refunded as (
+                select order_id, sum(amount_cents) as refund_cents
+                from raw.refunds group by order_id
+            )
+            select o.*, coalesce(p.payment_cents, 0) as payment_cents,
+                coalesce(r.refund_cents, 0) as refund_cents
+            from raw.orders as o
+            left join paid as p on o.order_id = p.order_id
+            left join refunded as r on o.order_id = r.order_id
+          highlight_lines:
+            - 2
+            - 5
+            - 8
+            - 9
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/order_revenue.sql
+          content: |
+            select *, payment_cents - refund_cents as revenue_cents
+            from {{ ref("order_amounts") }}
+          highlight_lines:
+            - 1
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/revenue_by_location.sql
+          content: |
+            select
+                r.location_id, l.name as location,
+                sum(r.payment_cents) as payment_cents,
+                sum(r.refund_cents) as refund_cents,
+                sum(r.revenue_cents) as revenue_cents
+            from {{ ref("order_revenue") }} as r
+            join raw.locations as l on r.location_id = l.location_id
+            group by r.location_id, l.name
+            order by r.location_id
+          highlight_lines:
+            - 3
+            - 4
+            - 5
+          purpose: authored executable syntax; illustration only
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
-    - src-1
-    - src-2
-    limitations: |
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
-      Source observations are derived-view fixture metadata. source_status selection additionally needs prior and current sources.json artifacts from freshness runs; their payloads are not fabricated here. The current orders view includes the selected second-day variant.
+      - src-1
+      - src-2
+    limitations: >
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
+      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
+      performance claims.
+
+      Source observations are derived-view fixture metadata. source_status selection additionally needs prior
+      and current sources.json artifacts from freshness runs; their payloads are not fabricated here. The
+      current orders view includes the selected second-day variant.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
       method: Original source/archive and release documentation inspection; no historical dbt execution.
   intro:
     can_now:
-    - Select descendants of sources that became fresher since a saved observation.
-    - Declare a composite incremental key as a list of columns.
-    scenario: |
-      Two second-day orders arrive while the customer feed stays unchanged. The shop compares source observations to focus on the branch with new input data.
-    outcome: |
-      See the freshness configuration, selection command and 14,400-cent result.
+      - >-
+        Compare today's source freshness check with a saved one, and pick only the models fed by sources that
+        got newer data.
+      - Give an incremental model a key made of several columns, written as a list.
+    scenario: >
+      Overnight, two new orders land in the orders feed. The customer feed has not changed. dbt records when
+      each source was last loaded. By comparing the new check with the saved one, the shop can rebuild just
+      the models that depend on orders and leave the customer branch alone.
+    outcome: >
+      You will see the freshness setup, the command that selects only the refreshed branch, and the new total
+      of 14,400 cents.
+  title: |
+    Demo: rebuild only the models fed by a source that got new data
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.
