@@ -3,8 +3,10 @@ import { formatDate } from "@/content/dates";
 import type { HistoryState } from "./state";
 
 /**
- * The shared anchor from the concept: a release select, the resolved date and
- * milestone, and previous/next. All three tabs resolve against this date.
+ * The shared anchor: the resolved date and milestone as plain text, and
+ * previous/next. All tabs resolve against this date. Milestones inside a
+ * chapter are chosen from the "Milestones" drawer on the release tab; a
+ * release select appears only on phones, where the sidebar index is hidden.
  */
 export default function AnchorBar({ state }: { state: HistoryState }) {
   const { release, anchor } = state;
@@ -12,12 +14,13 @@ export default function AnchorBar({ state }: { state: HistoryState }) {
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 pb-4">
       <div className="flex flex-wrap items-center gap-2.5">
-        <label htmlFor="release-select" className="text-[11px] text-muted-foreground">
+        <label htmlFor="release-select" className="text-[11px] text-muted-foreground md:sr-only">
           Selected release
         </label>
         <select
           id="release-select"
-          className="max-w-[200px] rounded-md border border-border bg-highlight-wash py-1.5 pl-2.5 pr-6 text-[13px] font-semibold text-foreground"
+          aria-label="Selected release"
+          className="max-w-[200px] rounded-md border border-border bg-highlight-wash py-1.5 pl-2.5 pr-6 text-[13px] font-semibold text-foreground md:hidden"
           value={release.id}
           onChange={(e) => state.goRelease(e.target.value)}
         >
@@ -27,24 +30,10 @@ export default function AnchorBar({ state }: { state: HistoryState }) {
             </option>
           ))}
         </select>
-        {release.milestones.length > 1 ? (
-          <select
-            aria-label="Milestone"
-            className="max-w-[260px] rounded-md border border-border bg-card py-1.5 pl-2 pr-6 text-xs text-foreground"
-            value={m.id}
-            onChange={(e) => state.setMilestone(e.target.value)}
-          >
-            {release.milestones.map((x) => (
-              <option key={x.id} value={x.id}>
-                {formatDate(x.date, x.precision)} · {x.title}
-              </option>
-            ))}
-          </select>
-        ) : (
-          <span className="text-xs text-muted-foreground" aria-live="polite">
-            {formatDate(m.date, m.precision)} · {m.title}
-          </span>
-        )}
+        <span className="text-[13px]" aria-live="polite">
+          <span className="font-semibold">{formatDate(m.date, m.precision)}</span>
+          <span className="text-muted-foreground"> · {m.title}</span>
+        </span>
         {m.kind === "package" && <span className="provenance hidden lg:inline">package upload date, not an announcement date</span>}
         {m.kind !== "package" && m.kind !== "origin" && <span className="provenance hidden lg:inline">during {release.label}</span>}
       </div>
