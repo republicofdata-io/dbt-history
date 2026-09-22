@@ -36,11 +36,7 @@ function Chip({ s, date }: { s: PlacementState; date: string }) {
           )}
         >
           <span className="block truncate">{s.name}</span>
-          {(s.certainty === "qualified" || s.placement.maturity) && (
-            <span className="provenance block text-[10px]">
-              {[s.placement.maturity, s.certainty === "qualified" ? "date qualified" : null].filter(Boolean).join(" · ")}
-            </span>
-          )}
+          {s.placement.maturity && <span className="provenance block text-[10px]">{s.placement.maturity}</span>}
         </button>
       }
     >
@@ -50,7 +46,6 @@ function Chip({ s, date }: { s: PlacementState; date: string }) {
           {s.placement.maturity && <Badge variant="warn">{s.placement.maturity}</Badge>}
           {s.owner && <Badge>owner: {s.owner}</Badge>}
           {ownerQualified && <Badge variant="warn">ownership qualified</Badge>}
-          {s.certainty === "qualified" && <Badge variant="warn">placement date qualified</Badge>}
         </div>
         {ownerInterval?.note && <p className="text-xs text-muted-foreground">{ownerInterval.note}</p>}
         {ownerInterval?.uncertainty && (
@@ -62,7 +57,10 @@ function Chip({ s, date }: { s: PlacementState; date: string }) {
         <div>
           <p className="kicker mb-1">Why it is on the chart</p>
           <p className="text-muted-foreground">{s.placement.rationale.trim()}</p>
-          <p className="provenance mt-1">on the chart from {formatDate(s.placement.from, s.placement.from_precision)}</p>
+          <p className="provenance mt-1">
+            on the chart from {formatDate(s.placement.from, s.placement.from_precision)}
+            {s.placement.from_precision !== "day" ? ` (${s.placement.from_precision} precision; the exact day is not established)` : ""}
+          </p>
         </div>
         <div>
           <p className="kicker mb-2">Sources</p>
