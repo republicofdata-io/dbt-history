@@ -10,14 +10,14 @@ what_changed:
   - id: change-1
     summary: Default partial/static parsing, result selectors and interactive init.
     introduced_in: 1.0.0
-    adapter_constraints: null
+    adapter_constraints:
     evidence:
       - src-1
     confidence: high
   - id: change-2
     summary: Metrics nodes enter the manifest; package/adapter installation conventions evolve.
     introduced_in: 1.0.0
-    adapter_constraints: null
+    adapter_constraints:
     evidence:
       - src-1
     confidence: high
@@ -65,7 +65,8 @@ narrative_evidence:
 walkthrough:
   id: wt-1.0
   learning_objective: >
-    See a stable dbt project use its saved run results to target a repair, and see what a metric definition is
+    See a stable dbt project use its saved run results to target a repair, and see what a metric definition
+    is
     and is not at 1.0.
   context: >
     Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
@@ -87,17 +88,19 @@ walkthrough:
           - project asset
           - shop example
         rows:
-          - - model
-            - order_revenue
-          - - test
-            - payments have orders
-          - - documentation
-            - revenue is in cents
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+          -   - model
+              - order_revenue
+          -   - test
+              - payments have orders
+          -   - documentation
+              - revenue is in cents
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: >
-        Version 1.0 does not add a new kind of asset. It marks the existing workflow of models, tests and docs
+        Version 1.0 does not add a new kind of asset. It marks the existing workflow of models, tests and
+        docs
         as stable.
       evidence:
         - src-1
@@ -131,7 +134,7 @@ walkthrough:
             - 10
           purpose: authored executable syntax; illustration only
         - language: yaml
-          filename: models/schema.yml
+          filename: models/revenue.yml
           content: |
             version: 2
             models:
@@ -160,11 +163,12 @@ walkthrough:
           - artifact observation
           - selected model
         rows:
-          - - 'prior model status: error'
-            - refunds_by_order
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+          -   - 'prior model status: error'
+              - refunds_by_order
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: |
         dbt read the saved results from the last run and picked out refunds_by_order to rerun.
       code:
@@ -184,6 +188,7 @@ walkthrough:
             dbt run --select result:error --state ./previous-run
           highlight_lines:
             - 1
+          purpose: Authored era-specific example; illustration only.
       evidence:
         - src-1
         - src-2
@@ -191,11 +196,14 @@ walkthrough:
     - id: metrics
       title: A metric definition in the project, not a metrics service
       explanation: >
-        The first file defines a metric. Highlighted line 2 opens the metrics section. Highlighted lines 5 to
-        7 say the metric is a sum of the revenue_cents column from the order_revenue model. The second file is
+        The first file defines a metric. Highlighted line 2 opens the metrics section. Highlighted lines 5
+        to
+        7 say the metric is a sum of the revenue_cents column from the order_revenue model. The second file
+        is
         that model. Highlighted line 1 is the column being summed. At 1.0 this definition is recorded in the
         project's metadata and nothing more. There is no hosted service that answers metric questions. The
-        result panel separates the two: metric metadata exists at 1.0, the hosted Semantic Layer does not, and
+        result panel separates the two: metric metadata exists at 1.0, the hosted Semantic Layer does not,
+        and
         base revenue stays at 12,500 cents.
       state:
         kind: comparison
@@ -204,15 +212,16 @@ walkthrough:
           - at 1.0
           - available interpretation
         rows:
-          - - metric metadata
-            - project/manifest definition
-          - - hosted Semantic Layer
-            - not launched by this Core release
-          - - base revenue
-            - 12,500 cents
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+          -   - metric metadata
+              - project/manifest definition
+          -   - hosted Semantic Layer
+              - not launched by this Core release
+          -   - base revenue
+              - 12,500 cents
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: >
         At 1.0 a metric is a definition stored in the project. The hosted service that would query it came
         later and separately.
@@ -255,27 +264,27 @@ walkthrough:
       - src-1
       - src-2
       - src-3
-    limitations: >
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
-      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
-      performance claims.
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+      The two YAML resources use different files, schema.yml and revenue.yml. Initial metrics retain model/type/sql, as verified in src-1 and the original metric contract; later calculation_method/expression syntax is not used. Default partial parsing is release context, not a demonstrated speed claim.
+      historical-1.0-01: Default parsing optimizations stay in release context; removed the undemonstrated speed claim from can_now. Evidence: src-1, src-2, src-3.
+      historical-1.0-02: Retain the 1.0 model/type/sql metric schema verified against the original contract, not later metric syntax. Evidence: src-1, src-2, src-3.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
       method: Original source/archive and release documentation inspection; no historical dbt execution.
   intro:
     can_now:
-      - Start dbt faster, because it reuses what it parsed last time by default.
       - Rerun only the models that failed or errored in the previous run, using the saved results.
       - Write a metric definition, such as net revenue, into the project so tools can read it.
     scenario: >
       The last run failed on the model that sums refunds per order. Instead of rerunning everything, the shop
-      points dbt at the saved results and reruns only what errored. Version 1.0 also lets the project define a
+      points dbt at the saved results and reruns only what errored. Version 1.0 also lets the project define
+      a
       net revenue metric. That definition is just metadata in the project. There is no hosted service behind
       it yet.
-    outcome: >
-      You will see the established project, the one command that targets the failed model, and a 1.0-style
-      metric definition.
+    outcome: |
+      The walkthrough shows the established project, the one command that targets the failed model, and a 1.0-style metric definition.
   title: |
     Demo: version 1.0 reruns only the model that failed last time
 status: reviewed

@@ -9,14 +9,14 @@ what_changed:
   - id: change-1
     summary: Macros, full-refresh control for incrementals and target context.
     introduced_in: 0.6.0
-    adapter_constraints: null
+    adapter_constraints:
     evidence:
       - src-1
     confidence: high
   - id: change-2
     summary: Run-level hooks and additional runtime materialization controls.
     introduced_in: 0.6.0
-    adapter_constraints: null
+    adapter_constraints:
     evidence:
       - src-1
     confidence: high
@@ -66,11 +66,20 @@ sources:
     supports: >-
       Sinter launched as a hosted-services experiment and increasingly focused on scheduling/monitoring dbt.
       Do not retroactively name it Cloud.
+  - id: alignment-0-6-0
+    title: 'dbt 0.6.0 original source: dbt/main.py; dbt/model.py; dbt/templates.py'
+    url:
+      https://files.pythonhosted.org/packages/15/6e/935616b8f2d5e6114cb11b8d54e4948758a8dc5b598941f26017b4ac53e5/dbt-0.6.0.tar.gz
+    retrieved: '2026-09-22'
+    source_path: dbt/main.py; dbt/model.py; dbt/templates.py
+    sha256: 06f75e1b3c841c6a76b60d6d0b5095a71cae018ff1517b9ea68a9fd8cc3b6ce8
+    supports: Full refresh bypasses incremental writes; macros render SQL.
 narrative_evidence:
   - src-1
   - src-2
   - src-3
   - src-4
+  - alignment-0-6-0
 walkthrough:
   id: wt-0.6
   learning_objective: |
@@ -82,10 +91,9 @@ walkthrough:
   steps:
     - id: repeat
       title: The same subtraction in every report
-      explanation: >
-        This query looks at one order. Highlighted line 2 is the rule that keeps getting retyped: payments
-        minus refunds. Highlighted line 4 narrows the query to order 1042. The result panel shows that the
-        order paid 1,200 cents and refunded 200, so its net is 1,000 cents.
+      explanation: |
+        This query looks at one order. Highlighted line 2 is the rule that keeps getting retyped: payments minus refunds. Highlighted line 4 narrows the query to order 1042. The result panel shows that the order paid 1,200 cents and refunded 200, so its net is 1,000 cents.
+         The second file highlights the same subtraction on line 2, copied into the customer report.
       state:
         kind: comparison
         title: Order 1042, worked by hand
@@ -93,15 +101,16 @@ walkthrough:
           - order_id
           - payment_cents
           - refund_cents
-          - net_cents
+          - revenue_cents
         rows:
-          - - 1042
-            - 1200
-            - 200
-            - 1000
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+          -   - 1042
+              - 1200
+              - 200
+              - 1000
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: >
         Payments minus refunds is typed out in several models, and each copy is a place a mistake could creep
         in.
@@ -109,6 +118,8 @@ walkthrough:
         - src-1
         - src-2
         - src-3
+        - src-4
+        - alignment-0-6-0
       code:
         - language: sql
           filename: analyses/order_1042.sql
@@ -121,12 +132,23 @@ walkthrough:
             - 2
             - 4
           purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/customer_revenue.sql (before the macro)
+          content: |
+            select customer_id,
+                sum(payment_cents - refund_cents) as revenue_cents
+            from {{ ref("order_amounts") }}
+            group by customer_id
+          highlight_lines:
+            - 2
+          purpose: Authored era-specific example; illustration only.
     - id: macro
       title: Give the expression a name
       explanation: >
         This file defines a macro. A macro is a small template: it takes inputs and produces text, here a
         piece of SQL. Highlighted lines 1 to 3 name it net_cents, take two inputs, and produce the subtraction
-        in brackets. Nothing is stored in the database at this point. The result panel shows what goes in and
+        in brackets. Nothing is stored in the database at this point. The result panel shows what goes in
+        and
         what comes out.
       state:
         kind: comparison
@@ -136,12 +158,13 @@ walkthrough:
           - input expressions
           - emitted expression
         rows:
-          - - net_cents
-            - payment_cents, refund_cents
-            - (payment_cents - refund_cents)
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+          -   - net_cents
+              - payment_cents, refund_cents
+              - (payment_cents - refund_cents)
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: |
         A macro produces SQL text; it is not a table and holds no data.
       code:
@@ -155,46 +178,52 @@ walkthrough:
             - 1
             - 2
             - 3
+          purpose: Authored era-specific example; illustration only.
       evidence:
         - src-1
         - src-2
         - src-3
+        - src-4
+        - alignment-0-6-0
     - id: use
       title: Call the macro from the revenue model
-      explanation: >
-        Highlighted line 1 of order_revenue calls net_cents with the two column names instead of typing the
-        subtraction. Before the query runs, dbt replaces that call with the SQL from highlighted lines 1 to 3
-        of the macro file. Highlighted line 2 reads from order_amounts, where payments and refunds are already
-        totalled per order. The result panel shows order 1042 again: 1,000 cents net, the same as before.
+      explanation: >-
+        Highlighted line 3 of order_revenue calls the macro; dbt replaces that call with the subtraction from
+        the macro file. Lines 1 and 2 retain the incremental filter. The inspection query reads order 1042
+        from the built table. Its panel contains exactly those four selected columns, with revenue of 1,000
+        cents.
       state:
         kind: table
         title: Order 1042 through the macro
         columns:
           - order_id
-          - location
           - payment_cents
           - refund_cents
           - revenue_cents
         rows:
-          - - 1042
-            - Old Port
-            - 1200
-            - 200
-            - 1000
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+          -   - 1042
+              - 1200
+              - 200
+              - 1000
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: |
         The model now uses the shared definition and gets the same 1,000-cent answer.
       code:
         - language: sql
           filename: models/order_revenue.sql
           content: |
-            select order_id, {{ net_cents("payment_cents", "refund_cents") }} as revenue_cents
+            {{ config(materialized="incremental",
+                sql_where="order_id > (select max(order_id) from {{ this }})") }}
+            select *, {{ net_cents("payment_cents", "refund_cents") }} as revenue_cents
             from {{ ref("order_amounts") }}
           highlight_lines:
             - 1
             - 2
+            - 3
+          purpose: Authored era-specific example; illustration only.
         - language: jinja
           filename: macros/net_cents.sql
           content: |
@@ -205,10 +234,106 @@ walkthrough:
             - 1
             - 2
             - 3
+          purpose: Authored era-specific example; illustration only.
+        - language: sql
+          filename: analyses/order_1042.sql
+          content: |
+            select order_id, payment_cents, refund_cents, revenue_cents
+            from {{ ref("order_revenue") }}
+            where order_id = 1042
+          highlight_lines:
+            - 1
+            - 3
+          purpose: Authored era-specific example; illustration only.
       evidence:
         - src-1
         - src-2
         - src-3
+        - src-4
+        - alignment-0-6-0
+    - id: refresh
+      title: Recalculate stored rows after correcting a macro
+      explanation: 'The earlier table in this comparison used addition, shown in highlighted line 2 of the
+        before macro. The corrected macro subtracts refunds. Highlighted lines 1 and 2 of order_revenue ordinarily
+        admit only new ids, so old rows keep the wrong answer. The full-refresh command rebuilds the table:
+        order 1042 changes from 1,400 to 1,000 cents, and the total from 15,100 to 12,500.'
+      state:
+        kind: comparison
+        title: Rebuilt values after the macro correction
+        columns:
+          - calculation state
+          - order_1042_cents
+          - all_orders_cents
+        rows:
+          -   - old addition, still stored
+              - 1400
+              - 15100
+          -   - corrected subtraction, rebuilt
+              - 1000
+              - 12500
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
+      takeaway: Full refresh applies the corrected macro to already stored orders, as well as new ones.
+      code:
+        - language: sql
+          filename: models/order_revenue.sql
+          content: |
+            {{ config(materialized="incremental",
+                sql_where="order_id > (select max(order_id) from {{ this }})") }}
+            select *, {{ net_cents("payment_cents", "refund_cents") }} as revenue_cents
+            from {{ ref("order_amounts") }}
+          highlight_lines:
+            - 1
+            - 2
+            - 3
+          purpose: Authored era-specific example; illustration only.
+        - language: jinja
+          filename: macros/net_cents.sql (before correction)
+          content: |
+            {% macro net_cents(payment, refund) %}
+                ({{ payment }} + {{ refund }})
+            {% endmacro %}
+          highlight_lines:
+            - 2
+          purpose: Authored era-specific example; illustration only.
+        - language: jinja
+          filename: macros/net_cents.sql
+          content: |
+            {% macro net_cents(payment, refund) %}
+                ({{ payment }} - {{ refund }})
+            {% endmacro %}
+          highlight_lines:
+            - 1
+            - 2
+            - 3
+          purpose: Authored era-specific example; illustration only.
+        - language: sql
+          filename: analyses/total.sql
+          content: |
+            select sum(revenue_cents) as revenue_cents
+            from {{ ref("order_revenue") }}
+          highlight_lines:
+            - 1
+          purpose: Authored era-specific example; illustration only.
+        - language: shell
+          filename: commands.sh
+          content: |
+            dbt run --full-refresh
+          highlight_lines:
+            - 1
+          purpose: Authored era-specific example; illustration only.
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+        - src-4
+        - alignment-0-6-0
+      data_context:
+        dataset_variant: base
+        phase: Same input rows; compare an intentionally wrong stored calculation with its corrected
+          rebuild.
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -217,10 +342,12 @@ walkthrough:
       - src-2
       - src-3
       - src-4
-    limitations: >
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
-      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
-      performance claims.
+      - alignment-0-6-0
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+      The before/after refresh panel compares calculations over the same base rows, not a changed fixture: payments plus refunds is 15,100; payments minus refunds is 12,500. Hooks and target context are release context only (src-1).
+      historical-0.6-02: Kept macro definition and folder after checking 0.6.0 source. Evidence: src-1, src-2, src-3, src-4, alignment-0-6-0.
+      historical-0.6-03: Hooks and target context remain release context, expressly outside the walkthrough. Evidence: src-1, src-2, src-3, src-4, alignment-0-6-0.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
@@ -230,13 +357,14 @@ walkthrough:
       - Write a piece of SQL once as a macro, a small template, and drop it into any model.
       - Force an incremental model to rebuild from scratch with the full-refresh flag.
     scenario: >
-      Several reports subtract refunds from payments. Each one types the subtraction by hand, so a change to
+      Several reports subtract refunds from payments. Each one types the subtraction by hand, so a change
+      to
       the rule means editing them all. The shop moves the expression into one macro. Order 1042, paid 1,200
       cents and refunded 200, is the test case.
-    outcome: |
-      See the macro's definition, the line that calls it, and the same 1,000-cent net for order 1042.
-  title: |
-    Demo: a macro writes the payments-minus-refunds expression once and reuses it
+    outcome: |-
+      See the shared macro return 1,000 cents for order 1042, then see full refresh correct every previously stored row.
+  title: |-
+    Demo: share the revenue rule and rebuild stored rows after a correction
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.
 default_milestone: 0.6.0

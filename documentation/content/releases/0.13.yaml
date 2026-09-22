@@ -10,14 +10,14 @@ what_changed:
   - id: change-1
     summary: Sources with freshness checks.
     introduced_in: 0.13.0
-    adapter_constraints: null
+    adapter_constraints:
     evidence:
       - src-1
     confidence: high
   - id: change-2
     summary: Stable adapter API and separate adapter plugins; Presto adapter.
     introduced_in: 0.13.0
-    adapter_constraints: null
+    adapter_constraints:
     evidence:
       - src-1
     confidence: high
@@ -85,7 +85,8 @@ walkthrough:
       explanation: >
         Three files are shown. The first, highlighted on lines 2 to 4, stamps every payment row with the time
         it was loaded: 08:00 on March 9. The YAML file, highlighted on lines 7 to 11, tells dbt which column
-        holds that timestamp and how old is too old. The third file is a query, highlighted on lines 2 to 4,
+        holds that timestamp and how old is too old. The third file is a query, highlighted on lines 2 to
+        4,
         that compares the last load time to noon. The result panel shows the answer: the feed is four hours
         old.
       state:
@@ -96,12 +97,13 @@ walkthrough:
           - last_loaded_utc
           - age_hours
         rows:
-          - - 2016-03-09 12:00
-            - 2016-03-09 08:00
-            - 4
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+          -   - 2016-03-09 12:00
+              - 2016-03-09 08:00
+              - 4
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: |
         Freshness is simply how much time has passed since the raw table was last loaded.
       evidence:
@@ -160,7 +162,8 @@ walkthrough:
     - id: threshold
       title: Compare the age with the allowed limits
       explanation: >
-        The same YAML file is shown, with lines 7 to 11 highlighted. Line 10 says warn after one hour. Line 11
+        The same YAML file is shown, with lines 7 to 11 highlighted. Line 10 says warn after one hour. Line
+        11
         says error after three hours. The command file runs the dbt freshness check. The result panel compares
         the limit with the actual age: at most three hours allowed, four hours observed. The check fails.
       state:
@@ -171,12 +174,13 @@ walkthrough:
           - expected
           - actual
         rows:
-          - - age before error
-            - at most 3 hours
-            - 4 hours
+          -   - age before error
+              - at most 3 hours
+              - 4 hours
         result_status: fail
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: |
         The payment feed is older than the three-hour limit, so its freshness check fails.
       evidence:
@@ -228,12 +232,11 @@ walkthrough:
           purpose: authored executable syntax; illustration only
     - id: business
       title: The arithmetic is still right
-      explanation: >
-        Four model files are shown. The payments model, highlighted on line 2, now reads the raw table through
-        source instead of naming it directly. The order_amounts model, highlighted on lines 2, 5, 8 and 9,
-        adds up payments and refunds per order. The last two models compute revenue per order and per
-        location. The result panel shows the usual three rows adding to 12,500 cents. Nothing is wrong with
-        the math. The data is simply four hours old.
+      explanation: >-
+        Highlighted line 2 of payments reads the declared source. Highlighted line 3 of order_amounts now
+        reads that payments model through ref(), so the source link reaches the revenue calculation. Lines
+        5, 8 and 9 add refunds and attach both totals to orders. The panel still totals 12,500 cents, despite
+        the four-hour-old feed.
       state:
         kind: table
         title: Revenue by location on the stale feed
@@ -244,24 +247,25 @@ walkthrough:
           - refund_cents
           - revenue_cents
         rows:
-          - - 1
-            - Old Port
-            - 4400
-            - 1000
-            - 3400
-          - - 2
-            - Mile End
-            - 4600
-            - 300
-            - 4300
-          - - 3
-            - Riverside
-            - 4800
-            - 0
-            - 4800
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+          -   - 1
+              - Old Port
+              - 4400
+              - 1000
+              - 3400
+          -   - 2
+              - Mile End
+              - 4600
+              - 300
+              - 4300
+          -   - 3
+              - Riverside
+              - 4800
+              - 0
+              - 4800
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: >
         Correct arithmetic and fresh data are two separate questions, and this feed passes the first but fails
         the second.
@@ -284,7 +288,7 @@ walkthrough:
           content: |
             with paid as (
                 select order_id, sum(amount_cents) as payment_cents
-                from raw.payments group by order_id
+                from {{ ref("payments") }} group by order_id
             ), refunded as (
                 select order_id, sum(amount_cents) as refund_cents
                 from raw.refunds group by order_id
@@ -295,7 +299,7 @@ walkthrough:
             left join paid as p on o.order_id = p.order_id
             left join refunded as r on o.order_id = r.order_id
           highlight_lines:
-            - 2
+            - 3
             - 5
             - 8
             - 9
@@ -333,15 +337,11 @@ walkthrough:
       - src-2
       - src-3
       - src-4
-    limitations: >
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
-      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
-      performance claims.
-
-      The derived raw.payments_feed view adds the variant’s fixed loaded_at observation without altering base
-      rows. The displayed four-hour age is computed by the Redshift analysis at the declared historical
-      evaluation time; native freshness uses the actual warehouse clock, so running that command today would
-      not produce four hours.
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+      The derived raw.payments_feed view adds the variant’s fixed loaded_at observation without altering base rows. The displayed four-hour age is computed by the Redshift analysis at the declared historical evaluation time; native freshness uses the actual warehouse clock, so running that command today would not produce four hours.
+      The age query assumes Redshift, where datediff(hour, ...) is valid. Separate adapter installation is release context, not a demonstrated step; the source-freshness API and date arithmetic assumptions are stated explicitly (src-1 and source contract evidence).
+      historical-0.13-02: Named Redshift as the adapter for datediff(hour,...); no PostgreSQL compatibility is claimed for that query. Evidence: src-1, src-2, src-3, src-4.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
@@ -349,15 +349,16 @@ walkthrough:
   intro:
     can_now:
       - >-
-        Give the raw tables a name in a YAML file and point models at them with source, so dbt knows where the
+        Give the raw tables a name in a YAML file and point models at them with source, so dbt knows where
+        the
         project's inputs come from.
-      - Say how old a raw table may be before dbt warns, and before it errors, then run one command to check.
-      - >-
-        Install the connector for your database (dbt calls it an adapter) as a separate package from dbt
-        itself.
+      - Say how old a raw table may be before dbt warns, and before it errors, then run one command to
+        check.
     scenario: >
-      It is noon on March 9. The last batch of payments landed at 08:00, four hours ago. The rows still add up
-      to the expected revenue. But Waffle Shop has said the payment feed must be no more than three hours old,
+      It is noon on March 9. The last batch of payments landed at 08:00, four hours ago. The rows still add
+      up
+      to the expected revenue. But Waffle Shop has said the payment feed must be no more than three hours
+      old,
       so the feed fails its freshness check.
     outcome: |
       Compare a revenue calculation that is correct with a freshness check that fails on the same data.

@@ -10,14 +10,14 @@ what_changed:
   - id: change-1
     summary: Macros can use adapter, ref and var; packages can supply custom tests/materializations.
     introduced_in: 0.9.0
-    adapter_constraints: null
+    adapter_constraints:
     evidence:
       - src-1
     confidence: high
   - id: change-2
     summary: Custom schemas; improved BigQuery table support.
     introduced_in: 0.9.0
-    adapter_constraints: null
+    adapter_constraints:
     evidence:
       - src-1
     confidence: high
@@ -77,12 +77,23 @@ sources:
       arguments.
     source_path: dbt/parser.py
     sha256: ee26f68014221f32ed73467bf11fb6981701ff952e247b3ac39ed4b3dcaa7c5e
+  - id: alignment-0-9-0
+    title: 'dbt 0.9.0 original source: dbt/parser.py; dbt/task/deps.py; dbt/include/global_project/macros/etc/get_custom_schema.sql'
+    url:
+      https://files.pythonhosted.org/packages/06/b1/351da5005cfeb17525beac3de7ba86efce9dbd093863abb2ae6bfef2349c/dbt-0.9.0.tar.gz
+    retrieved: '2026-09-22'
+    source_path: dbt/parser.py; dbt/task/deps.py;
+      dbt/include/global_project/macros/etc/get_custom_schema.sql
+    sha256: ee26f68014221f32ed73467bf11fb6981701ff952e247b3ac39ed4b3dcaa7c5e
+    supports: Package-prefixed constraints resolve test macros; repositories use git clone (including
+      file URLs); custom schema appends to target schema.
 narrative_evidence:
   - src-1
   - src-2
   - src-3
   - src-4
   - src-5
+  - alignment-0-9-0
 walkthrough:
   id: wt-0.9
   learning_objective: |
@@ -94,11 +105,10 @@ walkthrough:
   steps:
     - id: copies
       title: Two reports, one rule
-      explanation: >
-        Both reports need payments minus refunds. If each typed it out, a fix would have to be made twice.
-        Highlighted line 2 of the macro file is the rule, written once. Highlighted line 2 of each report
-        calls it as shared_shop.net_cents, with the package name in front of the macro name. The result panel
-        confirms both reports use the same rule.
+      explanation: >-
+        Highlighted line 2 of each report types out payments minus refunds. These are two separate copies
+        of the rule. The panel lists the two reports and the repeated calculation; the next step moves it
+        into a shared package.
       state:
         kind: comparison
         title: One rule shared by two reports
@@ -106,53 +116,48 @@ walkthrough:
           - model
           - rule
         rows:
-          - - daily_revenue
-            - payments minus refunds
-          - - customer_revenue
-            - payments minus refunds
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-      takeaway: |
-        Both reports use one definition of net revenue, so there is one place to fix it.
+          -   - daily_revenue
+              - payments minus refunds
+          -   - customer_revenue
+              - payments minus refunds
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
+      takeaway: |-
+        Both reports currently carry their own copy of the same subtraction.
       evidence:
         - src-1
         - src-2
         - src-3
         - src-4
         - src-5
+        - alignment-0-9-0
       code:
-        - language: jinja
-          filename: shared_shop/macros/net_cents.sql
-          content: |
-            {% macro net_cents(payment, refund) %}
-              ({{ payment }} - {{ refund }})
-            {% endmacro %}
-          highlight_lines:
-            - 2
-          purpose: authored executable syntax; illustration only
         - language: sql
           filename: models/daily_revenue.sql
           content: |
             select order_id,
-                {{ shared_shop.net_cents("payment_cents", "refund_cents") }} as revenue_cents
+                payment_cents - refund_cents as revenue_cents
             from {{ ref("order_amounts") }}
           highlight_lines:
             - 2
-          purpose: authored executable syntax; illustration only
+          purpose: Authored era-specific example; illustration only.
         - language: sql
           filename: models/customer_revenue.sql
           content: |
             select customer_id,
-                sum({{ shared_shop.net_cents("payment_cents", "refund_cents") }}) as revenue_cents
+                sum(payment_cents - refund_cents) as revenue_cents
             from {{ ref("order_amounts") }}
             group by customer_id
           highlight_lines:
             - 2
+          purpose: Authored era-specific example; illustration only.
     - id: dependency
       title: Pull the shared behaviour in as a dependency
       explanation: >
-        Highlighted lines 4 and 5 of the shop's project file list the shared project as a repository. This is
+        Highlighted lines 4 and 5 of the shop's project file list the shared project as a repository. This
+        is
         the older way to declare a dependency, before packages.yml existed. Highlighted lines 1 and 3 of the
         shared project name it and say where its macros live. The shared project also carries a test:
         highlighted lines 1 to 3 of test_non_negative count rows where a column is below zero. Highlighted
@@ -167,15 +172,16 @@ walkthrough:
           - component
           - belongs in
         rows:
-          - - net-revenue macro
-            - shared dependency
-          - - shared integrity tests
-            - shared dependency
-          - - shop-specific source mappings
-            - Waffle Shop project
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+          -   - net-revenue macro
+              - shared dependency
+          -   - shared integrity tests
+              - shared dependency
+          -   - shop-specific source mappings
+              - Waffle Shop project
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: |
         A package can supply macros and tests, not only models, and one command pulls it in.
       evidence:
@@ -184,7 +190,20 @@ walkthrough:
         - src-3
         - src-4
         - src-5
+        - alignment-0-9-0
       code:
+        - language: yaml
+          filename: dbt_project.yml (excerpt)
+          content: |
+            name: waffle_shop
+            version: "1.0"
+            profile: waffle_shop
+            repositories:
+              - "file:///tmp/shared_shop"
+          highlight_lines:
+            - 4
+            - 5
+          purpose: authored executable syntax; illustration only
         - language: jinja
           filename: shared_shop/macros/net_cents.sql
           content: |
@@ -202,18 +221,6 @@ walkthrough:
             from {{ ref("order_amounts") }}
           highlight_lines:
             - 2
-          purpose: authored executable syntax; illustration only
-        - language: yaml
-          filename: dbt_project.yml (excerpt)
-          content: |
-            name: waffle_shop
-            version: "1.0"
-            profile: waffle_shop
-            repositories:
-              - "file:///tmp/shared_shop"
-          highlight_lines:
-            - 4
-            - 5
           purpose: authored executable syntax; illustration only
         - language: yaml
           filename: shared_shop/dbt_project.yml
@@ -236,6 +243,7 @@ walkthrough:
             - 1
             - 2
             - 3
+          purpose: Authored era-specific example; illustration only.
         - language: yaml
           filename: models/schema.yml
           content: |
@@ -247,6 +255,7 @@ walkthrough:
             - 2
             - 3
             - 4
+          purpose: Authored era-specific example; illustration only.
         - language: shell
           filename: commands.sh
           content: |
@@ -268,13 +277,14 @@ walkthrough:
           - relation
           - illustrative schema
         rows:
-          - - order_revenue
-            - waffle_analytics
-          - - revenue_by_location
-            - waffle_analytics
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+          -   - order_revenue
+              - waffle
+          -   - revenue_by_location
+              - waffle_analytics
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: |
         A model can choose its own schema, so shared code does not force every project into the same place.
       evidence:
@@ -283,6 +293,7 @@ walkthrough:
         - src-3
         - src-4
         - src-5
+        - alignment-0-9-0
       code:
         - language: sql
           filename: models/revenue_by_location.sql
@@ -314,18 +325,13 @@ walkthrough:
       - src-3
       - src-4
       - src-5
-    limitations: >
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
-      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
-      performance claims.
-
-      The dependency is an authored local Git repository at /tmp/shared_shop, not a claimed historical
-      published package; it must exist and contain the shown macro/project files. The old repositories key is
-      used, not packages.yml. With target schema waffle and custom schema analytics, the default schema macro
-      produces waffle_analytics.
-
-      The shared 0.9 test uses a test_ macro returning a count, invoked through the v1 constraints mapping and
-      package namespace; it is not a modern data-test block.
+      - alignment-0-9-0
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+      The dependency is an authored local Git repository at /tmp/shared_shop, not a claimed historical published package; it must exist and contain the shown macro/project files. The old repositories key is used, not packages.yml. With target schema waffle and custom schema analytics, the default schema macro produces waffle_analytics.
+      The shared 0.9 test uses a test_ macro returning a count, invoked through the v1 constraints mapping and package namespace; it is not a modern data-test block.
+      historical-0.9-02: Confirmed package-prefixed v1 constraints in 0.9 parser.py, resolving a namespaced test_ macro. Evidence: src-1, src-2, src-3, src-4, src-5, alignment-0-9-0.
+      historical-0.9-03: Confirmed repositories is handed to Git clone, which accepts file URLs. The example is an authored existing local Git repository, not a historical public package. Evidence: src-1, src-2, src-3, src-4, src-5, alignment-0-9-0.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'

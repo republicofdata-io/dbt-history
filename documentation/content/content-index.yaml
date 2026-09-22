@@ -4,7 +4,7 @@ authored_on: '2026-09-22'
 research_cutoff: '2026-09-21'
 status: authored-and-content-validated
 summary: |
-  Complete first authored content set: one immutable Waffle Shop fixture, seven named variants, 36 chapters and 110 guided steps, 43 catalogue identities, 105 normalized events and 61 ecosystem placement intervals. All walkthroughs are illustrations.
+  Reviewed content set: one immutable Waffle Shop base fixture, seven named variants, 36 chapters, 121 guided steps and 359 code blocks, 43 catalogue identities, 105 normalized events and 61 ecosystem placement intervals. All walkthroughs are illustrations.
 files:
   dataset: waffle-shop/dataset.yaml
   chapters:
@@ -48,6 +48,8 @@ files:
   events: catalogue/events.yaml
   ecosystem: ecosystem/placements.yaml
   validation: validation-report.yaml
+  review_resolutions: review-resolutions-2026-09-22.yaml
+  alignment_handoff: demo-alignment-handoff-2026-09-22.md
 rendering_contract:
 - id: version-order
   instruction: Use the chapters array, not lexical file sorting. Origin precedes 0.1; 0.9 precedes 0.10.
@@ -123,8 +125,8 @@ open_checks:
     unknown, not free or open source.
 - id: runtime
   status: not-executed
-  description: Historical syntax is source-reviewed. No dbt runtime, adapter execution, measured performance or
-    original terminal log is claimed.
+  description: Historical syntax is source-reviewed. No warehouse execution, measured performance or original terminal
+    log is claimed. Only the Core 1.7 request-hash helper was executed in isolation.
 authoring_corrections:
 - id: snowflake-projects-date
   description: The cited native dbt Projects GA article is dated November 10, 2025; the skeleton’s June 2025 placement
@@ -135,7 +137,7 @@ authoring_corrections:
     retrieved: '2026-09-21'
     rechecked: '2026-09-22'
 publication_gate: |
-  Content files and the existing app’s content tests pass. The coding agent should verify that the rendered UI retains the qualifications listed above, including licence/access separation, upcoming products, private beta labels and bounded ownership dates. This is an integration review, not a request to add execution.
+  All 64 app tests and independent content/fixture checks pass. This alignment pass is local and has not been deployed. Before publication, review the changed steps at recording size and retain every historical, adapter, access and illustration qualification. No execution backend is required.
 walkthrough_enrichment:
   reviewed_on: '2026-09-22'
   intro_count: 36
@@ -147,3 +149,44 @@ walkthrough_enrichment:
   - data_context records before/after fixture phases without changing base rows.
   - The 0.2.0 relationship declaration uses parent orders pointing to child payments.
   - All original fields, original code blocks and prepared table values were preserved.
+  scope: Record of the earlier enrichment pass; subsequent alignment corrected snippets and result panels while
+    preserving the field contract.
+demo_alignment:
+  reviewed_on: '2026-09-22'
+  research_cutoff: '2026-09-21'
+  status: pass
+  partial_chapters_addressed:
+  - '0.1'
+  - '0.4'
+  - '0.5'
+  - '0.6'
+  - '0.8'
+  - '0.10'
+  - '0.14'
+  - '0.15'
+  - '0.16'
+  - '0.17'
+  - '1.2'
+  - '1.4'
+  - '1.5'
+  - '1.6'
+  - '1.7'
+  - '1.9'
+  - '1.10'
+  - '1.12'
+  version_chapters_reviewed: 35
+  walkthroughs_with_intro: 36
+  steps_with_non_shell_code: 121
+  code_blocks: 359
+  maximum_lines_per_block: 17
+  review_flags:
+    fixed: 48
+    documented-limitation: 12
+  historical_observations:
+    fixed: 42
+    documented-limitation: 40
+  unresolved: 0
+  resolution_register: review-resolutions-2026-09-22.yaml
+  handoff: demo-alignment-handoff-2026-09-22.md
+  all_results_remain_illustrations: true
+  base_fixture_unchanged: true

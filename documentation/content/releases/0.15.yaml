@@ -10,14 +10,14 @@ what_changed:
   - id: change-1
     summary: Opt-in partial parsing; structured/JSON logging.
     introduced_in: 0.15.0
-    adapter_constraints: null
+    adapter_constraints:
     evidence:
       - src-1
     confidence: high
   - id: change-2
     summary: Python 2 support dropped; improved snapshot/docs/RPC behavior.
     introduced_in: 0.15.0
-    adapter_constraints: null
+    adapter_constraints:
     evidence:
       - src-1
     confidence: high
@@ -86,6 +86,15 @@ sources:
     historical_scope: Syntax at the named immutable version; research cutoff remains 2026-09-21.
     source_path: dbt/main.py
     sha256: 297113ddf1aa5b060016212d4802f5b950982c205f697cb09e024783b26e620a
+  - id: alignment-0-15-0
+    title: 'dbt 0.15.0 original source: dbt/main.py:756-800; dbt/logger.py:52-99; dbt/config/profile.py; dbt/parser/manifest.py'
+    url:
+      https://files.pythonhosted.org/packages/c4/c9/309f26f55d99a25c88ed7b649f6352f8457c7d2ab7c7c0644595a6a228d9/dbt-core-0.15.0.tar.gz
+    retrieved: '2026-09-22'
+    source_path: dbt/main.py:756-800; dbt/logger.py:52-99; dbt/config/profile.py; dbt/parser/manifest.py
+    sha256: 297113ddf1aa5b060016212d4802f5b950982c205f697cb09e024783b26e620a
+    supports: Global CLI switches, config.partial_parse, eligible file reuse and actual LogMessage field
+      names.
 narrative_evidence:
   - src-1
   - src-2
@@ -93,6 +102,7 @@ narrative_evidence:
   - src-4
   - src-5
   - src-6
+  - alignment-0-15-0
 walkthrough:
   id: wt-0.15
   learning_objective: >
@@ -105,11 +115,10 @@ walkthrough:
   steps:
     - id: project
       title: Edit only a description
-      explanation: >
-        Two files are shown. The YAML file, highlighted on lines 4, 6 and 7, holds the description of the
-        revenue-by-location model and its revenue column. This is the only thing edited. The SQL file,
-        highlighted on lines 3 to 5, is unchanged. The result panel lists what changed: the description was
-        edited, the SQL and the data were not.
+      explanation: >-
+        Highlighted lines 4, 6 and 7 of schema.yml are the edited descriptions. The supporting revenue SQL
+        has no changed lines. The panel identifies the change as documentation only; neither business SQL
+        nor input rows changed.
       state:
         kind: comparison
         title: What changed in this edit
@@ -117,15 +126,16 @@ walkthrough:
           - project area
           - prepared change
         rows:
-          - - revenue_by_location description
-            - edited
-          - - business SQL
-            - unchanged
-          - - base fixture
-            - unchanged
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+          -   - revenue_by_location description
+              - edited
+          -   - business SQL
+              - unchanged
+          -   - base fixture
+              - unchanged
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: |
         This edit changes the documentation, not the revenue number.
       evidence:
@@ -133,6 +143,9 @@ walkthrough:
         - src-2
         - src-5
         - src-6
+        - src-3
+        - src-4
+        - alignment-0-15-0
       code:
         - language: yaml
           filename: models/schema.yml
@@ -161,33 +174,36 @@ walkthrough:
             join raw.locations as l on r.location_id = l.location_id
             group by r.location_id, l.name
             order by r.location_id
-          highlight_lines:
-            - 3
-            - 4
-            - 5
+          highlight_lines: []
           purpose: authored executable syntax; illustration only
     - id: parse
       title: Reuse the earlier read of the project
-      explanation: >
-        Before running any SQL, dbt reads every file in the project to learn the models and how they connect.
-        dbt calls this parsing. The command file runs dbt with the partial-parse flag, which tells it to reuse
-        the result of the last read for files that did not change. The YAML and SQL files are the same as in
-        the previous step. The result panel compares the two modes: a full parse reads the whole project, a
-        partial parse reuses what it can. How much it reuses depends on the project and the edit.
+      explanation: >-
+        Highlighted line 2 of the profile enables partial parsing, which reuses the earlier reading of unchanged
+        project files. The command shows the equivalent global --partial-parse switch before run. The panel
+        shows schema.yml read again and four unchanged SQL files reused, assuming a compatible saved parse
+        from this project.
       state:
         kind: comparison
-        title: Full parse compared with partial parse
+        title: Prepared file-reuse decision after the description edit
         columns:
-          - mode
-          - behavior
+          - file
+          - parse action
         rows:
-          - - full parsing
-            - read the whole project
-          - - partial parsing, opt-in
-            - reuse eligible prior parse information
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+          -   - models/schema.yml
+              - read again
+          -   - models/orders.sql
+              - reuse saved parse
+          -   - models/order_amounts.sql
+              - reuse saved parse
+          -   - models/order_revenue.sql
+              - reuse saved parse
+          -   - models/revenue_by_location.sql
+              - reuse saved parse
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: |
         dbt reads the project before it runs SQL, and partial parsing lets it reuse the last read.
       evidence:
@@ -195,7 +211,18 @@ walkthrough:
         - src-2
         - src-5
         - src-6
+        - src-3
+        - src-4
+        - alignment-0-15-0
       code:
+        - language: yaml
+          filename: profiles.yml (global config excerpt)
+          content: |
+            config:
+              partial_parse: true
+          highlight_lines:
+            - 2
+          purpose: Authored era-specific example; illustration only.
         - language: yaml
           filename: models/schema.yml
           content: |
@@ -223,10 +250,7 @@ walkthrough:
             join raw.locations as l on r.location_id = l.location_id
             group by r.location_id, l.name
             order by r.location_id
-          highlight_lines:
-            - 3
-            - 4
-            - 5
+          highlight_lines: []
           purpose: authored executable syntax; illustration only
         - language: shell
           filename: commands.sh
@@ -237,52 +261,52 @@ walkthrough:
           purpose: authored executable syntax; illustration only
     - id: events
       title: Print the run as machine-readable events
-      explanation: >
-        The command file runs dbt with the log format set to JSON. Each event in the run, such as a model
-        starting or finishing, is printed as one line of JSON that another program can read. The YAML and SQL
-        files are unchanged. The result panel describes what such events give an operator: the type of event
-        and which model it belongs to. The revenue numbers still come from the model table, not the log. The
-        panel describes the fields in words. It is not a copy of a real log.
+      explanation: >-
+        Highlighted lines 2 to 4 of the JSON example separate the level, message and optional context into
+        fields. This is an authored format excerpt, not a terminal log or a claim about an emitted event.
+        The global --log-format json switch comes before run. The panel maps those fields to their meanings;
+        the supporting model still computes the revenue table.
       state:
         kind: comparison
-        title: What JSON log events give an operator
+        title: Human text becomes readable fields (authored example)
         columns:
-          - operational need
-          - structured-event benefit
+          - field
+          - example meaning
         rows:
-          - - identify event type
-            - machine-readable classification
-          - - associate event with model
-            - structured context
-          - - read revenue
-            - still query the model result
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-      takeaway: >
-        JSON logs make the run easier for tools to read, while the revenue result still lives in the model
-        table.
+          -   - levelname
+              - 'INFO: information'
+          -   - message
+              - text describing an event
+          -   - extra
+              - optional model context
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
+      takeaway: >-
+        The JSON format gives tools named fields to read instead of one unstructured line.
       evidence:
         - src-1
         - src-2
         - src-5
         - src-6
+        - src-3
+        - src-4
+        - alignment-0-15-0
       code:
-        - language: yaml
-          filename: models/schema.yml
+        - language: json
+          filename: reference/json-format-example.json (authored field excerpt)
           content: |
-            version: 2
-            models:
-              - name: revenue_by_location
-                description: Payments minus refunds, in cents.
-                columns:
-                  - name: revenue_cents
-                    description: Net successful payments after refunds.
+            {
+              "levelname": "INFO",
+              "message": "Example model event for revenue_by_location",
+              "extra": {"model_name": "revenue_by_location"}
+            }
           highlight_lines:
+            - 2
+            - 3
             - 4
-            - 6
-            - 7
-          purpose: authored executable syntax; illustration only
+          purpose: Authored era-specific example; illustration only.
         - language: sql
           filename: models/revenue_by_location.sql
           content: |
@@ -295,10 +319,7 @@ walkthrough:
             join raw.locations as l on r.location_id = l.location_id
             group by r.location_id, l.name
             order by r.location_id
-          highlight_lines:
-            - 3
-            - 4
-            - 5
+          highlight_lines: []
           purpose: authored executable syntax; illustration only
         - language: shell
           filename: commands.sh
@@ -306,7 +327,7 @@ walkthrough:
             dbt --log-format json run
           highlight_lines:
             - 1
-          purpose: authored executable syntax; illustration only
+          purpose: Authored era-specific example; illustration only.
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -317,10 +338,12 @@ walkthrough:
       - src-4
       - src-5
       - src-6
-    limitations: >
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
-      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
-      performance claims.
+      - alignment-0-15-0
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+      The JSON panel is deliberately a field excerpt with authored message text, not synthetic terminal output or a complete LogMessage. Timestamp, process and thread fields are omitted, not invented. The per-file reuse assumes a valid prior cache and no environment/project-wide invalidation. Python 2 retirement stays in release context (src-1).
+      review-0.15-02: Original 0.15.0 main.py confirms --log-format and --partial-parse are root flags before run. Keep this order and cite it. Evidence: src-1, src-2, src-3, src-4, src-5, src-6, alignment-0-15-0.
+      historical-0.15-02: Python 2 retirement remains in the chapter’s release claims; not a walkthrough demonstration. Evidence: src-1, src-2, src-3, src-4, src-5, src-6, alignment-0-15-0.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
@@ -333,13 +356,13 @@ walkthrough:
       - Ask dbt to print each run event as a line of JSON, so another program can read the log.
     scenario: >
       Someone edits the description of the revenue model. The SQL and the numbers do not change. Waffle Shop
-      uses this small edit to show two things: dbt can skip re-reading unchanged files, and it can report what
+      uses this small edit to show two things: dbt can skip re-reading unchanged files, and it can report
+      what
       it did in a form that tools can parse.
-    outcome: |
-      Compare the two parser modes and the two log formats, without claiming a measured speedup.
-  title: >
-    Demo: change one description, and dbt can skip re-reading the whole project and report the run as
-    machine-readable events
+    outcome: |-
+      See the per-file parse decision and a labeled example of JSON fields, without a fabricated run log or speed claim.
+  title: >-
+    Demo: reuse unchanged project files and inspect the JSON log format
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.
 default_milestone: 0.15.0

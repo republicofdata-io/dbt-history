@@ -10,14 +10,14 @@ what_changed:
   - id: change-1
     summary: Snapshots replace archives.
     introduced_in: 0.14.0
-    adapter_constraints: null
+    adapter_constraints:
     evidence:
       - src-1
     confidence: high
   - id: change-2
     summary: Resource listing, RPC server and configurable test severity.
     introduced_in: 0.14.0
-    adapter_constraints: null
+    adapter_constraints:
     evidence:
       - src-1
     confidence: high
@@ -25,8 +25,10 @@ in_practice: |
   Capture change history instead of overwriting the only available record.
 technical_detail: >
   Snapshots replace archives. This check-strategy example watches city. Validity timestamps are conceptual
-  observation boundaries; actual snapshot identifiers and run timestamps are not fabricated. run-operation has
-  conflicting introduction evidence across 0.13 source and 0.14 notes, so no exact first-shipped claim is made
+  observation boundaries; actual snapshot identifiers and run timestamps are not fabricated. run-operation
+  has
+  conflicting introduction evidence across 0.13 source and 0.14 notes, so no exact first-shipped claim is
+  made
   here.
 milestones:
   - id: 0.14.0
@@ -57,10 +59,20 @@ sources:
       Original source package and tagged release evidence for the example’s syntax; review is not runtime
       execution.
     rechecked: '2026-09-22'
+  - id: alignment-0-14-0
+    title: 'dbt 0.14.0 original source: dbt/parser/source_config.py; dbt/parser/schemas.py:86-177; dbt/ui/printer.py:155-163'
+    url:
+      https://files.pythonhosted.org/packages/62/ee/63b4b36a486487bf4713415736092a63f3654d023540d8cf31745debe75b/dbt-core-0.14.0.tar.gz
+    retrieved: '2026-09-22'
+    source_path: dbt/parser/source_config.py; dbt/parser/schemas.py:86-177; dbt/ui/printer.py:155-163
+    sha256: 2c48227d120f7aeab2913467c4614eb058cccff8d7a56bc9ad3e82e3b0314ac9
+    supports: Test severity configuration supports WARN; old generic test arguments put severity
+      directly beside arguments, not in modern config nesting.
 narrative_evidence:
   - src-1
   - src-2
   - src-3
+  - alignment-0-14-0
 walkthrough:
   id: wt-0.14
   learning_objective: |
@@ -73,11 +85,10 @@ walkthrough:
   steps:
     - id: before
       title: Ada's record before the change
-      explanation: >
-        Two files are shown. The snapshot file, highlighted on lines 3 and 4, sets up the history table. It
-        identifies a customer by customer_id, and it uses the check strategy, meaning dbt compares the city
-        column each time the snapshot runs and records a new row when it changes. The query file, highlighted
-        on line 3, looks up customer 1. The result panel shows Ada in Montréal.
+      explanation: >-
+        Highlighted lines 2 and 3 set up a snapshot, a table of earlier row versions. customer_id identifies
+        the row, and check_cols watches city for changes. Highlighted line 2 of the inspection query picks
+        customer 1. The panel shows Ada in Montréal before the declared change.
       state:
         kind: comparison
         title: Ada's record before the change
@@ -86,12 +97,13 @@ walkthrough:
           - name
           - city
         rows:
-          - - 1
-            - Ada
-            - Montréal
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+          -   - 1
+              - Ada
+              - Montréal
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: >
         Before the change, the source table holds one value for Ada's city, and the snapshot is set to watch
         that column.
@@ -99,39 +111,37 @@ walkthrough:
         - src-1
         - src-2
         - src-3
+        - alignment-0-14-0
       code:
         - language: sql
           filename: snapshots/customers_history.sql
           content: |
-            -- Fixture phase: Before the declared customer-city change.
             {% snapshot customers_history %}
             {{ config(target_schema="snapshots", unique_key="customer_id",
                 strategy="check", check_cols=["city"]) }}
             select customer_id, name, city from raw.customers
             {% endsnapshot %}
           highlight_lines:
+            - 2
             - 3
-            - 4
-          purpose: authored executable syntax; illustration only
+          purpose: Authored era-specific example; illustration only.
         - language: sql
           filename: analyses/current_customer.sql
           content: |
-            -- Fixture phase: Before the declared customer-city change.
             select customer_id, name, city from raw.customers
             where customer_id = 1
           highlight_lines:
-            - 3
+            - 2
           purpose: authored executable syntax; illustration only
       data_context:
         dataset_variant: base
         phase: Before the declared customer-city change.
     - id: change
       title: The source table is updated
-      explanation: >
-        The snapshot file is shown again, highlighted on lines 1 to 4. It is the same definition, watching the
-        city column. In the source table, Ada's city is updated to Québec at 09:00 on March 9. The result
-        panel shows the before and after values and the time of the change. The source table now holds only
-        the new city. The old one is gone from it.
+      explanation: >-
+        Highlighted lines 2 and 3 are the same snapshot settings. The named customer-city-change variant updates
+        Ada’s city to Québec at 09:00 on March 9. The panel shows the old and new values; the current source
+        now contains only Québec.
       state:
         kind: comparison
         title: Ada's city before and after the update
@@ -141,13 +151,14 @@ walkthrough:
           - after
           - observed_utc
         rows:
-          - - 1
-            - Montréal
-            - Québec
-            - 2016-03-09 09:00
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+          -   - 1
+              - Montréal
+              - Québec
+              - 2016-03-09 09:00
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: |
         After the update, the source table shows only Québec. Without a snapshot, Montréal would be lost.
       code:
@@ -157,25 +168,23 @@ walkthrough:
             {% snapshot customers_history %}
             {{ config(target_schema="snapshots", unique_key="customer_id",
                 strategy="check", check_cols=["city"]) }}
-            select * from raw.customers
+            select customer_id, name, city from raw.customers
             {% endsnapshot %}
           highlight_lines:
-            - 1
             - 2
             - 3
-            - 4
+          purpose: Authored era-specific example; illustration only.
       evidence:
         - src-1
         - src-2
         - src-3
+        - alignment-0-14-0
     - id: history
       title: The snapshot keeps both versions
-      explanation: >
-        Three files are shown. The snapshot file, highlighted on lines 3 and 4, is unchanged. The query file,
-        highlighted on lines 2 and 5, reads the snapshot table and orders by dbt_valid_from, the column that
-        says when each row started being true. The command file runs dbt snapshot. The result panel shows two
-        rows for Ada: Montréal until 09:00 on March 9, then Québec from then on. The intervals are written in
-        plain words for this demo rather than copied from a real run.
+      explanation: >-
+        Highlighted lines 2 and 3 keep the snapshot definition unchanged. After the second dbt snapshot observation,
+        the inspection query reads its two validity dates, the times each saved version began and ended. The
+        panel expresses those intervals in words: Montréal until March 9 at 09:00, then Québec onward.
       state:
         kind: comparison
         title: Ada's two dated rows in the snapshot
@@ -184,47 +193,46 @@ walkthrough:
           - city
           - interval
         rows:
-          - - 1
-            - Montréal
-            - first observation until March 9 09:00
-          - - 1
-            - Québec
-            - March 9 09:00 onward
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-      takeaway: >
-        The snapshot holds both cities with the dates each was true, so old orders keep their old location and
-        revenue stays 12,500 cents.
+          -   - 1
+              - Montréal
+              - first observation until March 9 09:00
+          -   - 1
+              - Québec
+              - March 9 09:00 onward
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
+      takeaway: >-
+        The snapshot now retains both cities and their validity intervals.
       evidence:
         - src-1
         - src-2
         - src-3
+        - alignment-0-14-0
       code:
         - language: sql
           filename: snapshots/customers_history.sql
           content: |
-            -- Fixture phase: After the second snapshot observation.
             {% snapshot customers_history %}
             {{ config(target_schema="snapshots", unique_key="customer_id",
                 strategy="check", check_cols=["city"]) }}
             select customer_id, name, city from raw.customers
             {% endsnapshot %}
           highlight_lines:
+            - 2
             - 3
-            - 4
-          purpose: authored executable syntax; illustration only
+          purpose: Authored era-specific example; illustration only.
         - language: sql
           filename: analyses/customer_history.sql
           content: |
-            -- Fixture phase: After the second snapshot observation.
             select customer_id, city, dbt_valid_from, dbt_valid_to
             from snapshots.customers_history
             where customer_id = 1
             order by dbt_valid_from
           highlight_lines:
-            - 2
-            - 5
+            - 1
+            - 4
           purpose: authored executable syntax; illustration only
         - language: shell
           filename: commands.sh
@@ -236,6 +244,60 @@ walkthrough:
       data_context:
         dataset_variant: customer-city-change
         phase: After the second snapshot observation.
+    - id: warning
+      title: Warn about a large refund without failing the run
+      explanation: 'Highlighted line 1 of the custom test sets severity to warn. Highlighted line 4 returns
+        orders with refunds above 500 cents, a soft review rule. The base has one such order: 1044, refunded
+        800 cents. The panel shows one warning, so this check does not turn the run into an error.'
+      state:
+        kind: result
+        title: Refund review warning
+        columns:
+          - order_id
+          - refund_cents
+          - review_above_cents
+        rows:
+          -   - 1044
+              - 800
+              - 500
+        result_status: warn
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
+      takeaway: The large refund is visible as a warning instead of an error.
+      code:
+        - language: sql
+          filename: tests/review_large_refunds.sql
+          content: |
+            {{ config(severity="warn") }}
+            select order_id, refund_cents
+            from {{ ref("refunds_by_order") }}
+            where refund_cents > 500
+          highlight_lines:
+            - 1
+            - 4
+          purpose: Authored era-specific example; illustration only.
+        - language: sql
+          filename: models/refunds_by_order.sql
+          content: |
+            select order_id, sum(amount_cents) as refund_cents
+            from raw.refunds
+            group by order_id
+          highlight_lines:
+            - 1
+          purpose: Authored era-specific example; illustration only.
+        - language: shell
+          filename: commands.sh
+          content: |
+            dbt test
+          highlight_lines:
+            - 1
+          purpose: Authored era-specific example; illustration only.
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+        - alignment-0-14-0
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -243,10 +305,10 @@ walkthrough:
       - src-1
       - src-2
       - src-3
-    limitations: >
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
-      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
-      performance claims.
+      - alignment-0-14-0
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+      The warning is a custom SQL data test with config(severity="warn"), verified in 0.14.0; no later generic-test config layout is backported. Snapshot dates are declared observation phases, not captured timestamps. No claim is made that this snapshot alone changes order attribution.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
@@ -257,13 +319,12 @@ walkthrough:
         Keep a history of a table whose rows get overwritten, using a snapshot. Snapshots replace the older
         archive feature.
       - Decide per test whether a failure should stop the run as an error or just show a warning.
-    scenario: >
-      Ada's customer record says Montréal. Then it is updated to Québec, and the old value is gone from the
-      source table. Waffle Shop wants to remember both, and it wants old orders to keep the location they had
-      at the time.
-    outcome: |
-      See the snapshot definition, the change in the source table, and the two dated rows the snapshot keeps.
-  title: |
-    Demo: a snapshot remembers that Ada lived in Montréal before she moved to Québec
+    scenario: >-
+      Ada’s current customer row changes from Montréal to Québec. A snapshot preserves both versions, while
+      a separate soft rule flags an unusually large refund for review.
+    outcome: |-
+      See two dated customer versions and one 800-cent refund reported as a warning.
+  title: |-
+    Demo: remember a customer move and warn about a large refund
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

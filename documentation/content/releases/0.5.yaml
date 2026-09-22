@@ -5,13 +5,14 @@ lead: >
   Project variables make shared SQL configurable. This series also adds archives, PostgreSQL support and
   custom SQL tests in separate patches.
 problem_then: >
-  A reusable model needs a safe way to accept project-specific values, while teams also need more targets and
+  A reusable model needs a safe way to accept project-specific values, while teams also need more targets
+  and
   checks.
 what_changed:
   - id: change-1
     summary: Project variables and safer incremental writes.
     introduced_in: 0.5.0
-    adapter_constraints: null
+    adapter_constraints:
     evidence:
       - src-1
     confidence: high
@@ -25,7 +26,7 @@ what_changed:
   - id: change-3
     summary: Custom SQL data tests.
     introduced_in: 0.5.4
-    adapter_constraints: null
+    adapter_constraints:
     evidence:
       - src-5
     confidence: high
@@ -87,12 +88,30 @@ sources:
     url: https://github.com/dbt-labs/dbt/releases/tag/v0.5.4
     retrieved: '2026-09-21'
     supports: Custom SQL data tests
+  - id: alignment-0-5-1
+    title: 'dbt 0.5.1 original source: dbt/source.py:63-82; dbt/archival.py; dbt/templates.py:175-242'
+    url:
+      https://files.pythonhosted.org/packages/4a/53/eb833865a520cdc2abf56416158352bb3aa14d6e3f1f0e78630ae23f1e6d/dbt-0.5.1.tar.gz
+    retrieved: '2026-09-22'
+    source_path: dbt/source.py:63-82; dbt/archival.py; dbt/templates.py:175-242
+    sha256: 17c31db44c7103c49249a5b7cadf7d1a95612a96d67f2100f12ea07c4214786e
+    supports: archive schema/tables layout and valid_from/valid_to columns from updated_at.
+  - id: alignment-0-5-4
+    title: 'dbt 0.5.4 original source: dbt/source.py; dbt/templates.py; dbt/task/test.py'
+    url:
+      https://files.pythonhosted.org/packages/7f/c5/7b2a8cb268af08e9cc469931e3011f38d461513063cf25310e65a51b96d5/dbt-0.5.4.tar.gz
+    retrieved: '2026-09-22'
+    source_path: dbt/source.py; dbt/templates.py; dbt/task/test.py
+    sha256: 298b48ba058652df13bb155170b225c4667470fb41ae43c8af5f10968dd1dfa2
+    supports: Custom tests under tests/ are SQL selecting failing rows, wrapped by a count.
 narrative_evidence:
   - src-1
   - src-2
   - src-3
   - src-4
   - src-5
+  - alignment-0-5-1
+  - alignment-0-5-4
 walkthrough:
   id: wt-0.5
   learning_objective: |
@@ -102,51 +121,62 @@ walkthrough:
     Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
   dataset_variant: base
   steps:
-    - id: units
-      title: The books are kept in cents
-      explanation: >
-        Two familiar models. Highlighted line 1 of order_revenue subtracts refunds from payments, in cents.
-        Highlighted lines 3 to 5 of the location model add those cents up per location. The result panel shows
-        the stored figures: 3,400, 4,300 and 4,800 cents.
+    - id: variable
+      title: Read one conversion setting
+      explanation: >-
+        Highlighted lines 5 and 6 of dbt_project.yml set cents_per_unit to 100. Highlighted line 2 of the
+        display model reads it with var(), giving decimal division by 100.0. The panel places 3,400 cents
+        beside 34.00, 4,300 beside 43.00 and 4,800 beside 48.00.
       state:
-        kind: comparison
-        title: Revenue stored in cents
+        kind: table
+        title: Cents and display units
         columns:
           - location
           - revenue_cents
+          - revenue_units
         rows:
-          - - Old Port
-            - 3400
-          - - Mile End
-            - 4300
-          - - Riverside
-            - 4800
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-      takeaway: >
-        Every amount in the project is a whole number of cents, and that is the unit the business rule is
-        written in.
-      evidence:
-        - src-1
-        - src-2
-        - src-3
-        - src-4
-        - src-5
+          -   - Old Port
+              - 3400
+              - '34.00'
+          -   - Mile End
+              - 4300
+              - '43.00'
+          -   - Riverside
+              - 4800
+              - '48.00'
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
+      takeaway: |
+        The variable changes how the amount is shown, not the amount itself.
       code:
-        - language: sql
-          filename: models/order_revenue.sql
+        - language: yaml
+          filename: dbt_project.yml (excerpt)
           content: |
-            select *, payment_cents - refund_cents as revenue_cents
-            from {{ ref("order_amounts") }}
+            name: waffle_shop
+            version: "1.0"
+            models:
+              waffle_shop:
+                vars:
+                  cents_per_unit: 100
           highlight_lines:
-            - 1
+            - 5
+            - 6
           purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/revenue_display.sql
+          content: |
+            select location, revenue_cents,
+                revenue_cents / {{ var("cents_per_unit") }}.0 as revenue_units
+            from {{ ref("revenue_by_location") }}
+          highlight_lines:
+            - 2
+          purpose: Authored era-specific example; illustration only.
         - language: sql
           filename: models/revenue_by_location.sql
           content: |
-            select
-                r.location_id, l.name as location,
+            select r.location_id, l.name as location,
                 sum(r.payment_cents) as payment_cents,
                 sum(r.refund_cents) as refund_cents,
                 sum(r.revenue_cents) as revenue_cents
@@ -155,118 +185,191 @@ walkthrough:
             group by r.location_id, l.name
             order by r.location_id
           highlight_lines:
+            - 2
+            - 3
+            - 4
+          purpose: Authored era-specific example; illustration only.
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+        - src-4
+        - src-5
+        - alignment-0-5-1
+        - alignment-0-5-4
+    - id: archive
+      title: '0.5.1: keep customer history with an archive'
+      explanation: 'Highlighted lines 5 to 8 of the project file identify the customer feed, destination and
+        change timestamp. The setup view adds timestamps declared by the customer-city-change variant. After
+        an archive run before and after Ada moves, the inspection query returns two rows: Montréal closes
+        at 09:00 on March 9, and Québec stays open.'
+      state:
+        kind: table
+        title: Archive after the second observation
+        columns:
+          - customer_id
+          - city
+          - valid_from
+          - valid_to
+        rows:
+          -   - 1
+              - Montréal
+              - 2016-03-08 07:00
+              - 2016-03-09 09:00
+          -   - 1
+              - Québec
+              - 2016-03-09 09:00
+              -
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
+      takeaway: The 0.5.1 archive preserves both customer cities with valid_from and valid_to dates.
+      code:
+        - language: yaml
+          filename: dbt_project.yml (archive excerpt)
+          content: |
+            archive:
+              - source_schema: archive_input
+                target_schema: history
+                tables:
+                  - source_table: customers
+                    target_table: customers_archive
+                    unique_key: customer_id
+                    updated_at: updated_at
+          highlight_lines:
+            - 5
+            - 6
+            - 7
+            - 8
+          purpose: Authored era-specific example; illustration only.
+        - language: sql
+          filename: setup/archive_input.sql
+          content: |
+            create view archive_input.customers as
+            select c.*, case
+                when customer_id = 1 and city = 'Québec'
+                  then cast('2016-03-09 09:00:00' as timestamp)
+                else cast('2016-03-08 07:00:00' as timestamp)
+            end as updated_at
+            from raw.customers as c;
+          highlight_lines:
             - 3
             - 4
             - 5
-          purpose: authored executable syntax; illustration only
-    - id: variable
-      title: Put the conversion factor in one place
-      explanation: >
-        Highlighted lines 3, 5 and 6 of the project file define a variable named cents_per_unit with the value
-        100. Highlighted lines 1 and 2 of the new display model read it with var() and divide revenue by it.
-        The .0 after the variable turns 100 into 100.0, so the database does decimal division instead of
-        dropping the remainder. The result panel shows the single setting in play.
-      state:
-        kind: comparison
-        title: The one setting the model reads
-        columns:
-          - variable
-          - value
-        rows:
-          - - cents_per_unit
-            - 100
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-      takeaway: |
-        The model reads the conversion factor from a named setting instead of hard-coding the number 100.
-      code:
+            - 6
+          purpose: Authored era-specific example; illustration only.
         - language: sql
-          filename: models/revenue_display.sql
+          filename: inspection/customer_archive.sql
           content: |
-            select location_id, revenue_cents / {{ var("cents_per_unit") }}.0 as revenue_units
-            from {{ ref("revenue_by_location") }}
+            select customer_id, city, valid_from, valid_to
+            from history.customers_archive
+            where customer_id = 1 order by valid_from
+          highlight_lines:
+            - 1
+          purpose: Authored era-specific example; illustration only.
+        - language: shell
+          filename: commands.sh
+          content: |
+            dbt archive
+            # Apply the named customer-city-change variant.
+            dbt archive
           highlight_lines:
             - 1
             - 2
-        - language: yaml
-          filename: dbt_project.yml (excerpt)
-          content: |
-            name: waffle_shop
-            version: "1.0"
-            models:
-              waffle_shop:
-                vars:
-                  cents_per_unit: 100
-          highlight_lines:
             - 3
-            - 5
-            - 6
-          purpose: authored executable syntax; illustration only
+          purpose: Authored era-specific example; illustration only.
       evidence:
         - src-1
         - src-2
         - src-3
         - src-4
         - src-5
-    - id: display
-      title: Show cents and display amounts side by side
-      explanation: >
-        The display model now keeps both columns. Highlighted line 2 computes the display amount from the same
-        variable. The result panel shows each location's cents next to the converted figure: 3,400 becomes
-        34.00, 4,300 becomes 43.00, and 4,800 becomes 48.00. Revenue itself has not changed.
+        - alignment-0-5-1
+        - alignment-0-5-4
+      data_context:
+        dataset_variant: customer-city-change
+        phase: Archive observed before and after the declared update; feed timestamps are derived
+          metadata.
+    - id: reconcile
+      title: '0.5.4: test the revenue reconciliation'
+      explanation: 'Highlighted lines 2 and 4 total revenue at location and order level. Highlighted line
+        8 returns a row only if those totals disagree. dbt test counts those failing rows. The panel shows
+        a pass with zero failures: both sums are 12,500 cents.'
       state:
-        kind: comparison
-        title: Cents next to display amounts
+        kind: result
+        title: Custom data test passes
         columns:
-          - location
-          - cents
-          - display_units
+          - test
+          - failing_rows
+          - location_cents
+          - order_cents
         rows:
-          - - Old Port
-            - 3400
-            - '34.00'
-          - - Mile End
-            - 4300
-            - '43.00'
-          - - Riverside
-            - 4800
-            - '48.00'
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-      takeaway: |
-        The variable changes how the amount is shown, not the amount itself.
-      evidence:
-        - src-1
-        - src-2
-        - src-3
-        - src-4
-        - src-5
+          -   - revenue_reconciles
+              - 0
+              - 12500
+              - 12500
+        result_status: pass
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
+      takeaway: A custom SQL test returns no rows when the two revenue totals agree.
       code:
-        - language: yaml
-          filename: dbt_project.yml (excerpt)
-          content: |
-            name: waffle_shop
-            version: "1.0"
-            models:
-              waffle_shop:
-                vars:
-                  cents_per_unit: 100
-          highlight_lines:
-            - 3
-            - 5
-            - 6
-          purpose: authored executable syntax; illustration only
         - language: sql
-          filename: models/revenue_display.sql
+          filename: tests/revenue_reconciles.sql
           content: |
-            select location_id, revenue_cents,
-                revenue_cents / {{ var("cents_per_unit") }}.0 as revenue_units
-            from {{ ref("revenue_by_location") }}
+            with location_total as (
+                select sum(revenue_cents) as cents from {{ ref("revenue_by_location") }}
+            ), order_total as (
+                select sum(revenue_cents) as cents from {{ ref("order_revenue") }}
+            )
+            select l.cents as location_cents, o.cents as order_cents
+            from location_total as l cross join order_total as o
+            where l.cents <> o.cents
           highlight_lines:
             - 2
-          purpose: authored executable syntax; illustration only
+            - 4
+            - 8
+          purpose: Authored era-specific example; illustration only.
+        - language: sql
+          filename: models/order_revenue.sql
+          content: |
+            select *, payment_cents - refund_cents as revenue_cents
+            from {{ ref("order_amounts") }}
+          highlight_lines:
+            - 1
+          purpose: Authored era-specific example; illustration only.
+        - language: sql
+          filename: models/revenue_by_location.sql
+          content: |
+            select r.location_id, l.name as location,
+                sum(r.payment_cents) as payment_cents,
+                sum(r.refund_cents) as refund_cents,
+                sum(r.revenue_cents) as revenue_cents
+            from {{ ref("order_revenue") }} as r
+            join raw.locations as l on r.location_id = l.location_id
+            group by r.location_id, l.name
+            order by r.location_id
+          highlight_lines:
+            - 2
+            - 3
+            - 4
+          purpose: Authored era-specific example; illustration only.
+        - language: shell
+          filename: commands.sh
+          content: |
+            dbt test
+          highlight_lines:
+            - 1
+          purpose: Authored era-specific example; illustration only.
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+        - src-4
+        - src-5
+        - alignment-0-5-1
+        - alignment-0-5-4
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -276,28 +379,30 @@ walkthrough:
       - src-3
       - src-4
       - src-5
-    limitations: >
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
-      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
-      performance claims.
+      - alignment-0-5-1
+      - alignment-0-5-4
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+      Archive timestamps come from declared variant metadata through a setup view; they are fixture dates, not 2016 runtime captures. Safer incremental writes and PostgreSQL support remain release context rather than separate demonstrations (src-1 and the 0.5.1 source).
+      historical-0.5-01: Kept the confirmed models.waffle_shop.vars layout from 0.5.0. Evidence: src-1, src-2, src-3, src-4, src-5, alignment-0-5-1, alignment-0-5-4.
+      historical-0.5-02: Kept the .0 suffix; the rendered expression divides by decimal 100.0, verified arithmetically. Evidence: src-1, src-2, src-3, src-4, src-5, alignment-0-5-1, alignment-0-5-4.
+      historical-0.5-03: Safer incremental writes and adapter introduction are release context; the demo shows variables, archives and custom SQL tests. Evidence: src-1, src-2, src-3, src-4, src-5, alignment-0-5-1, alignment-0-5-4.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
       method: Original source/archive and release documentation inspection; no historical dbt execution.
   intro:
     can_now:
-      - Set a named value once in the project file, then read it inside any model with var().
+      - Read a named project setting inside SQL with var().
       - >-
-        From patch 0.5.1, run against PostgreSQL directly, and keep a history of rows as they change over time
-        with archives.
-      - 'From patch 0.5.4, write your own SQL query as a test: any rows it returns count as failures.'
-    scenario: >
-      The shop keeps its books in whole cents, which avoids rounding errors. People reading a report want to
-      see 34.00, not 3400. A single project variable, cents per unit, does the conversion, so the revenue rule
-      itself stays untouched.
-    outcome: |
-      Compare the stored cents with the displayed amounts, side by side, for all three locations.
-  title: |
-    Demo: a project variable turns stored cents into a display amount without changing the revenue rule
+        From 0.5.1, preserve earlier customer values with an archive.
+      - 'From 0.5.4, write a SQL query whose returned rows are test failures.'
+    scenario: >-
+      Waffle Shop needs readable amounts, a record of a customer move, and a check that the reports reconcile.
+      Three small changes show how the 0.5 series brings each into the project.
+    outcome: |-
+      See 34.00 displayed from 3,400 cents, two archived customer rows, and a passing revenue reconciliation.
+  title: |-
+    Demo: share a setting, keep history and test the totals
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

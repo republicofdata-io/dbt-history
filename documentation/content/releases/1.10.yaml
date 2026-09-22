@@ -1,6 +1,6 @@
 id: '1.10'
 label: v1.10
-title: Configuration checks and migration readiness
+title: Sampling and migration readiness
 lead: >
   More configuration checks help projects prepare for stricter validation. A duplicate or misplaced setting
   becomes easier to notice.
@@ -10,14 +10,15 @@ what_changed:
   - id: change-1
     summary: Duplicate-key checks, configuration deprecations and opt-in macro argument validation.
     introduced_in: 1.10.0
-    adapter_constraints: null
+    adapter_constraints:
     evidence:
       - src-1
     confidence: high
   - id: change-2
     summary: Initial sample-mode implementation and custom freshness SQL queries.
     introduced_in: 1.10.0
-    adapter_constraints: Initial implementation does not establish universal hosted-feature availability or adapter support.
+    adapter_constraints: Initial implementation does not establish universal hosted-feature availability
+      or adapter support.
     evidence:
       - src-1
     confidence: high
@@ -100,6 +101,17 @@ sources:
     supports: >-
       Insights and remote MCP GA; Fusion state-aware orchestration preview. Discovery and analyst agents beta;
       developer/observability agents described as upcoming. MetricFlow moves to Apache 2.0.
+  - id: alignment-1-10-0
+    title: 'dbt 1.10.0 original source: dbt/cli/params.py:527-535; dbt/cli/option_types.py:96-119; dbt/context/providers.py:245-301;
+      dbt/deprecations.py:162-164'
+    url:
+      https://files.pythonhosted.org/packages/c9/39/d4240894351233ce63f26062b50af19d4bf0a774545a4e1b5cb1f465b3d2/dbt_core-1.10.0.tar.gz
+    retrieved: '2026-09-22'
+    source_path: dbt/cli/params.py:527-535; dbt/cli/option_types.py:96-119;
+      dbt/context/providers.py:245-301; dbt/deprecations.py:162-164
+    sha256: 5e247c1f10e66c969e06a66634494346b98e277a7280221244a1dd21d7b154d9
+    supports: --sample is directly usable but hidden=True; start/end YAML accepted; event-time refs are
+      filtered; duplicate warning category name.
 narrative_evidence:
   - src-1
   - src-2
@@ -107,6 +119,7 @@ narrative_evidence:
   - src-4
   - src-5
   - src-6
+  - alignment-1-10-0
 walkthrough:
   id: wt-1.10
   learning_objective: |
@@ -116,13 +129,90 @@ walkthrough:
     Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
   dataset_variant: base
   steps:
+    - id: sample
+      title: Build only the March 8 event window
+      explanation: Highlighted line 5 of the input properties marks ordered_at as event time, the time
+        the order happened. Highlighted line 3 of daily_revenue reads that input. The --sample command
+        filters it from March 8 up to, but not including, March 9. The panel shows 12 included orders
+        worth 12,500 cents and two excluded orders worth 1,900. At 1.10.0 this initial feature’s flag is
+        hidden from command help.
+      state:
+        kind: comparison
+        title: Prepared March 8 sampling window
+        columns:
+          - source trading day
+          - orders
+          - revenue_cents
+          - in sample output
+        rows:
+          -   - '2016-03-08'
+              - 12
+              - 12500
+              - true
+          -   - '2016-03-09'
+              - 2
+              - 1900
+              - false
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
+      takeaway: The sample build contains one chosen trading day while the stored input still contains
+        both days.
+      code:
+        - language: yaml
+          filename: models/order_revenue.yml
+          content: |
+            version: 2
+            models:
+              - name: order_revenue
+                config:
+                  event_time: ordered_at
+          highlight_lines:
+            - 5
+          purpose: Authored era-specific example; illustration only.
+        - language: sql
+          filename: models/daily_revenue.sql
+          content: |
+            {{ config(materialized="table", event_time="ordered_at") }}
+            select order_id, location_id, ordered_at, revenue_cents
+            from {{ ref("order_revenue") }}
+          highlight_lines:
+            - 1
+            - 3
+          purpose: Authored era-specific example; illustration only.
+        - language: sql
+          filename: inspection/sample_totals.sql
+          content: |
+            select count(*) as orders, sum(revenue_cents) as revenue_cents
+            from waffle.daily_revenue;
+          highlight_lines:
+            - 1
+          purpose: Authored era-specific example; illustration only.
+        - language: shell
+          filename: commands.sh
+          content: |
+            dbt run --select daily_revenue --sample "{'start': '2016-03-08', 'end': '2016-03-09'}"
+          highlight_lines:
+            - 1
+          purpose: Authored era-specific example; illustration only.
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+        - src-4
+        - src-5
+        - src-6
+        - alignment-1-10-0
+      data_context:
+        dataset_variant: second-day
+        phase: Both days already exist in order_revenue; a separate sample output includes March 8 only.
     - id: duplicate
       title: Two descriptions for one model
-      explanation: >
-        You are looking at the model's YAML file. The highlighted lines are the normal shape: version, the
-        models list, the model name and a description. Line 5 repeats the description key with a different
-        sentence. In YAML a repeated key is not two values, it is an ambiguity, and earlier versions would
-        quietly keep one of them. The result panel counts the problem: one key, two occurrences.
+      explanation: >-
+        Highlighted lines 4 and 5 repeat the description key in one YAML mapping. The two sentences disagree
+        about refunds. The panel counts two occurrences of a key that should appear once; the next step exposes
+        the deprecation warning.
       state:
         kind: comparison
         title: The duplicated key
@@ -131,14 +221,15 @@ walkthrough:
           - occurrences
           - problem
         rows:
-          - - description
-            - 2
-            - duplicate mapping key
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-      takeaway: |
-        A duplicated key in YAML leaves dbt guessing which value you meant.
+          -   - description
+              - 2
+              - duplicate mapping key
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
+      takeaway: |-
+        Two descriptions compete for the same YAML key.
       code:
         - language: yaml
           filename: models/schema.yml
@@ -149,38 +240,48 @@ walkthrough:
                 description: Revenue before refunds.
                 description: Payments minus refunds, in cents.
           highlight_lines:
-            - 1
-            - 2
-            - 3
             - 4
+            - 5
+          purpose: Authored era-specific example; illustration only.
       evidence:
         - src-1
         - src-2
+        - src-3
+        - src-4
+        - src-5
+        - src-6
+        - alignment-1-10-0
     - id: warning
       title: dbt points out the ambiguity
-      explanation: >
-        The file is unchanged. The result panel shows what the check looks for: one description key per model,
-        but two found. The panel is a plain-language illustration of the warning, not the exact text dbt
-        prints.
+      explanation: >-
+        Highlighted lines 4 and 5 are still the duplicate description. A fresh parse surfaces DuplicateYAMLKeysDeprecation,
+        named in the panel. The second command shows the optional warning-category setting that promotes it
+        to an error. This panel summarizes the diagnostic; it is not copied terminal output.
       state:
         kind: result
-        title: The duplicate-key check
+        title: Prepared duplicate-key diagnostic
         columns:
-          - check
-          - expected
-          - actual
+          - category
+          - expected descriptions
+          - actual descriptions
         rows:
-          - - description keys per mapping
-            - 1
-            - 2
+          -   - DuplicateYAMLKeysDeprecation
+              - 1
+              - 2
         result_status: warn
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: |
         The check surfaces the duplicated key so it gets fixed before anyone relies on the description.
       evidence:
         - src-1
         - src-2
+        - src-3
+        - src-4
+        - src-5
+        - src-6
+        - alignment-1-10-0
       code:
         - language: yaml
           filename: models/schema.yml
@@ -191,16 +292,27 @@ walkthrough:
                 description: Revenue before refunds.
                 description: Payments minus refunds, in cents.
           highlight_lines:
+            - 4
+            - 5
+          purpose: Authored era-specific example; illustration only.
+        - language: shell
+          filename: commands.sh
+          content: |
+            dbt parse --no-partial-parse
+            # Optional: treat this warning category as an error.
+            dbt parse --no-partial-parse --warn-error-options '{"include": ["DuplicateYAMLKeysDeprecation"]}'
+          highlight_lines:
             - 1
             - 2
             - 3
-            - 4
+          purpose: Authored era-specific example; illustration only.
     - id: correct
       title: Keep the accounting definition
-      explanation: >
-        The highlighted lines are the corrected file. The wrong description is gone. The one that remains is
-        the shop's accounting rule: payments minus refunds, in cents. The result panel confirms the base total
-        is still 12,500 cents. The fix changed a description, not a calculation.
+      explanation: >-
+        Highlighted line 4 is now the only description and states the accounting rule correctly. The supporting
+        model and total query show the unchanged base calculation. The panel confirms one description and
+        12,500 cents. This screen returns to the base fixture; the earlier sample screen used the named second-day
+        variant.
       state:
         kind: comparison
         title: One definition, same total
@@ -209,12 +321,13 @@ walkthrough:
           - description
           - base total
         rows:
-          - - revenue_by_location
-            - Payments minus refunds, in cents.
-            - 12500
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+          -   - revenue_by_location
+              - Payments minus refunds, in cents.
+              - 12500
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: |
         One description remains, and the revenue total is unchanged at 12,500 cents.
       code:
@@ -226,13 +339,43 @@ walkthrough:
               - name: revenue_by_location
                 description: Payments minus refunds, in cents.
           highlight_lines:
-            - 1
+            - 4
+          purpose: Authored era-specific example; illustration only.
+        - language: sql
+          filename: models/revenue_by_location.sql
+          content: |
+            select r.location_id, l.name as location,
+                sum(r.payment_cents) as payment_cents,
+                sum(r.refund_cents) as refund_cents,
+                sum(r.revenue_cents) as revenue_cents
+            from {{ ref("order_revenue") }} as r
+            join raw.locations as l on r.location_id = l.location_id
+            group by r.location_id, l.name
+            order by r.location_id
+          highlight_lines:
             - 2
             - 3
             - 4
+          purpose: Authored era-specific example; illustration only.
+        - language: sql
+          filename: inspection/total.sql
+          content: |
+            select sum(revenue_cents) as total_cents
+            from waffle.revenue_by_location
+          highlight_lines:
+            - 1
+          purpose: Authored era-specific example; illustration only.
       evidence:
         - src-1
         - src-2
+        - src-3
+        - src-4
+        - src-5
+        - src-6
+        - alignment-1-10-0
+      data_context:
+        dataset_variant: base
+        phase: Documentation correction on the base project; independent of the sample-output table.
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -243,27 +386,27 @@ walkthrough:
       - src-4
       - src-5
       - src-6
-    limitations: >
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
-      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
-      performance claims.
+      - alignment-1-10-0
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+      At 1.10.0 --sample is an initial implementation with hidden=True in help, not behind an additional enabling flag. The example intentionally uses a table output and an event-time-declared existing parent so sampling is distinct from microbatch repair. Macro argument validation and custom freshness SQL remain release context, not intro promises (alignment-1-10-0).
+      historical-1.10-02: Verified the initial --sample implementation: accepted directly, hidden from help, no second enable flag; qualified in the step and limitations. Evidence: src-1, src-2, src-3, src-4, src-5, src-6, alignment-1-10-0.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
       method: Original source/archive and release documentation inspection; no historical dbt execution.
   intro:
     can_now:
-      - Get a warning when a YAML file repeats a key, instead of one value silently winning.
-      - Turn on checks that macros are called with the right argument names and types.
-      - Write your own SQL query to tell dbt how fresh a source table is.
-    scenario: >
-      The revenue model's YAML file has two description lines, and they disagree. One says revenue before
-      refunds, the other says payments minus refunds. The shop removes the wrong one and keeps the accounting
-      definition. The numbers never change, only the configuration does.
-    outcome: |
-      See the duplicated key, the warning it produces, and the single corrected definition.
-  title: |
-    Demo: dbt warns about a duplicated setting in a YAML file
+      - Build models over a chosen event-time window with the initial --sample feature.
+      - See a deprecation warning for duplicated YAML keys.
+      - Choose to promote that warning category to an error.
+    scenario: >-
+      Waffle Shop first checks a single trading day from a two-day input. It then cleans up conflicting model
+      descriptions before stricter configuration checks make them harder to ignore.
+    outcome: |-
+      See March 8 included and March 9 excluded, then the duplicate-key warning and its corrected definition.
+  title: |-
+    Demo: sample one trading day and correct a duplicate setting
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.
 default_milestone: 1.10.0

@@ -17,7 +17,7 @@ what_changed:
   - id: change-2
     summary: dbt show and programmatic dbtRunner.
     introduced_in: 1.5.0
-    adapter_constraints: null
+    adapter_constraints:
     evidence:
       - src-1
     confidence: high
@@ -50,9 +50,18 @@ sources:
       Package existence and upload timestamp. Implementation claims refer to the original source archive
       linked from the package.
     rechecked: '2026-09-22'
+  - id: alignment-1-5-0
+    title: 'dbt 1.5.0 original source: dbt/contracts/graph/unparsed.py:144-247; dbt/parser/schemas.py; dbt/task/show.py'
+    url:
+      https://files.pythonhosted.org/packages/bd/50/24e22edfe4d667a6c3e7910dcbbf4c1cf1994d82ae2a8d90c94fd14bd763/dbt-core-1.5.0.tar.gz
+    retrieved: '2026-09-22'
+    source_path: dbt/contracts/graph/unparsed.py:144-247; dbt/parser/schemas.py; dbt/task/show.py
+    sha256: d6d43b7ff0f12765e7e85559c1a109eaa23a7536b26b3f963d0c19263f69b3c4
+    supports: latest_version, defined_in, version column include/exclude, contracts and show selection.
 narrative_evidence:
   - src-1
   - src-2
+  - alignment-1-5-0
 walkthrough:
   id: wt-1.5
   learning_objective: |
@@ -64,12 +73,10 @@ walkthrough:
   steps:
     - id: promise
       title: The model promises two columns
-      explanation: >
-        The first file is the model's yml. The highlighted lines 1 to 4 name the model and open its config.
-        Just below, lines 5 and 6 turn the contract on, and lines 8 to 11 list the promise: a column
-        location_id of type integer and a column revenue_cents of type bigint. The second file is the SQL that
-        keeps that promise. Highlighted line 2 produces revenue_cents as a bigint. The result panel lists the
-        two promised columns and their types.
+      explanation: >-
+        Highlighted lines 5 and 6 enforce the contract, the promised output shape. Lines 8 to 11 promise location_id
+        as integer and revenue_cents as bigint. The supporting SQL casts both columns to those types. The
+        panel lists exactly those two columns.
       state:
         kind: comparison
         title: The two promised columns and their types
@@ -77,13 +84,14 @@ walkthrough:
           - column
           - declared type
         rows:
-          - - location_id
-            - integer
-          - - revenue_cents
-            - bigint
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+          -   - location_id
+              - integer
+          -   - revenue_cents
+              - bigint
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: |
         The contract fixes both the names and the types of the model's output columns.
       code:
@@ -102,12 +110,15 @@ walkthrough:
                   - name: revenue_cents
                     data_type: bigint
           highlight_lines:
-            - 1
-            - 2
-            - 3
-            - 4
+            - 5
+            - 6
+            - 8
+            - 9
+            - 10
+            - 11
+          purpose: Authored era-specific example; illustration only.
         - language: sql
-          filename: models/revenue_by_location.sql (corrected)
+          filename: models/revenue_by_location.sql
           content: |
             select cast(location_id as integer) as location_id,
                 cast(sum(revenue_cents) as bigint) as revenue_cents
@@ -119,13 +130,14 @@ walkthrough:
       evidence:
         - src-1
         - src-2
+        - alignment-1-5-0
     - id: mismatch
       title: An edit renames the column and the contract rejects it
-      explanation: >
-        The yml is unchanged, highlighted at lines 1 to 4. The SQL is a proposed edit. Highlighted line 2 now
-        calls the column net_cents instead of revenue_cents. The sum inside is the same, so the values would
-        be correct. The result panel shows what the contract check finds: expected revenue_cents, got
-        net_cents. The model does not match its promised interface, and the build fails.
+      explanation: >-
+        Highlighted lines 5, 6 and 8 to 11 keep the same enforced contract. Highlighted line 2 of the proposed
+        SQL renames revenue_cents to net_cents. The prepared panel shows the name mismatch that stops the
+        build during SQL compilation, before table creation. This is an interface check, not a database constraint
+        violation.
       state:
         kind: result
         title: 'Contract mismatch: revenue_cents expected, net_cents found'
@@ -134,17 +146,19 @@ walkthrough:
           - proposed column
           - assessment
         rows:
-          - - revenue_cents
-            - net_cents
-            - interface mismatch
+          -   - revenue_cents
+              - net_cents
+              - interface mismatch
         result_status: fail
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: |
         The contract failed the build because a column name changed, even though the numbers were still right.
       evidence:
         - src-1
         - src-2
+        - alignment-1-5-0
       code:
         - language: yaml
           filename: models/schema.yml
@@ -161,10 +175,13 @@ walkthrough:
                   - name: revenue_cents
                     data_type: bigint
           highlight_lines:
-            - 1
-            - 2
-            - 3
-            - 4
+            - 5
+            - 6
+            - 8
+            - 9
+            - 10
+            - 11
+          purpose: Authored era-specific example; illustration only.
         - language: sql
           filename: models/revenue_by_location.sql (proposed edit)
           content: |
@@ -175,46 +192,43 @@ walkthrough:
           highlight_lines:
             - 2
           purpose: authored executable syntax; illustration only
+        - language: shell
+          filename: commands.sh
+          content: |
+            dbt run --select revenue_by_location
+          highlight_lines:
+            - 1
+          purpose: Authored era-specific example; illustration only.
     - id: repair
       title: Restore the column name and the build passes
-      explanation: >
-        The yml is still the same. The SQL is corrected. Highlighted line 2 names the column revenue_cents
-        again, matching the contract. The result panel shows the model's output: Old Port 3,400, Mile End
-        4,300, Riverside 4,800, totalling 12,500 cents, the same base values as always.
+      explanation: >-
+        The contract still highlights enforcement and the two promised column types. Highlighted line 2 of
+        SQL restores revenue_cents. The panel now contains exactly the two query columns and three location
+        rows, with 3,400, 4,300 and 4,800 cents.
       state:
         kind: table
-        title: Base revenue by location
+        title: Corrected contract output
         columns:
           - location_id
-          - location
-          - payment_cents
-          - refund_cents
           - revenue_cents
         rows:
-          - - 1
-            - Old Port
-            - 4400
-            - 1000
-            - 3400
-          - - 2
-            - Mile End
-            - 4600
-            - 300
-            - 4300
-          - - 3
-            - Riverside
-            - 4800
-            - 0
-            - 4800
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+          -   - 1
+              - 3400
+          -   - 2
+              - 4300
+          -   - 3
+              - 4800
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: >
         With the column name restored, the contract passes and the dashboard keeps reading the column it
         expects.
       evidence:
         - src-1
         - src-2
+        - alignment-1-5-0
       code:
         - language: yaml
           filename: models/schema.yml
@@ -231,12 +245,15 @@ walkthrough:
                   - name: revenue_cents
                     data_type: bigint
           highlight_lines:
-            - 1
-            - 2
-            - 3
-            - 4
+            - 5
+            - 6
+            - 8
+            - 9
+            - 10
+            - 11
+          purpose: Authored era-specific example; illustration only.
         - language: sql
-          filename: models/revenue_by_location.sql (corrected)
+          filename: models/revenue_by_location.sql
           content: |
             select cast(location_id as integer) as location_id,
                 cast(sum(revenue_cents) as bigint) as revenue_cents
@@ -245,16 +262,108 @@ walkthrough:
           highlight_lines:
             - 2
           purpose: authored executable syntax; illustration only
+    - id: versions
+      title: Ship the rename as version 2
+      explanation: 'Highlighted line 4 keeps version 1 as the default. Lines 10 to 16 keep its existing SQL
+        file and declare version 2 with net_cents instead of revenue_cents. The v2 SQL supplies the renamed
+        column; the dashboard’s unversioned ref still resolves to v1. dbt show previews v2 in the panel: the
+        same 3,400, 4,300 and 4,800 cents under net_cents.'
+      state:
+        kind: table
+        title: Prepared dbt show preview of v2
+        columns:
+          - location_id
+          - net_cents
+        rows:
+          -   - 1
+              - 3400
+          -   - 2
+              - 4300
+          -   - 3
+              - 4800
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
+      takeaway: The renamed interface is available as v2 while the existing dashboard stays on v1.
+      code:
+        - language: yaml
+          filename: models/schema.yml
+          content: |
+            version: 2
+            models:
+              - name: revenue_by_location
+                latest_version: 1
+                config: {materialized: table, contract: {enforced: true}}
+                columns:
+                  - {name: location_id, data_type: integer}
+                  - {name: revenue_cents, data_type: bigint}
+                versions:
+                  - v: 1
+                    defined_in: revenue_by_location
+                  - v: 2
+                    columns:
+                      - include: "*"
+                        exclude: [revenue_cents]
+                      - {name: net_cents, data_type: bigint}
+          highlight_lines:
+            - 4
+            - 10
+            - 11
+            - 12
+            - 14
+            - 15
+            - 16
+          purpose: Authored era-specific example; illustration only.
+        - language: sql
+          filename: models/revenue_by_location_v2.sql
+          content: |
+            select cast(location_id as integer) as location_id,
+                cast(sum(revenue_cents) as bigint) as net_cents
+            from {{ ref("order_revenue") }}
+            group by location_id
+          highlight_lines:
+            - 2
+          purpose: Authored era-specific example; illustration only.
+        - language: sql
+          filename: models/revenue_by_location.sql
+          content: |
+            select cast(location_id as integer) as location_id,
+                cast(sum(revenue_cents) as bigint) as revenue_cents
+            from {{ ref("order_revenue") }}
+            group by location_id
+          highlight_lines:
+            - 2
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/dashboard_input.sql
+          content: |
+            select location_id, revenue_cents
+            from {{ ref("revenue_by_location") }}
+          highlight_lines:
+            - 2
+          purpose: Authored era-specific example; illustration only.
+        - language: shell
+          filename: commands.sh
+          content: |
+            dbt show --select revenue_by_location.v2 --limit 3
+          highlight_lines:
+            - 1
+          purpose: Authored era-specific example; illustration only.
+      evidence:
+        - src-1
+        - src-2
+        - alignment-1-5-0
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
       - src-1
       - src-2
-    limitations: >
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
-      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
-      performance claims.
+      - alignment-1-5-0
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+      The include selector is "*", not the review’s suggested literal all. defined_in preserves the existing v1 filename; default ref resolves latest_version: 1. Groups and access remain release context, not promised demo behaviors. Preview order is illustrative because the grouped SQL has no ORDER BY (src-1 and 1.5 source).
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
@@ -262,17 +371,15 @@ walkthrough:
   intro:
     can_now:
       - >-
-        Write down the exact column names and types a model must produce, and have dbt refuse to build it if
-        the output differs.
-      - Publish more than one version of a model, and mark which models other teams may use.
-      - Preview a model's output from the command line with dbt show.
-    scenario: >
-      Someone edits the revenue-by-location model and renames its revenue_cents column to net_cents. The
-      numbers would still be right. But the dashboard reads a column called revenue_cents, so it would break.
-      A contract lets the model promise its columns up front, and dbt checks the promise at build time.
-    outcome: |
-      You will see the contract, the edit that breaks it, and the corrected model that keeps the promise.
-  title: |
-    Demo: a model contract catches a renamed column before the dashboard breaks
+        Reject a model whose output differs from its promised column names and types.
+      - Publish a renamed column in a second model version while the default stays on version 1.
+      - Preview the versioned model with dbt show.
+    scenario: >-
+      A proposed rename from revenue_cents to net_cents breaks the dashboard’s expected column. Waffle Shop
+      catches it with a contract, restores the original, then publishes the rename as a separate version.
+    outcome: |-
+      See the mismatch, the restored v1 output, and a v2 preview that preserves the same revenue values.
+  title: |-
+    Demo: catch a contract break and publish the rename as version 2
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

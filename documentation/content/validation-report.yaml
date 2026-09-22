@@ -2,7 +2,7 @@ checked_on: '2026-09-22'
 research_cutoff: '2026-09-21'
 status: pass
 chapter_count: 36
-walkthrough_step_count: 110
+walkthrough_step_count: 121
 catalogue_product_count: 43
 external_product_count: 28
 event_count: 105
@@ -105,7 +105,10 @@ checks:
 - No more than five placements per layer at interval boundaries
 - Independent SQLite arithmetic over base and all seven variants
 limitations:
-- No historical dbt engine executed. All walkthrough states remain illustrations.
+- No historical warehouse run or original terminal capture was produced. All walkthrough states remain illustrations.
+- The Core 1.7 request-hash helper was executed in isolation to verify the prepared lockfile hash; this is not a
+  dependency-install or warehouse capture.
+- SQLite/Jinja checks verify fixture arithmetic and selected SQL result projections, not historical adapter compatibility.
 - Source and historical syntax review is separate from runtime compatibility verification.
 - Schema checks do not constitute exhaustive factual verification of every vendor claim.
 errors: []
@@ -131,9 +134,74 @@ walkthrough_enrichment:
   - 0.3.0 uses run-target under the default user profile, not modern target syntax.
   - Derived feed metadata and step-specific data phases are disclosed without changing base rows.
   - SQLite checks verify fixture arithmetic and relationship-query logic, not dbt or warehouse adapter compatibility.
+  scope: Record of the earlier enrichment pass, before the subsequent demo alignment corrections; its counts describe
+    that pass.
 previous_app_validation:
   command: vitest run (bundled current Node runtime)
   test_files_passed: 1
   tests_passed: 16
   status: pass
   note: Default shell Node was too old for Vite/Vitest; no project dependencies or runtime configuration were changed.
+demo_alignment:
+  reviewed_on: '2026-09-22'
+  research_cutoff: '2026-09-21'
+  status: pass
+  partial_chapters_addressed:
+  - '0.1'
+  - '0.4'
+  - '0.5'
+  - '0.6'
+  - '0.8'
+  - '0.10'
+  - '0.14'
+  - '0.15'
+  - '0.16'
+  - '0.17'
+  - '1.2'
+  - '1.4'
+  - '1.5'
+  - '1.6'
+  - '1.7'
+  - '1.9'
+  - '1.10'
+  - '1.12'
+  version_chapters_reviewed: 35
+  walkthroughs_with_intro: 36
+  steps_with_non_shell_code: 121
+  code_blocks: 359
+  maximum_lines_per_block: 17
+  review_flags:
+    fixed: 48
+    documented-limitation: 12
+  historical_observations:
+    fixed: 42
+    documented-limitation: 40
+  unresolved: 0
+  resolution_register: review-resolutions-2026-09-22.yaml
+  handoff: demo-alignment-handoff-2026-09-22.md
+  all_results_remain_illustrations: true
+  base_fixture_unchanged: true
+  checks:
+  - All 36 intros, 121 steps, source refs, non-shell code, unique filenames, command-last order and <=20-line blocks
+    validated.
+  - '0.1/query: exact SQL/result column and row match under base.'
+  - '0.6/repeat: exact SQL/result column and row match under base.'
+  - '0.6/use: exact SQL/result column and row match under base.'
+  - '0.10/labels: exact SQL/result column and row match under base.'
+  - '0.12/answer: exact SQL/result column and row match under base.'
+  - '0.13/business: exact SQL/result column and row match under base.'
+  - '1.5/repair: exact SQL/result column and row match under base.'
+  - '1.5/versions: exact SQL/result column and row match under base.'
+  - '1.8/refund: exact SQL/result column and row match under base.'
+  - '2.0/correction: exact SQL/result column and row match under base.'
+  - All eight fixture states reconcile independently in SQLite.
+  - Old relationship direction returns one orphan; reversed direction incorrectly returns zero.
+  - Variable conversion, zero-row reconciliation test and one-row 800-cent warning verified.
+  - 'Full-refresh before/after arithmetic verified: 15100 -> 12500; order 1042: 1400 -> 1000.'
+  - Sampling yields 12 orders/12500 cents versus 2 excluded orders/1900 cents; late-day repair yields 13100.
+  limitations:
+  - SQLite/Jinja checks verify the displayed calculations, not historical adapters or dbt execution.
+  - Only the 1.7 request-hash helper was executed under its historical Core package; all walkthroughs remain illustrative.
+  ui_spot_checks:
+  - 0.1 dependency diagram renders with explicit model IDs.
+  - 1.11 function dependency diagram renders; Snowflake assumption is visible.

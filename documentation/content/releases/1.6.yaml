@@ -18,7 +18,7 @@ what_changed:
   - id: change-2
     summary: Semantic-model parsing and cross-project foundations.
     introduced_in: 1.6.0
-    adapter_constraints: null
+    adapter_constraints:
     evidence:
       - src-1
     confidence: high
@@ -73,11 +73,30 @@ sources:
     supports: >-
       New Semantic Layer generation, Explorer, Cloud CLI and Mesh enter the catalogue. Mesh and Explorer are
       public preview; the MetricFlow-based Semantic Layer reaches GA at Coalesce.
+  - id: alignment-1-6-0
+    title: 'dbt 1.6.0 original source: dbt/task/retry.py; dbt/include/global_project/macros/materializations/models/materialized_view.sql'
+    url:
+      https://files.pythonhosted.org/packages/30/1b/5b0c8ebe1140e3ff267f2e2a09c68981c4387bc8647d5ef1bc81c1d08493/dbt-core-1.6.0.tar.gz
+    retrieved: '2026-09-22'
+    source_path: dbt/task/retry.py;
+      dbt/include/global_project/macros/materializations/models/materialized_view.sql
+    sha256: 51da239af02ed449562d3c5caea903edee7b5427c47efd5a6439634c59858087
+    supports: Retry uses previous result statuses; materialized-view lifecycle delegates to adapter
+      macros.
+  - id: alignment-postgres
+    title: dbt-postgres 1.6.0 materialized-view macros
+    url:
+      https://files.pythonhosted.org/packages/ba/5d/f3341042672f4433e3955c79aa79516810016aaf990f8e1b95a409358245/dbt-postgres-1.6.0.tar.gz
+    retrieved: '2026-09-22'
+    supports: PostgreSQL create and explicit REFRESH MATERIALIZED VIEW behavior.
+    sha256: ad9a464afe66114593011ef5edb8552467aa00352be169376f67e98444efc3c4
+    source_path: dbt/include/postgres/macros/materializations/materialized_view.sql:25-55
 narrative_evidence:
   - src-1
   - src-2
   - src-3
   - src-4
+  - alignment-1-6-0
 walkthrough:
   id: wt-1.6
   learning_objective: >
@@ -90,34 +109,42 @@ walkthrough:
   steps:
     - id: partial
       title: Look at what the failed run left behind
-      explanation: >
-        You are looking at the three models the run touches. The highlighted lines show how they depend on
-        each other. refunds_by_order reads the raw refunds. order_amounts joins in both the payments and
-        refunds totals. order_revenue subtracts one from the other. The result panel shows the state dbt
-        recorded: payments_by_order succeeded, refunds_by_order failed, and order_revenue was skipped because
-        its input never arrived.
+      explanation: >-
+        Highlighted lines 1 and 2 of the payment and refund models total the two feeds. Lines 3, 4 and 6 of
+        order_amounts link orders to those totals; order_revenue then subtracts refunds. The panel shows an
+        assumed connection outage: payments succeeded, refunds errored, and the three downstream models were
+        skipped.
       state:
         kind: comparison
-        title: What the last run recorded
+        title: Prepared prior run record
         columns:
           - model
           - prior result
         rows:
-          - - payments_by_order
-            - success
-          - - refunds_by_order
-            - error
-          - - order_revenue
-            - skipped
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+          -   - payments_by_order
+              - success
+          -   - refunds_by_order
+              - error
+          -   - order_amounts
+              - skipped
+          -   - order_revenue
+              - skipped
+          -   - revenue_by_location
+              - skipped
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: >
         dbt keeps a record of which models succeeded, failed or were skipped, and that record is what a retry
         works from.
       evidence:
         - src-1
         - src-2
+        - src-3
+        - src-4
+        - alignment-1-6-0
+        - alignment-postgres
       code:
         - language: sql
           filename: models/refunds_by_order.sql
@@ -129,6 +156,16 @@ walkthrough:
             - 1
             - 2
           purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/payments_by_order.sql
+          content: |
+            select order_id, sum(amount_cents) as payment_cents
+            from {{ ref("payments") }}
+            group by order_id
+          highlight_lines:
+            - 1
+            - 2
+          purpose: Authored era-specific example; illustration only.
         - language: sql
           filename: models/order_revenue.sql
           content: |
@@ -151,31 +188,49 @@ walkthrough:
             - 3
             - 4
             - 6
+          purpose: Authored era-specific example; illustration only.
+        - language: sql
+          filename: models/revenue_by_location.sql
+          content: |
+            select r.location_id, l.name as location,
+                sum(r.payment_cents) as payment_cents,
+                sum(r.refund_cents) as refund_cents,
+                sum(r.revenue_cents) as revenue_cents
+            from {{ ref("order_revenue") }} as r
+            join raw.locations as l on r.location_id = l.location_id
+            group by r.location_id, l.name
+            order by r.location_id
+          highlight_lines:
+            - 2
+            - 3
+            - 4
+          purpose: Authored era-specific example; illustration only.
     - id: repair
       title: Fix the cause, then run dbt retry
-      explanation: >
-        The SQL is the same as before. Nothing in the business logic was wrong. The only new line is the
-        highlighted command, dbt retry. It reruns the failed and skipped models and leaves the successful ones
-        alone. The result panel lists what has to be true first: the connection is restored, the SQL is
-        unchanged and the saved run record is still there.
+      explanation: >-
+        The same model files remain on screen with dependency lines 3, 4 and 6 of order_amounts highlighted.
+        Here the assumed cause was a lost connection, not the SQL. The dbt retry command on highlighted line
+        1 uses the saved result record to rerun failed and skipped nodes. The panel confirms the connection
+        is restored and the prior artifact is available; unchanged SQL is not a retry requirement.
       state:
         kind: comparison
-        title: Conditions before the retry
+        title: Prepared recovery context
         columns:
-          - condition
-          - prepared state
+          - item
+          - state
         rows:
-          - - connection
-            - restored
-          - - business SQL
-            - unchanged
-          - - prior artifacts
-            - available
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-      takeaway: |
-        Retry finishes the run once the cause is fixed. It does not fix the cause for you.
+          -   - connection
+              - restored
+          -   - cause
+              - outside the business SQL
+          -   - prior run_results.json
+              - available
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
+      takeaway: |-
+        With the connection restored, retry can use the prior result record to finish the failed branch.
       code:
         - language: sql
           filename: models/refunds_by_order.sql
@@ -187,6 +242,16 @@ walkthrough:
             - 1
             - 2
           purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/payments_by_order.sql
+          content: |
+            select order_id, sum(amount_cents) as payment_cents
+            from {{ ref("payments") }}
+            group by order_id
+          highlight_lines:
+            - 1
+            - 2
+          purpose: Authored era-specific example; illustration only.
         - language: sql
           filename: models/order_revenue.sql
           content: |
@@ -209,22 +274,25 @@ walkthrough:
             - 3
             - 4
             - 6
+          purpose: Authored era-specific example; illustration only.
         - language: shell
           filename: commands.sh
           content: |
             dbt retry
           highlight_lines:
             - 1
+          purpose: Authored era-specific example; illustration only.
       evidence:
         - src-1
         - src-2
+        - src-3
+        - src-4
+        - alignment-1-6-0
+        - alignment-postgres
     - id: finish
       title: Check the recovered numbers
-      explanation: >
-        After the retry, the refunds total and the revenue model are built. The highlighted lines in
-        revenue_by_location sum payments, refunds and revenue for each location. The result panel shows the
-        base figures: 3,400, 4,300 and 4,800 cents, which add up to 12,500. A recovered run should land on
-        exactly the numbers a clean run would.
+      explanation: |
+        After the retry, the refunds total and the revenue model are built. Highlighted lines 3 to 5 in revenue_by_location sum payments, refunds and revenue for each location. The result panel shows the base figures: 3,400, 4,300 and 4,800 cents, which add up to 12,500. A recovered run should land on exactly the numbers a clean run would.
       state:
         kind: table
         title: Base revenue by location
@@ -235,29 +303,34 @@ walkthrough:
           - refund_cents
           - revenue_cents
         rows:
-          - - 1
-            - Old Port
-            - 4400
-            - 1000
-            - 3400
-          - - 2
-            - Mile End
-            - 4600
-            - 300
-            - 4300
-          - - 3
-            - Riverside
-            - 4800
-            - 0
-            - 4800
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+          -   - 1
+              - Old Port
+              - 4400
+              - 1000
+              - 3400
+          -   - 2
+              - Mile End
+              - 4600
+              - 300
+              - 4300
+          -   - 3
+              - Riverside
+              - 4800
+              - 0
+              - 4800
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: |
         After the retry, revenue by location matches the base figures, so the recovery is complete.
       evidence:
         - src-1
         - src-2
+        - src-3
+        - src-4
+        - alignment-1-6-0
+        - alignment-postgres
       code:
         - language: sql
           filename: models/order_amounts.sql
@@ -274,6 +347,16 @@ walkthrough:
             - 4
             - 6
           purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/payments_by_order.sql
+          content: |
+            select order_id, sum(amount_cents) as payment_cents
+            from {{ ref("payments") }}
+            group by order_id
+          highlight_lines:
+            - 1
+            - 2
+          purpose: Authored era-specific example; illustration only.
         - language: sql
           filename: models/order_revenue.sql
           content: |
@@ -299,6 +382,61 @@ walkthrough:
             - 4
             - 5
           purpose: authored executable syntax; illustration only
+    - id: materialized_view
+      title: Store the query result as a PostgreSQL materialized view
+      explanation: Highlighted line 1 selects materialized_view, a database object that stores a query’s
+        result. On PostgreSQL 1.6, dbt creates it on the first run and can refresh it on a later run.
+        The panel contrasts an ordinary view with the stored result. PostgreSQL does not refresh it
+        automatically after every input change.
+      state:
+        kind: comparison
+        title: View compared with a PostgreSQL materialized view
+        columns:
+          - object
+          - on read
+          - refresh
+        rows:
+          -   - view
+              - execute its SELECT
+              - read current inputs each time
+          -   - materialized view
+              - read stored result
+              - REFRESH MATERIALIZED VIEW on an appropriate dbt run
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
+      takeaway: The model can use PostgreSQL’s stored-view result, with refreshes handled explicitly.
+      code:
+        - language: sql
+          filename: models/revenue_by_location.sql
+          content: |
+            {{ config(materialized="materialized_view") }}
+            select r.location_id, l.name as location,
+                sum(r.payment_cents) as payment_cents,
+                sum(r.refund_cents) as refund_cents,
+                sum(r.revenue_cents) as revenue_cents
+            from {{ ref("order_revenue") }} as r
+            join raw.locations as l on r.location_id = l.location_id
+            group by r.location_id, l.name
+            order by r.location_id
+          highlight_lines:
+            - 1
+          purpose: Authored era-specific example; illustration only.
+        - language: shell
+          filename: commands.sh
+          content: |
+            dbt run --select revenue_by_location
+          highlight_lines:
+            - 1
+          purpose: Authored era-specific example; illustration only.
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+        - src-4
+        - alignment-1-6-0
+        - alignment-postgres
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -307,14 +445,12 @@ walkthrough:
       - src-2
       - src-3
       - src-4
-    limitations: >
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
-      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
-      performance claims.
-
-      The shown SQL is the work interrupted by an assumed external connection outage. No SQL statement
-      manufactures that outage or proves recovery; retry requires the genuine prior run artifacts in an actual
-      environment.
+      - alignment-1-6-0
+      - alignment-postgres
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+      The shown SQL is the work interrupted by an assumed external connection outage. No SQL statement manufactures that outage or proves recovery; retry requires the genuine prior run artifacts in an actual environment.
+      The PostgreSQL materialized view stores results until an explicit refresh; it is not continuously updated. Clone is outside this walkthrough because PostgreSQL does not provide the zero-copy clone recipe. The outage remains an assumed scenario, not a captured failure (alignment-postgres and src-1).
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
@@ -322,19 +458,17 @@ walkthrough:
   intro:
     can_now:
       - Rerun just the failed and skipped models from the last command, using the record dbt saved.
-      - Copy an existing table or view instead of rebuilding it, on databases that support cloning.
-      - >-
-        Build a model as a materialized view, a stored query result the database keeps fresh, where the
-        database supports it.
+      - Build a PostgreSQL model as a materialized view, a stored result refreshed explicitly.
     scenario: >
       A run is halfway done when the database connection drops. The payments total finished, but the refunds
-      total failed and the revenue model never ran. Once the connection is back, the shop wants to finish the
+      total failed and the revenue model never ran. Once the connection is back, the shop wants to finish
+      the
       run without rebuilding what already worked.
-    outcome: >
-      Read the three models involved, see which ones need to run again, and check that the recovered revenue
-      figures match the base numbers. The outage is an illustration, not captured output.
-  title: |
-    Demo: a retry picks up where a failed run stopped
+    outcome: >-
+      See failed and skipped work retried, the restored 12,500-cent result, and a PostgreSQL materialized-view
+      definition.
+  title: |-
+    Demo: retry an interrupted branch and store a materialized view
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.
 default_milestone: 1.6.0

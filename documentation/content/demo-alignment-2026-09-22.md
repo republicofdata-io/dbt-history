@@ -1,5 +1,7 @@
 # Demo alignment review (22 September 2026)
 
+Resolution status (22 September 2026): this original review is retained as an input record. All 60 review flags and 82 historical observations have dispositions in [the resolution register](review-resolutions-2026-09-22.yaml); see [the handoff](demo-alignment-handoff-2026-09-22.md) for changes by chapter. The original verdicts below describe the pre-alignment content.
+
 Does each chapter's Waffle Shop demo show the feature that mattered most in that release? Reviewed against documentation/03-release-history.md and each chapter's feature claims. Verdicts: 18 partial, 17 aligned of 35 chapters.
 
 | Chapter | Headline features | Verdict | Action | What to change |

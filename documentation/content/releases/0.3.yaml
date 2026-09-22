@@ -11,7 +11,7 @@ what_changed:
   - id: change-1
     summary: Parallel model creation with up to eight threads.
     introduced_in: 0.3.0
-    adapter_constraints: null
+    adapter_constraints:
     evidence:
       - src-1
     confidence: high
@@ -20,7 +20,7 @@ what_changed:
       Failures skip descendants while independent branches continue; temporary relations reduce unavailable
       time.
     introduced_in: 0.3.0
-    adapter_constraints: null
+    adapter_constraints:
     evidence:
       - src-1
     confidence: high
@@ -60,10 +60,19 @@ sources:
     historical_scope: Syntax at the named immutable version; research cutoff remains 2026-09-21.
     source_path: dbt/project.py
     sha256: ed9f278bd18dc3a71d11d18338c6a368c3040d8e6d397e2f888f195599849be7
+  - id: alignment-0-3-0
+    title: 'dbt 0.3.0 original source: dbt/project.py:14,74-75; dbt/targets.py'
+    url:
+      https://files.pythonhosted.org/packages/6e/7d/b3a8ed350b535130cd7954827b253d5b269ba94860790876ec43bc8274d3/dbt-0.3.0.tar.gz
+    retrieved: '2026-09-22'
+    source_path: dbt/project.py:14,74-75; dbt/targets.py
+    sha256: ed9f278bd18dc3a71d11d18338c6a368c3040d8e6d397e2f888f195599849be7
+    supports: Default user profile selects run-target; threads limited to eight.
 narrative_evidence:
   - src-1
   - src-2
   - src-3
+  - alignment-0-3-0
 walkthrough:
   id: wt-0.3
   learning_objective: >
@@ -76,41 +85,42 @@ walkthrough:
   steps:
     - id: branches
       title: Two branches that do not need each other
-      explanation: >
-        Look at the two small models first. Highlighted lines 1 and 2 of payments_by_order total payments per
-        order. The same lines of refunds_by_order total refunds. Neither reads the other. The connection file
-        matters too: highlighted line 6 of profiles.yml allows 2 threads, meaning two models can build at the
-        same time. Highlighted lines 3, 4 and 6 of order_amounts show the join that needs both branches. The
-        diagram shows the shape: two branches feeding one revenue model.
+      explanation: |
+        Highlighted lines 1 and 2 of the payment and refund models total their separate feeds. Highlighted line 6 of profiles.yml allows two workers. Lines 3, 4 and 6 of order_amounts join both finished totals to orders. The diagram shows both branches meeting at order_amounts, which order_revenue then reads.
       state:
         kind: diagram
-        title: Two branches feed one revenue model
+        title: Two independent branches meet at order_amounts
         columns: []
         rows: []
-        result_status: null
+        result_status:
         diagram:
           nodes:
-            - id: payments
+            - id: payments_by_order
               label: payments_by_order
-            - id: refunds
+            - id: refunds_by_order
               label: refunds_by_order
-            - id: revenue
+            - id: order_amounts
+              label: order_amounts
+            - id: order_revenue
               label: order_revenue
           edges:
-            - from: payments
-              to: revenue
-            - from: refunds
-              to: revenue
+            - from: payments_by_order
+              to: order_amounts
+            - from: refunds_by_order
+              to: order_amounts
+            - from: order_amounts
+              to: order_revenue
           highlight:
-            - payments
-            - refunds
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+            - order_amounts
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: |
         Payments and refunds can build at the same time, but revenue has to wait for both.
       evidence:
         - src-1
         - src-2
         - src-3
+        - alignment-0-3-0
       code:
         - language: sql
           filename: models/payments_by_order.sql
@@ -178,13 +188,15 @@ walkthrough:
             - 3
             - 4
             - 6
+          purpose: Authored era-specific example; illustration only.
     - id: failure
       title: Break the refund branch on purpose
       explanation: >
         The refund model now has a deliberate mistake. Highlighted line 1 sums a column called
         refund_amount_cents, which does not exist, so the database rejects the query. The data itself is
         unchanged. Highlighted lines 4 and 6 of order_amounts show that it needs both branches, and
-        highlighted line 1 of order_revenue shows that it needs order_amounts. The result panel shows what dbt
+        highlighted line 1 of order_revenue shows that it needs order_amounts. The result panel shows what
+        dbt
         does: the refund model fails, the revenue model is skipped because it depends on refunds, and the
         payment model finishes on its own.
       state:
@@ -194,21 +206,23 @@ walkthrough:
           - model
           - prepared scheduling outcome
         rows:
-          - - refunds_by_order
-            - failed
-          - - order_revenue
-            - 'skipped: depends on refunds'
-          - - payments_by_order
-            - independent work may finish
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+          -   - refunds_by_order
+              - failed
+          -   - order_revenue
+              - 'skipped: depends on refunds'
+          -   - payments_by_order
+              - independent work may finish
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: |
         A failure stops only the models downstream of it; unrelated work still completes.
       evidence:
         - src-1
         - src-2
         - src-3
+        - alignment-0-3-0
       code:
         - language: sql
           filename: models/payments_by_order.sql
@@ -276,6 +290,7 @@ walkthrough:
             - 3
             - 4
             - 6
+          purpose: Authored era-specific example; illustration only.
     - id: fixed
       title: Fix the refund model and read the totals
       explanation: >
@@ -293,30 +308,32 @@ walkthrough:
           - refund_cents
           - revenue_cents
         rows:
-          - - 1
-            - Old Port
-            - 4400
-            - 1000
-            - 3400
-          - - 2
-            - Mile End
-            - 4600
-            - 300
-            - 4300
-          - - 3
-            - Riverside
-            - 4800
-            - 0
-            - 4800
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+          -   - 1
+              - Old Port
+              - 4400
+              - 1000
+              - 3400
+          -   - 2
+              - Mile End
+              - 4600
+              - 300
+              - 4300
+          -   - 3
+              - Riverside
+              - 4800
+              - 0
+              - 4800
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: |
         Building in parallel changes how fast the work runs, not the answer it produces.
       evidence:
         - src-1
         - src-2
         - src-3
+        - alignment-0-3-0
       code:
         - language: sql
           filename: models/payments_by_order.sql
@@ -400,17 +417,15 @@ walkthrough:
       - src-1
       - src-2
       - src-3
-    limitations: >
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
-      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
-      performance claims.
-
-      Profiles are excerpts: warehouse credentials and database/schema are omitted. The deliberately invalid
-      refund_amount_cents column is absent from the fixture; no original error log or timing is claimed.
-      Boolean materialized is retained before 0.4.
-
-      The 0.3.0 loader merges the default user profile and selects outputs using run-target, not the later
-      target key. This early profile shape was checked directly in project.py and targets.py.
+      - alignment-0-3-0
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+      Profiles are excerpts: warehouse credentials and database/schema are omitted. The deliberately invalid refund_amount_cents column is absent from the fixture; no original error log or timing is claimed. Boolean materialized is retained before 0.4.
+      The 0.3.0 loader merges the default user profile and selects outputs using run-target, not the later target key. This early profile shape was checked directly in project.py and targets.py.
+      Keep user.run-target at 0.3.0. Later named-profile target keys are a historical change, not an inconsistency. Temporary relation swapping is not demonstrated; the release evidence src-1 describes it.
+      historical-0.3-01: Temporary relation swapping remains release context, documented as outside this walkthrough. Evidence: src-1, src-2, src-3, alignment-0-3-0.
+      historical-0.3-02: Retained the prepared-scheduling label; this is not a measured schedule or native log. Evidence: src-1, src-2, src-3, alignment-0-3-0.
+      historical-0.3-03: Keep named profile target in 0.7.0. Original loader/connection source verifies the change from 0.3 user.run-target; these versions should not be made artificially identical. Evidence: src-1, src-2, src-3, alignment-0-3-0.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'

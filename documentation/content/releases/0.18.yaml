@@ -11,14 +11,14 @@ what_changed:
   - id: change-1
     summary: State selection, deferral and YAML selectors.
     introduced_in: 0.18.0
-    adapter_constraints: null
+    adapter_constraints:
     evidence:
       - src-1
     confidence: high
   - id: change-2
     summary: Exposures represent downstream consumers.
     introduced_in: 0.18.1
-    adapter_constraints: null
+    adapter_constraints:
     evidence:
       - src-4
     confidence: high
@@ -99,30 +99,31 @@ walkthrough:
   steps:
     - id: change
       title: The refund model changes
-      explanation: >
-        Four model files are shown. The refund model, highlighted on lines 1 and 2, is the one that was
-        edited. Its SQL is compared to a saved copy of the project from the last production run. The other
-        three models are unchanged, but the highlighted lines show how they read from the refund model,
-        directly or through order_amounts. The result panel classifies each model: the refund model is
-        modified, order_revenue and revenue_by_location are downstream of it, and orders is unchanged.
+      explanation: >-
+        Highlighted lines 1 and 2 of the current refund model add coalesce, which treats a missing amount
+        as zero. The saved production file shows the earlier sum. The base has no missing amounts, so values
+        stay the same. The panel lists the changed model, all three descendants and the unchanged input models.
       state:
         kind: comparison
-        title: Which models changed and which depend on them
+        title: Saved definition compared with current definition
         columns:
           - resource
           - definition status
         rows:
-          - - refunds_by_order
-            - modified
-          - - order_revenue
-            - downstream
-          - - revenue_by_location
-            - downstream
-          - - orders
-            - unchanged
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+          -   - refunds_by_order
+              - 'modified: added coalesce'
+          -   - order_amounts
+              - downstream
+          -   - order_revenue
+              - downstream
+          -   - revenue_by_location
+              - downstream
+          -   - orders, payments_by_order, refunds
+              - unchanged inputs
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: >
         Comparing against the saved production state tells dbt which model changed and which models sit
         downstream of it.
@@ -137,38 +138,24 @@ walkthrough:
         - language: sql
           filename: models/refunds_by_order.sql
           content: |
+            -- Treat missing amounts as zero.
+            select order_id, sum(coalesce(amount_cents, 0)) as refund_cents
+            from {{ ref("refunds") }}
+            group by order_id
+          highlight_lines:
+            - 1
+            - 2
+          purpose: Authored era-specific example; illustration only.
+        - language: sql
+          filename: models/refunds_by_order.sql (saved production version)
+          content: |
             select order_id, sum(amount_cents) as refund_cents
             from {{ ref("refunds") }}
             group by order_id
           highlight_lines:
             - 1
             - 2
-          purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: models/order_revenue.sql
-          content: |
-            select *, payment_cents - refund_cents as revenue_cents
-            from {{ ref("order_amounts") }}
-          highlight_lines:
-            - 1
-          purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: models/revenue_by_location.sql
-          content: |
-            select
-                r.location_id, l.name as location,
-                sum(r.payment_cents) as payment_cents,
-                sum(r.refund_cents) as refund_cents,
-                sum(r.revenue_cents) as revenue_cents
-            from {{ ref("order_revenue") }} as r
-            join raw.locations as l on r.location_id = l.location_id
-            group by r.location_id, l.name
-            order by r.location_id
-          highlight_lines:
-            - 3
-            - 4
-            - 5
-          purpose: authored executable syntax; illustration only
+          purpose: Authored era-specific example; illustration only.
         - language: sql
           filename: models/order_amounts.sql
           content: |
@@ -183,28 +170,53 @@ walkthrough:
             - 3
             - 4
             - 6
+          purpose: Authored era-specific example; illustration only.
+        - language: sql
+          filename: models/order_revenue.sql
+          content: |
+            select *, payment_cents - refund_cents as revenue_cents
+            from {{ ref("order_amounts") }}
+          highlight_lines:
+            - 1
+          purpose: Authored era-specific example; illustration only.
+        - language: sql
+          filename: models/revenue_by_location.sql
+          content: |
+            select r.location_id, l.name as location,
+                sum(r.payment_cents) as payment_cents,
+                sum(r.refund_cents) as refund_cents,
+                sum(r.revenue_cents) as revenue_cents
+            from {{ ref("order_revenue") }} as r
+            join raw.locations as l on r.location_id = l.location_id
+            group by r.location_id, l.name
+            order by r.location_id
+          highlight_lines:
+            - 2
+            - 3
+            - 4
+          purpose: Authored era-specific example; illustration only.
     - id: build
       title: Build only the changed branch
-      explanation: >
-        The same four model files are shown. The command file runs dbt with three options. state:modified+
-        selects the changed model and everything downstream of it. The state option points at the saved
-        production copy to compare against. The defer option tells dbt that unselected inputs, such as orders,
-        should be read from the production tables instead of being rebuilt. The result panel lists what gets
-        built and what gets reused.
+      explanation: >-
+        The refund change highlighted on lines 1 and 2 is selected by state:modified, and + includes all three
+        descendants shown by the ref calls. The command compares the saved production manifest and enables
+        deferral, which reuses eligible unselected relations. With no development copies of the parents, the
+        panel shows orders, payments_by_order and refunds read from production.
       state:
         kind: comparison
-        title: What is built and what is reused
+        title: Development build and reused production inputs
         columns:
           - behavior
-          - prepared choice
+          - models
         rows:
-          - - build
-            - refunds_by_order, order_revenue, revenue_by_location
-          - - reuse eligible parent
-            - orders from saved production state
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+          -   - build in development
+              - refunds_by_order, order_amounts, order_revenue, revenue_by_location
+          -   - read from saved production relations
+              - orders, payments_by_order, refunds
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: >
         The changed branch is rebuilt, and unchanged inputs are borrowed from production, so the development
         build stays small.
@@ -212,38 +224,14 @@ walkthrough:
         - language: sql
           filename: models/refunds_by_order.sql
           content: |
-            select order_id, sum(amount_cents) as refund_cents
+            -- Treat missing amounts as zero.
+            select order_id, sum(coalesce(amount_cents, 0)) as refund_cents
             from {{ ref("refunds") }}
             group by order_id
           highlight_lines:
             - 1
             - 2
-          purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: models/order_revenue.sql
-          content: |
-            select *, payment_cents - refund_cents as revenue_cents
-            from {{ ref("order_amounts") }}
-          highlight_lines:
-            - 1
-          purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: models/revenue_by_location.sql
-          content: |
-            select
-                r.location_id, l.name as location,
-                sum(r.payment_cents) as payment_cents,
-                sum(r.refund_cents) as refund_cents,
-                sum(r.revenue_cents) as revenue_cents
-            from {{ ref("order_revenue") }} as r
-            join raw.locations as l on r.location_id = l.location_id
-            group by r.location_id, l.name
-            order by r.location_id
-          highlight_lines:
-            - 3
-            - 4
-            - 5
-          purpose: authored executable syntax; illustration only
+          purpose: Authored era-specific example; illustration only.
         - language: sql
           filename: models/order_amounts.sql
           content: |
@@ -258,12 +246,48 @@ walkthrough:
             - 3
             - 4
             - 6
+          purpose: Authored era-specific example; illustration only.
+        - language: sql
+          filename: models/order_revenue.sql
+          content: |
+            select *, payment_cents - refund_cents as revenue_cents
+            from {{ ref("order_amounts") }}
+          highlight_lines:
+            - 1
+          purpose: Authored era-specific example; illustration only.
+        - language: sql
+          filename: models/revenue_by_location.sql
+          content: |
+            select r.location_id, l.name as location,
+                sum(r.payment_cents) as payment_cents,
+                sum(r.refund_cents) as refund_cents,
+                sum(r.revenue_cents) as revenue_cents
+            from {{ ref("order_revenue") }} as r
+            join raw.locations as l on r.location_id = l.location_id
+            group by r.location_id, l.name
+            order by r.location_id
+          highlight_lines:
+            - 2
+            - 3
+            - 4
+          purpose: Authored era-specific example; illustration only.
+        - language: sql
+          filename: models/payments_by_order.sql
+          content: |
+            select order_id, sum(amount_cents) as payment_cents
+            from {{ ref("payments") }}
+            group by order_id
+          highlight_lines:
+            - 1
+            - 2
+          purpose: Authored era-specific example; illustration only.
         - language: shell
           filename: commands.sh
           content: |
             dbt run --models state:modified+ --state ./state-prod --defer
           highlight_lines:
             - 1
+          purpose: Authored era-specific example; illustration only.
       evidence:
         - src-1
         - src-2
@@ -275,7 +299,8 @@ walkthrough:
       title: Name the dashboard that uses the result (added in 0.18.1)
       explanation: >
         Two files are shown. The YAML file, highlighted on lines 2, 5 and 6, declares an exposure: a named
-        downstream use of the project, here a daily dashboard, with the model it depends on. The SQL file is
+        downstream use of the project, here a daily dashboard, with the model it depends on. The SQL file
+        is
         the revenue-by-location model it reads, highlighted on its sum lines. The result panel shows the
         exposure and its dependency. Exposures were added in patch 0.18.1, after the main release.
       state:
@@ -286,12 +311,13 @@ walkthrough:
           - kind
           - depends on
         rows:
-          - - shop_daily_dashboard
-            - exposure at 0.18.1
-            - revenue_by_location
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+          -   - shop_daily_dashboard
+              - exposure at 0.18.1
+              - revenue_by_location
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: >
         An exposure records that the daily dashboard reads revenue_by_location. It documents the dependency
         but does not build the dashboard.
@@ -347,17 +373,17 @@ walkthrough:
       - src-4
       - src-5
       - src-6
-    limitations: >
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
-      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
-      performance claims.
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+      This example assumes saved production relations exist and unselected parents have no development copies. Deferral applies to model ref calls, not direct raw table names; raw.locations is deliberately a direct warehouse input. YAML selectors are release context only (src-1).
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
       method: Original source/archive and release documentation inspection; no historical dbt execution.
   intro:
     can_now:
-      - Compare the project to a saved copy from production and select only the models whose code changed.
+      - Compare the project to a saved copy from production and select only the models whose code
+        changed.
       - >-
         Build those changed models in a development schema while reading unchanged inputs from production,
         instead of rebuilding them. dbt calls this deferral.

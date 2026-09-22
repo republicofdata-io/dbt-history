@@ -13,7 +13,7 @@ export default function CodeBlock({ block }: { block: CodeBlockT }) {
           <span className="provenance">{block.language}</span>
         </figcaption>
       )}
-      <pre className="min-h-0 overflow-auto py-1.5 font-mono text-[11px] leading-[1.7]" tabIndex={0} aria-label={block.filename ?? `${block.language} code`}>
+      <pre className="min-h-0 overflow-auto py-1 font-mono text-[11px] leading-[1.6]" tabIndex={0} aria-label={block.filename ?? `${block.language} code`}>
         <code>
           {lines.map((line, i) => {
             const n = i + 1;

@@ -308,6 +308,11 @@ variants:
   expected_revenue:
     total_cents: 12500
     arithmetic: Changing customer city does not change the order location or revenue.
+  archive_feed_metadata:
+    initial_updated_at: '2016-03-08T07:00:00Z'
+    changed_updated_at: '2016-03-09T09:00:00Z'
+    derivation: Add updated_at in an archive_input.customers view. Customer 1 takes the change-event time once city
+      is Québec; all unchanged rows keep the initial timestamp. Base tables stay unchanged.
 - id: customer-removed
   extends: base
   description: Finn is removed from the current customer feed; existing orders and payments remain.

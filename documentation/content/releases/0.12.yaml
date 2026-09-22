@@ -10,14 +10,14 @@ what_changed:
   - id: change-1
     summary: Relation caching speeds introspection.
     introduced_in: 0.12.0
-    adapter_constraints: null
+    adapter_constraints:
     evidence:
       - src-1
     confidence: high
   - id: change-2
     summary: Model tags and selection by tag.
     introduced_in: 0.12.0
-    adapter_constraints: null
+    adapter_constraints:
     evidence:
       - src-1
     confidence: high
@@ -86,11 +86,8 @@ walkthrough:
   steps:
     - id: tag
       title: Put a finance tag on the revenue model
-      explanation: >
-        You are looking at the order_revenue model. The highlighted line 1 is a config call that gives the
-        model the tag finance. Lines 2 and 3 are the ordinary SQL: revenue is payments minus refunds. A tag is
-        just a label. It does not change what the model computes. The result panel shows that
-        revenue_by_location carries the same tag in this prepared project.
+      explanation: |
+        The screen shows the order_revenue model. The highlighted line 1 is a config call that gives the model the tag finance. Lines 2 and 3 are the ordinary SQL: revenue is payments minus refunds. A tag is just a label. It does not change what the model computes. The result panel shows that revenue_by_location carries the same tag in this prepared project.
       state:
         kind: comparison
         title: Models carrying the finance tag
@@ -98,13 +95,14 @@ walkthrough:
           - model
           - tag
         rows:
-          - - order_revenue
-            - finance
-          - - revenue_by_location
-            - finance
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+          -   - order_revenue
+              - finance
+          -   - revenue_by_location
+              - finance
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: |
         A tag is a label on a model that says which group it belongs to.
       code:
@@ -116,18 +114,31 @@ walkthrough:
             from {{ ref("order_amounts") }}
           highlight_lines:
             - 1
-            - 2
-            - 3
+          purpose: Authored era-specific example; illustration only.
+        - language: sql
+          filename: models/revenue_by_location.sql
+          content: |
+            {{ config(tags=["finance"]) }}
+            select r.location_id, l.name as location,
+                sum(r.payment_cents) as payment_cents,
+                sum(r.refund_cents) as refund_cents,
+                sum(r.revenue_cents) as revenue_cents
+            from {{ ref("order_revenue") }} as r
+            join raw.locations as l on r.location_id = l.location_id
+            group by r.location_id, l.name
+            order by r.location_id
+          highlight_lines:
+            - 1
+          purpose: Authored era-specific example; illustration only.
       evidence:
         - src-1
         - src-2
+        - src-3
+        - src-4
     - id: select
       title: Run only the models tagged finance
-      explanation: >
-        Both revenue models are shown with the tag line highlighted. The command file runs dbt run with a
-        selection: only models tagged finance. The result panel lists the two models dbt would build. The
-        models they read from, such as order_amounts, are not rebuilt. This example assumes they already exist
-        in the warehouse from an earlier run.
+      explanation: |
+        Both revenue models are shown with tag line 1 highlighted. The command file runs dbt run with a selection: only models tagged finance. The result panel lists the two models dbt would build. The models they read from, such as order_amounts, are not rebuilt. This example assumes they already exist in the warehouse from an earlier run.
       state:
         kind: comparison
         title: What the finance selection builds
@@ -135,11 +146,12 @@ walkthrough:
           - selection
           - models in this prepared slice
         rows:
-          - - tag:finance
-            - order_revenue, revenue_by_location
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+          -   - tag:finance
+              - order_revenue, revenue_by_location
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: |
         Selecting by tag tells dbt to build just the tagged models and skip the rest.
       code:
@@ -151,34 +163,40 @@ walkthrough:
             from {{ ref("order_amounts") }}
           highlight_lines:
             - 1
-            - 2
-            - 3
+          purpose: Authored era-specific example; illustration only.
         - language: sql
           filename: models/revenue_by_location.sql
           content: |
             {{ config(tags=["finance"]) }}
-            select location_id, sum(revenue_cents) as revenue_cents
-            from {{ ref("order_revenue") }}
-            group by location_id
+            select r.location_id, l.name as location,
+                sum(r.payment_cents) as payment_cents,
+                sum(r.refund_cents) as refund_cents,
+                sum(r.revenue_cents) as revenue_cents
+            from {{ ref("order_revenue") }} as r
+            join raw.locations as l on r.location_id = l.location_id
+            group by r.location_id, l.name
+            order by r.location_id
           highlight_lines:
             - 1
-          purpose: authored executable syntax; illustration only
+          purpose: Authored era-specific example; illustration only.
         - language: shell
           filename: commands.sh
           content: |
             dbt run --models tag:finance
           highlight_lines:
             - 1
+          purpose: Authored era-specific example; illustration only.
       evidence:
         - src-1
         - src-2
+        - src-3
+        - src-4
     - id: answer
       title: The revenue numbers do not change
-      explanation: >
-        Selecting a subset changes how much work dbt does, not what the models compute. The order_revenue
-        model, highlighted on line 1, still takes payments minus refunds. The revenue-by-location model,
-        highlighted on lines 3 to 5, still sums payments, refunds and revenue per location. The result panel
-        shows the same three rows as before, adding to 12,500 cents.
+      explanation: >-
+        Highlighted line 1 in both model files retains the finance tag. Their SQL is identical to the previous
+        step: subtract refunds per order, then sum per location. The panel shows the same three rows and total
+        of 12,500 cents after rebuilding just those two tagged models.
       state:
         kind: table
         title: Revenue by location after the finance-only run
@@ -189,43 +207,47 @@ walkthrough:
           - refund_cents
           - revenue_cents
         rows:
-          - - 1
-            - Old Port
-            - 4400
-            - 1000
-            - 3400
-          - - 2
-            - Mile End
-            - 4600
-            - 300
-            - 4300
-          - - 3
-            - Riverside
-            - 4800
-            - 0
-            - 4800
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+          -   - 1
+              - Old Port
+              - 4400
+              - 1000
+              - 3400
+          -   - 2
+              - Mile End
+              - 4600
+              - 300
+              - 4300
+          -   - 3
+              - Riverside
+              - 4800
+              - 0
+              - 4800
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: |
         Running only the finance slice gave the same revenue result as running everything.
       evidence:
         - src-1
         - src-2
+        - src-3
+        - src-4
       code:
         - language: sql
           filename: models/order_revenue.sql
           content: |
+            {{ config(tags=["finance"]) }}
             select *, payment_cents - refund_cents as revenue_cents
             from {{ ref("order_amounts") }}
           highlight_lines:
             - 1
-          purpose: authored executable syntax; illustration only
+          purpose: Authored era-specific example; illustration only.
         - language: sql
           filename: models/revenue_by_location.sql
           content: |
-            select
-                r.location_id, l.name as location,
+            {{ config(tags=["finance"]) }}
+            select r.location_id, l.name as location,
                 sum(r.payment_cents) as payment_cents,
                 sum(r.refund_cents) as refund_cents,
                 sum(r.revenue_cents) as revenue_cents
@@ -234,10 +256,8 @@ walkthrough:
             group by r.location_id, l.name
             order by r.location_id
           highlight_lines:
-            - 3
-            - 4
-            - 5
-          purpose: authored executable syntax; illustration only
+            - 1
+          purpose: Authored era-specific example; illustration only.
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -246,10 +266,10 @@ walkthrough:
       - src-2
       - src-3
       - src-4
-    limitations: >
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
-      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
-      performance claims.
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+      Relation caching remains release context, not a demonstrated behavior or speed measurement; src-1 documents the change. The intro now promises only the tagged-model selection actually shown.
+      review-0.12-02: Relation caching is sourced release context only. Removed it from intro promises and documented the omitted demonstration. Evidence: src-1, src-2, src-3, src-4.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
@@ -258,9 +278,6 @@ walkthrough:
     can_now:
       - Put a label, called a tag, on a model, such as finance.
       - Run only the models that carry a given tag, instead of the whole project.
-      - >-
-        Let dbt remember which tables already exist in the warehouse during a run, so it does not ask the
-        database the same question over and over.
     scenario: >
       A change touches only the finance numbers. Waffle Shop wants to rebuild the two revenue models and
       nothing else. It tags both models finance and runs that slice, leaving the upstream models already in

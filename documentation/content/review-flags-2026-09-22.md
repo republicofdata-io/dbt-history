@@ -1,5 +1,7 @@
 # Walkthrough review flags for the researcher (22 September 2026)
 
+Resolution status (22 September 2026): this original review is retained as an input record. All 60 review flags and 82 historical observations have dispositions in [the resolution register](review-resolutions-2026-09-22.yaml); see [the handoff](demo-alignment-handoff-2026-09-22.md) for changes by chapter. The original verdicts below describe the pre-alignment content.
+
 Wording was rewritten by an editorial pass; these items need a content or historical decision and were left untouched.
 
 ## 0.1

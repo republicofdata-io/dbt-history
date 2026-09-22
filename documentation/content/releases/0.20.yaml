@@ -2,7 +2,8 @@ id: '0.20'
 label: v0.20
 title: Actionable data-test failures
 lead: >
-  Failed test rows can be stored for inspection. The shop can investigate the actual orphan payment instead of
+  Failed test rows can be stored for inspection. The shop can investigate the actual orphan payment instead
+  of
   stopping at a failure count.
 problem_then: |
   A red test tells a team something is wrong, but finding the offending records can require another query.
@@ -10,14 +11,14 @@ what_changed:
   - id: change-1
     summary: Store test failures in the database.
     introduced_in: 0.20.0
-    adapter_constraints: null
+    adapter_constraints:
     evidence:
       - src-1
     confidence: high
   - id: change-2
     summary: Test where/limit/warn_if/error_if/fail_calc configuration; experimental parser.
     introduced_in: 0.20.0
-    adapter_constraints: null
+    adapter_constraints:
     evidence:
       - src-1
     confidence: high
@@ -64,20 +65,21 @@ walkthrough:
   id: wt-0.20
   learning_objective: |
     Go from a test that says one row failed to the actual row, kept in a table you can query.
-  context: >
-    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
-    Riverside 4,800. The selected fixture is orphan-payment. Each state below is an authored illustration.
+  context: |
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is orphan-payment. Each state below is an authored illustration.
      In this snippet, ref("payments") and ref("orders") mean pass-through staging models with exactly the corresponding raw fixture rows.
   dataset_variant: orphan-payment
   steps:
     - id: count
       title: 'A test fails: one payment has no matching order'
       explanation: >
-        A test in dbt is a query that returns the rows that break a rule. Zero rows means pass. The first file
+        A test in dbt is a query that returns the rows that break a rule. Zero rows means pass. The first
+        file
         is that test. The highlighted lines 3 and 4 do the work: line 3 tries to match each payment to its
         order, and line 4 keeps only payments where no order was found. The second file is the same logic
         wrapped in a count. The highlighted lines 1 and 4 show it counts those unmatched rows. The result
-        panel shows the outcome: 0 failures expected, 1 found. The test fails, but the panel does not tell you
+        panel shows the outcome: 0 failures expected, 1 found. The test fails, but the panel does not tell
+        you
         which payment.
       state:
         kind: result
@@ -87,12 +89,13 @@ walkthrough:
           - expected failures
           - actual failures
         rows:
-          - - payments have orders
-            - 0
-            - 1
+          -   - payments have orders
+              - 0
+              - 1
         result_status: fail
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: |
         The test found one broken payment, but a count alone does not say which one.
       evidence:
@@ -136,11 +139,12 @@ walkthrough:
           - test configuration
           - value
         rows:
-          - - store_failures
-            - true
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+          -   - store_failures
+              - true
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: |
         One config line makes dbt save the failing rows the test query returns.
       code:
@@ -157,6 +161,7 @@ walkthrough:
             - 2
             - 3
             - 4
+          purpose: Authored era-specific example; illustration only.
       evidence:
         - src-1
         - src-2
@@ -177,15 +182,16 @@ walkthrough:
           - order_id
           - amount_cents
         rows:
-          - - 2099
-            - 9999
-            - 400
+          -   - 2099
+              - 9999
+              - 400
         result_status: fail
-        diagram: null
+        diagram:
         expected_actual:
           expected_violations: 0
           actual_violations: 1
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: >
         The failing 400-cent payment now sits in a table anyone can query until the missing order is sorted
         out.
@@ -207,6 +213,7 @@ walkthrough:
             - 2
             - 3
             - 4
+          purpose: Authored era-specific example; illustration only.
         - language: sql
           filename: inspection/stored_failures.sql
           content: |
@@ -231,30 +238,27 @@ walkthrough:
       - src-1
       - src-2
       - src-3
-    limitations: >
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
-      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
-      performance claims.
-
-      The stored-failure inspection assumes the default audit schema and target.schema=waffle; permissions
-      must allow its creation. A custom schema macro would change the physical name.
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+      The stored-failure inspection assumes the default audit schema and target.schema=waffle; permissions must allow its creation. A custom schema macro would change the physical name.
+      The default audit schema suffix dbt_test__audit is retained with target.schema=waffle (src-1, 0.20 default test materialization). The count wrapper in step 1 is a separate inspection query, not a second test. where/limit and warning thresholds remain release context rather than intro promises.
+      historical-0.20-01: Keep waffle_dbt_test__audit with target.schema=waffle; the naming assumption is recorded. Evidence: src-1, src-2, src-3.
+      historical-0.20-02: Retain the count wrapper as an inspection query, not a second test; recorded explicitly. Evidence: src-1, src-2, src-3.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
       method: Original source/archive and release documentation inspection; no historical dbt execution.
   intro:
     can_now:
-      - Keep the rows that made a test fail in a table in the warehouse, instead of only a count.
+      - Store the rows that fail a test in a warehouse table.
       - >-
-        Tell a test to look at only some rows, to stop after a set number, or to warn instead of fail below a
-        threshold.
+        Inspect the stored payment rows after the test completes.
     scenario: >
       One payment of 400 cents points at order 9999, which does not exist. A test catches it and reports one
       failure. Until now the shop would have to rerun the test's query by hand to see which payment it was.
       This version can save that failing row so anyone can look it up.
-    outcome: >
-      You will see the test query, the one-line setting that saves failures, and the exact 400-cent row it
-      saved.
+    outcome: >-
+      See the test query, the failure-storage setting, and the exact 400-cent row it saves.
   title: |
     Demo: a failing test stores the exact payment that has no order
 status: reviewed

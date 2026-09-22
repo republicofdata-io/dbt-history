@@ -131,6 +131,16 @@ walkthrough:
 
 Rules: 3–5 steps; each step's state is complete on its own; era-appropriate syntax; features that arrived in a patch say so; every table's arithmetic checked against the dataset; `illustration` unless real output was captured; no invented terminal logs.
 
+## Alignment review conventions
+
+- Put the file the step is about first, supporting files next, and the command last. The app opens the first file by default.
+- Every explanation says what is on screen, names the highlighted lines and describes the result panel. Every takeaway states what the step just showed. Give technical terms a plain-language explanation; keep personal recording notes out of the content.
+- Show the enabling code and a visible prepared outcome. A command flag alone is not a demonstration. Use a separate step for a distinct feature, within the 3–5-step limit. Keep each code block around 20 lines or fewer.
+- Keep the intro and walkthrough title limited to capabilities actually demonstrated. Name the exact patch in the step title when appropriate and state the adapter used.
+- Table columns and rows must match the displayed query. Use named fixture variants and explicit phases; never change shared base rows to fit an example.
+- Preserve the field contract when correcting snippets or results. A retained historical limit belongs in the chapter’s `evidence.limitations`, with a source reference and a disposition in the review register.
+- `review-resolutions-2026-09-22.yaml` records all review decisions. `demo_alignment` in the index and validation report describes the current pass; `walkthrough_enrichment` is the earlier pass record.
+
 ## Product catalogue
 
 ```yaml

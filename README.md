@@ -8,7 +8,7 @@ Published at `republicofdata.io/labs/dbt-history` (see [Publishing](#publishing)
 
 - **35 version chapters plus an origin prologue**: v0.1–v0.21, v1.0–v1.12, v2.0. Nothing is invented and nothing is skipped.
 - **One date, four views.** The selected release and its dated milestone anchor four tabs: the release, the Waffle Shop walkthrough, the product catalogue at that date, and the wider data-stack diagram at that date. Changing tab keeps the release; changing release keeps the tab.
-- **Selectable milestones** inside a chapter (patches, announcements, product events) move the date for all three tabs.
+- **Selectable milestones** inside a chapter (patches, announcements, product events) move the date for all four tabs.
 - **A guided Waffle Shop walkthrough** in each chapter, on its own tab. It opens on a first screen (what this version lets you do, the scenario, the steps ahead), then prepared steps with read-only code, highlighted lines, small tables, diagrams and explained results. Visitors use Next, Previous and Restart only. Nothing executes.
 - **State in the URL**: `/<release>/<tab>?m=<milestone>&s=<step>`. Deep links and browser history restore everything. Step progress per release is remembered for the browsing session.
 - **Presentation mode** (button or `P`) hides the index and enlarges type for recording. `[` and `]` change release; `←` and `→` change step.
@@ -100,16 +100,22 @@ Continuous deploys from GitHub can be enabled with `netlify init` (it needs a on
 
 ## Status
 
-22 September 2026: scaffold, content schema, app shell, walkthrough player, computed catalogue and ecosystem, and browser-checked navigation. The complete first content set is integrated: 36 chapters with 110 walkthrough steps, 43 catalogue identities, 105 events and 61 ecosystem placements, all rendered with their qualifications and covered by 64 tests. Published on 22 September 2026 to the `republicofdata-dbt-history` Netlify site and proxied from the website.
+22 September 2026: scaffold, content schema, app shell, walkthrough player, computed catalogue and ecosystem, and browser-checked navigation. The complete first content set is integrated: 36 chapters with 121 walkthrough steps, 43 catalogue identities, 105 events and 61 ecosystem placements, all rendered with their qualifications and covered by 64 tests. Published on 22 September 2026 to the `republicofdata-dbt-history` Netlify site and proxied from the website.
 
 ## Authored history content
 
-The first complete content set was authored on 22 September 2026, with history frozen at 21 September: 36 chapters (including origin), 110 guided steps, one base fixture and seven variants, 43 catalogue identities, 105 events and 61 ecosystem placement intervals. Every walkthrough is an illustration; no historical dbt execution is claimed.
+The first complete content set was authored on 22 September 2026, with history frozen at 21 September: 36 chapters (including origin), now 121 guided steps, one base fixture and seven variants, 43 catalogue identities, 105 events and 61 ecosystem placement intervals. Every walkthrough is an illustration; no historical dbt execution is claimed.
 
-Read [the content index](documentation/content/content-index.yaml) for rendering conventions and retained uncertainty, and [the validation report](documentation/content/validation-report.yaml) for coverage and arithmetic checks. The existing 16 app/content tests also passed using the bundled current Node runtime; the shell’s older Node cannot start this Vite/Vitest toolchain.
+Read [the content index](documentation/content/content-index.yaml) for rendering conventions and retained uncertainty, and [the validation report](documentation/content/validation-report.yaml) for coverage and arithmetic checks. All 64 app/content tests passed using the bundled current Node runtime; the shell’s older Node cannot start this Vite/Vitest toolchain.
 
 Do not discard the content’s extra qualification fields when loading it: licence versus access, announced-but-unavailable products, private/public beta, bounded ownership/name changes and the explicit alpha maturity override affect what visitors should see. Ecosystem content is a list with external identities nested under `product_definition`. The completed merger uses `kind: acquisition_closed` plus `transaction_type: merger`, within the requested event enum.
 
 ### Walkthrough first screens and code
 
-All 36 walkthroughs now have an authored `intro` with version-specific capabilities and a self-contained scenario. All 110 steps include non-shell code, with 281 blocks of at most 17 lines. Commands follow the relevant model, test or configuration. Original fields, snippets and prepared values are preserved; examples remain illustrations. See `walkthrough_enrichment` in the content validation report for the independent checks and historical syntax corrections.
+All 36 walkthroughs now have an authored `intro` with version-specific capabilities and a self-contained scenario. All 121 steps include non-shell code, with 359 blocks of at most 17 lines. Commands follow the relevant model, test or configuration. The field contract is preserved; reviewed corrections align snippets, highlights and prepared results. Examples remain illustrations. See `demo_alignment` in the content validation report for the current checks and `walkthrough_enrichment` for the earlier pass.
+
+### Demo alignment review
+
+The 22 September alignment pass addresses all 18 partial demos and resolves 60 review flags: 48 fixed and 12 retained with sourced explanations. All 82 historical observations also have dispositions. The [handoff](documentation/content/demo-alignment-handoff-2026-09-22.md) lists changes by chapter; the [resolution register](documentation/content/review-resolutions-2026-09-22.yaml) records every decision and its chapter-local sources. Retained limitations also appear in each chapter’s evidence. This content pass is local and has not been redeployed.
+
+Put the featured file first, supporting files next and the command last. Every step names its highlighted lines and explains the prepared result. Keep patch labels and adapter assumptions explicit, and reconcile every result with a named fixture phase. The shared base rows remain unchanged.

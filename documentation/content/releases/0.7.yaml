@@ -69,11 +69,29 @@ sources:
     historical_scope: Syntax at the named immutable version; research cutoff remains 2026-09-21.
     source_path: dbt/contracts/connection.py
     sha256: f52b87724b551be90b873870e0acc9865c1ae16786b769d09de570f3280efeb5
+  - id: alignment-0-7-0
+    title: 'dbt 0.7.0 original source: dbt/project.py; dbt/contracts/connection.py'
+    url:
+      https://files.pythonhosted.org/packages/10/24/6a06082afbaf7171387a1dc37b067c2d15bd946981a77c731209db0d4112/dbt-0.7.0.tar.gz
+    retrieved: '2026-09-22'
+    source_path: dbt/project.py; dbt/contracts/connection.py
+    sha256: f52b87724b551be90b873870e0acc9865c1ae16786b769d09de570f3280efeb5
+    supports: Named profile, target key, Snowflake connection fields.
+  - id: alignment-0-7-1
+    title: 'dbt 0.7.1 original source: dbt/contracts/connection.py; dbt/adapters/snowflake.py'
+    url:
+      https://files.pythonhosted.org/packages/1e/a0/d75ae9f42939e40442422592847f10339e68cfcf83fa2566142c5eb2183b/dbt-0.7.1.tar.gz
+    retrieved: '2026-09-22'
+    source_path: dbt/contracts/connection.py; dbt/adapters/snowflake.py
+    sha256: 47cfb828590e25420ebbcdbfcad2e5afde36b3e4ed4d6e0618401850eb6ab368
+    supports: Optional Snowflake role is passed through the connection.
 narrative_evidence:
   - src-1
   - src-2
   - src-3
   - src-4
+  - alignment-0-7-0
+  - alignment-0-7-1
 walkthrough:
   id: wt-0.7
   learning_objective: |
@@ -99,13 +117,14 @@ walkthrough:
           - refunds
           - revenue
         rows:
-          - - 1042
-            - 1200
-            - 200
-            - 1000
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+          -   - 1042
+              - 1200
+              - 200
+              - 1000
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: |
         Payments minus refunds is plain SQL that does not care which warehouse runs it.
       evidence:
@@ -113,6 +132,8 @@ walkthrough:
         - src-2
         - src-3
         - src-4
+        - alignment-0-7-0
+        - alignment-0-7-1
       code:
         - language: sql
           filename: models/order_amounts.sql
@@ -152,7 +173,8 @@ walkthrough:
         The profiles file holds connection settings. Highlighted line 5 sets the type to snowflake, which
         tells dbt to use its Snowflake adapter, the part that knows how to talk to that warehouse. Line 6
         names the account. Lines 9 to 11 name the database, the schema and the Snowflake compute warehouse.
-        Highlighted line 3 of the project file links the project to this profile by name. Highlighted line 1
+        Highlighted line 3 of the project file links the project to this profile by name. Highlighted line
+        1
         of order_revenue is unchanged. The result panel lists the three warehouses dbt can target at 0.7.0.
       state:
         kind: comparison
@@ -161,15 +183,16 @@ walkthrough:
           - target
           - status at 0.7.0
         rows:
-          - - Redshift
-            - existing
-          - - PostgreSQL
-            - existing since 0.5.1
-          - - Snowflake
-            - newly supported
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+          -   - Redshift
+              - existing
+          -   - PostgreSQL
+              - existing since 0.5.1
+          -   - Snowflake
+              - newly supported
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: |
         Switching warehouses means editing the connection profile; the model SQL stays the same.
       evidence:
@@ -177,6 +200,8 @@ walkthrough:
         - src-2
         - src-3
         - src-4
+        - alignment-0-7-0
+        - alignment-0-7-1
       code:
         - language: yaml
           filename: profiles.yml (connection excerpt)
@@ -217,14 +242,14 @@ walkthrough:
             source-paths: [models]
           highlight_lines:
             - 3
+          purpose: Authored era-specific example; illustration only.
     - id: check
-      title: Expect the same numbers on Snowflake
-      explanation: >
-        The connection settings are the ones from the last step, with highlighted lines 5, 6 and 9 to 11. The
-        location model is unchanged; highlighted lines 3 to 5 sum payments, refunds and revenue. The result
-        panel shows the expected output: 12,500 cents across three locations. These figures are the prepared
-        expectation, not a captured run on Snowflake. A real move would still need checks of data types,
-        permissions and warehouse-specific SQL.
+      title: '0.7.1: choose a Snowflake role'
+      explanation: >-
+        Highlighted line 13 adds role: TRANSFORMER, supported from 0.7.1. The role is a set of Snowflake permissions
+        used for the connection. Highlighted lines 3 to 5 of the unchanged location model still total payments,
+        refunds and revenue. The panel shows the expected 12,500 cents with this connection; it is an illustration,
+        not a captured Snowflake run.
       state:
         kind: table
         title: Expected revenue by location on Snowflake
@@ -235,32 +260,34 @@ walkthrough:
           - refund_cents
           - revenue_cents
         rows:
-          - - 1
-            - Old Port
-            - 4400
-            - 1000
-            - 3400
-          - - 2
-            - Mile End
-            - 4600
-            - 300
-            - 4300
-          - - 3
-            - Riverside
-            - 4800
-            - 0
-            - 4800
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-      takeaway: >
-        The same models are expected to give the same 12,500 cents on Snowflake, because only the connection
-        changed.
+          -   - 1
+              - Old Port
+              - 4400
+              - 1000
+              - 3400
+          -   - 2
+              - Mile End
+              - 4600
+              - 300
+              - 4300
+          -   - 3
+              - Riverside
+              - 4800
+              - 0
+              - 4800
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
+      takeaway: >-
+        The 0.7.1 profile can choose the Snowflake role while the revenue SQL keeps the same expected result.
       evidence:
         - src-1
         - src-2
         - src-3
         - src-4
+        - alignment-0-7-0
+        - alignment-0-7-1
       code:
         - language: yaml
           filename: profiles.yml (connection excerpt)
@@ -277,12 +304,9 @@ walkthrough:
                   schema: WAFFLE
                   warehouse: TRANSFORMING
                   threads: 2
+                  role: TRANSFORMER
           highlight_lines:
-            - 5
-            - 6
-            - 9
-            - 10
-            - 11
+            - 13
           purpose: authored executable syntax; illustration only
         - language: sql
           filename: models/revenue_by_location.sql
@@ -309,13 +333,15 @@ walkthrough:
       - src-2
       - src-3
       - src-4
-    limitations: >
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
-      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
-      performance claims.
-
-      The 0.7.0 Snowflake profile is a configuration example with visibly marked credentials, not a live
-      connection. role is deliberately omitted because it arrives in 0.7.1.
+      - alignment-0-7-0
+      - alignment-0-7-1
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+      The 0.7.0 Snowflake profile is a configuration example with visibly marked credentials, not a live connection. role is deliberately omitted because it arrives in 0.7.1.
+      Unlike 0.3, the 0.7 loader uses a named profile and target; preserve that historical difference. Role is shown only in the 0.7.1 step, not at 0.7.0.
+      review-0.7-01: Keep named profile target in 0.7.0. Original loader/connection source verifies the change from 0.3 user.run-target; these versions should not be made artificially identical. Evidence: src-1, src-2, src-3, src-4, alignment-0-7-0, alignment-0-7-1.
+      historical-0.7-01: Keep named profile target in 0.7.0. Original loader/connection source verifies the change from 0.3 user.run-target; these versions should not be made artificially identical. Evidence: src-1, src-2, src-3, src-4, alignment-0-7-0, alignment-0-7-1.
+      historical-0.7-02: Original 0.7.0 connection contract confirms account, user, password, database, schema and warehouse; role is shown only in patch 0.7.1. Evidence: src-1, src-2, src-3, src-4, alignment-0-7-0, alignment-0-7-1.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'

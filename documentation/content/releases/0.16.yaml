@@ -10,14 +10,14 @@ what_changed:
   - id: change-1
     summary: meta and richer resource documentation.
     introduced_in: 0.16.0
-    adapter_constraints: null
+    adapter_constraints:
     evidence:
       - src-1
     confidence: high
   - id: change-2
     summary: Documentation for macros, analyses, snapshots and seeds; source/column tags.
     introduced_in: 0.16.0
-    adapter_constraints: null
+    adapter_constraints:
     evidence:
       - src-1
     confidence: high
@@ -71,25 +71,27 @@ walkthrough:
   steps:
     - id: question
       title: A question the SQL cannot answer
-      explanation: >
-        Two files are shown. The SQL file, highlighted on lines 3 to 5, sums payments, refunds and revenue per
-        location. The YAML file, highlighted on lines 1 to 4, describes the same model and opens a meta block.
-        The result panel shows Old Port revenue of 3,400 cents, which is correct, next to the question nobody
-        can answer from the SQL: who maintains this definition?
+      explanation: >-
+        Highlighted lines 3 and 4 of schema.yml name and describe the model but give no owner. The supporting
+        SQL totals revenue per location. The panel separates the model name from Old Port and shows 3,400
+        cents beside the unanswered ownership question.
       state:
         kind: comparison
-        title: Correct number, unanswered question
+        title: Correct number, owner still unspecified
         columns:
           - model
+          - location
           - revenue_cents
           - question
         rows:
-          - - 'revenue_by_location: Old Port'
-            - 3400
-            - Who maintains this definition?
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+          -   - 'revenue_by_location'
+              - Old Port
+              - 3400
+              - Who maintains this definition?
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: |
         The SQL says how revenue is computed, but not who is responsible for the rule.
       evidence:
@@ -97,11 +99,21 @@ walkthrough:
         - src-2
         - src-3
       code:
+        - language: yaml
+          filename: models/schema.yml
+          content: |
+            version: 2
+            models:
+              - name: revenue_by_location
+                description: Payments minus refunds, in cents.
+          highlight_lines:
+            - 3
+            - 4
+          purpose: Authored era-specific example; illustration only.
         - language: sql
           filename: models/revenue_by_location.sql
           content: |
-            select
-                r.location_id, l.name as location,
+            select r.location_id, l.name as location,
                 sum(r.payment_cents) as payment_cents,
                 sum(r.refund_cents) as refund_cents,
                 sum(r.revenue_cents) as revenue_cents
@@ -110,30 +122,16 @@ walkthrough:
             group by r.location_id, l.name
             order by r.location_id
           highlight_lines:
-            - 3
-            - 4
-            - 5
-          purpose: authored executable syntax; illustration only
-        - language: yaml
-          filename: models/schema.yml
-          content: |
-            version: 2
-            models:
-              - name: revenue_by_location
-                meta:
-                  owner: finance
-                  unit: cents
-          highlight_lines:
-            - 1
             - 2
             - 3
             - 4
+          purpose: Authored era-specific example; illustration only.
     - id: meta
       title: Record the owner next to the model
-      explanation: >
-        The YAML file is shown, highlighted on lines 1 to 4. Below the meta line, lines 5 and 6 record two
-        facts: the owner is the finance team, and the unit is cents. Any key and value can go here. The result
-        panel shows the model with its owner and unit.
+      explanation: >-
+        Highlighted lines 5 and 6 fill the meta block with owner: finance and unit: cents. meta is descriptive
+        information that travels with a resource. The panel now shows the named owner and unit; no database
+        permission changes.
       state:
         kind: comparison
         title: Owner and unit recorded on the model
@@ -142,14 +140,15 @@ walkthrough:
           - owner
           - unit
         rows:
-          - - revenue_by_location
-            - finance
-            - cents
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-      takeaway: |
-        The owner and the unit are now written next to the model and travel with it.
+          -   - revenue_by_location
+              - finance
+              - cents
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
+      takeaway: |-
+        The model records its owner and unit. That description does not grant warehouse access.
       code:
         - language: yaml
           filename: models/schema.yml
@@ -161,75 +160,76 @@ walkthrough:
                   owner: finance
                   unit: cents
           highlight_lines:
-            - 1
-            - 2
-            - 3
-            - 4
+            - 5
+            - 6
+          purpose: Authored era-specific example; illustration only.
       evidence:
         - src-1
         - src-2
         - src-3
     - id: boundary
-      title: What the meta field does and does not do
-      explanation: >
-        The same SQL and YAML files are shown with the same highlights. The meta block is information for
-        people and tools that read the project. It does not change the SQL, and it does not change who can
-        query the table in the warehouse. The result panel spells this out: owner is informational,
-        permissions are unchanged, and revenue is still 12,500 cents.
+      title: Describe the location seed as well
+      explanation: >-
+        Highlighted lines 2, 4 and 7 put a seed and its column description into the documentation. The supporting
+        CSV has the three location rows. After docs generate, the prepared panel shows the seed description
+        and the name-column description alongside the model metadata from the previous step.
       state:
         kind: comparison
-        title: What the metadata changes and what it leaves alone
+        title: Prepared documentation entries
         columns:
-          - property
-          - effect
+          - resource
+          - description
         rows:
-          - - 'owner: finance'
-            - informational context
-          - - warehouse permissions
-            - not changed by this metadata
-          - - base revenue
-            - 12,500 cents
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-      takeaway: |
-        Writing owner: finance documents who is responsible. It does not grant or restrict access.
+          -   - 'seed locations'
+              - The three Waffle Shop locations.
+          -   - locations.name
+              - Name shown on revenue reports.
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
+      takeaway: |-
+        The documentation can describe the CSV seed and its columns, as well as models.
       evidence:
         - src-1
         - src-2
         - src-3
       code:
-        - language: sql
-          filename: models/revenue_by_location.sql
-          content: |
-            select
-                r.location_id, l.name as location,
-                sum(r.payment_cents) as payment_cents,
-                sum(r.refund_cents) as refund_cents,
-                sum(r.revenue_cents) as revenue_cents
-            from {{ ref("order_revenue") }} as r
-            join raw.locations as l on r.location_id = l.location_id
-            group by r.location_id, l.name
-            order by r.location_id
-          highlight_lines:
-            - 3
-            - 4
-            - 5
-          purpose: authored executable syntax; illustration only
         - language: yaml
-          filename: models/schema.yml
+          filename: models/seed_docs.yml
           content: |
             version: 2
-            models:
-              - name: revenue_by_location
-                meta:
-                  owner: finance
-                  unit: cents
+            seeds:
+              - name: locations
+                description: The three Waffle Shop locations.
+                columns:
+                  - name: name
+                    description: Name shown on revenue reports.
+          highlight_lines:
+            - 2
+            - 4
+            - 7
+          purpose: Authored era-specific example; illustration only.
+        - language: text
+          filename: data/locations.csv
+          content: |
+            location_id,name
+            1,Old Port
+            2,Mile End
+            3,Riverside
           highlight_lines:
             - 1
             - 2
             - 3
             - 4
+          purpose: Authored era-specific example; illustration only.
+        - language: shell
+          filename: commands.sh
+          content: |
+            dbt docs generate
+          highlight_lines:
+            - 1
+          purpose: Authored era-specific example; illustration only.
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -247,15 +247,14 @@ walkthrough:
       method: Original source/archive and release documentation inspection; no historical dbt execution.
   intro:
     can_now:
-      - Add custom facts to a model in YAML, such as which team owns it or what unit its numbers are in.
-      - Write descriptions for more kinds of project files, including macros, seeds and snapshots.
-    scenario: >
-      The finance team asks who maintains the revenue definition. The SQL and column types cannot answer that.
-      Waffle Shop records the owner and the unit next to the model, so the answer travels with the code.
-    outcome: >
-      See the owner recorded as metadata, and see that it describes responsibility without changing warehouse
-      permissions.
-  title: |
-    Demo: a meta field records that the finance team owns the revenue model
+      - Attach custom facts such as owner and unit to a model.
+      - Add descriptions to seed resources and their columns.
+    scenario: >-
+      The revenue SQL gives the right number but no owner. Waffle Shop records who maintains it and adds documentation
+      for the location CSV used by reports.
+    outcome: >-
+      See the ownership gap filled and the seed description appear in a prepared documentation view.
+  title: |-
+    Demo: record the revenue owner and describe the location seed
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

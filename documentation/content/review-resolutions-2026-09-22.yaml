@@ -1,0 +1,1856 @@
+id: demo-review-resolutions-2026-09-22
+historical_cutoff: '2026-09-21'
+reviewed_on: '2026-09-22'
+status: resolved
+summary:
+  review_flags: 60
+  historical_doubts: 82
+  unresolved: 0
+review_flags:
+- id: review-0.1-01
+  chapter: '0.1'
+  flag: Step 1 result table shows location, payment_cents and refund_cents columns, but the query only outputs location_id
+    and revenue_cents and never joins a locations table. Consider aligning the table with the query or the query
+    with the table.
+  status: fixed
+  resolution: Result now has exactly location_id and revenue_cents.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - alignment-0-1-1
+- id: review-0.1-02
+  chapter: '0.1'
+  flag: Step 3 diagram edge is written order_revenue->revenue while the node is named revenue_by_location.
+  status: fixed
+  resolution: Diagram IDs and labels both use the complete model names.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - alignment-0-1-1
+- id: review-0.1-03
+  chapter: '0.1'
+  flag: Step 3 ref('order_revenue') points at a model that is not shown anywhere in this chapter.
+  status: fixed
+  resolution: Added the complete order_revenue parent SQL to the patch step.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - alignment-0-1-1
+- id: review-0.2-01
+  chapter: '0.2'
+  flag: 'Step 2 schema.yml declares the relationship under orders (from order_id to payments). That checks that
+    every order has a payment. The scenario needs the reverse: every payment must have an order. The result row
+    label (payments to orders) matches the scenario, not the code. Please confirm the intended direction and fix
+    the yaml if needed.'
+  status: documented-limitation
+  resolution: The reviewer’s modern direction is incorrect for 0.2.0. Retain parent orders -> child payments. schema_tester.py
+    lines 130-133 assign these roles; lines 24-33 count orphan children. Schema file now opens first.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - alignment-0-2-3-0
+- id: review-0.3-01
+  chapter: '0.3'
+  flag: The step 1 diagram shows payments_by_order and refunds_by_order feeding order_revenue, but the code shows
+    them feeding order_amounts, which order_revenue then reads. Consider adding order_amounts to the diagram or
+    explaining the shortcut.
+  status: fixed
+  resolution: Inserted order_amounts between the aggregate branches and order_revenue.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - alignment-0-3-0
+- id: review-0.3-02
+  chapter: '0.3'
+  flag: Diagram edges use short names (payments, refunds, revenue) that do not match the node names.
+  status: fixed
+  resolution: Full model names now serve as both diagram IDs and labels.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - alignment-0-3-0
+- id: review-0.4-01
+  chapter: '0.4'
+  flag: Step 3 shows order_revenue.sql as a plain select from order_amounts, without the incremental config that
+    step 2 introduced. A viewer may think the config was removed. Consider showing the incremental version in step
+    3.
+  status: fixed
+  resolution: The incremental config is identical in the before, filter and after steps.
+  source_refs:
+  - src-1
+  - src-2
+  - alignment-0-4-0
+- id: review-0.4-02
+  chapter: '0.4'
+  flag: Step 1 order_revenue.sql reads from order_amounts, but step 2 introduces order_revenue_input as the source.
+    The chain of models changes between steps without explanation.
+  status: fixed
+  resolution: Every phase uses order_revenue_input; its definition is shown.
+  source_refs:
+  - src-1
+  - src-2
+  - alignment-0-4-0
+- id: review-0.4-03
+  chapter: '0.4'
+  flag: The ephemeral materialization is listed in can_now but never appears in a step.
+  status: fixed
+  resolution: Added a dedicated ephemeral-helper step with an inline-versus-stored dependency picture.
+  source_refs:
+  - src-1
+  - src-2
+  - alignment-0-4-0
+- id: review-0.6-01
+  chapter: '0.6'
+  flag: Step 3 order_revenue.sql selects only order_id and revenue_cents, but the result table also shows location,
+    payment_cents and refund_cents. Consider aligning the table with the model output.
+  status: fixed
+  resolution: The inspection query and result share order_id, payment_cents, refund_cents and revenue_cents; no
+    unselected location column.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - alignment-0-6-0
+- id: review-0.7-01
+  chapter: '0.7'
+  flag: 'profiles.yml here uses target: dev while chapter 0.3 uses run-target: dev. Please confirm which key was
+    current at 0.7.0 so the two chapters agree with history.'
+  status: documented-limitation
+  resolution: Keep named profile target in 0.7.0. Original loader/connection source verifies the change from 0.3
+    user.run-target; these versions should not be made artificially identical.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - alignment-0-7-0
+  - alignment-0-7-1
+- id: review-0.8-01
+  chapter: '0.8'
+  flag: Step 2 shows exactly the same code and highlights as step 1. Per-model transactions are a runtime behaviour
+    that is invisible in model SQL; the wording now says so, but consider a result-panel note or log excerpt if
+    one exists.
+  status: fixed
+  resolution: Replaced labels with a prepared BEGIN/create/COMMIT schedule across two workers; explicitly not a
+    captured log.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - alignment-0-8-0
+  - alignment-0-8-3
+- id: review-0.8-02
+  chapter: '0.8'
+  flag: Step 1 result says 13 payment rows for 12 orders in the base dataset. Please confirm the base fixture really
+    has 13 payment rows.
+  status: documented-limitation
+  resolution: Fixture confirms 13 payment rows for 12 orders; order 1043 has two payments. Kept the count and documented
+    why.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - alignment-0-8-0
+  - alignment-0-8-3
+- id: review-0.9-01
+  chapter: '0.9'
+  flag: Step 1 is framed as the problem (copies), but both models already call shared_shop.net_cents. The before
+    state with copied SQL is never shown. Consider showing the hand-typed subtraction in step 1 and the macro call
+    in step 2.
+  status: fixed
+  resolution: The first screen now shows two hand-written copies of subtraction; the package call follows.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - alignment-0-9-0
+- id: review-0.9-02
+  chapter: '0.9'
+  flag: Step 3 result lists order_revenue in waffle_analytics, but only revenue_by_location is shown with the schema
+    config.
+  status: fixed
+  resolution: order_revenue stays in waffle; only configured revenue_by_location goes to waffle_analytics.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - alignment-0-9-0
+- id: review-0.10-01
+  chapter: '0.10'
+  flag: packages.yml is listed in can_now but no step shows it. Either add a small step or accept that only seeds
+    are demonstrated.
+  status: fixed
+  resolution: Added a local dependency step with packages.yml, the package project file and dbt deps.
+  source_refs:
+  - src-1
+  - src-2
+  - alignment-0-10-0
+- id: review-0.10-02
+  chapter: '0.10'
+  flag: Step 3 code joins ref(revenue_by_location), which in other chapters already joins raw.locations for names.
+    Not wrong, but a reader may wonder why names are joined twice.
+  status: fixed
+  resolution: Join order-level revenue directly to the locations seed; no duplicated name join.
+  source_refs:
+  - src-1
+  - src-2
+  - alignment-0-10-0
+- id: review-0.11-01
+  chapter: '0.11'
+  flag: 'Step 1 (meaning): highlights [1,2,3,4] do not cover the column description on lines 6 and 7, which is the
+    point of the step. Consider highlighting 6 and 7 instead of or in addition to 1 to 4.'
+  status: fixed
+  resolution: Highlighted column-name/description lines 6 and 7.
+  source_refs:
+  - src-1
+  - src-2
+- id: review-0.11-02
+  chapter: '0.11'
+  flag: Step 2 diagram edges use short names (payments->revenue, refunds->revenue) while the nodes are named payments_by_order,
+    refunds_by_order and order_revenue. Align the edge labels with the node names.
+  status: fixed
+  resolution: Changed node and edge IDs to the complete model names; all edges resolve.
+  source_refs:
+  - src-1
+  - src-2
+- id: review-0.12-01
+  chapter: '0.12'
+  flag: Step 3 (answer) shows a different revenue_by_location.sql (9 lines, joins raw.locations) than step 2 (4
+    lines, no join), and order_revenue.sql loses its config tag line between step 2 and step 3. The code should
+    be the same model across steps.
+  status: fixed
+  resolution: All three steps now show the same tagged SQL models.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+- id: review-0.12-02
+  chapter: '0.12'
+  flag: Relation caching has no step. Either accept that only tags are demonstrated or add a short comparison step.
+  status: documented-limitation
+  resolution: Relation caching is sourced release context only. Removed it from intro promises and documented the
+    omitted demonstration.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+- id: review-0.13-01
+  chapter: '0.13'
+  flag: 'Step 3 (business): payments.sql reads through source(), but order_amounts.sql still reads raw.payments
+    and raw.refunds directly, so the new payments model is not actually used downstream. Consider having order_amounts
+    read from ref(payments).'
+  status: fixed
+  resolution: order_amounts now reads ref(payments), whose source call forms the actual upstream link.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+- id: review-0.14-01
+  chapter: '0.14'
+  flag: 'Step 2 (change): the snapshot code reads select * from raw.customers, while steps 1 and 3 read select customer_id,
+    name, city. The snapshot definition should be identical across steps.'
+  status: fixed
+  resolution: All three snapshot screens use identical named-column SQL.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - alignment-0-14-0
+- id: review-0.14-02
+  chapter: '0.14'
+  flag: Step 1 and step 3 snapshot files carry a fixture-phase comment on line 1 that shifts the config lines to
+    3 and 4, while step 2 has no comment and highlights 1 to 4. Consistent line numbering would help.
+  status: fixed
+  resolution: Removed phase comments from the code and stabilized highlights on config lines 2 and 3.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - alignment-0-14-0
+- id: review-0.15-01
+  chapter: '0.15'
+  flag: All three steps highlight revenue_by_location.sql lines 3 to 5, which are unrelated to the feature. Consider
+    highlighting only the YAML description in step 1 and only the command line in steps 2 and 3.
+  status: fixed
+  resolution: Removed unrelated SQL highlights; highlight the changed description, partial-parse setting and authored
+    JSON fields.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - src-6
+  - alignment-0-15-0
+- id: review-0.15-02
+  chapter: '0.15'
+  flag: Step 3 command uses dbt --log-format json run. Confirm the flag was global (before the subcommand) in 0.15.0,
+    as shown.
+  status: documented-limitation
+  resolution: Original 0.15.0 main.py confirms --log-format and --partial-parse are root flags before run. Keep
+    this order and cite it.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - src-6
+  - alignment-0-15-0
+- id: review-0.16-01
+  chapter: '0.16'
+  flag: 'Step 1 (question): the schema.yml with the meta block is shown before the question is asked. Consider showing
+    only the SQL in step 1, or a schema.yml without meta.'
+  status: fixed
+  resolution: The first screen now has name/description only; meta is introduced next.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+- id: review-0.16-02
+  chapter: '0.16'
+  flag: 'Steps 2 and 3 (meta, boundary): highlights [1,2,3,4] stop at the meta: line. Lines 5 and 6 (owner: finance,
+    unit: cents) should be highlighted.'
+  status: fixed
+  resolution: Highlight owner/unit lines 5 and 6; the old repeated boundary screen now documents a seed.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+- id: review-0.16-03
+  chapter: '0.16'
+  flag: 'Step 1 table cell reads revenue_by_location: Old Port in the model column. Consider splitting model and
+    location into separate columns.'
+  status: fixed
+  resolution: Split model and location into separate columns.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+- id: review-0.17-01
+  chapter: '0.17'
+  flag: Path-based selection has no step. Either accept that only fail-fast is demonstrated or add a one-line command
+    example.
+  status: fixed
+  resolution: The repaired rerun uses path:models/refunds_by_order.sql+ and shows restored revenue.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+- id: review-0.17-02
+  chapter: '0.17'
+  flag: Step 1 file label says deliberately invalid, which is fine, but the broken model reads raw.refunds directly
+    while the repaired model in step 3 reads ref(refunds). Two things change in the fix, not one.
+  status: fixed
+  resolution: Broken and repaired models both read ref(refunds); only the misspelled column changes.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+- id: review-0.18-01
+  chapter: '0.18'
+  flag: 'Step 1 (change): highlights [1,2] on refunds_by_order.sql show the final SQL with nothing that marks a
+    change. Consider a comment line or a before-and-after view.'
+  status: fixed
+  resolution: Added a saved-production before file and highlighted the coalesce edit in the current file.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - src-6
+- id: review-0.18-02
+  chapter: '0.18'
+  flag: order_amounts reads refunds_by_order, so it is also downstream of the change, but it is missing from the
+    step 1 status table and from the step 2 build list.
+  status: fixed
+  resolution: Added order_amounts to both descendant classifications and build list.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - src-6
+- id: review-0.18-03
+  chapter: '0.18'
+  flag: Step 2 table lists only orders as a reused parent. payments_by_order is also unselected and would also be
+    read from production.
+  status: fixed
+  resolution: Reuse row lists orders, payments_by_order and refunds, with no-development-copy precondition.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - src-6
+- id: review-0.19-01
+  chapter: '0.19'
+  flag: Step 2's snapshot file lacks the 'Fixture phase' comment line that steps 1 and 3 have, so the highlight
+    numbers shift by one between steps (1-4 versus 2-5). Harmless but inconsistent.
+  status: fixed
+  resolution: Identical snapshot text now highlights config lines 2 and 3 everywhere; phases stay in data_context.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+- id: review-0.21-01
+  chapter: '0.21'
+  flag: Step 1's result panel lists order_revenue as depending directly on staged payments, but the code shows two
+    models in between (payments_by_order and order_amounts). Consider naming the chain or simplifying the panel.
+  status: fixed
+  resolution: Graph shows payments -> payments_by_order -> order_amounts -> order_revenue -> revenue_by_location.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+- id: review-0.21-02
+  chapter: '0.21'
+  flag: Step 3 queries waffle.revenue_by_location, which is not one of the models shown in step 1, while the step
+    2 panel calls the skipped model 'dependent revenue model'. Consider aligning the names so the viewer can see
+    it is the same thing.
+  status: fixed
+  resolution: Added the location model to the code and named it in the skipped result and retained-table explanation.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+- id: review-1.0-01
+  chapter: '1.0'
+  flag: Step 1 shows two files both named models/schema.yml with different content (one has the payments test, the
+    other documents revenue_by_location). Consider giving one a different filename or merging them.
+  status: fixed
+  resolution: Renamed the documentation mapping to models/revenue.yml; the payment tests remain schema.yml.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+- id: review-1.1-01
+  chapter: '1.1'
+  flag: In step 3, order_amounts reads raw.orders, raw.payments and raw.refunds directly rather than through source()
+    or ref(). In dbt's graph it would not sit downstream of the orders source, so source_status:fresher+ would not
+    select it or the models after it. Only orders.sql in step 2 uses source(). The chain the walkthrough describes
+    may not match what the code would actually do.
+  status: fixed
+  resolution: order_amounts reads ref(orders), which reads source(raw, orders), making the selected downstream branch
+    real.
+  source_refs:
+  - src-1
+  - src-2
+- id: review-1.2-01
+  chapter: '1.2'
+  flag: Step 3 shows two files with the same name models/revenue_by_location.sql but different SQL (one with the
+    grant config and only revenue, the other with payments and refunds too).
+  status: fixed
+  resolution: Only one consistent full-column granted model appears per step.
+  source_refs:
+  - src-1
+  - src-2
+- id: review-1.2-02
+  chapter: '1.2'
+  flag: Step 1 is framed as the situation before the grant, but its code already contains the grant config on line
+    1 and highlights it. Consider a version without line 1 for step 1, or highlights 2 to 4 only.
+  status: fixed
+  resolution: The first screen has no grants entry and shows a denied read; later screens add and apply the grant.
+  source_refs:
+  - src-1
+  - src-2
+- id: review-1.3-01
+  chapter: '1.3'
+  flag: Step 3 result panel says 'all 12 orders'. Confirm the base fixture has exactly 12 orders; the dump does
+    not show them.
+  status: documented-limitation
+  resolution: Confirmed exactly 12 base orders and kept the result; it remains a Snowflake/Snowpark illustration,
+    not a captured Python run.
+  source_refs:
+  - src-1
+  - src-2
+- id: review-1.5-01
+  chapter: '1.5'
+  flag: In all three steps the schema.yml highlights are lines 1 to 4 (version, models, name, config). The content
+    that matters is lines 5 and 6 (contract enforced) and 8 to 11 (column names and types). Suggest highlighting
+    5, 6, 8, 9, 10, 11 instead.
+  status: fixed
+  resolution: Highlighted enforced contract lines 5/6 and declared column/type lines 8-11.
+  source_refs:
+  - src-1
+  - src-2
+  - alignment-1-5-0
+- id: review-1.6-01
+  chapter: '1.6'
+  flag: Step 1 result table lists payments_by_order, refunds_by_order and order_revenue, but the models shown do
+    not include payments_by_order.sql. Consider adding it or accepting that it is referenced only.
+  status: fixed
+  resolution: Added payments_by_order SQL to the retry steps and complete downstream status list.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - alignment-1-6-0
+  - alignment-postgres
+- id: review-1.7-01
+  chapter: '1.7'
+  flag: 'Step 1 uses a local package (local: ../shared_shop). A local dependency has no version to resolve, so it
+    is a weak illustration of request versus resolution. Consider a git or hub package with a version range if the
+    historical record supports it.'
+  status: fixed
+  resolution: Replaced local dependency with dbt-labs/dbt_utils >=1.1.0,<1.2.0 and prepared pin 1.1.1.
+  source_refs:
+  - src-1
+  - src-2
+  - alignment-1-7-0
+  - alignment-utils
+- id: review-1.7-02
+  chapter: '1.7'
+  flag: Confirm that package-lock.yml and dbt docs generate --static were both introduced in 1.7.0 as stated.
+  status: documented-limitation
+  resolution: Both features verified at 1.7.0 in task/deps.py and task/generate.py. Lock resolution remains illustrative;
+    only the request hash was computed with the actual versioned helper.
+  source_refs:
+  - src-1
+  - src-2
+  - alignment-1-7-0
+  - alignment-utils
+- id: review-1.9-01
+  chapter: '1.9'
+  flag: Step 3 original takeaway gives location totals 4,500, 5,700 and 4,800 cents. They add to 15,000 but are
+    not shown in any state table. Either add a location table or drop the numbers. The rewrite drops them.
+  status: fixed
+  resolution: Kept the edited takeaway without unseen location totals; added an all-days SUM query for 15,000.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - src-6
+  - src-7
+  - alignment-1-9-0
+  - alignment-event-filter
+- id: review-1.9-02
+  chapter: '1.9'
+  flag: The rewrite says the second command rebuilds March 8 only, treating --event-time-end 2016-03-09 as exclusive.
+    Confirm that is how 1.9 treats the end date.
+  status: documented-limitation
+  resolution: 'Exclusive end verified: adapter relation wrapper uses >= start and < end. Keep March 9 as the exclusive
+    boundary and cite the source.'
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - src-6
+  - src-7
+  - alignment-1-9-0
+  - alignment-event-filter
+- id: review-1.9-03
+  chapter: '1.9'
+  flag: With lookback set to 1, a plain run on March 9 would also reprocess March 8. Consider saying why the explicit
+    date range is shown instead.
+  status: fixed
+  resolution: Explained that lookback=1 already revisits March 8 on a March 9 run; the explicit range demonstrates
+    control.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - src-6
+  - src-7
+  - alignment-1-9-0
+  - alignment-event-filter
+- id: review-1.10-01
+  chapter: '1.10'
+  flag: Steps 1 and 2 highlight lines 1 to 4, but the problem is the repeated description on lines 4 and 5. Highlighting
+    4 and 5 only would match the explanation better.
+  status: fixed
+  resolution: Highlighted duplicate description lines 4 and 5.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - src-6
+  - alignment-1-10-0
+- id: review-1.10-02
+  chapter: '1.10'
+  flag: The can_now items about macro argument checks and custom freshness SQL are not demonstrated in any step.
+  status: fixed
+  resolution: Intro now promises only sampling, duplicate-key detection and warning escalation; other features stay
+    sourced release context.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - src-6
+  - alignment-1-10-0
+- id: review-1.11-01
+  chapter: '1.11'
+  flag: intro.outcome refers to a named supported adapter, but the walkthrough never names one. The return type
+    number(18, 2) suggests Snowflake. Either name the adapter in a code comment or accept the rewrite, which drops
+    the claim.
+  status: fixed
+  resolution: Snowflake is now named in the scenario and on-screen explanation; retained its number types.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - src-6
+  - src-7
+  - src-8
+  - alignment-1-11-0
+- id: review-1.11-02
+  chapter: '1.11'
+  flag: Confirm the Jinja call form {{ function("cents_to_units") }} matches the 1.11.0 syntax.
+  status: documented-limitation
+  resolution: Confirmed function(name) in the original 1.11 context provider and parser. Keep the call and cite
+    exact-version source.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - src-6
+  - src-7
+  - src-8
+  - alignment-1-11-0
+- id: review-1.12-01
+  chapter: '1.12'
+  flag: can_now mentions moving variables into vars.yml, but no step shows a vars.yml file. Either add one or drop
+    the item.
+  status: fixed
+  resolution: Added a distinct vars.yml step with the required top-level vars mapping and consuming SQL.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - alignment-1-12-0
+- id: review-1.12-02
+  chapter: '1.12'
+  flag: Step 3 shows the same files as step 1. A parse comparison or a vars.yml example would give the step its
+    own content.
+  status: fixed
+  resolution: Replaced the checklist with a four-model expected-selection comparison and complete supporting dependency
+    code.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - alignment-1-12-0
+- id: review-1.12-03
+  chapter: '1.12'
+  flag: Confirm the flag name use_v2_parser and the command flags --use-v2-parser and --no-use-v2-parser as of 1.12.0.
+  status: documented-limitation
+  resolution: Confirmed use_v2_parser, --use-v2-parser and --no-use-v2-parser in 1.12 params.py and common command
+    flags. The extra parser binary is required.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - alignment-1-12-0
+- id: review-2.0-01
+  chapter: '2.0'
+  flag: Step 3 result table shows location, payment_cents and refund_cents, but the corrected query selects only
+    location_id and revenue_cents. Either widen the query or narrow the table.
+  status: fixed
+  resolution: Corrected result now contains exactly location_id and revenue_cents.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - src-6
+  - src-7
+  - alignment-static
+- id: review-2.0-02
+  chapter: '2.0'
+  flag: Step 2 does not say which distribution reports the missing column, or at what moment (parse, compile, run).
+    The rewrite says full dbt, while reading the SQL. Confirm.
+  status: fixed
+  resolution: Named full dbt, strict static analysis and compilation; distinguished metadata reads from model execution.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - src-6
+  - src-7
+  - alignment-static
+- id: review-2.0-03
+  chapter: '2.0'
+  flag: 'Historical claims to confirm: package names dbt and dbt-oss at 2.0.2, the Product Licensing Agreement licence
+    category, and the September 16 Summit product statuses.'
+  status: documented-limitation
+  resolution: Confirmed both 2.0.2 PyPI uploads on September 15, the Product Licensing Agreement/Apache distinction,
+    and Summit maturity levels. Kept access and beta qualifications.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - src-6
+  - src-7
+  - alignment-static
+- id: review-0.2-02
+  chapter: '0.2'
+  flag: Step 3 was replaced by a seed demo (CSV in `data/locations.csv`, `dbt seed`, resulting table). Confirm against
+    the 0.2.3.0 source that the seed folder was `data/` and whether models could `ref()` a seeded table at that
+    patch; adjust the CSV path or add a join step if so.
+  status: documented-limitation
+  resolution: Confirmed data/ in 0.2.3.0 project.py. Seeds are loaded independently; compilation.py ref lookup only
+    sees SQL models. Keep the seed result without a ref join; explain the 0.10 change.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - alignment-0-2-3-0
+historical_doubts:
+- id: historical-0.1-01
+  chapter: '0.1'
+  flag: Step 1 result table shows columns location, payment_cents and refund_cents, but the query only outputs location_id
+    and revenue_cents. The result does not match the code.
+  status: fixed
+  resolution: Result now has exactly location_id and revenue_cents.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - alignment-0-1-1
+- id: historical-0.1-02
+  chapter: '0.1'
+  flag: Step 3 refers to a model order_revenue that is never shown in this chapter.
+  status: fixed
+  resolution: Added the complete order_revenue parent SQL to the patch step.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - alignment-0-1-1
+- id: historical-0.1-03
+  chapter: '0.1'
+  flag: Step 3's diagram state has no content in this dump; confirm it renders.
+  status: fixed
+  resolution: The diagram has two nodes and one valid edge, using complete names; rendering is covered by the app
+    diagram component.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - alignment-0-1-1
+- id: historical-0.1-04
+  chapter: '0.1'
+  flag: The chapter already flags that the first patch to add ref() is unconfirmed. The step 2 claim that ref()
+    is 'not available in this package' at 0.1.1 is consistent with that but still unsourced.
+  status: documented-limitation
+  resolution: '0.1.1 compile.py inspected: only Jinja/project wrapping, no ref helper. 0.1.14 has ref; exact introduction
+    patch stays unknown.'
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - alignment-0-1-1
+- id: historical-0.2-01
+  chapter: '0.2'
+  flag: Step 2 schema.yml declares the relationship on orders (from order_id to payments). That tests that every
+    order has a payment, which would not catch payment 2099. To catch the orphan payment the relationship belongs
+    on payments, pointing to orders. The result panel says 'payments to orders', so the yaml and the result disagree.
+  status: documented-limitation
+  resolution: The reviewer’s modern direction is incorrect for 0.2.0. Retain parent orders -> child payments. schema_tester.py
+    lines 130-133 assign these roles; lines 24-33 count orphan children. Schema file now opens first.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - alignment-0-2-3-0
+- id: historical-0.2-02
+  chapter: '0.2'
+  flag: Step 1 places the query in the analyses folder, but the research says compiling analytical queries arrived
+    in 0.2.3.0, not 0.2.0. Either present it as an ad hoc query or label the step 0.2.3.0.
+  status: fixed
+  resolution: Replaced the analyses resource with an explicitly direct warehouse inspection query at 0.2.0.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - alignment-0-2-3-0
+- id: historical-0.2-03
+  chapter: '0.2'
+  flag: Accepted-values tests (0.2.3.0) are claimed in the feature list but not shown; minor.
+  status: documented-limitation
+  resolution: Accepted-values tests remain patch release context, not an intro or step promise.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - alignment-0-2-3-0
+- id: historical-0.3-01
+  chapter: '0.3'
+  flag: Temporary relations reducing unavailable time (a 0.3.0 claim) are not shown; acceptable as a side feature.
+  status: documented-limitation
+  resolution: Temporary relation swapping remains release context, documented as outside this walkthrough.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - alignment-0-3-0
+- id: historical-0.3-02
+  chapter: '0.3'
+  flag: Step 2's result is labelled 'prepared scheduling outcome', which correctly signals it is not a captured
+    log.
+  status: documented-limitation
+  resolution: Retained the prepared-scheduling label; this is not a measured schedule or native log.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - alignment-0-3-0
+- id: historical-0.3-03
+  chapter: '0.3'
+  flag: profiles.yml uses 'run-target' under a 'user' key here, while chapters 0.7 and 0.8 use 'target' and a named
+    profile. Confirm which key names apply at each version.
+  status: documented-limitation
+  resolution: Keep named profile target in 0.7.0. Original loader/connection source verifies the change from 0.3
+    user.run-target; these versions should not be made artificially identical.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - alignment-0-3-0
+- id: historical-0.4-01
+  chapter: '0.4'
+  flag: Step 3 shows order_revenue.sql without the incremental config from step 2. The visitor sees the config disappear.
+    Step 3 should show the same configured model.
+  status: fixed
+  resolution: The incremental config is identical in the before, filter and after steps.
+  source_refs:
+  - src-1
+  - src-2
+  - alignment-0-4-0
+- id: historical-0.4-02
+  chapter: '0.4'
+  flag: Every model in steps 1 and 3 starts with a '-- Fixture phase:' comment. These are authoring notes, not period
+    code, and should not be visible to visitors.
+  status: fixed
+  resolution: Removed visible fixture-phase comments in this chapter; explicit data_context retains the before/after
+    phases.
+  source_refs:
+  - src-1
+  - src-2
+  - alignment-0-4-0
+- id: historical-0.4-03
+  chapter: '0.4'
+  flag: sql_where with {{ this }} matches the 0.4.0 pattern; no doubt there.
+  status: documented-limitation
+  resolution: Kept sql_where with this after checking the original 0.4 materialization implementation.
+  source_refs:
+  - src-1
+  - src-2
+  - alignment-0-4-0
+- id: historical-0.5-01
+  chapter: '0.5'
+  flag: 'Placing vars under models: waffle_shop: vars: matches the 0.5.0 layout; no doubt there.'
+  status: documented-limitation
+  resolution: Kept the confirmed models.waffle_shop.vars layout from 0.5.0.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - alignment-0-5-1
+  - alignment-0-5-4
+- id: historical-0.5-02
+  chapter: '0.5'
+  flag: The '.0' appended after var() in SQL is unusual but valid; it is a presentation choice, not a historical
+    issue.
+  status: documented-limitation
+  resolution: Kept the .0 suffix; the rendered expression divides by decimal 100.0, verified arithmetically.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - alignment-0-5-1
+  - alignment-0-5-4
+- id: historical-0.5-03
+  chapter: '0.5'
+  flag: '''Safer incremental writes'' (0.5.0) is claimed but not shown or explained; acceptable as a side feature.'
+  status: documented-limitation
+  resolution: Safer incremental writes and adapter introduction are release context; the demo shows variables, archives
+    and custom SQL tests.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - alignment-0-5-1
+  - alignment-0-5-4
+- id: historical-0.6-01
+  chapter: '0.6'
+  flag: Step 1 says the rule is 'typed out in several models' but only one query is shown; the claim is fine but
+    the evidence is thin.
+  status: fixed
+  resolution: Added a second before-macro report with a copied subtraction.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - alignment-0-6-0
+- id: historical-0.6-02
+  chapter: '0.6'
+  flag: Macro syntax and the macros folder match 0.6.0; no historical doubt.
+  status: documented-limitation
+  resolution: Kept macro definition and folder after checking 0.6.0 source.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - alignment-0-6-0
+- id: historical-0.6-03
+  chapter: '0.6'
+  flag: Hooks and target context are claimed but not shown; acceptable as side features.
+  status: documented-limitation
+  resolution: Hooks and target context remain release context, expressly outside the walkthrough.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - alignment-0-6-0
+- id: historical-0.7-01
+  chapter: '0.7'
+  flag: 'profiles.yml here uses ''target: dev'' and dbt_project.yml uses a ''profile:'' key, while chapter 0.3 uses
+    ''run-target'' under ''user''. Confirm when the rename happened and use period-correct keys in each chapter.'
+  status: documented-limitation
+  resolution: Keep named profile target in 0.7.0. Original loader/connection source verifies the change from 0.3
+    user.run-target; these versions should not be made artificially identical.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - alignment-0-7-0
+  - alignment-0-7-1
+- id: historical-0.7-02
+  chapter: '0.7'
+  flag: The Snowflake profile fields shown (account, user, password, database, schema, warehouse) look right for
+    0.7.0 but are unsourced in the research section.
+  status: documented-limitation
+  resolution: Original 0.7.0 connection contract confirms account, user, password, database, schema and warehouse;
+    role is shown only in patch 0.7.1.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - alignment-0-7-0
+  - alignment-0-7-1
+- id: historical-0.8-01
+  chapter: '0.8'
+  flag: The chapter does not say what was broken before 0.8.0. Chapter 0.3 already claims independent branches ran
+    side by side, so a visitor cannot tell what 0.8.0 fixed. The text should state the pre-0.8 limitation.
+  status: fixed
+  resolution: Transaction explanation now identifies the shared-transaction concurrency problem fixed in 0.8.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - alignment-0-8-0
+  - alignment-0-8-3
+- id: historical-0.8-02
+  chapter: '0.8'
+  flag: Materializations as macros is claimed in can_now but not shown; acceptable as a side feature.
+  status: documented-limitation
+  resolution: Materializations-as-macros is retained in release context and removed from intro promises.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - alignment-0-8-0
+  - alignment-0-8-3
+- id: historical-0.8-03
+  chapter: '0.8'
+  flag: BigQuery is in can_now but appears nowhere in the steps, although the research asked to show it as a dated
+    patch event.
+  status: fixed
+  resolution: Added a BigQuery step labelled 0.8.3; its historical profile uses schema, not dataset.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - alignment-0-8-0
+  - alignment-0-8-3
+- id: historical-0.9-01
+  chapter: '0.9'
+  flag: Step 3 result says order_revenue lands in waffle_analytics, but only revenue_by_location has the schema
+    config. order_revenue should land in waffle. The result contradicts the code.
+  status: fixed
+  resolution: order_revenue stays in waffle; only configured revenue_by_location goes to waffle_analytics.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - alignment-0-9-0
+- id: historical-0.9-02
+  chapter: '0.9'
+  flag: Step 2 applies the test in schema.yml as 'shared_shop.non_negative'. Confirm that package-prefixed custom
+    test names in schema.yml worked in 0.9.0; the macro naming convention test_<name> is right but the prefix is
+    unsourced.
+  status: documented-limitation
+  resolution: Confirmed package-prefixed v1 constraints in 0.9 parser.py, resolving a namespaced test_ macro.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - alignment-0-9-0
+- id: historical-0.9-03
+  chapter: '0.9'
+  flag: The shared package is declared as a file URL under repositories. The text says it is made up, which is honest;
+    confirm 0.9.0 accepted local file URLs as repositories.
+  status: documented-limitation
+  resolution: Confirmed repositories is handed to Git clone, which accepts file URLs. The example is an authored
+    existing local Git repository, not a historical public package.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - alignment-0-9-0
+- id: historical-0.10-01
+  chapter: '0.10'
+  flag: Step 2 result panel is labelled comparison but is really a one-row table of relation and row count. Not
+    a history problem, only a panel-type mismatch.
+  status: fixed
+  resolution: Changed the seed row-count panel from comparison to table.
+  source_refs:
+  - src-1
+  - src-2
+  - alignment-0-10-0
+- id: historical-0.11-01
+  chapter: '0.11'
+  flag: Step 3 SQL joins raw.locations directly even though chapter 0.10 turned locations into a seed reachable
+    by ref. Not wrong for 0.11, but the lineage graph will then omit locations. Keep or change deliberately.
+  status: documented-limitation
+  resolution: Deliberately retain raw.locations in this standalone slice; the diagram only promises model ref dependencies
+    and does not draw a seed edge.
+  source_refs:
+  - src-1
+  - src-2
+- id: historical-0.12-01
+  chapter: '0.12'
+  flag: Step 3 shows order_revenue without the config(tags) line that steps 1 and 2 added. The code should stay
+    consistent across steps.
+  status: fixed
+  resolution: All three steps now show the same tagged SQL models.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+- id: historical-0.12-02
+  chapter: '0.12'
+  flag: Step 1 says the highlighted lines 1 to 3 are the config call, but only line 1 is the config. Lines 2 and
+    3 are plain SQL. Highlight only line 1.
+  status: fixed
+  resolution: Only config line 1 is highlighted for the tag.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+- id: historical-0.13-01
+  chapter: '0.13'
+  flag: Step 3 says models now read through source(), but order_amounts still reads raw.payments and raw.refunds
+    directly. Only payments.sql uses source(). Switch order_amounts to ref("payments") or source() so the claim
+    holds.
+  status: fixed
+  resolution: order_amounts now reads ref(payments), whose source call forms the actual upstream link.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+- id: historical-0.13-02
+  chapter: '0.13'
+  flag: The age query uses datediff(hour, ...), which is Snowflake or Redshift syntax, not Postgres. Fine as illustrative
+    SQL, but not runnable on the Postgres profile the app otherwise implies.
+  status: documented-limitation
+  resolution: Named Redshift as the adapter for datediff(hour,...); no PostgreSQL compatibility is claimed for that
+    query.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+- id: historical-0.14-01
+  chapter: '0.14'
+  flag: 'Step 2 snapshot code differs from steps 1 and 3: it drops the fixture comment and selects star instead
+    of the three named columns. Keep the snapshot definition identical across steps.'
+  status: fixed
+  resolution: All three snapshot screens use identical named-column SQL.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - alignment-0-14-0
+- id: historical-0.14-02
+  chapter: '0.14'
+  flag: Step 3 takeaway says revenue stays 12,500 cents, but nothing in the demo shows revenue or how orders keep
+    their old location. Either drop that clause or add a row showing an order joined to the snapshot at its order
+    date.
+  status: fixed
+  resolution: Removed the unshown order-attribution/revenue claim; takeaway now states only the preserved city history.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - alignment-0-14-0
+- id: historical-0.15-01
+  chapter: '0.15'
+  flag: 'The demo shows only the CLI flag for partial parsing. In 0.15.0 the same feature could also be turned on
+    with partial_parse: true under config in profiles.yml. Worth one sentence so viewers do not think the flag was
+    the only way.'
+  status: fixed
+  resolution: Added config.partial_parse in a profiles.yml excerpt, alongside the equivalent CLI switch.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - src-6
+  - alignment-0-15-0
+- id: historical-0.15-02
+  chapter: '0.15'
+  flag: Python 2 being dropped is in the feature claims but is not in can_now or any step. That is acceptable for
+    a demo, but the chapter text should mention it somewhere.
+  status: documented-limitation
+  resolution: Python 2 retirement remains in the chapter’s release claims; not a walkthrough demonstration.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - src-6
+  - alignment-0-15-0
+- id: historical-0.16-01
+  chapter: '0.16'
+  flag: Step 1 highlights lines 1 to 4 and the text says the YAML opens a meta block, but lines 5 and 6 with the
+    owner and unit are visible in the code. The question in the result panel is therefore already answered.
+  status: fixed
+  resolution: The first screen now has name/description only; meta is introduced next.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+- id: historical-0.17-01
+  chapter: '0.17'
+  flag: 'The research and the feature claims omit the new dbt_project.yml structure (config-version: 2) that also
+    shipped in 0.17.0. Many practitioners remember 0.17 for that change. Worth checking the release notes and deciding
+    whether the chapter should mention it.'
+  status: fixed
+  resolution: 'Added config-version: 2 to technical release context and documented why this demo focuses on execution
+    selection.'
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+- id: historical-0.17-02
+  chapter: '0.17'
+  flag: Step 3 shows four files with the fixed model but no command, so the viewer never sees the rerun happen.
+    The fix above covers this.
+  status: fixed
+  resolution: The repaired rerun uses path:models/refunds_by_order.sql+ and shows restored revenue.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+- id: historical-0.18-01
+  chapter: '0.18'
+  flag: order_amounts reads refunds_by_order directly (step 1 code, line 6), so it is downstream of the change.
+    The step 1 panel omits it and the step 2 build list omits it, yet order_revenue, which is listed, reads from
+    order_amounts. With state:modified+ dbt would build order_amounts too. Add it to both panels.
+  status: fixed
+  resolution: Added order_amounts to both descendant classifications and build list.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - src-6
+- id: historical-0.18-02
+  chapter: '0.18'
+  flag: The step 2 reuse row names only orders. With --defer, payments_by_order and the raw refunds source are also
+    resolved from production. The row could say orders and payments_by_order to be complete.
+  status: fixed
+  resolution: Reuse row lists orders, payments_by_order and refunds, with no-development-copy precondition.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - src-6
+- id: historical-0.19-01
+  chapter: '0.19'
+  flag: Revival (a deleted row that comes back gets a new open version) is claimed in what_changed but never shown.
+    Acceptable, but do not describe it as demonstrated.
+  status: documented-limitation
+  resolution: Revival and test deferral remain release context with explicit limitations; the shown event is deletion
+    only.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+- id: historical-0.19-02
+  chapter: '0.19'
+  flag: The scenario dates (March 2016) belong to the shop timeline, not to the release date (January 2021). Confirm
+    the app makes that convention clear so viewers do not read 2016 as when hard-delete support existed.
+  status: documented-limitation
+  resolution: 2016 dates are declared fixture observations, not the 2021 release date or a captured warehouse clock.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+- id: historical-0.20-01
+  chapter: '0.20'
+  flag: The audit schema name waffle_dbt_test__audit assumes target.schema is waffle. The comment on line 1 of the
+    inspection file says so; keep it, since the suffix dbt_test__audit is the 0.20 default.
+  status: documented-limitation
+  resolution: Keep waffle_dbt_test__audit with target.schema=waffle; the naming assumption is recorded.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+- id: historical-0.20-02
+  chapter: '0.20'
+  flag: Step 1 shows two files with the same query (the test and a count wrapper). The second file adds little and
+    could confuse a viewer into thinking two tests exist. Not an alignment issue.
+  status: documented-limitation
+  resolution: Retain the count wrapper as an inspection query, not a second test; recorded explicitly.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+- id: historical-0.21-01
+  chapter: '0.21'
+  flag: Step 1 and step 2 name order_revenue as the skipped model, but step 3 queries revenue_by_location, which
+    is not in the chain shown. Either add revenue_by_location to the step 1 chain or query order_revenue in step
+    3 so the viewer follows one model.
+  status: fixed
+  resolution: Added the location model to the code and named it in the skipped result and retained-table explanation.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+- id: historical-0.21-02
+  chapter: '0.21'
+  flag: Step 2 result panel says the revenue model was skipped 'because upstream test failed'. In 0.21, dbt build
+    skips downstream nodes when a test fails (errors and failures both skip children). That is correct; keep the
+    wording.
+  status: documented-limitation
+  resolution: Keep failed-test blocking behavior; the test has both orders and payments as ancestors of the dependent
+    revenue branch.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+- id: historical-1.0-01
+  chapter: '1.0'
+  flag: Partial parsing on by default is listed in can_now but not shown; there is no visual way to show it in a
+    read-only walkthrough, so this is acceptable.
+  status: documented-limitation
+  resolution: Default parsing optimizations stay in release context; removed the undemonstrated speed claim from
+    can_now.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+- id: historical-1.0-02
+  chapter: '1.0'
+  flag: The 1.0 metric spec used model, type, sql, timestamp, time_grains and dimensions, which matches the file
+    shown. Do not update it to the later calculation_method / expression names when editing.
+  status: documented-limitation
+  resolution: Retain the 1.0 model/type/sql metric schema verified against the original contract, not later metric
+    syntax.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+- id: historical-1.0-03
+  chapter: '1.0'
+  flag: Step 1 shows two files both named models/schema.yml with different contents. Consider naming the second
+    one differently (for example models/revenue.yml) to avoid implying one file has two version 2 headers.
+  status: fixed
+  resolution: Renamed the documentation mapping to models/revenue.yml; the payment tests remain schema.yml.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+- id: historical-1.1-01
+  chapter: '1.1'
+  flag: The freshness config (warn after 1 hour, error after 3 hours) would mark both sources as error unless 'now'
+    is close to March 9 10:00. The fresher+ selector compares max_loaded_at between the two snapshots regardless
+    of status, so the demo is still correct. A short note or looser thresholds would avoid a sharp-eyed viewer asking
+    why the check did not error.
+  status: documented-limitation
+  resolution: Documented that fresher compares max_loaded_at, independently of freshness error status or the actual
+    current clock.
+  source_refs:
+  - src-1
+  - src-2
+- id: historical-1.1-02
+  chapter: '1.1'
+  flag: Step 3 models read raw.payments, raw.refunds and raw.locations directly instead of through ref or source.
+    Chapter 0.21 showed a payments model with ref. Not a historical error, but the chain changes shape between chapters.
+  status: documented-limitation
+  resolution: The independent chapter slice intentionally reads current raw payments/refunds; restored the orders
+    ref edge and explained the layout difference.
+  source_refs:
+  - src-1
+  - src-2
+- id: historical-1.2-01
+  chapter: '1.2'
+  flag: Step 3 shows two different files both named models/revenue_by_location.sql, one with the grant config and
+    one without. A viewer may conclude the granted model is not the one producing the table.
+  status: fixed
+  resolution: Only one consistent full-column granted model appears per step.
+  source_refs:
+  - src-1
+  - src-2
+- id: historical-1.2-02
+  chapter: '1.2'
+  flag: The wording 'dbt runs the matching grant statement after it builds the model' is correct for 1.2. Note also
+    that 1.2 revokes grants no longer listed in config by default, which the chapter does not need to show but should
+    not contradict.
+  status: documented-limitation
+  resolution: Grant reconciliation may revoke removed grants; no additive-only claim is made. Existing role/schema
+    access are explicit preconditions.
+  source_refs:
+  - src-1
+  - src-2
+- id: historical-1.3-01
+  chapter: '1.3'
+  flag: The step 3 panel says 'runs on Snowflake with Snowpark'. Make sure the app labels the totals as illustrative
+    rather than captured output, since local Postgres cannot run this model (per the research constraint).
+  status: documented-limitation
+  resolution: Confirmed exactly 12 base orders and kept the result; it remains a Snowflake/Snowpark illustration,
+    not a captured Python run.
+  source_refs:
+  - src-1
+  - src-2
+- id: historical-1.3-02
+  chapter: '1.3'
+  flag: Snowpark's DataFrame.select with column name strings is valid, so the four-line model is plausible as written.
+  status: documented-limitation
+  resolution: Retain the Snowpark string-column select recipe and its explicit Snowflake restriction.
+  source_refs:
+  - src-1
+  - src-2
+- id: historical-1.4-01
+  chapter: '1.4'
+  flag: The step 1 query computes two totals (12,500 and 14,400) but the result panel shows prose instead of those
+    numbers. Showing the numbers would let step 3 land harder.
+  status: fixed
+  resolution: Panel now displays the actual 12,500 and 14,400 totals.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - alignment-1-4-0
+- id: historical-1.4-02
+  chapter: '1.4'
+  flag: 'The description of the old behaviour is correct: before --favor-state, defer used the dev relation whenever
+    it existed in the target environment.'
+  status: documented-limitation
+  resolution: Keep the existing-development precedence contrast, confirmed in 1.4 source.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - alignment-1-4-0
+- id: historical-1.4-03
+  chapter: '1.4'
+  flag: Dataset variant is named second-day here and orders-refreshed in 1.1, although both describe the same two-day
+    state. Not historical, but worth aligning names.
+  status: documented-limitation
+  resolution: 'Keep distinct variant names: orders-refreshed extends second-day with freshness metadata, while this
+    chapter needs only the rows.'
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - alignment-1-4-0
+- id: historical-1.5-01
+  chapter: '1.5'
+  flag: In 1.5 the contract check happens at compile time, before the table is created, and reports a mismatch table
+    (column_name, definition_type, contract_type, mismatch_reason). The step 2 panel summarises that correctly;
+    do not describe it as a database constraint error, per the research constraint.
+  status: fixed
+  resolution: Explicitly describe a compilation-time interface check before table creation, not a warehouse constraint
+    failure.
+  source_refs:
+  - src-1
+  - src-2
+  - alignment-1-5-0
+- id: historical-1.5-02
+  chapter: '1.5'
+  flag: Step 1 highlights lines 1 to 4 (the model name and config opener) rather than the contract lines 5 to 6
+    and columns 8 to 11 that the text explains. Highlight the contract and column lines instead.
+  status: fixed
+  resolution: Highlighted enforced contract lines 5/6 and declared column/type lines 8-11.
+  source_refs:
+  - src-1
+  - src-2
+  - alignment-1-5-0
+- id: historical-1.5-03
+  chapter: '1.5'
+  flag: The code label '(corrected)' on the step 1 SQL is odd because nothing has been broken yet at step 1. Use
+    '(as built)' or drop the label.
+  status: fixed
+  resolution: Removed the premature corrected label from the first SQL file.
+  source_refs:
+  - src-1
+  - src-2
+  - alignment-1-5-0
+- id: historical-1.6-01
+  chapter: '1.6'
+  flag: Step 2 lists 'business SQL unchanged' as a condition for retry. dbt retry does not require unchanged SQL;
+    it reruns whatever the current project has for the failed and skipped nodes. Reword as 'the cause was outside
+    the SQL' rather than a requirement.
+  status: fixed
+  resolution: Replaced unchanged-SQL prerequisite with this scenario’s external connection cause; retry uses current
+    project SQL.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - alignment-1-6-0
+  - alignment-postgres
+- id: historical-1.6-02
+  chapter: '1.6'
+  flag: The order_amounts model in this chapter joins payments_by_order and refunds_by_order models, but in chapter
+    1.8 the same model reads raw.payments and raw.refunds directly. Not a historical error, but the shop project
+    changes shape between chapters without explanation.
+  status: fixed
+  resolution: Aligned 1.8 order_amounts with the same aggregate-ref chain.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - alignment-1-6-0
+  - alignment-postgres
+- id: historical-1.7-01
+  chapter: '1.7'
+  flag: 'A local: package has nothing to resolve, so the demo''s central idea (what you asked for versus what you
+    got) is not actually demonstrated by the files shown.'
+  status: fixed
+  resolution: Replaced local dependency with dbt-labs/dbt_utils >=1.1.0,<1.2.0 and prepared pin 1.1.1.
+  source_refs:
+  - src-1
+  - src-2
+  - alignment-1-7-0
+  - alignment-utils
+- id: historical-1.7-02
+  chapter: '1.7'
+  flag: package-lock.yml is described but its contents are never displayed. Showing it is the whole point of the
+    feature.
+  status: fixed
+  resolution: Show the prepared package-lock.yml and verified request hash; disclose that dependency installation
+    was not captured.
+  source_refs:
+  - src-1
+  - src-2
+  - alignment-1-7-0
+  - alignment-utils
+- id: historical-1.8-01
+  chapter: '1.8'
+  flag: Step 3 says 'dbt runs the model against only that one row, so no real data is needed.' In 1.8 the input
+    relation (order_amounts) must already exist in the warehouse so dbt can read its column types; the recommended
+    way to create it without data is dbt run --empty. The wording overstates independence from the warehouse, which
+    the research constraint also warns about.
+  status: fixed
+  resolution: Added --empty preparation and explained warehouse/type-discovery requirements; only the test’s business
+    rows are replaced.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - alignment-empty
+- id: historical-1.8-02
+  chapter: '1.8'
+  flag: Step 1's order_amounts reads raw.payments and raw.refunds directly rather than through ref or source. Fine
+    for the story, but it differs from the same model in chapter 1.6.
+  status: fixed
+  resolution: order_amounts now uses payment/refund aggregate refs, consistently with 1.6.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - alignment-empty
+- id: historical-1.9-01
+  chapter: '1.9'
+  flag: Step 2's takeaway says the one-day lookback or an explicit range has to cover March 8. With lookback=1 and
+    a run on March 9, a plain dbt run would already rebuild the March 8 batch. The explicit range is shown for control,
+    not necessity; the wording could make that clearer but it is not wrong.
+  status: fixed
+  resolution: Explained that lookback=1 already revisits March 8 on a March 9 run; the explicit range demonstrates
+    control.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - src-6
+  - src-7
+  - alignment-1-9-0
+  - alignment-event-filter
+- id: historical-1.9-02
+  chapter: '1.9'
+  flag: The demo assumes the Postgres adapter supports the microbatch strategy in 1.9. dbt-postgres 1.9 does support
+    it, but the chapter should say which adapter it assumes, as the research constraint asks.
+  status: fixed
+  resolution: Named Snowflake with its matching 1.9 microbatch adapter in the first step.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - src-6
+  - src-7
+  - alignment-1-9-0
+  - alignment-event-filter
+- id: historical-1.10-01
+  chapter: '1.10'
+  flag: The chapter title dropped 'Sampling' from the research title 'Sampling and migration readiness', and the
+    demo does not show sample mode at all, even though the feature claims list it.
+  status: fixed
+  resolution: Added a sampling screen and restored Sampling and migration readiness as the release title.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - src-6
+  - alignment-1-10-0
+- id: historical-1.10-02
+  chapter: '1.10'
+  flag: Sample mode in 1.10.0 was described by dbt Labs as an initial implementation. Confirm from the 1.10.0 release
+    notes whether it needed any flag or environment variable at GA before showing the exact command.
+  status: documented-limitation
+  resolution: 'Verified the initial --sample implementation: accepted directly, hidden from help, no second enable
+    flag; qualified in the step and limitations.'
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - src-6
+  - alignment-1-10-0
+- id: historical-1.11-01
+  chapter: '1.11'
+  flag: The YAML uses data types 'number' and 'number(18, 2)', which are Snowflake types. The rest of the app's
+    shop project reads like Postgres or DuckDB (raw.locations, cents integers). Either switch to a portable type
+    such as numeric(18, 2) or say plainly that this chapter assumes Snowflake. The research constraint warns that
+    Postgres support for UDF features must be checked, not assumed.
+  status: fixed
+  resolution: Snowflake is now named in the scenario and on-screen explanation; retained its number types.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - src-6
+  - src-7
+  - src-8
+  - alignment-1-11-0
+- id: historical-1.11-02
+  chapter: '1.11'
+  flag: The step 2 diagram state has an empty cols line in the extract. Check the rendered app shows the dependency
+    picture.
+  status: documented-limitation
+  resolution: The diagram has three nodes and two valid edges; empty table columns are normal for a diagram state.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - src-6
+  - src-7
+  - src-8
+  - alignment-1-11-0
+- id: historical-1.11-03
+  chapter: '1.11'
+  flag: The exact Jinja syntax {{ function('name') }}(args) should be checked against the 1.11.0 docs before publishing;
+    the research summary does not quote it.
+  status: documented-limitation
+  resolution: Confirmed function(name) in the original 1.11 context provider and parser. Keep the call and cite
+    exact-version source.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - src-6
+  - src-7
+  - src-8
+  - alignment-1-11-0
+- id: historical-1.12-01
+  chapter: '1.12'
+  flag: 'The flag name use_v2_parser, both as a project flags: entry and as --use-v2-parser on the command line,
+    is not quoted in the research summary. Confirm the exact spelling and whether it applies to all commands or
+    only dbt parse from the 1.12.0 release notes.'
+  status: documented-limitation
+  resolution: Confirmed use_v2_parser, --use-v2-parser and --no-use-v2-parser in 1.12 params.py and common command
+    flags. The extra parser binary is required.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - alignment-1-12-0
+- id: historical-1.12-02
+  chapter: '1.12'
+  flag: Step 3 says explicitly that none of the checks has been captured. That is honest, but it leaves the headline
+    feature without any shown result.
+  status: fixed
+  resolution: Replaced the checklist with a four-model expected-selection comparison and complete supporting dependency
+    code.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - alignment-1-12-0
+- id: historical-1.12-03
+  chapter: '1.12'
+  flag: Step 2 shows a file inspection/total_revenue.sql and an inline --sql string with the same query. Only one
+    is needed; the file suggests a resource type that does not exist.
+  status: fixed
+  resolution: Removed the redundant inspection SQL resource; inline --sql is shown with the existing model it reads.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - alignment-1-12-0
+- id: historical-2.0-01
+  chapter: '2.0'
+  flag: The pinned versions dbt==2.0.2 and dbt-oss==2.0.2 assert that a 2.0.2 patch existed by the 2026-09-21 research
+    cutoff and that those are the PyPI package names. The research only cites the v2.0.0 tag; confirm both before
+    publishing.
+  status: documented-limitation
+  resolution: Confirmed both 2.0.2 PyPI uploads on September 15, the Product Licensing Agreement/Apache distinction,
+    and Summit maturity levels. Kept access and beta qualifications.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - src-6
+  - src-7
+  - alignment-static
+- id: historical-2.0-02
+  chapter: '2.0'
+  flag: Step 1 says the project needs no rewriting, but if the shop's adapter is Postgres, the research says it
+    was not yet available at GA. The chapter should name the adapter it assumes.
+  status: fixed
+  resolution: Named DuckDB and removed the broad no-rewrite promise that might imply unsupported PostgreSQL.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - src-6
+  - src-7
+  - alignment-static
+- id: historical-2.0-03
+  chapter: '2.0'
+  flag: Step 4 is ecosystem context rather than a release feature. It is accurate to the cited announcement source
+    but may belong on the ecosystem tab rather than in the walkthrough.
+  status: documented-limitation
+  resolution: Retain the final product-status screen as an explicit short bridge to catalogue/ecosystem, not a dbt
+    execution demo.
+  source_refs:
+  - src-1
+  - src-2
+  - src-3
+  - src-4
+  - src-5
+  - src-6
+  - src-7
+  - alignment-static
+chapter_changes:
+  '0.1':
+  - Matched SQL/result columns, showed generated table/view statements, supplied the ref parent and explicit diagram
+    IDs.
+  '0.2':
+  - Kept and explained the source-correct parent-to-child declaration; schema opens first. Confirmed data/ seeds
+    cannot be ref targets yet; changed the orphan inspection to direct warehouse SQL.
+  '0.3':
+  - Added order_amounts to the dependency picture and confirmed user.run-target in the original loader.
+  '0.4':
+  - Added a dedicated ephemeral step and kept one model chain and incremental config through all four steps.
+  '0.5':
+  - Replaced repetitive conversion screens with variables, a 0.5.1 archive, and a 0.5.4 custom reconciliation test;
+    added explicit archive feed metadata to the existing variant.
+  '0.6':
+  - Aligned query columns and added a full-refresh step with incorrect stored values visibly corrected.
+  '0.7':
+  - Confirmed the named-profile target syntax and added an explicitly dated 0.7.1 role setting.
+  '0.8':
+  - Replaced the transaction label with a visible prepared schedule and added a 0.8.3 BigQuery profile using the
+    historical schema key.
+  '0.9':
+  - Showed hand-written duplicated SQL before package use and kept the unconfigured order model in schema waffle.
+  '0.10':
+  - Added packages.yml/local dependency step and joined seed names directly to order-level revenue.
+  '0.11':
+  - Highlighted the actual column description, made diagram IDs explicit and included the fields consumed by the
+    location query.
+  '0.12':
+  - Kept identical tagged model SQL across all screens; removed the undemonstrated cache promise from the intro.
+  '0.13':
+  - Connected downstream revenue to the source-backed payments model; made the Redshift date arithmetic assumption
+    explicit.
+  '0.14':
+  - Standardized snapshot SQL/highlights and added a working soft-rule warning over the base refund of 800 cents.
+  '0.15':
+  - Showed file-level parse reuse, the profile option and an explicitly authored JSON field example; verified global
+    command-flag positions.
+  '0.16':
+  - Removed meta from the unanswered-question screen, highlighted its actual values, and replaced the boundary screen
+    with seed documentation.
+  '0.17':
+  - Kept the same refund input on both sides of the repair, showed the fail-fast outcome, and used path selection
+    to restore the numeric revenue result.
+  '0.18':
+  - Made the SQL edit visible, included order_amounts in the rebuilt branch, and listed every reused model parent
+    with deferral preconditions.
+  '0.19':
+  - Kept the snapshot/highlights identical and qualified fixture dates, revival and test-deferral scope.
+  '0.20':
+  - Recorded the audit-schema assumption and narrowed the intro to the stored-failure behavior actually shown.
+  '0.21':
+  - Expanded the graph through both intermediate models to revenue_by_location and named that exact skipped table.
+  '1.0':
+  - Separated the schema filenames and kept the metric definition in the original 1.0 dialect.
+  '1.1':
+  - Restored the actual source-to-revenue graph and explained timestamp comparison independently of freshness thresholds.
+  '1.2':
+  - Rebuilt the three screens as denied read, declared/applied grant, and successful read; removed duplicate conflicting
+    model files.
+  '1.3':
+  - Confirmed 12 base orders and the Snowflake/Snowpark assumption; aligned the input inspection table with its
+    query.
+  '1.4':
+  - Showed 12,500 versus 14,400 directly and added a Snowflake incremental-predicate step with a safe fixed fixture
+    boundary.
+  '1.5':
+  - Fixed contract highlights and result columns; added a complete two-version interface with dbt show and a preserved
+    v1 consumer.
+  '1.6':
+  - Added missing model code and complete retry statuses, removed the unchanged-SQL requirement, and added a PostgreSQL
+    materialized-view screen.
+  '1.7':
+  - Replaced the local dependency with a real Hub range, showed the prepared lock pin and independently verified
+    request hash, and named static_index.html.
+  '1.8':
+  - Added --empty setup and unit-test commands, explained warehouse schema requirements, and aligned the upstream
+    chain.
+  '1.9':
+  - Named Snowflake, clarified exclusive bounds and lookback, added a total query, and demonstrated a YAML snapshot
+    with two dated rows.
+  '1.10':
+  - Added the historically qualified sampling screen, named the deprecation category and escalation command, and
+    moved highlights to the duplicated key.
+  '1.11':
+  - Named Snowflake on screen, verified function() syntax and the nonempty dependency diagram, and supplied the
+    location-level conversion query.
+  '1.12':
+  - Added vars.yml with its correct wrapper, showed explicit four-model selection comparisons, verified common parser
+    flags, and removed the duplicate ad hoc query file.
+  '2.0':
+  - Matched corrected query columns, named DuckDB and full-dbt compilation, confirmed pre-cutoff package pins/licence/status
+    evidence, and corrected the meaning of GA.

@@ -10,14 +10,14 @@ what_changed:
   - id: change-1
     summary: Auto-generated project documentation and lineage.
     introduced_in: 0.11.0
-    adapter_constraints: null
+    adapter_constraints:
     evidence:
       - src-1
     confidence: high
   - id: change-2
     summary: Schema YAML version 2 adds model/column descriptions.
     introduced_in: 0.11.0
-    adapter_constraints: null
+    adapter_constraints:
     evidence:
       - src-1
     confidence: high
@@ -63,12 +63,10 @@ walkthrough:
   steps:
     - id: meaning
       title: Write down what the revenue column means
-      explanation: >
-        You are looking at a YAML file that describes a model. The highlighted lines 1 to 4 start a version 2
-        schema file and name the order_revenue model with a one-line description. Below, lines 6 and 7
-        describe the revenue_cents column: successful payments minus refunds, in cents. The result panel shows
-        one order that makes the rule concrete. Order 1042 paid 1,200 cents, refunded 200, so revenue is
-        1,000.
+      explanation: >-
+        Highlighted lines 6 and 7 of schema.yml name revenue_cents and describe it as successful payments
+        minus refunds, in cents. The supporting inspection query selects order 1042 and joins its location
+        name. The panel shows that definition in numbers: 1,200 paid minus 200 refunded equals 1,000 cents.
       state:
         kind: table
         title: One order that shows the refund rule
@@ -79,16 +77,18 @@ walkthrough:
           - refund_cents
           - revenue_cents
         rows:
-          - - 1042
-            - Old Port
-            - 1200
-            - 200
-            - 1000
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+          -   - 1042
+              - Old Port
+              - 1200
+              - 200
+              - 1000
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: >
-        The refund rule is now written next to the column it describes, so a reader does not have to guess it
+        The refund rule is now written next to the column it describes, so a reader does not have to guess
+        it
         from the SQL.
       code:
         - language: yaml
@@ -102,45 +102,56 @@ walkthrough:
                   - name: revenue_cents
                     description: Successful payments minus refunds, in cents.
           highlight_lines:
-            - 1
+            - 6
+            - 7
+          purpose: Authored era-specific example; illustration only.
+        - language: sql
+          filename: inspection/order_1042.sql
+          content: |
+            select r.order_id, l.name as location,
+                r.payment_cents, r.refund_cents, r.revenue_cents
+            from waffle.order_revenue as r
+            join raw.locations as l on r.location_id = l.location_id
+            where r.order_id = 1042
+          highlight_lines:
             - 2
-            - 3
-            - 4
+            - 5
+          purpose: Authored era-specific example; illustration only.
       evidence:
         - src-1
         - src-2
     - id: lineage
       title: Follow the inputs behind the number
-      explanation: >
-        Three model files are shown. The first two, highlighted on lines 1 and 2, add up payments and refunds
-        per order. The third, highlighted on lines 3 to 5, joins orders to those two totals. Each ref call is
-        a link from one model to the model it reads from. dbt collects those links into the lineage graph in
-        the result panel: orders, payments and refunds all flow into order_revenue.
+      explanation: >-
+        Highlighted lines 5 to 7 of order_revenue link orders to the payment and refund totals. The supporting
+        aggregate models each total one feed. Every ref call is a dependency, meaning this model waits for
+        that input. The diagram uses the same full model names and shows all three inputs feeding order_revenue.
       state:
         kind: diagram
         title: 'Lineage graph: what feeds order_revenue'
         columns: []
         rows: []
-        result_status: null
+        result_status:
         diagram:
           nodes:
             - id: orders
               label: orders
-            - id: payments
+            - id: payments_by_order
               label: payments_by_order
-            - id: refunds
+            - id: refunds_by_order
               label: refunds_by_order
-            - id: revenue
+            - id: order_revenue
               label: order_revenue
           edges:
             - from: orders
-              to: revenue
-            - from: payments
-              to: revenue
-            - from: refunds
-              to: revenue
+              to: order_revenue
+            - from: payments_by_order
+              to: order_revenue
+            - from: refunds_by_order
+              to: order_revenue
           highlight: []
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: >
         The lineage graph is built from the ref calls in the SQL, so it shows exactly which tables feed the
         revenue number.
@@ -148,6 +159,21 @@ walkthrough:
         - src-1
         - src-2
       code:
+        - language: sql
+          filename: models/order_revenue.sql
+          content: |
+            select o.order_id, o.location_id,
+                coalesce(p.payment_cents, 0) as payment_cents,
+                coalesce(r.refund_cents, 0) as refund_cents,
+                coalesce(p.payment_cents, 0) - coalesce(r.refund_cents, 0) as revenue_cents
+            from {{ ref("orders") }} as o
+            left join {{ ref("payments_by_order") }} as p on o.order_id = p.order_id
+            left join {{ ref("refunds_by_order") }} as r on o.order_id = r.order_id
+          highlight_lines:
+            - 5
+            - 6
+            - 7
+          purpose: authored executable syntax; illustration only
         - language: sql
           filename: models/payments_by_order.sql
           content: |
@@ -168,25 +194,13 @@ walkthrough:
             - 1
             - 2
           purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: models/order_revenue.sql
-          content: |
-            select o.order_id, o.location_id,
-                coalesce(p.payment_cents, 0) - coalesce(r.refund_cents, 0) as revenue_cents
-            from {{ ref("orders") }} as o
-            left join {{ ref("payments_by_order") }} as p on o.order_id = p.order_id
-            left join {{ ref("refunds_by_order") }} as r on o.order_id = r.order_id
-          highlight_lines:
-            - 3
-            - 4
-            - 5
-          purpose: authored executable syntax; illustration only
     - id: publish
       title: Generate the documentation website
       explanation: >
         Three files are shown. The YAML file, highlighted on lines 4, 6 and 7, describes the
         revenue-by-location model and its revenue column. The SQL file, highlighted on lines 3 to 5, sums
-        payments, refunds and revenue per location. The command file runs dbt docs generate, which builds the
+        payments, refunds and revenue per location. The command file runs dbt docs generate, which builds
+        the
         documentation site, and dbt docs serve, which opens it in a browser. The result panel lists what a
         reader finds there: a page per model with its description and columns, and a lineage graph. The
         commands are shown as historical examples. The app does not run them.
@@ -197,15 +211,17 @@ walkthrough:
           - artifact view
           - reader learns
         rows:
-          - - model page
-            - definition and columns
-          - - lineage graph
-            - upstream and downstream relationships
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+          -   - model page
+              - definition and columns
+          -   - lineage graph
+              - upstream and downstream relationships
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: >
-        One command turns the descriptions and ref links into a browsable website with a page per model and a
+        One command turns the descriptions and ref links into a browsable website with a page per model and
+        a
         lineage graph.
       code:
         - language: yaml
@@ -248,6 +264,7 @@ walkthrough:
           highlight_lines:
             - 1
             - 2
+          purpose: Authored era-specific example; illustration only.
       evidence:
         - src-1
         - src-2
@@ -257,10 +274,10 @@ walkthrough:
     source_refs:
       - src-1
       - src-2
-    limitations: >
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
-      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
-      performance claims.
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+      The documentation example deliberately retains a direct raw.locations join; that table is not a ref node in the displayed lineage. Each chapter is an independent prepared project slice, not a cumulative runnable checkout (src-1, docs lineage from ref dependencies).
+      historical-0.11-01: Deliberately retain raw.locations in this standalone slice; the diagram only promises model ref dependencies and does not draw a seed edge. Evidence: src-1, src-2.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'

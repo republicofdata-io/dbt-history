@@ -10,14 +10,14 @@ what_changed:
   - id: change-1
     summary: packages.yml and local package paths replace repository declarations.
     introduced_in: 0.10.0
-    adapter_constraints: null
+    adapter_constraints:
     evidence:
       - src-1
     confidence: high
   - id: change-2
     summary: 'Seed overhaul: all adapters, ref-able CSVs and configuration.'
     introduced_in: 0.10.0
-    adapter_constraints: null
+    adapter_constraints:
     evidence:
       - src-1
     confidence: high
@@ -48,9 +48,18 @@ sources:
       Package existence and upload timestamp. Implementation claims refer to the original source archive
       linked from the package.
     rechecked: '2026-09-22'
+  - id: alignment-0-10-0
+    title: 'dbt 0.10.0 original source: dbt/task/deps.py; dbt/deps.py; dbt/parser.py'
+    url:
+      https://files.pythonhosted.org/packages/e3/3e/dbccc280ec71144cba3b82ce6889db09b0b5ed4830cafaadead6cb8170b3/dbt-0.10.0.tar.gz
+    retrieved: '2026-09-22'
+    source_path: dbt/task/deps.py; dbt/deps.py; dbt/parser.py
+    sha256: 4070d12744569583d0508d80646d66bb3e4fe104d0184ed47c645e10939a8e27
+    supports: Local package entries and seed nodes available to ref.
 narrative_evidence:
   - src-1
   - src-2
+  - alignment-0-10-0
 walkthrough:
   id: wt-0.10
   learning_objective: >
@@ -63,11 +72,8 @@ walkthrough:
   steps:
     - id: csv
       title: Keep the location names in a CSV file inside the project
-      explanation: >
-        You are looking at a CSV file with four lines. The highlighted lines are the whole file: a header,
-        then one row per location with its id and name. dbt calls a file like this a seed: a small,
-        hand-maintained table that lives with the project code. The result panel shows the same three rows as
-        a table.
+      explanation: |
+        The panel opens on a CSV file with four lines. Highlighted lines 1 to 4 are the whole file: a header, then one row per location with its id and name. dbt calls a file like this a seed: a small, hand-maintained table that lives with the project code. The result panel shows the same three rows as a table.
       state:
         kind: table
         title: The three locations as a table
@@ -75,15 +81,16 @@ walkthrough:
           - location_id
           - name
         rows:
-          - - 1
-            - Old Port
-          - - 2
-            - Mile End
-          - - 3
-            - Riverside
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+          -   - 1
+              - Old Port
+          -   - 2
+              - Mile End
+          -   - 3
+              - Riverside
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: >
         A short list that rarely changes, like location names, can live in the project as a CSV seed instead
         of being retyped in every report.
@@ -100,28 +107,28 @@ walkthrough:
             - 2
             - 3
             - 4
+          purpose: Authored era-specific example; illustration only.
       evidence:
         - src-1
         - src-2
+        - alignment-0-10-0
     - id: seed
       title: Load the CSV and refer to it from a model
-      explanation: >
-        Two files are shown. The command file runs dbt seed, which loads every CSV seed into the warehouse as
-        a table. The model file, highlighted on both lines, selects from the loaded table using ref, the same
-        function used to point at other models. That tells dbt the seed is an input to this model. The result
-        panel confirms the loaded table has the three rows.
+      explanation: |
+        Two files are shown. The command file runs dbt seed, which loads every CSV seed into the warehouse as a table. The model file, highlighted on lines 1 and 2, selects from the loaded table using ref, the same function used to point at other models. That tells dbt the seed is an input to this model. The result panel confirms the loaded table has the three rows.
       state:
-        kind: comparison
+        kind: table
         title: Loaded seed table and its row count
         columns:
           - relation
           - rows
         rows:
-          - - locations
-            - 3
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+          -   - locations
+              - 3
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: |
         Once loaded, the seed is a table that models can point at with ref, just like any other model.
       code:
@@ -133,22 +140,79 @@ walkthrough:
           highlight_lines:
             - 1
             - 2
+          purpose: Authored era-specific example; illustration only.
         - language: shell
           filename: commands.sh
           content: |
             dbt seed
           highlight_lines:
             - 1
+          purpose: Authored era-specific example; illustration only.
       evidence:
         - src-1
         - src-2
+        - alignment-0-10-0
+    - id: package
+      title: Declare a local package in its own file
+      explanation: Highlighted line 2 of packages.yml points to a second dbt project on disk. dbt deps
+        installs that dependency. The panel compares the older repositories entry with the new packages
+        file. The folder must exist and contain a dbt project; it is an authored example, not a
+        published package.
+      state:
+        kind: comparison
+        title: Where the dependency is declared
+        columns:
+          - era
+          - file
+          - entry
+        rows:
+          -   - before 0.10
+              - dbt_project.yml
+              - 'repositories: [git URL]'
+          -   - '0.10'
+              - packages.yml
+              - 'local: ../waffle_utils'
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
+      takeaway: Dependencies have their own file, and an entry can point directly to a local project
+        folder.
+      code:
+        - language: yaml
+          filename: packages.yml
+          content: |
+            packages:
+              - local: ../waffle_utils
+          highlight_lines:
+            - 2
+          purpose: Authored era-specific example; illustration only.
+        - language: yaml
+          filename: ../waffle_utils/dbt_project.yml
+          content: |
+            name: waffle_utils
+            version: "1.0"
+            macro-paths: [macros]
+          highlight_lines:
+            - 1
+          purpose: Authored era-specific example; illustration only.
+        - language: shell
+          filename: commands.sh
+          content: |
+            dbt deps
+          highlight_lines:
+            - 1
+          purpose: Authored era-specific example; illustration only.
+      evidence:
+        - src-1
+        - src-2
+        - alignment-0-10-0
     - id: labels
       title: Join the names to the revenue numbers
-      explanation: >
-        This model puts a readable name next to each location's revenue. The highlighted lines 3 to 5 join the
-        revenue-by-location model to the locations seed on location_id. The result panel shows the three
-        locations by name, with payments, refunds and revenue. Revenue is payments minus refunds, and the
-        three rows still add to 12,500 cents.
+      explanation: >-
+        Highlighted line 5 reads the order-level revenue model; highlighted line 6 joins its location_id to
+        the locations seed. Lines 2 to 4 sum payments, refunds and revenue. The result panel contains the
+        three named locations and 12,500 cents in total. Names are joined once, directly from the seed.
       state:
         kind: table
         title: Revenue by location with names from the seed
@@ -159,51 +223,63 @@ walkthrough:
           - refund_cents
           - revenue_cents
         rows:
-          - - 1
-            - Old Port
-            - 4400
-            - 1000
-            - 3400
-          - - 2
-            - Mile End
-            - 4600
-            - 300
-            - 4300
-          - - 3
-            - Riverside
-            - 4800
-            - 0
-            - 4800
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+          -   - 1
+              - Old Port
+              - 4400
+              - 1000
+              - 3400
+          -   - 2
+              - Mile End
+              - 4600
+              - 300
+              - 4300
+          -   - 3
+              - Riverside
+              - 4800
+              - 0
+              - 4800
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: >
         The location names now come from one file in the project, so every report that joins to the seed shows
         the same names.
       evidence:
         - src-1
         - src-2
+        - alignment-0-10-0
       code:
         - language: sql
           filename: models/revenue_by_location_labeled.sql
           content: |
             select r.location_id, l.name as location,
-                r.payment_cents, r.refund_cents, r.revenue_cents
-            from {{ ref("revenue_by_location") }} as r
-            join {{ ref("locations") }} as l
-              on r.location_id = l.location_id
+                sum(r.payment_cents) as payment_cents,
+                sum(r.refund_cents) as refund_cents,
+                sum(r.revenue_cents) as revenue_cents
+            from {{ ref("order_revenue") }} as r
+            join {{ ref("locations") }} as l on r.location_id = l.location_id
+            group by r.location_id, l.name
             order by r.location_id
           highlight_lines:
-            - 3
-            - 4
             - 5
-          purpose: authored executable syntax; illustration only
+            - 6
+          purpose: Authored era-specific example; illustration only.
+        - language: sql
+          filename: models/order_revenue.sql
+          content: |
+            select *, payment_cents - refund_cents as revenue_cents
+            from {{ ref("order_amounts") }}
+          highlight_lines:
+            - 1
+          purpose: Authored era-specific example; illustration only.
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
       - src-1
       - src-2
+      - alignment-0-10-0
     limitations: >
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
       reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
@@ -217,17 +293,18 @@ walkthrough:
       - >-
         Keep a small CSV file, such as a list of location names, inside the dbt project and load it into the
         warehouse with one command.
-      - Refer to that CSV from a model the same way you refer to any other model, so dbt knows it is an input.
+      - Refer to that CSV from a model the same way you refer to any other model, so dbt knows it is an
+        input.
       - >-
-        List the other dbt projects yours depends on in a packages.yml file, including projects sitting in a
-        local folder.
+        List the other dbt projects the project depends on in a packages.yml file, including projects sitting
+        in a local folder.
     scenario: >
       Every revenue report needs to show the location names Old Port, Mile End and Riverside. Until now,
       someone typed those names into each report by hand. Waffle Shop puts the three names in one CSV file
       inside the project, loads it as a table, and joins it to the revenue numbers.
-    outcome: |
-      Follow the three names from the CSV file, to the loaded table, to the labeled revenue result.
-  title: |
-    Demo: a three-row CSV of location names becomes a table the models can use
+    outcome: |-
+      See the CSV become a ref-addressable table, a local package declared in packages.yml, and names joined once to the revenue result.
+  title: |-
+    Demo: reference a CSV seed and declare a local package
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

@@ -11,14 +11,14 @@ what_changed:
   - id: change-1
     summary: dbt build runs seeds, snapshots, models and tests in DAG order.
     introduced_in: 0.21.0
-    adapter_constraints: null
+    adapter_constraints:
     evidence:
       - src-1
     confidence: high
   - id: change-2
     summary: on_schema_change for incremental models; state detects macro changes.
     introduced_in: 0.21.0
-    adapter_constraints: null
+    adapter_constraints:
     evidence:
       - src-1
     confidence: high
@@ -72,31 +72,47 @@ walkthrough:
   steps:
     - id: graph
       title: Where the test sits in the chain
-      explanation: >
-        Five files show the chain from raw payments to revenue. The first is the payments model: the
-        highlighted lines 1 and 2 read the raw payments as they are, including the bad row. The second file
-        attaches tests to that model. The highlighted lines 8 to 10 say every order_id in payments must exist
-        in the orders model. The other three files build revenue on top. payments_by_order sums payments per
-        order (highlighted line 2 reads from payments). order_amounts joins those sums and the refunds to each
-        order (highlighted lines 3, 4 and 6). order_revenue subtracts refunds (highlighted line 1). The result
-        panel shows the order of dependence: the test depends on the payments model, and revenue depends on
-        the same payments model.
+      explanation: >-
+        The payments model copies the raw feed. Highlighted lines 8 to 10 of schema.yml test each payment’s
+        link to orders. The supporting ref calls show the full revenue branch: payments_by_order, order_amounts,
+        order_revenue, then revenue_by_location. The diagram follows that same chain, which the failed payment
+        check can block.
       state:
-        kind: comparison
-        title: The test sits between payments and revenue
-        columns:
-          - stage
-          - dependency
-        rows:
-          - - stage payments
-            - raw payments
-          - - payments-have-orders test
-            - staged payments
-          - - order_revenue
-            - staged payments
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+        kind: diagram
+        title: Payment test guards the revenue branch
+        columns: []
+        rows: []
+        result_status:
+        diagram:
+          nodes:
+            - id: payments
+              label: payments
+            - id: orders
+              label: orders
+            - id: payments_by_order
+              label: payments_by_order
+            - id: order_amounts
+              label: order_amounts
+            - id: order_revenue
+              label: order_revenue
+            - id: revenue_by_location
+              label: revenue_by_location
+          edges:
+            - from: payments
+              to: payments_by_order
+            - from: payments_by_order
+              to: order_amounts
+            - from: orders
+              to: order_amounts
+            - from: order_amounts
+              to: order_revenue
+            - from: order_revenue
+              to: revenue_by_location
+          highlight:
+            - payments
+            - orders
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: |
         The test is a step in the chain, sitting between the payments model and the revenue models.
       evidence:
@@ -153,6 +169,7 @@ walkthrough:
             - 3
             - 4
             - 6
+          purpose: Authored era-specific example; illustration only.
         - language: sql
           filename: models/payments_by_order.sql
           content: |
@@ -161,14 +178,29 @@ walkthrough:
             group by order_id
           highlight_lines:
             - 2
+          purpose: Authored era-specific example; illustration only.
+        - language: sql
+          filename: models/revenue_by_location.sql
+          content: |
+            select r.location_id, l.name as location,
+                sum(r.payment_cents) as payment_cents,
+                sum(r.refund_cents) as refund_cents,
+                sum(r.revenue_cents) as revenue_cents
+            from {{ ref("order_revenue") }} as r
+            join raw.locations as l on r.location_id = l.location_id
+            group by r.location_id, l.name
+            order by r.location_id
+          highlight_lines:
+            - 2
+            - 3
+            - 4
+          purpose: Authored era-specific example; illustration only.
     - id: build
       title: 'Run dbt build: the test fails and revenue is skipped'
-      explanation: >
-        The code is unchanged. The new file is the command, dbt build, which runs models and tests together in
-        the order shown in the last step. The highlighted lines are the same as before: the payments model,
-        the relationship test, and the revenue models that depend on it. The result panel shows what dbt build
-        reports. The test fails: 0 missing orders expected, 1 found. The revenue model is skipped, because a
-        test before it failed.
+      explanation: >-
+        Highlighted lines 8 to 10 of schema.yml require payment order_ids to exist in orders. dbt build orders
+        model creation and tests together. The panel reports one missing parent and skips the dependent revenue
+        branch, including revenue_by_location. That is the same table inspected on the next screen.
       state:
         kind: result
         title: Test fails, revenue model skipped
@@ -176,25 +208,17 @@ walkthrough:
           - resource
           - prepared result
         rows:
-          - - payment relationship test
-            - 'fail: expected 0, actual 1'
-          - - dependent revenue model
-            - skip because upstream test failed
+          -   - payment relationship test
+              - 'fail: expected 0, actual 1'
+          -   - revenue_by_location and its dependent-input branch
+              - skipped after the failed upstream test
         result_status: fail
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: |
         Because the payments test failed, dbt build did not rebuild the revenue model at all.
       code:
-        - language: sql
-          filename: models/payments.sql
-          content: |
-            select payment_id, order_id, amount_cents
-            from raw.payments
-          highlight_lines:
-            - 1
-            - 2
-          purpose: authored executable syntax; illustration only
         - language: yaml
           filename: models/schema.yml
           content: |
@@ -212,6 +236,15 @@ walkthrough:
             - 8
             - 9
             - 10
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: models/payments.sql
+          content: |
+            select payment_id, order_id, amount_cents
+            from raw.payments
+          highlight_lines:
+            - 1
+            - 2
           purpose: authored executable syntax; illustration only
         - language: sql
           filename: models/order_revenue.sql
@@ -235,6 +268,7 @@ walkthrough:
             - 3
             - 4
             - 6
+          purpose: Authored era-specific example; illustration only.
         - language: sql
           filename: models/payments_by_order.sql
           content: |
@@ -243,12 +277,30 @@ walkthrough:
             group by order_id
           highlight_lines:
             - 2
+          purpose: Authored era-specific example; illustration only.
+        - language: sql
+          filename: models/revenue_by_location.sql
+          content: |
+            select r.location_id, l.name as location,
+                sum(r.payment_cents) as payment_cents,
+                sum(r.refund_cents) as refund_cents,
+                sum(r.revenue_cents) as revenue_cents
+            from {{ ref("order_revenue") }} as r
+            join raw.locations as l on r.location_id = l.location_id
+            group by r.location_id, l.name
+            order by r.location_id
+          highlight_lines:
+            - 2
+            - 3
+            - 4
+          purpose: Authored era-specific example; illustration only.
         - language: shell
           filename: commands.sh
           content: |
             dbt build
           highlight_lines:
             - 1
+          purpose: Authored era-specific example; illustration only.
       evidence:
         - src-1
         - src-2
@@ -258,7 +310,8 @@ walkthrough:
       explanation: >
         The first file queries the revenue-by-location table that is still in the warehouse from the last
         successful build. The highlighted lines 2 and 3 sum its revenue column. The second file is the same
-        test definition, highlighted at lines 8 to 10 as a reminder of what failed. The result panel shows the
+        test definition, highlighted at lines 8 to 10 as a reminder of what failed. The result panel shows
+        the
         total that table holds: 12,500 cents, the correct base figure. But this build produced nothing new.
         That table is from before the bad payment arrived.
       state:
@@ -268,11 +321,12 @@ walkthrough:
           - existing base total
           - freshly validated output
         rows:
-          - - 12500
-            - not produced by this failed build
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+          -   - 12500
+              - not produced by this failed build
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: >
         A revenue table that exists is not proof the latest build passed. This one is left over from before
         the failure.
@@ -316,31 +370,27 @@ walkthrough:
       - src-1
       - src-2
       - src-3
-    limitations: >
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
-      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
-      performance claims.
-
-      The concrete relationships test references both payments and orders; both are ancestors of order_revenue
-      in the shown graph. It is therefore eligible to block that dependent branch. This clarifies the earlier
-      simplified single-parent description without removing it.
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+      The concrete relationships test references both payments and orders; both are ancestors of order_revenue in the shown graph. It is therefore eligible to block that dependent branch. This clarifies the earlier simplified single-parent description without removing it.
+      on_schema_change remains release context only (src-1). The existing waffle.revenue_by_location table in the last step is explicitly the previous successful base build, not a fresh result of this failed build.
+      historical-0.21-02: Keep failed-test blocking behavior; the test has both orders and payments as ancestors of the dependent revenue branch. Evidence: src-1, src-2, src-3.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
       method: Original source/archive and release documentation inspection; no historical dbt execution.
   intro:
     can_now:
-      - Run seeds, snapshots, models and tests with one command, each in the order the data flows.
-      - Let a failed test stop the models that sit after it, so bad data does not spread.
-      - Tell an incremental model what to do when new columns show up in its source.
+      - Build models and run their tests in dependency order with one command.
+      - Skip dependent revenue models when an upstream test fails.
     scenario: >
       A payment for a missing order sits in the payments data. A test on the payments model catches it. Before
-      this version, dbt run built every model and dbt test checked afterwards, so the revenue table would be
+      this version, dbt run built every model and dbt test checked afterwards, so the revenue table would
+      be
       rebuilt with the bad row before anyone knew. Now dbt build runs the test right after the payments model
       and skips everything after it if the test fails.
-    outcome: >
-      You will see where the test sits in the chain, what dbt build reports, and why the old revenue table
-      still in the warehouse should not be trusted.
+    outcome: |
+      The walkthrough shows where the test sits in the chain, what dbt build reports, and why the old revenue table still in the warehouse should not be trusted.
   title: |
     Demo: dbt build stops the revenue model when an upstream test fails
 status: reviewed

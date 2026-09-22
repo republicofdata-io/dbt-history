@@ -50,7 +50,15 @@ Current delivery direction confirmed by Olivier on 22 September 2026. This super
 
 - Preserve `walkthrough.intro` with 2–4 version-specific `can_now` capabilities, a short `scenario`, and optional `outcome`.
 - Every command/result/test step includes its model, test or configuration; shell commands come last. Keep blocks short and highlights in range.
-- Preserve original authored fields, existing snippets and prepared values when adding material.
+- Preserve the authored field contract. Source-backed alignment corrections may change snippets and prepared values; keep every corrected table consistent with its displayed query and named fixture phase.
 - `data_context` can identify the before/after phase of a named fixture variant. These phases do not mutate the shared base dataset.
 - Historical details matter: 0.2.0 declares this relationship under parent `orders`, pointing to child `payments`; 0.3.0 uses `run-target` in the default `user` profile. Do not modernize these examples.
 - New source inspections cite package archives with source paths and hashes where available. Their review date can be later than the unchanged historical cutoff.
+
+## Demo alignment decisions (22 September 2026)
+
+- Read `documentation/content/demo-alignment-handoff-2026-09-22.md` and `review-resolutions-2026-09-22.yaml` before revisiting a settled review flag. The original review reports are preserved inputs, not current unresolved work.
+- Featured file first, supporting files next, command last. Each explanation names the highlighted lines and describes the visible result; each takeaway states what was demonstrated. Define technical terms in plain language.
+- Demonstrate promised capabilities in 3–5 steps. Use a separate step for a distinct feature; a command flag alone is insufficient. Label patch-only features in the step title and name adapter assumptions.
+- Keep retained historical limits in chapter evidence with source references. Do not modernize old configuration keys or promote source/fixture verification to a runtime capture.
+- Current content has 36 illustrative walkthroughs, 121 steps and 359 code blocks. Update the index and validation report when these change.

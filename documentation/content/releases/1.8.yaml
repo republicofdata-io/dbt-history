@@ -11,7 +11,8 @@ what_changed:
   - id: unit-tests
     summary: Native SQL unit tests with controlled YAML fixtures.
     introduced_in: 1.8.0
-    adapter_constraints: SQL model execution uses a supported target adapter; fixture/type limitations are adapter-specific.
+    adapter_constraints: SQL model execution uses a supported target adapter; fixture/type limitations
+      are adapter-specific.
     evidence:
       - src-1
     confidence: high
@@ -87,6 +88,11 @@ sources:
     supports: >-
       Copilot and expanded visual/multi-platform development announced at Coalesce. Don't automatically treat
       all named capabilities as separately sold products or all previews as GA.
+  - id: alignment-empty
+    title: Core 1.8 unit tests and empty builds
+    url: https://docs.getdbt.com/docs/dbt-versions/dbt-upgrade/upgrading-to-v1.8
+    retrieved: '2026-09-21'
+    supports: Unit test selection and zero-row run/build behavior.
 narrative_evidence:
   - src-1
   - src-2
@@ -105,29 +111,27 @@ walkthrough:
   steps:
     - id: refund
       title: What the right answer looks like
-      explanation: >
-        You are looking at the model that assembles each order's payment and refund totals. The highlighted
-        lines sum payments and refunds per order and attach them to the order, using zero when there is none.
-        The small query below it pulls out order 1042. The result panel shows the correct picture: 1,200 paid,
-        200 refunded, 1,000 cents of revenue.
+      explanation: >-
+        Highlighted lines 3, 4 and 6 of order_amounts join orders to the two aggregate models. The inspection
+        query highlights the subtraction and the filter for order 1042. Its panel shows 1,200 cents paid,
+        200 refunded and the correct 1,000-cent answer.
       state:
         kind: table
         title: Order 1042 with its partial refund
         columns:
           - order_id
-          - location
           - payment_cents
           - refund_cents
           - revenue_cents
         rows:
-          - - 1042
-            - Old Port
-            - 1200
-            - 200
-            - 1000
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+          -   - 1042
+              - 1200
+              - 200
+              - 1000
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: >
         Revenue for order 1042 must be 1,200 minus 200, or 1,000 cents. That is the rule the test will
         protect.
@@ -135,28 +139,45 @@ walkthrough:
         - src-1
         - src-2
         - src-3
+        - src-4
+        - src-5
+        - alignment-empty
       code:
         - language: sql
           filename: models/order_amounts.sql
           content: |
-            with paid as (
-                select order_id, sum(amount_cents) as payment_cents
-                from raw.payments group by order_id
-            ), refunded as (
-                select order_id, sum(amount_cents) as refund_cents
-                from raw.refunds group by order_id
-            )
             select o.*, coalesce(p.payment_cents, 0) as payment_cents,
                 coalesce(r.refund_cents, 0) as refund_cents
-            from raw.orders as o
-            left join paid as p on o.order_id = p.order_id
-            left join refunded as r on o.order_id = r.order_id
+            from {{ ref("orders") }} as o
+            left join {{ ref("payments_by_order") }} as p
+              on o.order_id = p.order_id
+            left join {{ ref("refunds_by_order") }} as r
+              on o.order_id = r.order_id
           highlight_lines:
+            - 3
+            - 4
+            - 6
+          purpose: Authored era-specific example; illustration only.
+        - language: sql
+          filename: models/payments_by_order.sql
+          content: |
+            select order_id, sum(amount_cents) as payment_cents
+            from {{ ref("payments") }}
+            group by order_id
+          highlight_lines:
+            - 1
             - 2
-            - 5
-            - 8
-            - 9
-          purpose: authored executable syntax; illustration only
+          purpose: Authored era-specific example; illustration only.
+        - language: sql
+          filename: models/refunds_by_order.sql
+          content: |
+            select order_id, sum(amount_cents) as refund_cents
+            from {{ ref("refunds") }}
+            group by order_id
+          highlight_lines:
+            - 1
+            - 2
+          purpose: Authored era-specific example; illustration only.
         - language: sql
           filename: analyses/order_1042.sql
           content: |
@@ -170,11 +191,11 @@ walkthrough:
           purpose: authored executable syntax; illustration only
     - id: bug
       title: A plus sign creeps in
-      explanation: >
-        The highlighted line in order_revenue now adds the refund instead of subtracting it. Below it is a
-        unit test written in YAML. Its highlighted lines give one input row for order 1042 and one expected
-        output row with revenue of 1,000 cents. The result panel compares expected to actual: the buggy model
-        returns 1,400 cents, so the test fails.
+      explanation: >-
+        Highlighted line 3 adds refunds by mistake. Lines 8 and 11 of the unit-test YAML provide one input
+        and its expected 1,000-cent output. The first command builds zero-row upstream relations so dbt can
+        inspect their column types; the second runs the unit test using the supplied row. The panel shows
+        the wrong 1,400-cent result and a failed test.
       state:
         kind: result
         title: Test result on the buggy model
@@ -183,12 +204,13 @@ walkthrough:
           - expected_cents
           - actual_cents
         rows:
-          - - 1042
-            - 1000
-            - 1400
+          -   - 1042
+              - 1000
+              - 1400
         result_status: fail
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: |
         A one-character mistake in the SQL gives a wrong answer, and a unit test with one row exposes it.
       code:
@@ -201,6 +223,7 @@ walkthrough:
             from {{ ref('order_amounts') }}
           highlight_lines:
             - 3
+          purpose: Authored era-specific example; illustration only.
         - language: yaml
           filename: models/order_revenue.yml
           content: |
@@ -218,17 +241,30 @@ walkthrough:
           highlight_lines:
             - 8
             - 11
+          purpose: Authored era-specific example; illustration only.
+        - language: shell
+          filename: commands.sh
+          content: |
+            dbt run --empty --select +order_revenue
+            dbt test --select test_type:unit
+          highlight_lines:
+            - 1
+            - 2
+          purpose: Authored era-specific example; illustration only.
       evidence:
         - src-1
         - src-2
         - src-3
+        - src-4
+        - src-5
+        - alignment-empty
     - id: fixture
       title: How the test describes the case
-      explanation: >
-        This step reads the unit test file more slowly. The first highlighted line, under given, is the input
-        row: order 1042, 1,200 cents paid, 200 refunded. The second highlighted line, under expect, is the row
-        dbt should get back: 1,000 cents. dbt runs the model against only that one row, so no real data is
-        needed. The result panel puts the input, the expected value and the buggy value side by side.
+      explanation: >-
+        Highlighted lines 8 and 11 give the unit test one input row and one expected output row. dbt substitutes
+        those inputs when evaluating the model. The panel shows 1,200 paid, 200 refunded, 1,000 expected and
+        1,400 returned by the buggy SQL. A warehouse connection and upstream relation schemas are still required;
+        the previous --empty build supplies the latter without loading business rows.
       state:
         kind: result
         title: Input row, expected row, buggy result
@@ -239,14 +275,15 @@ walkthrough:
           - expected_cents
           - actual_buggy_cents
         rows:
-          - - 1042
-            - 1200
-            - 200
-            - 1000
-            - 1400
+          -   - 1042
+              - 1200
+              - 200
+              - 1000
+              - 1400
         result_status: fail
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: |
         A unit test is a tiny worked example: this row in, that row out. It makes the failure easy to read.
       code:
@@ -267,6 +304,7 @@ walkthrough:
           highlight_lines:
             - 8
             - 11
+          purpose: Authored era-specific example; illustration only.
         - language: sql
           filename: models/order_revenue.sql
           content: |
@@ -276,15 +314,18 @@ walkthrough:
             from {{ ref('order_amounts') }}
           highlight_lines:
             - 3
+          purpose: Authored era-specific example; illustration only.
       evidence:
         - src-1
         - src-2
         - src-3
+        - src-4
+        - src-5
+        - alignment-empty
     - id: fixed
       title: Restore the minus sign and the test passes
-      explanation: >
-        The highlighted line in order_revenue subtracts the refund again. The unit test is unchanged. The
-        result panel shows the test now passing: expected 1,000 cents, actual 1,000 cents.
+      explanation: |
+        Highlighted line 3 in order_revenue subtracts the refund again. The unit test is unchanged. The result panel shows the test now passing: expected 1,000 cents, actual 1,000 cents.
       state:
         kind: result
         title: Test result on the corrected model
@@ -293,14 +334,16 @@ walkthrough:
           - expected_cents
           - actual_cents
         rows:
-          - - 1042
-            - 1000
-            - 1000
+          -   - 1042
+              - 1000
+              - 1000
         result_status: pass
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: >
-        With the subtraction restored the test passes, and it will fail again if anyone breaks the refund rule
+        With the subtraction restored the test passes, and it will fail again if anyone breaks the refund
+        rule
         later.
       code:
         - language: sql
@@ -312,6 +355,7 @@ walkthrough:
             from {{ ref('order_amounts') }}
           highlight_lines:
             - 3
+          purpose: Authored era-specific example; illustration only.
         - language: yaml
           filename: models/order_revenue.yml
           content: |
@@ -329,10 +373,21 @@ walkthrough:
           highlight_lines:
             - 8
             - 11
+          purpose: Authored era-specific example; illustration only.
+        - language: shell
+          filename: commands.sh
+          content: |
+            dbt test --select test_type:unit
+          highlight_lines:
+            - 1
+          purpose: Authored era-specific example; illustration only.
       evidence:
         - src-1
         - src-2
         - src-3
+        - src-4
+        - src-5
+        - alignment-empty
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -342,26 +397,28 @@ walkthrough:
       - src-3
       - src-4
       - src-5
-    limitations: >
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
-      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
-      performance claims.
+      - alignment-empty
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+      Unit tests need an adapter/warehouse and relation schemas for type discovery. --empty supplies zero-row model relations; it is not an offline engine. Raw source relations still have to exist. The order_amounts chain now consistently uses aggregate model refs. The selected unit_test command is test_type:unit, verified in the 1.8 upgrade reference (src-1).
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
       method: Original source/archive and release documentation inspection; no historical dbt execution.
   intro:
     can_now:
-      - 'Write a unit test for a model: give it a few input rows and the rows you expect back.'
-      - Run those tests quickly, without loading the real data.
-      - Build every model with zero rows using the --empty flag, to check the SQL is valid before a full run.
+      - 'Write a unit test for a model with a few supplied input rows and expected output rows.'
+      - Test the model calculation with only the rows supplied in the unit test.
+      - Build every model with zero rows using the --empty flag, to check the SQL is valid before a full
+        run.
     scenario: >
-      Order 1042 at Old Port has a 1,200-cent payment and a 200-cent partial refund, so its revenue should be
+      Order 1042 at Old Port has a 1,200-cent payment and a 200-cent partial refund, so its revenue should
+      be
       1,000 cents. Someone edits the revenue model and types a plus where a minus belongs. Revenue for that
       order jumps to 1,400 cents. A unit test with one input row catches the mistake.
-    outcome: >
-      See the correct expectation, the buggy model, the unit test that fails on it, and the same test passing
-      once the minus sign is back.
+    outcome: >-
+      See zero-row setup for warehouse column types, a one-row unit test fail, and the same test pass after
+      restoring subtraction.
   title: |
     Demo: a unit test catches a refund bug before a full build
 status: reviewed

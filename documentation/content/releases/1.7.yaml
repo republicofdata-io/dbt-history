@@ -10,14 +10,14 @@ what_changed:
   - id: change-1
     summary: Package dependency locking and static documentation.
     introduced_in: 1.7.0
-    adapter_constraints: null
+    adapter_constraints:
     evidence:
       - src-1
     confidence: high
   - id: change-2
     summary: Saved-query semantic metadata; configurable seed delimiters.
     introduced_in: 1.7.0
-    adapter_constraints: null
+    adapter_constraints:
     evidence:
       - src-1
     confidence: high
@@ -48,9 +48,25 @@ sources:
       Package existence and upload timestamp. Implementation claims refer to the original source archive
       linked from the package.
     rechecked: '2026-09-22'
+  - id: alignment-1-7-0
+    title: 'dbt 1.7.0 original source: dbt/task/deps.py:44-58,179-204; dbt/task/generate.py:283-299; dbt/contracts/project.py:76-80'
+    url:
+      https://files.pythonhosted.org/packages/4f/ac/1ca15a44fd1bcf31cef576253eae0cee31f8fd8a6343662e29811cd9e0c1/dbt-core-1.7.0.tar.gz
+    retrieved: '2026-09-22'
+    source_path: dbt/task/deps.py:44-58,179-204; dbt/task/generate.py:283-299;
+      dbt/contracts/project.py:76-80
+    sha256: 5b1cd6e216a0aede4916214e54776b299339393a1afd11494c2117d18fa6e1e8
+    supports: Lock file entry/hash generation and static_index.html output.
+  - id: alignment-utils
+    title: dbt_utils 1.1.1 release
+    url: https://github.com/dbt-labs/dbt-utils/releases/tag/1.1.1
+    retrieved: '2026-09-21'
+    supports: Real version available before Core 1.7; used as a prepared compatible pin, not claimed as
+      the only possible resolution.
 narrative_evidence:
   - src-1
   - src-2
+  - alignment-1-7-0
 walkthrough:
   id: wt-1.7
   learning_objective: >
@@ -62,112 +78,108 @@ walkthrough:
   dataset_variant: base
   steps:
     - id: range
-      title: 'Two ideas: what you asked for and what you got'
-      explanation: >
-        You are looking at two files. The highlighted lines in packages.yml ask for a package. Here it is a
-        local folder called shared_shop, standing in for any shared package. The highlighted lines in the
-        package's own project file show its name and config version. The result panel separates two ideas: the
-        request written in packages.yml, and the exact version dbt settles on when it installs.
+      title: 'An allowed version range and one resolved version'
+      explanation: >-
+        Highlighted lines 2 and 3 request dbt_utils from the package registry and allow versions from 1.1.0
+        up to, but not including, 1.2.0. The panel contrasts that range with the prepared choice 1.1.1, a
+        real release available by this chapter’s date. No registry resolution run is claimed.
       state:
         kind: comparison
-        title: Request versus resolution
+        title: Request and prepared resolution
         columns:
-          - concept
-          - meaning
+          - package
+          - allowed versions
+          - chosen version
         rows:
-          - - requested dependency
-            - allowed package/version specification
-          - - resolved dependency
-            - specific version selected by dependency resolution
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+          -   - dbt-labs/dbt_utils
+              - '>=1.1.0, <1.2.0'
+              - 1.1.1
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: |
         A package request says what is allowed. It does not, by itself, say what was installed.
       evidence:
         - src-1
         - src-2
+        - alignment-1-7-0
+        - alignment-utils
       code:
         - language: yaml
           filename: packages.yml
           content: |
             packages:
-              - local: ../shared_shop
+              - package: dbt-labs/dbt_utils
+                version: [">=1.1.0", "<1.2.0"]
           highlight_lines:
-            - 1
             - 2
-          purpose: authored executable syntax; illustration only
-        - language: yaml
-          filename: ../shared_shop/dbt_project.yml
-          content: |
-            name: shared_shop
-            version: "1.0"
-            config-version: 2
-            macro-paths: [macros]
-          highlight_lines:
-            - 1
             - 3
-          purpose: authored executable syntax; illustration only
+          purpose: Authored era-specific example; illustration only.
     - id: lock
       title: Write the lock file with dbt deps
-      explanation: >
-        The package files are unchanged. The new line is the highlighted command, dbt deps. It installs the
-        packages and writes package-lock.yml next to packages.yml. The result panel shows the two files and
-        their jobs: packages.yml holds the request, package-lock.yml holds the exact result. Commit both, and
-        the next install matches this one.
+      explanation: >-
+        Highlighted line 3 of package-lock.yml records version 1.1.1. Line 4 is the request hash, computed
+        here with dbt 1.7.0’s own hashing function. It lets dbt detect a changed request; it is not a checksum
+        of the package download. The panel distinguishes the allowed range from the exact version subsequent
+        installs retain.
       state:
         kind: comparison
-        title: Two files, two jobs
+        title: Two files, distinct version values
         columns:
-          - project file
-          - purpose
+          - file
+          - version meaning
         rows:
-          - - packages.yml
-            - requested dependencies
-          - - package-lock.yml
-            - resolved dependency record
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+          -   - packages.yml
+              - 'allowed: >=1.1.0, <1.2.0'
+          -   - package-lock.yml
+              - 'prepared pin: 1.1.1'
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: |
         dbt deps now writes a lock file, so every install of the project gets the same packages.
       code:
         - language: yaml
+          filename: package-lock.yml (prepared resolution)
+          content: |
+            packages:
+              - package: dbt-labs/dbt_utils
+                version: 1.1.1
+            sha1_hash: 8e960f4c4ea40b5053519db298fb731a42c67717
+          highlight_lines:
+            - 3
+            - 4
+          purpose: Authored era-specific example; illustration only.
+        - language: yaml
           filename: packages.yml
           content: |
             packages:
-              - local: ../shared_shop
+              - package: dbt-labs/dbt_utils
+                version: [">=1.1.0", "<1.2.0"]
           highlight_lines:
-            - 1
             - 2
-          purpose: authored executable syntax; illustration only
-        - language: yaml
-          filename: ../shared_shop/dbt_project.yml
-          content: |
-            name: shared_shop
-            version: "1.0"
-            config-version: 2
-            macro-paths: [macros]
-          highlight_lines:
-            - 1
             - 3
-          purpose: authored executable syntax; illustration only
+          purpose: Authored era-specific example; illustration only.
         - language: shell
           filename: commands.sh
           content: |
             dbt deps
           highlight_lines:
             - 1
+          purpose: Authored era-specific example; illustration only.
       evidence:
         - src-1
         - src-2
+        - alignment-1-7-0
+        - alignment-utils
     - id: share
       title: Generate the docs as one file
-      explanation: >
-        The highlighted lines in schema.yml are the descriptions that will appear in the documentation. The
-        highlighted lines in the model are the totals they describe. The highlighted command, dbt docs
-        generate with the --static flag, builds the documentation as a single HTML file. The result panel
-        shows what a reader gets: the shop's definitions and the links between models, with no server to run.
+      explanation: >-
+        Highlighted lines 4, 6 and 7 of schema.yml provide the descriptions; lines 3 to 5 of the model total
+        the amounts they describe. Highlighted command line 1 adds --static to docs generate. The panel identifies
+        target/static_index.html, the single HTML file containing the definitions and model dependency picture.
       state:
         kind: comparison
         title: What the static docs contain
@@ -175,11 +187,12 @@ walkthrough:
           - command output
           - reader sees
         rows:
-          - - static documentation HTML
-            - shop definitions and lineage
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+          -   - target/static_index.html
+              - shop definitions and lineage
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: |
         The --static flag produces one documentation file that can be emailed or put on any web host.
       code:
@@ -221,23 +234,24 @@ walkthrough:
             dbt docs generate --static
           highlight_lines:
             - 1
+          purpose: Authored era-specific example; illustration only.
       evidence:
         - src-1
         - src-2
+        - alignment-1-7-0
+        - alignment-utils
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
       - src-1
       - src-2
-    limitations: >
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
-      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
-      performance claims.
-
-      The local shared_shop dependency is authored teaching material; it must exist at the shown sibling path.
-      dbt deps resolves the project’s declarations; no lock-file hash or historical public package version is
-      invented.
+      - alignment-1-7-0
+      - alignment-utils
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+      The prepared lock pin is illustrative, not a captured dbt deps resolution. The request hash is verified by executing _create_sha1_hash with RegistryPackage(package="dbt-labs/dbt_utils", version=[">=1.1.0", "<1.2.0"], install_prerelease=False) in dbt-core 1.7.0, yielding 8e960f4c4ea40b5053519db298fb731a42c67717. This limited helper execution is not a warehouse runtime capture. Both locking and --static are present at 1.7.0 (alignment-1-7-0, alignment-utils).
+      review-1.7-02: Both features verified at 1.7.0 in task/deps.py and task/generate.py. Lock resolution remains illustrative; only the request hash was computed with the actual versioned helper. Evidence: src-1, src-2, alignment-1-7-0, alignment-utils.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
@@ -248,12 +262,13 @@ walkthrough:
       - Get the same packages on every machine, because installs follow the lock file.
       - Generate the documentation site as a single HTML file that opens without a server.
     scenario: >
-      The shop uses a shared package for common macros. It wants every teammate to install the same version of
+      The shop uses a shared package for common macros. It wants every teammate to install the same version
+      of
       it. It also wants to send the project documentation to a colleague who cannot run a docs server. This
       walkthrough shows the files behind both.
-    outcome: >
-      Read the package request, the command that writes the lock file and the command that produces a
-      standalone docs page. No lock-file hashes are shown, because none were captured.
+    outcome: >-
+      Compare a real package range with its prepared exact pin and request hash, then see the command that
+      produces static_index.html.
   title: |
     Demo: a lock file pins packages, and docs ship as one HTML file
 status: reviewed

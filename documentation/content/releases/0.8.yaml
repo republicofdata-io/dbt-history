@@ -65,11 +65,29 @@ sources:
     url: https://github.com/dbt-labs/dbt/releases/tag/v0.8.3
     retrieved: '2026-09-21'
     supports: BigQuery adapter
+  - id: alignment-0-8-0
+    title: 'dbt 0.8.0 original source: dbt/project.py; dbt/adapters/default.py; dbt/runner.py'
+    url:
+      https://files.pythonhosted.org/packages/01/53/ab9689b799eeac0e3d36915f61cf30c56b0a623fbe07bf791ec27d834888/dbt-0.8.0.tar.gz
+    retrieved: '2026-09-22'
+    source_path: dbt/project.py; dbt/adapters/default.py; dbt/runner.py
+    sha256: 9f7595233686111e3746dfd4ead51d8e09a7cf35de5d1e4748ab6ec713517282
+    supports: Named-profile target and per-model connection/transaction lifecycle.
+  - id: alignment-0-8-3
+    title: 'dbt 0.8.3 original source: dbt/contracts/connection.py:43-50; dbt/adapters/bigquery.py'
+    url:
+      https://files.pythonhosted.org/packages/15/57/0a088bf55340158c7eb06e33a89018a0d9096a7539f54728d1e8277b3cdc/dbt-0.8.3.tar.gz
+    retrieved: '2026-09-22'
+    source_path: dbt/contracts/connection.py:43-50; dbt/adapters/bigquery.py
+    sha256: 5c974eb2a3504c736371fbf7c97621fc0ed5b077a4c44862799bb6789438ae31
+    supports: BigQuery requires method, project and schema, not a dataset key.
 narrative_evidence:
   - src-1
   - src-2
   - src-3
   - src-4
+  - alignment-0-8-0
+  - alignment-0-8-3
 walkthrough:
   id: wt-0.8
   learning_objective: >
@@ -84,8 +102,10 @@ walkthrough:
       title: Two totals that need nothing from each other
       explanation: >
         Highlighted lines 1 and 2 of payments_by_order total payments per order. The same lines of
-        refunds_by_order total refunds. Neither reads the other. Highlighted lines 5 and 6 of the profile show
-        a Redshift connection with 2 threads, so both can run at once. The result panel shows the size of each
+        refunds_by_order total refunds. Neither reads the other. Highlighted lines 5 and 6 of the profile
+        show
+        a Redshift connection with 2 threads, so both can run at once. The result panel shows the size of
+        each
         job: 13 payment rows grouped into 12 orders, and 3 refund rows grouped into 3 orders.
       state:
         kind: comparison
@@ -95,15 +115,16 @@ walkthrough:
           - source rows
           - grouped orders
         rows:
-          - - payments_by_order
-            - 13
-            - 12
-          - - refunds_by_order
-            - 3
-            - 3
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+          -   - payments_by_order
+              - 13
+              - 12
+          -   - refunds_by_order
+              - 3
+              - 3
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: |
         The two totals read different tables, so dbt can build them at the same time.
       evidence:
@@ -111,6 +132,8 @@ walkthrough:
         - src-2
         - src-3
         - src-4
+        - alignment-0-8-0
+        - alignment-0-8-3
       code:
         - language: sql
           filename: models/payments_by_order.sql
@@ -147,33 +170,71 @@ walkthrough:
           purpose: authored executable syntax; illustration only
     - id: transactions
       title: One transaction per model
-      explanation: >
-        The SQL is the same as in the last step. What changed is how dbt runs it. A transaction is a bundle of
-        database changes that either all take effect or are all undone. From 0.8.0 each model gets its own, so
-        a failure in refunds_by_order rolls back only refunds_by_order, and payments_by_order keeps its
-        finished table. The result panel shows each model with its own transaction boundary.
+      explanation: >-
+        Highlighted lines 5 and 6 of the profile select Redshift and two workers. Each SQL file is one independent
+        model. The panel is an illustrative statement schedule: each worker begins, creates its model, and
+        commits separately. The 0.8 release fixes shared-transaction behavior that had limited parallel work;
+        these phases are not measured times or a captured log.
       state:
         kind: comparison
-        title: Each model commits on its own
+        title: Prepared transaction schedule, not a log
         columns:
+          - phase
+          - worker
           - model
-          - transaction boundary
+          - statement
         rows:
-          - - payments_by_order
-            - its own model transaction
-          - - refunds_by_order
-            - its own model transaction
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-      takeaway: |
-        Each model commits or rolls back on its own, which is what makes running them side by side safe.
+          -   - 1
+              - 1
+              - payments_by_order
+              - BEGIN
+          -   - 1
+              - 2
+              - refunds_by_order
+              - BEGIN
+          -   - 2
+              - 1
+              - payments_by_order
+              - CREATE model relation
+          -   - 2
+              - 2
+              - refunds_by_order
+              - CREATE model relation
+          -   - 3
+              - 1
+              - payments_by_order
+              - COMMIT
+          -   - 3
+              - 2
+              - refunds_by_order
+              - COMMIT
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
+      takeaway: |-
+        Each model commits separately, so one branch no longer shares the other branch’s transaction.
       evidence:
         - src-1
         - src-2
         - src-3
         - src-4
+        - alignment-0-8-0
+        - alignment-0-8-3
       code:
+        - language: yaml
+          filename: profiles.yml (target excerpt)
+          content: |
+            waffle_shop:
+              target: dev
+              outputs:
+                dev:
+                  type: redshift
+                  threads: 2
+          highlight_lines:
+            - 5
+            - 6
+          purpose: authored executable syntax; illustration only
         - language: sql
           filename: models/payments_by_order.sql
           content: |
@@ -194,19 +255,13 @@ walkthrough:
             - 1
             - 2
           purpose: authored executable syntax; illustration only
-        - language: yaml
-          filename: profiles.yml (target excerpt)
+        - language: shell
+          filename: commands.sh
           content: |
-            waffle_shop:
-              target: dev
-              outputs:
-                dev:
-                  type: redshift
-                  threads: 2
+            dbt run
           highlight_lines:
-            - 5
-            - 6
-          purpose: authored executable syntax; illustration only
+            - 1
+          purpose: Authored era-specific example; illustration only.
     - id: combine
       title: Revenue still waits for both
       explanation: >
@@ -224,24 +279,25 @@ walkthrough:
           - refund_cents
           - revenue_cents
         rows:
-          - - 1
-            - Old Port
-            - 4400
-            - 1000
-            - 3400
-          - - 2
-            - Mile End
-            - 4600
-            - 300
-            - 4300
-          - - 3
-            - Riverside
-            - 4800
-            - 0
-            - 4800
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+          -   - 1
+              - Old Port
+              - 4400
+              - 1000
+              - 3400
+          -   - 2
+              - Mile End
+              - 4600
+              - 300
+              - 4300
+          -   - 3
+              - Riverside
+              - 4800
+              - 0
+              - 4800
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
       takeaway: |
         Running in parallel does not loosen the order of work; the join still waits for both inputs.
       evidence:
@@ -249,6 +305,8 @@ walkthrough:
         - src-2
         - src-3
         - src-4
+        - alignment-0-8-0
+        - alignment-0-8-3
       code:
         - language: sql
           filename: models/order_amounts.sql
@@ -290,6 +348,57 @@ walkthrough:
             - 4
             - 5
           purpose: authored executable syntax; illustration only
+    - id: bigquery
+      title: '0.8.3: connect the project to BigQuery'
+      explanation: Highlighted lines 5 to 8 select BigQuery, OAuth authentication, a project and a
+        schema. In 0.8.3 the profile calls the BigQuery dataset schema, not dataset. The panel adds
+        BigQuery to the three existing targets at this patch; no BigQuery execution is claimed.
+      state:
+        kind: comparison
+        title: Targets after patch 0.8.3
+        columns:
+          - target
+          - available
+        rows:
+          -   - Redshift
+              - before 0.8.3
+          -   - PostgreSQL
+              - before 0.8.3
+          -   - Snowflake
+              - before 0.8.3
+          -   - BigQuery
+              - from 0.8.3
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
+      takeaway: BigQuery joins the supported targets in 0.8.3, using that release’s schema field.
+      code:
+        - language: yaml
+          filename: profiles.yml (BigQuery excerpt)
+          content: |
+            waffle_shop:
+              target: dev
+              outputs:
+                dev:
+                  type: bigquery
+                  method: oauth
+                  project: waffle-demo
+                  schema: waffle
+                  threads: 2
+          highlight_lines:
+            - 5
+            - 6
+            - 7
+            - 8
+          purpose: Authored era-specific example; illustration only.
+      evidence:
+        - src-1
+        - src-2
+        - src-3
+        - src-4
+        - alignment-0-8-0
+        - alignment-0-8-3
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -298,14 +407,14 @@ walkthrough:
       - src-2
       - src-3
       - src-4
-    limitations: >
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
-      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
-      performance claims.
-
-      Separate transactions are adapter behavior, not a user-written transaction toggle. The two model files
-      and two-thread profile are the inputs to that behavior. No concurrency measurement or transaction log is
-      fabricated.
+      - alignment-0-8-0
+      - alignment-0-8-3
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+      Separate transactions are adapter behavior, not a user-written transaction toggle. The two model files and two-thread profile are the inputs to that behavior. No concurrency measurement or transaction log is fabricated.
+      The base has 13 payments across 12 orders because order 1043 has two payments. Transaction rows are explanatory phases, not native logs or a benchmark. Materializations being macros is release context only (src-1). BigQuery uses schema in the 0.8.3 contract; the suggested dataset key would be anachronistic.
+      review-0.8-02: Fixture confirms 13 payment rows for 12 orders; order 1043 has two payments. Kept the count and documented why. Evidence: src-1, src-2, src-3, src-4, alignment-0-8-0, alignment-0-8-3.
+      historical-0.8-02: Materializations-as-macros is retained in release context and removed from intro promises. Evidence: src-1, src-2, src-3, src-4, alignment-0-8-0, alignment-0-8-3.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
@@ -313,20 +422,18 @@ walkthrough:
   intro:
     can_now:
       - >-
-        Run models in parallel with each one wrapped in its own transaction, a bundle of database changes that
+        Run models in parallel with each one wrapped in its own transaction, a bundle of database changes
+        that
         either fully happens or is fully undone.
       - >-
-        Change how a model is written to the warehouse by editing a macro, because materializations are now
-        macros.
-      - From patch 0.8.3, point the project at BigQuery.
+        From patch 0.8.3, point the project at BigQuery.
     scenario: >
       Payments per order and refunds per order are independent work, so dbt runs them side by side. This
       chapter looks at what keeps them from interfering: each model's changes are committed on their own.
       Revenue still waits for both.
-    outcome: >
-      See two branches with separate transactions, and the revenue model that still waits for both before
-      producing 12,500 cents.
-  title: |
-    Demo: each model gets its own database transaction, so parallel branches cannot trip each other up
+    outcome: >-
+      See the independent transaction schedule and the BigQuery profile added in 0.8.3.
+  title: |-
+    Demo: give parallel models separate transactions, then add BigQuery
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

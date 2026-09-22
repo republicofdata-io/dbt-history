@@ -2,7 +2,8 @@ id: '1.2'
 label: v1.2
 title: Grants as project configuration
 lead: >
-  Model grants can be declared in project configuration. Access to the location revenue table becomes part of
+  Model grants can be declared in project configuration. Access to the location revenue table becomes part
+  of
   the build definition.
 problem_then: >
   A model may be correctly built but unavailable to the people who need to query it. Manually repeated grants
@@ -18,7 +19,7 @@ what_changed:
   - id: change-2
     summary: Cross-database macros and ratio metric support.
     introduced_in: 1.2.0
-    adapter_constraints: null
+    adapter_constraints:
     evidence:
       - src-1
     confidence: high
@@ -64,27 +65,27 @@ walkthrough:
   steps:
     - id: access
       title: Who needs to read the table
-      explanation: >
-        This is the revenue-by-location model. The highlighted lines 2 to 4 sum revenue per location.
-        Highlighted line 1 is the new config, which the next step looks at. The result panel states the need:
-        the finance_reader role needs to select from this table. Building the table does not give anyone that
-        permission on its own.
+      explanation: >-
+        Highlighted line 1 of the model builds a table without a grants declaration. The inspection query
+        switches to finance_reader and tries to read it. The prepared panel shows permission denied: the role
+        exists and can use the schema, but lacks SELECT on this table.
       state:
-        kind: comparison
-        title: The reader and the permission they need
+        kind: result
+        title: Prepared read before the grant
         columns:
-          - relation
-          - reader
-          - required privilege
+          - role
+          - operation
+          - outcome
         rows:
-          - - revenue_by_location
-            - finance_reader
-            - select
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-      takeaway: |
-        Building the revenue table successfully does not say who is allowed to read it.
+          -   - finance_reader
+              - SELECT revenue_by_location
+              - permission denied
+        result_status: fail
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
+      takeaway: |-
+        The table exists, but finance_reader cannot read it yet.
       evidence:
         - src-1
         - src-2
@@ -92,111 +93,8 @@ walkthrough:
         - language: sql
           filename: models/revenue_by_location.sql
           content: |
-            {{ config(grants={"select": ["finance_reader"]}) }}
-            select location_id, sum(revenue_cents) as revenue_cents
-            from {{ ref("order_revenue") }}
-            group by location_id
-          highlight_lines:
-            - 1
-            - 2
-            - 3
-            - 4
-    - id: grant
-      title: The grant is declared on the model
-      explanation: >
-        Same file. Highlighted line 1 is the point of this version: the config says the select privilege goes
-        to finance_reader. dbt runs the matching grant statement after it builds the model. This example is
-        written the way PostgreSQL grants work. Other warehouses may word grants differently, and the database
-        user running dbt must itself be allowed to hand out access. The result panel shows the privilege and
-        the recipient as declared.
-      state:
-        kind: comparison
-        title: Privilege select granted to finance_reader
-        columns:
-          - configured privilege
-          - recipient
-        rows:
-          - - select
-            - finance_reader
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-      takeaway: |
-        Access is now declared next to the model's SQL, so anyone reviewing the model can see who may read it.
-      code:
-        - language: sql
-          filename: models/revenue_by_location.sql
-          content: |
-            {{ config(grants={"select": ["finance_reader"]}) }}
-            select location_id, sum(revenue_cents) as revenue_cents
-            from {{ ref("order_revenue") }}
-            group by location_id
-          highlight_lines:
-            - 1
-            - 2
-            - 3
-            - 4
-      evidence:
-        - src-1
-        - src-2
-    - id: read
-      title: The numbers are exactly the same
-      explanation: >
-        Two views of the location revenue model. The first is the version with the grant, highlighted at lines
-        1 to 4. The second is the fuller version that also sums payments and refunds, highlighted at lines 3
-        to 5. The result panel shows the base revenue table: Old Port 3,400, Mile End 4,300, Riverside 4,800,
-        totalling 12,500 cents. Granting access changed none of these values.
-      state:
-        kind: table
-        title: Base revenue by location
-        columns:
-          - location_id
-          - location
-          - payment_cents
-          - refund_cents
-          - revenue_cents
-        rows:
-          - - 1
-            - Old Port
-            - 4400
-            - 1000
-            - 3400
-          - - 2
-            - Mile End
-            - 4600
-            - 300
-            - 4300
-          - - 3
-            - Riverside
-            - 4800
-            - 0
-            - 4800
-        result_status: null
-        diagram: null
-        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-      takeaway: |
-        Granting access changed who can read the revenue table, not a single number in it.
-      evidence:
-        - src-1
-        - src-2
-      code:
-        - language: sql
-          filename: models/revenue_by_location.sql
-          content: |
-            {{ config(grants={"select": ["finance_reader"]}) }}
-            select location_id, sum(revenue_cents) as revenue_cents
-            from {{ ref("order_revenue") }}
-            group by location_id
-          highlight_lines:
-            - 1
-            - 2
-            - 3
-            - 4
-        - language: sql
-          filename: models/revenue_by_location.sql
-          content: |
-            select
-                r.location_id, l.name as location,
+            {{ config(materialized="table") }}
+            select r.location_id, l.name as location,
                 sum(r.payment_cents) as payment_cents,
                 sum(r.refund_cents) as refund_cents,
                 sum(r.revenue_cents) as revenue_cents
@@ -205,20 +103,143 @@ walkthrough:
             group by r.location_id, l.name
             order by r.location_id
           highlight_lines:
+            - 1
+          purpose: Authored era-specific example; illustration only.
+        - language: sql
+          filename: inspection/as_finance_reader.sql
+          content: |
+            set role finance_reader;
+            select location_id, location, payment_cents, refund_cents, revenue_cents
+            from waffle.revenue_by_location
+            order by location_id;
+          highlight_lines:
+            - 1
+            - 2
             - 3
-            - 4
-            - 5
-          purpose: authored executable syntax; illustration only
+          purpose: Authored era-specific example; illustration only.
+    - id: grant
+      title: The grant is declared on the model
+      explanation: >-
+        Highlighted line 1 adds SELECT permission for finance_reader to the model config. After rebuilding
+        the table, dbt applies the PostgreSQL grant shown in the prepared panel. The dbt connection must own
+        the relation or have permission to grant access.
+      state:
+        kind: result
+        title: Prepared statement applied after the build
+        columns:
+          - statement
+        rows:
+          -   - grant select on table waffle.revenue_by_location to finance_reader;
+        result_status: pass
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
+      takeaway: |-
+        The model now declares and applies the finance role’s read permission.
+      code:
+        - language: sql
+          filename: models/revenue_by_location.sql
+          content: |
+            {{ config(materialized="table", grants={"select": ["finance_reader"]}) }}
+            select r.location_id, l.name as location,
+                sum(r.payment_cents) as payment_cents,
+                sum(r.refund_cents) as refund_cents,
+                sum(r.revenue_cents) as revenue_cents
+            from {{ ref("order_revenue") }} as r
+            join raw.locations as l on r.location_id = l.location_id
+            group by r.location_id, l.name
+            order by r.location_id
+          highlight_lines:
+            - 1
+          purpose: Authored era-specific example; illustration only.
+        - language: shell
+          filename: commands.sh
+          content: |
+            dbt run --select revenue_by_location
+          highlight_lines:
+            - 1
+          purpose: Authored era-specific example; illustration only.
+      evidence:
+        - src-1
+        - src-2
+    - id: read
+      title: The numbers are exactly the same
+      explanation: >-
+        Highlighted lines 1 to 3 repeat the same query as finance_reader. The supporting model has the grant
+        config and the same full set of revenue columns. The panel now shows all three locations, totalling
+        12,500 cents. The permission changed; the calculation did not.
+      state:
+        kind: table
+        title: Read succeeds as finance_reader
+        columns:
+          - location_id
+          - location
+          - payment_cents
+          - refund_cents
+          - revenue_cents
+        rows:
+          -   - 1
+              - Old Port
+              - 4400
+              - 1000
+              - 3400
+          -   - 2
+              - Mile End
+              - 4600
+              - 300
+              - 4300
+          -   - 3
+              - Riverside
+              - 4800
+              - 0
+              - 4800
+        result_status:
+        diagram:
+        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
+          captured dbt run.
+      takeaway: |
+        Granting access changed who can read the revenue table, not a single number in it.
+      evidence:
+        - src-1
+        - src-2
+      code:
+        - language: sql
+          filename: inspection/as_finance_reader.sql
+          content: |
+            set role finance_reader;
+            select location_id, location, payment_cents, refund_cents, revenue_cents
+            from waffle.revenue_by_location
+            order by location_id;
+          highlight_lines:
+            - 1
+            - 2
+            - 3
+          purpose: Authored era-specific example; illustration only.
+        - language: sql
+          filename: models/revenue_by_location.sql
+          content: |
+            {{ config(materialized="table", grants={"select": ["finance_reader"]}) }}
+            select r.location_id, l.name as location,
+                sum(r.payment_cents) as payment_cents,
+                sum(r.refund_cents) as refund_cents,
+                sum(r.revenue_cents) as revenue_cents
+            from {{ ref("order_revenue") }} as r
+            join raw.locations as l on r.location_id = l.location_id
+            group by r.location_id, l.name
+            order by r.location_id
+          highlight_lines:
+            - 1
+          purpose: Authored era-specific example; illustration only.
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
       - src-1
       - src-2
-    limitations: >
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
-      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
-      performance claims.
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+      This is a PostgreSQL table example with an existing finance_reader role and schema USAGE already granted. Prepared permission states are not native error logs. Core reconciles configured grants, including revoking removed grants where supported; the demo does not claim additive-only behavior. Cross-database helpers remain release context (src-1).
+      historical-1.2-02: Grant reconciliation may revoke removed grants; no additive-only claim is made. Existing role/schema access are explicit preconditions. Evidence: src-1, src-2.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
@@ -226,16 +247,14 @@ walkthrough:
   intro:
     can_now:
       - >-
-        Write into a model's config which database roles may read it, and have dbt apply that grant after each
-        build.
-      - Use a set of built-in helper macros that write the same SQL for different warehouses.
-    scenario: >
-      A finance role called finance_reader needs to read the revenue-by-location table. Until now, someone had
-      to run a separate permissions command after every build, and it was easy to forget. This version lets
-      the model say who may read it, and dbt applies that grant when the model is built.
-    outcome: |
-      You will see the one config line that grants access, and the unchanged revenue table it protects.
-  title: |
-    Demo: the finance team's read access is written into the model itself
+        Declare a role’s SELECT permission in model config.
+      - Have dbt apply that permission after rebuilding the model.
+    scenario: >-
+      The finance_reader role can connect but cannot read the revenue table. Waffle Shop adds the missing
+      grant to the model and repeats the same query as that role.
+    outcome: |-
+      See permission denied, the applied grant statement, and the successful 12,500-cent result.
+  title: |-
+    Demo: turn a denied read into a successful read with model grants
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.
