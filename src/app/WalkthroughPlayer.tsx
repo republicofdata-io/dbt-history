@@ -102,7 +102,6 @@ export default function WalkthroughPlayer({ release, walkthrough, step, onStep, 
               <p className="kicker mb-1.5">The scenario</p>
               <p className="max-w-[60ch] text-[13px] leading-relaxed">{scenario.trim()}</p>
               {walkthrough.intro?.outcome && <p className="mt-2 max-w-[60ch] text-[13px] leading-relaxed text-muted-foreground">{walkthrough.intro.outcome.trim()}</p>}
-              <p className="provenance mt-2">Learning objective: {walkthrough.learning_objective.trim()}</p>
             </div>
           </div>
           <div className="flex flex-col gap-3">
@@ -181,6 +180,7 @@ export default function WalkthroughPlayer({ release, walkthrough, step, onStep, 
                 <Badge variant={captured ? "good" : "accent"}>{captured ? "captured dbt output" : "illustration"}</Badge>
                 {walkthrough.evidence.review_date && <span className="provenance">reviewed {formatDate(walkthrough.evidence.review_date)}</span>}
               </div>
+              <p className="text-muted-foreground">Learning objective: {walkthrough.learning_objective.trim()}</p>
               {current?.state?.provenance && <p className="provenance">{current.state.provenance}</p>}
               {release.review_scope && (
                 <div>
