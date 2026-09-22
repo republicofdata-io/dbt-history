@@ -32,20 +32,35 @@ milestones:
   title: First published package
   evidence:
   - src-2
+- id: product-2023-02-08
+  kind: product_event
+  date: '2023-02-08'
+  precision: day
+  title: Transform acquisition agreement
+  evidence:
+  - src-3
 sources:
 - id: src-1
   title: dbt 1.4 release evidence
   url: https://github.com/dbt-labs/dbt/releases/tag/v1.4.0
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Tagged release changes; package upload and public announcement remain distinct.
 - id: src-2
   title: dbt 1.4 package evidence
   url: https://pypi.org/project/dbt-core/1.4.0/
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
+    from the package.
+- id: src-3
+  title: Transform acquisition agreement
+  url: https://www.getdbt.com/blog/press-release-dbt-acquisition-transform
+  retrieved: '2026-09-21'
+  supports: Agreement to acquire Transform and integrate MetricFlow. Record agreement separately from legal completion;
+    exact completion date not established here.
 narrative_evidence:
 - src-1
 - src-2
+- src-3
 walkthrough:
   id: wt-1.4
   learning_objective: |
@@ -71,8 +86,12 @@ walkthrough:
         - 'current saved-state relation: two days'
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       The development copy exists but is stale.
+    evidence:
+    - src-1
+    - src-2
   - id: favor
     title: Prefer the saved-state parent
     explanation: |
@@ -88,6 +107,7 @@ walkthrough:
         - prod.order_revenue
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       The choice of relation can change what data a model sees.
     code:
@@ -96,6 +116,9 @@ walkthrough:
       content: |
         dbt run --select revenue_by_location --defer --favor-state --state ./state-prod
       highlight_lines: []
+    evidence:
+    - src-1
+    - src-2
   - id: expected
     title: Aggregate the selected parent
     explanation: |
@@ -115,15 +138,21 @@ walkthrough:
         - 4800
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       The expected total is 14,400 cents because that parent contains both days.
+    evidence:
+    - src-1
+    - src-2
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
     - src-1
     - src-2
+    - src-3
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
 status: reviewed
-review_scope: Source and fixture review; no historical dbt execution.
+review_scope: Source and fixture review; no historical dbt engine execution.
+default_milestone: 1.4.0

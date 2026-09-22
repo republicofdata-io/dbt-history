@@ -37,12 +37,13 @@ sources:
   title: dbt 0.21 release evidence
   url: https://github.com/dbt-labs/dbt/releases/tag/v0.21.0
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Tagged release changes; package upload and public announcement remain distinct.
 - id: src-2
   title: dbt 0.21 package evidence
   url: https://pypi.org/project/dbt/0.21.0/
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
+    from the package.
 narrative_evidence:
 - src-1
 - src-2
@@ -73,8 +74,12 @@ walkthrough:
         - staged payments
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       The test is part of the build graph.
+    evidence:
+    - src-1
+    - src-2
   - id: build
     title: Build with the failing assertion
     explanation: |
@@ -92,6 +97,7 @@ walkthrough:
         - skip because upstream test failed
       result_status: fail
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       The shop should not publish a fresh-looking result from a failed branch.
     code:
@@ -100,6 +106,9 @@ walkthrough:
       content: |
         dbt build
       highlight_lines: []
+    evidence:
+    - src-1
+    - src-2
   - id: limit
     title: Read the existing result carefully
     explanation: |
@@ -115,8 +124,12 @@ walkthrough:
         - not produced by this failed build
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       A table’s existence is not proof that the latest build passed.
+    evidence:
+    - src-1
+    - src-2
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -126,4 +139,4 @@ walkthrough:
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
 status: reviewed
-review_scope: Source and fixture review; no historical dbt execution.
+review_scope: Source and fixture review; no historical dbt engine execution.

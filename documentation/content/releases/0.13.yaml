@@ -37,12 +37,13 @@ sources:
   title: dbt 0.13 release evidence
   url: https://github.com/dbt-labs/dbt/releases/tag/v0.13.0
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Tagged release changes; package upload and public announcement remain distinct.
 - id: src-2
   title: dbt 0.13 package evidence
   url: https://pypi.org/project/dbt/0.13.0/
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
+    from the package.
 narrative_evidence:
 - src-1
 - src-2
@@ -71,8 +72,12 @@ walkthrough:
         - 4
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       Freshness measures elapsed time since a source update.
+    evidence:
+    - src-1
+    - src-2
   - id: threshold
     title: Compare the thresholds
     explanation: |
@@ -90,8 +95,12 @@ walkthrough:
         - 4 hours
       result_status: fail
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       This feed fails its timeliness expectation.
+    evidence:
+    - src-1
+    - src-2
   - id: business
     title: Separate two trust questions
     explanation: |
@@ -123,8 +132,12 @@ walkthrough:
         - 4800
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       Correct arithmetic is not proof that today’s data has arrived.
+    evidence:
+    - src-1
+    - src-2
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -134,4 +147,4 @@ walkthrough:
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
 status: reviewed
-review_scope: Source and fixture review; no historical dbt execution.
+review_scope: Source and fixture review; no historical dbt engine execution.

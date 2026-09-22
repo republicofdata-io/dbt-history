@@ -32,20 +32,43 @@ milestones:
   title: First published package
   evidence:
   - src-2
+- id: product-2023-10-17
+  kind: product_event
+  date: '2023-10-17'
+  precision: day
+  title: Semantic Layer GA; Mesh and Explorer preview
+  evidence:
+  - src-3
+  - src-4
 sources:
 - id: src-1
   title: dbt 1.6 release evidence
   url: https://github.com/dbt-labs/dbt/releases/tag/v1.6.0
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Tagged release changes; package upload and public announcement remain distinct.
 - id: src-2
   title: dbt 1.6 package evidence
   url: https://pypi.org/project/dbt-core/1.6.0/
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
+    from the package.
+- id: src-3
+  title: Semantic Layer GA; Mesh and Explorer preview
+  url: https://www.getdbt.com/blog/dbt-labs-announces-major-enhancements-to-dbt-cloud-to-enable-collaboration-at-scale
+  retrieved: '2026-09-21'
+  supports: New Semantic Layer generation, Explorer, Cloud CLI and Mesh enter the catalogue. Mesh and Explorer are
+    public preview; the MetricFlow-based Semantic Layer reaches GA at Coalesce.
+- id: src-4
+  title: Semantic Layer GA; Mesh and Explorer preview
+  url: https://www.getdbt.com/blog/new-dbt-cloud-features-announced-at-coalesce-2023
+  retrieved: '2026-09-21'
+  supports: New Semantic Layer generation, Explorer, Cloud CLI and Mesh enter the catalogue. Mesh and Explorer are
+    public preview; the MetricFlow-based Semantic Layer reaches GA at Coalesce.
 narrative_evidence:
 - src-1
 - src-2
+- src-3
+- src-4
 walkthrough:
   id: wt-1.6
   learning_objective: |
@@ -73,8 +96,12 @@ walkthrough:
         - skipped
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       The previous command contains useful progress information.
+    evidence:
+    - src-1
+    - src-2
   - id: repair
     title: Resolve the connection issue
     explanation: |
@@ -94,6 +121,7 @@ walkthrough:
         - available
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       Retry is a recovery action, not a substitute for diagnosis.
     code:
@@ -102,6 +130,9 @@ walkthrough:
       content: |
         dbt retry
       highlight_lines: []
+    evidence:
+    - src-1
+    - src-2
   - id: finish
     title: Verify the recovered result
     explanation: |
@@ -133,15 +164,22 @@ walkthrough:
         - 4800
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       Successful recovery should end with the same business checks.
+    evidence:
+    - src-1
+    - src-2
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
     - src-1
     - src-2
+    - src-3
+    - src-4
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
 status: reviewed
-review_scope: Source and fixture review; no historical dbt execution.
+review_scope: Source and fixture review; no historical dbt engine execution.
+default_milestone: 1.6.0

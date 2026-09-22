@@ -18,7 +18,7 @@ what_changed:
   introduced_in: 0.7.1
   adapter_constraints: Snowflake only.
   evidence:
-  - src-1
+  - src-2
   confidence: high
 in_practice: |
   Keep the business models recognizable while reviewing connection settings and target-specific behavior.
@@ -32,22 +32,30 @@ milestones:
   title: First published package
   evidence:
   - src-3
+- id: 0.7.1
+  kind: patch
+  date: '2017-03-01'
+  precision: day
+  title: 'Snowflake role configuration: package publication'
+  evidence:
+  - src-2
 sources:
 - id: src-1
   title: dbt 0.7 release evidence
   url: https://github.com/dbt-labs/dbt/releases/tag/v0.7.0
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Tagged release changes; package upload and public announcement remain distinct.
 - id: src-2
   title: dbt 0.7 release evidence
   url: https://github.com/dbt-labs/dbt-core/blob/v0.13.0/CHANGELOG.md
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Tagged release changes; package upload and public announcement remain distinct.
 - id: src-3
   title: dbt 0.7 package evidence
   url: https://pypi.org/project/dbt/0.7.0/
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
+    from the package.
 narrative_evidence:
 - src-1
 - src-2
@@ -79,8 +87,13 @@ walkthrough:
         - 1000
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       Keep payments minus refunds as the invariant.
+    evidence:
+    - src-1
+    - src-2
+    - src-3
   - id: target
     title: Choose the new adapter
     explanation: |
@@ -100,8 +113,13 @@ walkthrough:
         - newly supported
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       An adapter is the warehouse-specific part of the workflow.
+    evidence:
+    - src-1
+    - src-2
+    - src-3
   - id: check
     title: Verify the same expectation
     explanation: |
@@ -133,8 +151,13 @@ walkthrough:
         - 4800
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       A real migration still needs checks of SQL types, permissions and adapter behavior.
+    evidence:
+    - src-1
+    - src-2
+    - src-3
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -145,4 +168,4 @@ walkthrough:
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
 status: reviewed
-review_scope: Source and fixture review; no historical dbt execution.
+review_scope: Source and fixture review; no historical dbt engine execution.

@@ -32,26 +32,41 @@ milestones:
   title: First published package
   evidence:
   - src-3
+- id: product-2017-01
+  kind: product_event
+  date: 2017-01
+  precision: month
+  title: Sinter hosted experiment
+  evidence:
+  - src-4
 sources:
 - id: src-1
   title: dbt 0.6 release evidence
   url: https://github.com/dbt-labs/dbt/releases/tag/v0.6.0
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Tagged release changes; package upload and public announcement remain distinct.
 - id: src-2
   title: dbt 0.6 release evidence
   url: https://github.com/dbt-labs/dbt-core/blob/v0.13.0/CHANGELOG.md
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Tagged release changes; package upload and public announcement remain distinct.
 - id: src-3
   title: dbt 0.6 package evidence
   url: https://pypi.org/project/dbt/0.6.0/
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
+    from the package.
+- id: src-4
+  title: Sinter hosted experiment
+  url: https://www.getdbt.com/blog/whats-in-a-name
+  retrieved: '2026-09-21'
+  supports: Sinter launched as a hosted-services experiment and increasingly focused on scheduling/monitoring dbt.
+    Do not retroactively name it Cloud.
 narrative_evidence:
 - src-1
 - src-2
 - src-3
+- src-4
 walkthrough:
   id: wt-0.6
   learning_objective: |
@@ -79,8 +94,13 @@ walkthrough:
         - 1000
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       The same subtraction may appear in several models.
+    evidence:
+    - src-1
+    - src-2
+    - src-3
   - id: macro
     title: Name the SQL expression
     explanation: |
@@ -98,6 +118,7 @@ walkthrough:
         - (payment_cents - refund_cents)
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       A macro generates SQL; it is not a warehouse table.
     code:
@@ -108,6 +129,10 @@ walkthrough:
             ({{ payment }} - {{ refund }})
         {% endmacro %}
       highlight_lines: []
+    evidence:
+    - src-1
+    - src-2
+    - src-3
   - id: use
     title: Apply the shared definition
     explanation: |
@@ -129,6 +154,7 @@ walkthrough:
         - 1000
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       One definition preserves the 1,000-cent result.
     code:
@@ -138,6 +164,10 @@ walkthrough:
         select order_id, {{ net_cents("payment_cents", "refund_cents") }} as revenue_cents
         from {{ ref("order_amounts") }}
       highlight_lines: []
+    evidence:
+    - src-1
+    - src-2
+    - src-3
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -145,7 +175,9 @@ walkthrough:
     - src-1
     - src-2
     - src-3
+    - src-4
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
 status: reviewed
-review_scope: Source and fixture review; no historical dbt execution.
+review_scope: Source and fixture review; no historical dbt engine execution.
+default_milestone: 0.6.0

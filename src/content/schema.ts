@@ -117,6 +117,7 @@ export const StepState = z.discriminatedUnion("kind", [
     rows: z.array(z.array(Cell)),
     highlight_rows: z.array(z.number().int().nonnegative()).default([]),
     caption: z.string().nullable().optional(),
+    provenance: z.string().nullable().optional(),
   }),
   z.object({
     kind: z.literal("result"),
@@ -126,12 +127,14 @@ export const StepState = z.discriminatedUnion("kind", [
     columns: z.array(z.string()).optional(),
     rows: z.array(z.array(Cell)).optional(),
     caption: z.string().nullable().optional(),
+    provenance: z.string().nullable().optional(),
   }),
   z.object({
     kind: z.literal("diagram"),
     title: z.string().optional(),
     diagram: Diagram,
     caption: z.string().nullable().optional(),
+    provenance: z.string().nullable().optional(),
   }),
   z.object({
     kind: z.literal("comparison"),
@@ -139,6 +142,7 @@ export const StepState = z.discriminatedUnion("kind", [
     columns: z.array(z.string()),
     rows: z.array(z.array(Cell)),
     caption: z.string().nullable().optional(),
+    provenance: z.string().nullable().optional(),
   }),
 ]);
 export type StepState = z.infer<typeof StepState>;
@@ -150,6 +154,7 @@ export const Step = z.object({
   code: z.array(CodeBlock).default([]),
   state: StepState.nullable().optional(),
   takeaway: z.string().nullable().optional(),
+  evidence: z.array(z.string()).default([]),
 });
 export type Step = z.infer<typeof Step>;
 
@@ -161,6 +166,7 @@ export const Walkthrough = z.object({
   dataset_variant: z.string().default("base"),
   steps: z.array(Step).min(1),
   evidence: WalkthroughEvidence,
+  prepared_relations: z.array(z.record(z.string(), z.unknown())).optional(),
 });
 export type Walkthrough = z.infer<typeof Walkthrough>;
 
@@ -211,6 +217,7 @@ export const Release = z.object({
   default_milestone: z.string().nullable().optional(),
   sources: z.array(Source.required({ id: true })).default([]),
   narrative_evidence: z.array(z.string()).default([]),
+  review_scope: z.string().nullable().optional(),
   walkthrough: Walkthrough.nullable().optional(),
   authoring_notes: z.record(z.string(), z.unknown()).optional(),
 });
@@ -234,7 +241,18 @@ export const Interval = z.object({
   from_precision: Precision.default("day"),
   to: DateString.nullable().default(null),
   to_precision: Precision.default("day"),
+  // Qualifications authored on name and owner intervals. Rendered, never stripped.
+  confidence: z.enum(["high", "qualified"]).nullable().optional(),
+  note: z.string().nullable().optional(),
+  date_basis: z.string().nullable().optional(),
+  to_basis: z.string().nullable().optional(),
+  uncertainty: Uncertainty,
+  transition_uncertainty: Uncertainty,
 });
+export type Interval = z.infer<typeof Interval>;
+
+export const Licence = z.object({ name: z.string(), category: z.string().nullable().optional() });
+export type Licence = z.infer<typeof Licence>;
 
 export const Product = z.object({
   id: z.string(),
@@ -246,8 +264,21 @@ export const Product = z.object({
   description: z.string().nullable().optional(),
   family: z.enum(["dbt", "fivetran", "external"]).default("external"),
   /** When set, the product is listed in the catalogue only inside this interval. */
-  catalogue_membership: z.object({ from: DateString, to: DateString.nullable().default(null) }).nullable().optional(),
+  catalogue_membership: z
+    .object({
+      from: DateString,
+      to: DateString.nullable().default(null),
+      /** Announced acquisition or agreement that precedes membership; not completed ownership. */
+      pending_from: DateString.nullable().optional(),
+      uncertainty: Uncertainty,
+    })
+    .nullable()
+    .optional(),
   sources: z.array(Source).default([]),
+  license: Licence.nullable().optional(),
+  commercial_availability_note: z.string().nullable().optional(),
+  known_since_basis: z.string().nullable().optional(),
+  ownership_note: z.string().nullable().optional(),
 });
 export type Product = z.infer<typeof Product>;
 
@@ -287,6 +318,19 @@ export const ProductEvent = z.object({
   sources: z.array(Source).default([]),
   affects_catalogue: z.boolean().default(true),
   transaction_type: z.string().nullable().optional(),
+  event_subtype: z.string().nullable().optional(),
+  date_basis: z.string().nullable().optional(),
+  // Qualifications kept separate from maturity and access.
+  license: Licence.nullable().optional(),
+  commercial_conditions: z.array(z.string()).default([]),
+  availability: z.string().nullable().optional(), // e.g. announced-not-available | alpha | existing-installations-only
+  availability_scope: z.enum(["public", "private"]).nullable().optional(),
+  maturity_label: z.string().nullable().optional(),
+  /** Replaces the carried maturity outright (e.g. the June 2026 engine alpha). */
+  state_override: z.object({ maturity: Maturity.nullable(), maturity_label: z.string().nullable().optional() }).nullable().optional(),
+  planned_retirement: z.object({ date: DateString, precision: Precision.default("day"), status: z.string().nullable().optional() }).nullable().optional(),
+  price_change_asserted: z.boolean().nullable().optional(),
+  ledger_records: z.array(z.string()).default([]),
 });
 export type ProductEvent = z.infer<typeof ProductEvent>;
 

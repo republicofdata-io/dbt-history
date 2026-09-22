@@ -21,7 +21,7 @@ what_changed:
   - src-1
   confidence: high
 in_practice: |
-  Keep the failures as a inspectable relation where the adapter and permissions allow it.
+  Keep the failures as an inspectable relation where the adapter and permissions allow it.
 technical_detail: |
   The singular test below returns violating rows. store_failures persists those rows; the displayed relation name is illustrative, not a promise about a target schema. Test thresholds and row filters are additional release features.
 milestones:
@@ -37,12 +37,13 @@ sources:
   title: dbt 0.20 release evidence
   url: https://github.com/dbt-labs/dbt/releases/tag/v0.20.0
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Tagged release changes; package upload and public announcement remain distinct.
 - id: src-2
   title: dbt 0.20 package evidence
   url: https://pypi.org/project/dbt/0.20.0/
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
+    from the package.
 narrative_evidence:
 - src-1
 - src-2
@@ -52,6 +53,7 @@ walkthrough:
     Move from a failure count to the offending record.
   context: |
     Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is orphan-payment. Each state below is an authored illustration.
+     In this snippet, ref("payments") and ref("orders") mean pass-through staging models with exactly the corresponding raw fixture rows.
   dataset_variant: orphan-payment
   steps:
   - id: count
@@ -71,8 +73,12 @@ walkthrough:
         - 1
       result_status: fail
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       One failed row needs investigation.
+    evidence:
+    - src-1
+    - src-2
   - id: test
     title: Store the failing rows
     explanation: |
@@ -88,6 +94,7 @@ walkthrough:
         - true
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       The test query defines the records worth keeping.
     code:
@@ -100,10 +107,14 @@ walkthrough:
         left join {{ ref("orders") }} o on p.order_id = o.order_id
         where o.order_id is null
       highlight_lines: []
+    evidence:
+    - src-1
+    - src-2
   - id: inspect
     title: Inspect the prepared failure relation
     explanation: |
       This is the one violation calculated from the fixture.
+       Expected violations: 0; actual violations: 1.
     state:
       kind: result
       title: Inspect the prepared failure relation
@@ -117,8 +128,15 @@ walkthrough:
         - 400
       result_status: fail
       diagram: null
+      expected_actual:
+        expected_violations: 0
+        actual_violations: 1
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       The 400 cents stay unattributed until the missing relationship is resolved.
+    evidence:
+    - src-1
+    - src-2
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -128,4 +146,4 @@ walkthrough:
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
 status: reviewed
-review_scope: Source and fixture review; no historical dbt execution.
+review_scope: Source and fixture review; no historical dbt engine execution.

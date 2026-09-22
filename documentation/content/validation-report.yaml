@@ -109,3 +109,9 @@ limitations:
 - Source and historical syntax review is separate from runtime compatibility verification.
 - Schema checks do not constitute exhaustive factual verification of every vendor claim.
 errors: []
+app_validation:
+  command: vitest run (bundled current Node runtime)
+  test_files_passed: 1
+  tests_passed: 16
+  status: pass
+  note: Default shell Node was too old for Vite/Vitest; no project dependencies or runtime configuration were changed.

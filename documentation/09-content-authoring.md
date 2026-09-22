@@ -170,3 +170,9 @@ placements:
 ```
 
 At most five players per layer at any chapter date (enforced by a test). "Representative" is editorial, not a ranking.
+
+## Authored payload conventions
+
+The complete content authored on 22 September follows the narrower enums in Olivier’s request. `access` is a scalar or null; the app may normalize it to an array. `license` and `commercial_conditions` remain separate. Merger completion is `acquisition_closed` with `transaction_type: merger`. The schema-limited `pricing` event for MetricFlow has `event_subtype: licence-change`; it does not assert a price change.
+
+The delivered ecosystem file is a bare list of placements with external identities under `product_definition`; register these before resolving references. Read [content-index.yaml](content/content-index.yaml) for the full rendering contract, especially availability, maturity overrides and uncertainty fields. A decoder must preserve these fields if the UI needs to communicate the underlying qualification.

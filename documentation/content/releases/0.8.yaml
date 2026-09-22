@@ -44,17 +44,18 @@ sources:
   title: dbt 0.8 release evidence
   url: https://github.com/dbt-labs/dbt/releases/tag/v0.8.0
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Tagged release changes; package upload and public announcement remain distinct.
 - id: src-2
   title: dbt 0.8 release evidence
   url: https://github.com/dbt-labs/dbt-core/blob/v0.13.0/CHANGELOG.md
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Tagged release changes; package upload and public announcement remain distinct.
 - id: src-3
   title: dbt 0.8 package evidence
   url: https://pypi.org/project/dbt/0.8.0/
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
+    from the package.
 - id: src-4
   title: dbt 0.8.3 patch evidence
   url: https://github.com/dbt-labs/dbt/releases/tag/v0.8.3
@@ -93,8 +94,14 @@ walkthrough:
         - 3
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       The two branches can make progress independently.
+    evidence:
+    - src-1
+    - src-2
+    - src-3
+    - src-4
   - id: transactions
     title: Give each model its transaction
     explanation: |
@@ -112,8 +119,14 @@ walkthrough:
         - its own model transaction
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       Transaction design makes concurrency meaningful.
+    evidence:
+    - src-1
+    - src-2
+    - src-3
+    - src-4
   - id: combine
     title: Wait before combining
     explanation: |
@@ -145,8 +158,14 @@ walkthrough:
         - 4800
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       Correct dependencies remain necessary even when branches run concurrently.
+    evidence:
+    - src-1
+    - src-2
+    - src-3
+    - src-4
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -158,4 +177,4 @@ walkthrough:
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
 status: reviewed
-review_scope: Source and fixture review; no historical dbt execution.
+review_scope: Source and fixture review; no historical dbt engine execution.

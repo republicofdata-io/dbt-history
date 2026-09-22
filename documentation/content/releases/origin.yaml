@@ -89,8 +89,13 @@ walkthrough:
         - from: refunds
           to: query
         highlight: []
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       A correct answer starts with a clear grain and business rule.
+    evidence:
+    - src-1
+    - src-2
+    - src-3
   - id: manual
     title: Write the rule once
     explanation: |
@@ -122,6 +127,7 @@ walkthrough:
         - 4800
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       The query can be correct even when its maintenance process is fragile.
     code:
@@ -148,6 +154,10 @@ walkthrough:
       highlight_lines:
       - 12
       - 13
+    evidence:
+    - src-1
+    - src-2
+    - src-3
   - id: handoff
     title: Make the workflow visible
     explanation: |
@@ -171,8 +181,13 @@ walkthrough:
         - 12500
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       The history that follows changes how the shop produces and trusts the answer.
+    evidence:
+    - src-1
+    - src-2
+    - src-3
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -181,3 +196,5 @@ walkthrough:
     - src-2
     limitations: |
       Fictional pre-dbt scenario. No 0.0.1 runtime was executed. The workflow comparison describes the direction of development, not a claim that every later feature existed at origin.
+status: reviewed
+review_scope: Source and fixture review; no historical dbt engine execution.

@@ -32,26 +32,56 @@ milestones:
   title: First published package
   evidence:
   - src-2
+- id: product-2024-05-14
+  kind: product_event
+  date: '2024-05-14'
+  precision: day
+  title: Mesh, Explorer and Cloud CLI GA
+  evidence:
+  - src-4
+- id: product-2024-10-08
+  kind: product_event
+  date: '2024-10-08'
+  precision: day
+  title: Copilot announcement
+  evidence:
+  - src-5
 sources:
 - id: src-1
   title: dbt 1.8 release evidence
   url: https://github.com/dbt-labs/dbt/releases/tag/v1.8.0
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Tagged release changes; package upload and public announcement remain distinct.
 - id: src-2
   title: dbt 1.8 package evidence
   url: https://pypi.org/project/dbt-core/1.8.0/
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
+    from the package.
 - id: src-3
   title: Upgrade to dbt Core 1.8
   url: https://docs.getdbt.com/docs/dbt-versions/dbt-upgrade/upgrading-to-v1.8
   retrieved: '2026-09-21'
   supports: Unit-test syntax, empty execution and adapter decoupling, as researched at cutoff.
+- id: src-4
+  title: Mesh, Explorer and Cloud CLI GA
+  url: https://www.getdbt.com/blog/new-dbt-cloud-enhancements-empower-organizations-with-trustworthy-data-at-scale
+  retrieved: '2026-09-21'
+  supports: Press announcement establishes GA Cloud CLI, Explorer's existing capabilities including column lineage,
+    and Mesh multi-project support. Assist and visual editor are beta. Advanced CI and automatic exposures are described
+    as beta coming soon.
+- id: src-5
+  title: Copilot announcement
+  url: https://www.getdbt.com/blog/dbt-labs-unveils-ai-innovations-and-new-features-to-improve-collaboration-and-multi-platform
+  retrieved: '2026-09-21'
+  supports: Copilot and expanded visual/multi-platform development announced at Coalesce. Don't automatically treat
+    all named capabilities as separately sold products or all previews as GA.
 narrative_evidence:
 - src-1
 - src-2
 - src-3
+- src-4
+- src-5
 walkthrough:
   id: wt-1.8
   learning_objective: |
@@ -81,8 +111,13 @@ walkthrough:
         - 1000
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       The business expectation is 1,200 - 200 = 1,000 cents.
+    evidence:
+    - src-1
+    - src-2
+    - src-3
   - id: bug
     title: The calculation has a bug
     explanation: |
@@ -100,6 +135,7 @@ walkthrough:
         - 1400
       result_status: fail
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       A plausible-looking query can apply the wrong business rule.
     code:
@@ -112,6 +148,10 @@ walkthrough:
         from {{ ref('order_amounts') }}
       highlight_lines:
       - 3
+    evidence:
+    - src-1
+    - src-2
+    - src-3
   - id: fixture
     title: Describe the case in YAML
     explanation: |
@@ -133,6 +173,7 @@ walkthrough:
         - 1400
       result_status: fail
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       A small fixture makes the failure easy to explain.
     code:
@@ -153,6 +194,10 @@ walkthrough:
       highlight_lines:
       - 8
       - 11
+    evidence:
+    - src-1
+    - src-2
+    - src-3
   - id: fixed
     title: Apply the corrected calculation
     explanation: |
@@ -170,6 +215,7 @@ walkthrough:
         - 1000
       result_status: pass
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       The test protects the refund rule when the model changes again.
     code:
@@ -182,6 +228,10 @@ walkthrough:
         from {{ ref('order_amounts') }}
       highlight_lines:
       - 3
+    evidence:
+    - src-1
+    - src-2
+    - src-3
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -189,5 +239,10 @@ walkthrough:
     - src-1
     - src-2
     - src-3
+    - src-4
+    - src-5
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+status: reviewed
+review_scope: Source and fixture review; no historical dbt engine execution.
+default_milestone: 1.8.0

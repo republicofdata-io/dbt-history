@@ -37,12 +37,13 @@ sources:
   title: dbt 0.16 release evidence
   url: https://github.com/dbt-labs/dbt/releases/tag/v0.16.0
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Tagged release changes; package upload and public announcement remain distinct.
 - id: src-2
   title: dbt 0.16 package evidence
   url: https://pypi.org/project/dbt/0.16.0/
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
+    from the package.
 narrative_evidence:
 - src-1
 - src-2
@@ -71,8 +72,12 @@ walkthrough:
         - Who maintains this definition?
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       A data type is not business ownership.
+    evidence:
+    - src-1
+    - src-2
   - id: meta
     title: Attach project context
     explanation: |
@@ -90,6 +95,7 @@ walkthrough:
         - cents
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       Metadata can travel with the model.
     code:
@@ -103,6 +109,9 @@ walkthrough:
               owner: finance
               unit: cents
       highlight_lines: []
+    evidence:
+    - src-1
+    - src-2
   - id: boundary
     title: Understand what metadata does
     explanation: |
@@ -122,8 +131,12 @@ walkthrough:
         - 12,500 cents
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       Documented ownership and enforced permissions are separate.
+    evidence:
+    - src-1
+    - src-2
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -133,4 +146,4 @@ walkthrough:
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
 status: reviewed
-review_scope: Source and fixture review; no historical dbt execution.
+review_scope: Source and fixture review; no historical dbt engine execution.

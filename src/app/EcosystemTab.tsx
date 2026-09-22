@@ -3,7 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import EvidenceDrawer, { SourceList } from "@/components/EvidenceDrawer";
 import { ecosystem, productEvents, products } from "@/content/load";
-import { BAND_LAYERS, FLOW_LAYERS, LAYER_LABELS, ecosystemAt, type PlacementState } from "@/content/derive";
+import { BAND_LAYERS, FLOW_LAYERS, LAYER_LABELS, ecosystemAt, intervalQualified, ownerIntervalAt, type PlacementState } from "@/content/derive";
 import { formatDate } from "@/content/dates";
 import { cn } from "@/lib/utils";
 import type { HistoryState } from "./state";
@@ -20,6 +20,8 @@ const REL: Record<string, string> = {
 function Chip({ s, date }: { s: PlacementState; date: string }) {
   const own = s.relationship === "dbt-owned";
   const fam = s.relationship === "combined-family";
+  const ownerInterval = ownerIntervalAt(s.product, date);
+  const ownerQualified = intervalQualified(ownerInterval, date);
   return (
     <EvidenceDrawer
       title={s.name}
@@ -44,8 +46,16 @@ function Chip({ s, date }: { s: PlacementState; date: string }) {
           <Badge variant={own ? "accent" : "default"}>{REL[s.relationship]}</Badge>
           {s.placement.maturity && <Badge variant="warn">{s.placement.maturity}</Badge>}
           {s.owner && <Badge>owner: {s.owner}</Badge>}
+          {ownerQualified && <Badge variant="warn">ownership qualified</Badge>}
           {s.certainty === "qualified" && <Badge variant="warn">placement date qualified</Badge>}
         </div>
+        {ownerInterval?.note && <p className="text-xs text-muted-foreground">{ownerInterval.note}</p>}
+        {ownerInterval?.uncertainty && (
+          <p className="text-xs text-muted-foreground">
+            Ownership transition between {formatDate(ownerInterval.uncertainty.earliest)} and {formatDate(ownerInterval.uncertainty.latest)}.
+          </p>
+        )}
+        {s.product.ownership_note && <p className="text-xs text-muted-foreground">{s.product.ownership_note}</p>}
         <div>
           <p className="kicker mb-1">Why it is on the chart</p>
           <p className="text-muted-foreground">{s.placement.rationale}</p>

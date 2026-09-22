@@ -37,12 +37,13 @@ sources:
   title: dbt 1.5 release evidence
   url: https://github.com/dbt-labs/dbt/releases/tag/v1.5.0
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Tagged release changes; package upload and public announcement remain distinct.
 - id: src-2
   title: dbt 1.5 package evidence
   url: https://pypi.org/project/dbt-core/1.5.0/
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
+    from the package.
 narrative_evidence:
 - src-1
 - src-2
@@ -71,6 +72,7 @@ walkthrough:
         - bigint
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       A model interface includes names and types.
     code:
@@ -89,6 +91,9 @@ walkthrough:
               - name: revenue_cents
                 data_type: bigint
       highlight_lines: []
+    evidence:
+    - src-1
+    - src-2
   - id: mismatch
     title: Rename a column in the proposed SQL
     explanation: |
@@ -106,8 +111,12 @@ walkthrough:
         - interface mismatch
       result_status: fail
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       The issue is a broken interface even if values still sum correctly.
+    evidence:
+    - src-1
+    - src-2
   - id: repair
     title: Restore the public name
     explanation: |
@@ -139,8 +148,12 @@ walkthrough:
         - 4800
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       An interface check complements the tests of business meaning.
+    evidence:
+    - src-1
+    - src-2
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -150,4 +163,4 @@ walkthrough:
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
 status: reviewed
-review_scope: Source and fixture review; no historical dbt execution.
+review_scope: Source and fixture review; no historical dbt engine execution.

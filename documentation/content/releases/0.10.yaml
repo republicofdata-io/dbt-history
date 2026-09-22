@@ -37,12 +37,13 @@ sources:
   title: dbt 0.10 release evidence
   url: https://github.com/dbt-labs/dbt/releases/tag/v0.10.0
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Tagged release changes; package upload and public announcement remain distinct.
 - id: src-2
   title: dbt 0.10 package evidence
   url: https://pypi.org/project/dbt/0.10.0/
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
+    from the package.
 narrative_evidence:
 - src-1
 - src-2
@@ -73,6 +74,7 @@ walkthrough:
         - Riverside
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       Use a seed for small maintained reference data.
     code:
@@ -84,6 +86,9 @@ walkthrough:
         2,Mile End
         3,Riverside
       highlight_lines: []
+    evidence:
+    - src-1
+    - src-2
   - id: seed
     title: Load and reference the seed
     explanation: |
@@ -99,6 +104,7 @@ walkthrough:
         - 3
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       A seed can participate in the dependency graph.
     code:
@@ -113,6 +119,9 @@ walkthrough:
         select location_id, name
         from {{ ref("locations") }}
       highlight_lines: []
+    evidence:
+    - src-1
+    - src-2
   - id: labels
     title: Attach readable names
     explanation: |
@@ -144,8 +153,12 @@ walkthrough:
         - 4800
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       The labels are maintained with the project, not typed separately into every report.
+    evidence:
+    - src-1
+    - src-2
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -155,4 +168,4 @@ walkthrough:
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
 status: reviewed
-review_scope: Source and fixture review; no historical dbt execution.
+review_scope: Source and fixture review; no historical dbt engine execution.

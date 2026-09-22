@@ -60,6 +60,12 @@ export default function WalkthroughPlayer({ release, walkthrough, step, onStep, 
               <Badge variant={captured ? "good" : "accent"}>{captured ? "captured dbt output" : "illustration"}</Badge>
               {walkthrough.evidence.review_date && <span className="provenance">reviewed {formatDate(walkthrough.evidence.review_date)}</span>}
             </div>
+            {release.review_scope && (
+              <div>
+                <p className="kicker mb-1">Review scope</p>
+                <p className="text-muted-foreground">{release.review_scope.trim()}</p>
+              </div>
+            )}
             {walkthrough.evidence.limitations && (
               <div>
                 <p className="kicker mb-1">Limitations</p>
@@ -121,6 +127,7 @@ export default function WalkthroughPlayer({ release, walkthrough, step, onStep, 
           </div>
           <div className="flex flex-col gap-3">
             {current.state ? <StateView state={current.state} /> : <div className="rounded-md border border-dashed border-border p-4 text-sm text-muted-foreground">No prepared result for this step.</div>}
+            {current.state?.provenance && <p className="provenance">{current.state.provenance}</p>}
             {current.takeaway && (
               <p className="border-l-2 border-accent pl-3 text-sm text-foreground/90">
                 <span className="kicker mr-2">Takeaway</span>

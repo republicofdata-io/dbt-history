@@ -1,6 +1,6 @@
 import type { z } from "zod";
 import { bounds, relation } from "./dates";
-import type { Layer, Maturity, Milestone, Placement, Product, ProductEvent, Release, Relationship } from "./schema";
+import type { Interval, Layer, Licence, Maturity, Milestone, Placement, Product, ProductEvent, Release, Relationship } from "./schema";
 
 type MaturityT = z.infer<typeof Maturity>;
 type RelationshipT = z.infer<typeof Relationship>;
@@ -52,8 +52,25 @@ export function nameAt(product: Product, date: string): string {
   return activeInterval(product.names, date)?.name ?? product.id;
 }
 
+export function nameIntervalAt(product: Product, date: string): (Interval & { name: string }) | undefined {
+  return activeInterval(product.names, date);
+}
+
 export function ownerAt(product: Product, date: string): string | null {
   return activeInterval(product.owners, date)?.owner ?? null;
+}
+
+export function ownerIntervalAt(product: Product, date: string): (Interval & { owner: string }) | undefined {
+  return activeInterval(product.owners, date);
+}
+
+/** True when an interval's own qualification covers the date (its start is uncertain around the anchor). */
+export function intervalQualified(i: Interval | undefined, date: string): boolean {
+  if (!i) return false;
+  if (i.confidence === "qualified") return true;
+  const u = i.uncertainty ?? i.transition_uncertainty;
+  if (u && date >= u.earliest && date < u.latest) return true;
+  return relation(date, i.from, i.from_precision) === "within";
 }
 
 // ---------- Catalogue ----------
@@ -61,11 +78,23 @@ export function ownerAt(product: Product, date: string): string | null {
 export interface ProductState {
   product: Product;
   name: string;
+  nameInterval?: Interval & { name: string };
   owner: string | null;
+  ownerInterval?: Interval & { owner: string };
   maturity: MaturityT | null;
+  /** Free-text maturity qualification (e.g. "alpha", or an explicit "not established"). */
+  maturityLabel: string | null;
+  /** announced-not-available | alpha | existing-installations-only | null (no claim). */
+  availability: string | null;
+  availabilityScope: "public" | "private" | null;
   access: AccessT[] | null;
+  licence: Licence | null;
+  commercialConditions: string[];
+  plannedRetirement: NonNullable<ProductEvent["planned_retirement"]> | null;
   /** "qualified" when the anchor falls inside an uncertain event interval. */
   certainty: "certain" | "qualified";
+  /** Product is announced or agreed but not yet a member of the catalogue. */
+  pending: boolean;
   applied: ProductEvent[];
   qualified: ProductEvent[];
   latest: ProductEvent | null;
@@ -96,11 +125,18 @@ export function catalogueAt(date: string, products: Map<string, Product>, events
   for (const [id, list] of byProduct) {
     const product = products.get(id);
     if (!product) throw new Error(`Event refers to unknown product ${id}`);
+    let pending = false;
     if (product.catalogue_membership) {
       const m = product.catalogue_membership;
-      if (date < bounds(m.from, "day").earliest) continue;
+      const start = bounds(m.from, "day").earliest;
+      if (date < start) {
+        // Announced or agreed, not yet a member: shown separately, never as owned.
+        if (m.pending_from && date >= bounds(m.pending_from, "day").earliest) pending = true;
+        else continue;
+      }
       if (m.to && date >= bounds(m.to, "day").earliest) continue;
     } else if (product.family === "fivetran" && (!merger || date < merger)) continue;
+
     const applied: ProductEvent[] = [];
     const qualified: ProductEvent[] = [];
     for (const e of list) {
@@ -110,21 +146,72 @@ export function catalogueAt(date: string, products: Map<string, Product>, events
     }
     if (applied.length === 0 && qualified.length === 0) continue;
     const sorted = [...applied].sort((a, b) => a.date.localeCompare(b.date));
-    const withMaturity = [...sorted].reverse().find((e) => e.maturity);
-    const withAccess = [...sorted].reverse().find((e) => e.access && e.access.length);
+
+    // Walk events in order. A null maturity leaves the carried value unchanged;
+    // an explicit state_override replaces it; labels and availability carry the same way.
+    let maturity: MaturityT | null = null;
+    let maturityLabel: string | null = null;
+    let availability: string | null = null;
+    let availabilityScope: "public" | "private" | null = null;
+    let access: AccessT[] | null = null;
+    let licence: Licence | null = null;
+    let commercialConditions: string[] = [];
+    let plannedRetirement: ProductState["plannedRetirement"] = null;
+    for (const e of sorted) {
+      if (e.state_override) {
+        maturity = e.state_override.maturity;
+        maturityLabel = e.state_override.maturity_label ?? null;
+      } else if (e.maturity) {
+        maturity = e.maturity;
+        maturityLabel = e.maturity_label ?? null;
+      } else if (e.maturity_label) {
+        maturityLabel = e.maturity_label;
+      }
+      if (e.availability !== undefined && e.availability !== null) availability = e.availability;
+      else if (e.maturity) availability = null; // a dated maturity supersedes an earlier "announced" state
+      if (e.availability_scope) availabilityScope = e.availability_scope;
+      if (e.access && e.access.length) access = e.access;
+      if (e.license) licence = e.license;
+      if (e.commercial_conditions.length) commercialConditions = e.commercial_conditions;
+      if (e.planned_retirement) plannedRetirement = e.planned_retirement;
+    }
+    const nameInterval = nameIntervalAt(product, date);
+    const ownerInterval = ownerIntervalAt(product, date);
+    const membershipQualified =
+      !!product.catalogue_membership?.uncertainty &&
+      date >= product.catalogue_membership.uncertainty.earliest &&
+      date < product.catalogue_membership.uncertainty.latest;
     states.push({
       product,
-      name: nameAt(product, date),
-      owner: ownerAt(product, date),
-      maturity: withMaturity?.maturity ?? null,
-      access: withAccess?.access ?? null,
-      certainty: qualified.length ? "qualified" : "certain",
+      name: nameInterval?.name ?? product.id,
+      nameInterval,
+      owner: ownerInterval?.owner ?? null,
+      ownerInterval,
+      maturity,
+      maturityLabel,
+      availability,
+      availabilityScope,
+      access,
+      licence: licence ?? product.license ?? null,
+      commercialConditions,
+      plannedRetirement,
+      certainty: qualified.length || membershipQualified || intervalQualified(ownerInterval, date) ? "qualified" : "certain",
+      pending,
       applied: sorted,
       qualified,
       latest: sorted.at(-1) ?? null,
     });
   }
   return states.sort((a, b) => a.name.localeCompare(b.name));
+}
+
+/** Human label for an event, honouring subtype and transaction type over the generic kind. */
+export function eventLabel(e: ProductEvent): string {
+  if (e.kind === "acquisition_closed" && e.transaction_type === "merger") return "merger completed";
+  if (e.kind === "acquisition_agreed" && e.transaction_type === "merger") return "merger announced";
+  if (e.kind === "pricing" && e.event_subtype === "licence-change") return "licence change";
+  if (e.event_subtype) return e.event_subtype.replace(/-/g, " ");
+  return e.kind.replace(/_/g, " ");
 }
 
 // ---------- Ecosystem ----------

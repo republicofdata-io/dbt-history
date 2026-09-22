@@ -32,20 +32,55 @@ milestones:
   title: First published package
   evidence:
   - src-2
+- id: product-2026-05-06
+  kind: product_event
+  date: '2026-05-06'
+  precision: day
+  title: Developer Agent preview
+  evidence:
+  - src-3
+- id: product-2026-06-01
+  kind: product_event
+  date: '2026-06-01'
+  precision: day
+  title: Merger closes; State preview
+  evidence:
+  - src-4
+  - src-5
 sources:
 - id: src-1
   title: dbt 1.11 release evidence
   url: https://github.com/dbt-labs/dbt/releases/tag/v1.11.0
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Tagged release changes; package upload and public announcement remain distinct.
 - id: src-2
   title: dbt 1.11 package evidence
   url: https://pypi.org/project/dbt-core/1.11.0/
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
+    from the package.
+- id: src-3
+  title: Developer Agent preview
+  url: https://www.getdbt.com/blog/the-dbt-developer-agent-is-now-in-preview
+  retrieved: '2026-09-21'
+  supports: Developer Agent preview in Studio, described as Copilot's next evolution. Original publication is May
+    6; edited date May 7.
+- id: src-4
+  title: Merger closes; State preview
+  url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+  retrieved: '2026-09-21'
+  supports: Merger closes; Core v2 alpha and dbt State preview announced. Separate these from September GA.
+- id: src-5
+  title: Merger closes; State preview
+  url: https://www.getdbt.com/blog/what-we-announced-at-snowflake-summit-and-why-it-matters
+  retrieved: '2026-09-21'
+  supports: Merger closes; Core v2 alpha and dbt State preview announced. Separate these from September GA.
 narrative_evidence:
 - src-1
 - src-2
+- src-3
+- src-4
+- src-5
 walkthrough:
   id: wt-1.11
   learning_objective: |
@@ -71,8 +106,12 @@ walkthrough:
         - '34.00'
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       Dividing by 100 is presentation, not a new revenue definition.
+    evidence:
+    - src-1
+    - src-2
   - id: function
     title: Make the function a dependency
     explanation: |
@@ -98,8 +137,12 @@ walkthrough:
           to: display
         highlight:
         - fn
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       The graph can describe deployment order for a shared function.
+    evidence:
+    - src-1
+    - src-2
   - id: distinction
     title: Separate two reuse mechanisms
     explanation: |
@@ -119,15 +162,23 @@ walkthrough:
         - 12,500 cents remains unchanged
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       A function resource is not merely another spelling of a macro.
+    evidence:
+    - src-1
+    - src-2
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
     - src-1
     - src-2
+    - src-3
+    - src-4
+    - src-5
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
 status: reviewed
-review_scope: Source and fixture review; no historical dbt execution.
+review_scope: Source and fixture review; no historical dbt engine execution.
+default_milestone: 1.11.0

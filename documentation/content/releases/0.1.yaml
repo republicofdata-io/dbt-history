@@ -46,12 +46,14 @@ sources:
   title: dbt 0.1 package evidence
   url: https://pypi.org/project/dbt/0.1.1/
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
+    from the package.
 - id: src-2
   title: dbt 0.1 package evidence
   url: https://pypi.org/pypi/dbt/json
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
+    from the package.
 - id: src-3
   title: dbt 0.1.14 patch evidence
   url: https://pypi.org/project/dbt/0.1.14/
@@ -100,6 +102,7 @@ walkthrough:
         - 4800
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       A model is a saved SQL definition.
     code:
@@ -124,6 +127,10 @@ walkthrough:
         left join refund_totals on orders.order_id = refund_totals.order_id
         group by orders.location_id
       highlight_lines: []
+    evidence:
+    - src-1
+    - src-2
+    - src-3
   - id: config
     title: Choose a stored result
     explanation: |
@@ -143,6 +150,7 @@ walkthrough:
         - not available in this package
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       The first release has its own configuration language.
     code:
@@ -153,6 +161,10 @@ walkthrough:
           materialized: true
       highlight_lines:
       - 2
+    evidence:
+    - src-1
+    - src-2
+    - src-3
   - id: patch
     title: Advance to patch 0.1.14
     explanation: |
@@ -174,6 +186,7 @@ walkthrough:
           to: revenue
         highlight:
         - revenue
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       Record the patch when showing a feature added during a series.
     code:
@@ -185,6 +198,10 @@ walkthrough:
         group by location_id
       highlight_lines:
       - 2
+    evidence:
+    - src-1
+    - src-2
+    - src-3
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -194,3 +211,5 @@ walkthrough:
     - src-3
     limitations: |
       Illustration only. Early engine code targets Redshift; no local compatibility is claimed. The 0.1.1 project setting and 0.1.14 ref helper were inspected in original package source; the exact ref introduction patch remains unknown.
+status: reviewed
+review_scope: Source and fixture review; no historical dbt engine execution.

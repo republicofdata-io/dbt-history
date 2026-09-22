@@ -1,0 +1,138 @@
+id: dbt-history-content
+schema_version: 1
+authored_on: '2026-09-22'
+research_cutoff: '2026-09-21'
+status: authored-and-content-validated
+summary: |
+  Complete first authored content set: one immutable Waffle Shop fixture, seven named variants, 36 chapters and 110 guided steps, 43 catalogue identities, 105 normalized events and 61 ecosystem placement intervals. All walkthroughs are illustrations.
+files:
+  dataset: waffle-shop/dataset.yaml
+  chapters:
+  - releases/origin.yaml
+  - releases/0.1.yaml
+  - releases/0.2.yaml
+  - releases/0.3.yaml
+  - releases/0.4.yaml
+  - releases/0.5.yaml
+  - releases/0.6.yaml
+  - releases/0.7.yaml
+  - releases/0.8.yaml
+  - releases/0.9.yaml
+  - releases/0.10.yaml
+  - releases/0.11.yaml
+  - releases/0.12.yaml
+  - releases/0.13.yaml
+  - releases/0.14.yaml
+  - releases/0.15.yaml
+  - releases/0.16.yaml
+  - releases/0.17.yaml
+  - releases/0.18.yaml
+  - releases/0.19.yaml
+  - releases/0.20.yaml
+  - releases/0.21.yaml
+  - releases/1.0.yaml
+  - releases/1.1.yaml
+  - releases/1.2.yaml
+  - releases/1.3.yaml
+  - releases/1.4.yaml
+  - releases/1.5.yaml
+  - releases/1.6.yaml
+  - releases/1.7.yaml
+  - releases/1.8.yaml
+  - releases/1.9.yaml
+  - releases/1.10.yaml
+  - releases/1.11.yaml
+  - releases/1.12.yaml
+  - releases/2.0.yaml
+  products: catalogue/products.yaml
+  events: catalogue/events.yaml
+  ecosystem: ecosystem/placements.yaml
+  validation: validation-report.yaml
+rendering_contract:
+- id: version-order
+  instruction: Use the chapters array, not lexical file sorting. Origin precedes 0.1; 0.9 precedes 0.10.
+- id: anchor
+  instruction: Resolve every tab from the selected milestone. Use default_milestone when supplied; otherwise the
+    first milestone. v2 has exactly four milestones and opens on September 16 GA.
+- id: steps
+  instruction: Render complete prepared step states and preserve the illustration label. A shell block is read-only
+    content, not an execution action.
+- id: fixture
+  instruction: Apply variants recursively through extends. Add extra_rows, then apply declared change_events. The
+    base is immutable. Event-based deletion does not erase orders.
+- id: external-products
+  instruction: ecosystem/placements.yaml is a list. Register each product_definition as a product before resolving
+    placements; definitions use the same fields as catalogue identities. Do not count the definition as an extra
+    placement.
+- id: half-open-intervals
+  instruction: For exact dates, from is inclusive and to is exclusive. A chart interval ending can be editorial
+    rotation, not retirement.
+- id: date-precision
+  instruction: Month/year values are uncertain intervals, not the first day. Show a qualified state while the anchor
+    is within that interval. Never display an invented exact date.
+- id: bounded-observations
+  instruction: uncertainty and date_basis=observed-by preserve a bound. Do not silently treat the upper bound as
+    the actual acquisition or rename day.
+- id: catalogue-membership
+  instruction: Apply catalogue_membership independently of product age and current owner. Fivetran-lineage identities
+    enter the dbt catalogue from June 1, 2026. Pending acquisition records are not completed ownership.
+- id: maturity
+  instruction: Apply maturity by surface. A null maturity on an ordinary event leaves previous known maturity unchanged;
+    explicit state_override replaces it. The June 2026 engine alpha has a null enum plus maturity_label=alpha. Never
+    carry its earlier beta label over that explicit alpha observation.
+- id: availability
+  instruction: availability=announced-not-available means upcoming, not usable. availability_scope distinguishes
+    public/private preview or beta. Planned November Native App retirement is not a completed event at cutoff.
+- id: licensing
+  instruction: Keep license separate from access and commercial_conditions. Full dbt and dbt OSS are separate distributions.
+    The schema-limited pricing kind with event_subtype=licence-change denotes a licence event, not a price change.
+- id: uncertainty-in-extra-fields
+  instruction: Preserve and render qualifications in ownership/name intervals, known_since_basis, maturity_label,
+    availability_scope and commercial_conditions. Validation that accepts but strips these fields is insufficient
+    for publication.
+- id: fixture-provenance
+  instruction: All shop names, values and proposed errors are fictional teaching material, not historical claims.
+    Source references substantiate dbt capabilities; independent fixture calculations substantiate the numbers.
+open_checks:
+- id: first-ref-patch
+  status: qualified-in-content
+  description: 0.1.1 lacks ref; 0.1.14 contains it. The exact first patch remains unknown, so introduced_in is null
+    with known_present_in and introduction_uncertainty.
+- id: run-operation
+  status: qualified-in-content
+  description: Present in inspected 0.13 source but announced in 0.14 release notes. No exact first-introduction
+    claim is made.
+- id: transform-close
+  status: bounded-in-content
+  description: February 8 agreement and acquisition confirmed by October 17, 2023; legal closing day not established.
+- id: census
+  status: bounded-in-content
+  description: Completion lies between May 1 and September 3, 2025; Activations naming is observed by February 2,
+    2026, not assigned a fabricated rename day.
+- id: native-app
+  status: known-by-observation
+  description: Original launch remains unknown. The content starts its catalogue record at the July 24 maintenance
+    notice and explicitly labels that as an observation.
+- id: atlan
+  status: qualified-in-content
+  description: Conflicting 2019/2020 launch descriptions are not resolved silently; the chart uses the dated July
+    2022 evidence.
+- id: entitlements
+  status: not-exhaustive
+  description: Historical plan-specific entitlements are not exhaustively researched. Null access or licence is
+    unknown, not free or open source.
+- id: runtime
+  status: not-executed
+  description: Historical syntax is source-reviewed. No dbt runtime, adapter execution, measured performance or
+    original terminal log is claimed.
+authoring_corrections:
+- id: snowflake-projects-date
+  description: The cited native dbt Projects GA article is dated November 10, 2025; the skeleton’s June 2025 placement
+    was replaced.
+  sources:
+  - title: Snowflake dbt Projects GA
+    url: https://www.snowflake.com/en/blog/dbt-projects-generally-available/
+    retrieved: '2026-09-21'
+    rechecked: '2026-09-22'
+publication_gate: |
+  Content files and the existing app’s content tests pass. The coding agent should verify that the rendered UI retains the qualifications listed above, including licence/access separation, upcoming products, private beta labels and bounded ownership dates. This is an integration review, not a request to add execution.

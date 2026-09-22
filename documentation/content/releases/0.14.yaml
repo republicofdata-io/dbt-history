@@ -37,12 +37,13 @@ sources:
   title: dbt 0.14 release evidence
   url: https://github.com/dbt-labs/dbt/releases/tag/v0.14.0
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Tagged release changes; package upload and public announcement remain distinct.
 - id: src-2
   title: dbt 0.14 package evidence
   url: https://pypi.org/project/dbt/0.14.0/
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
+    from the package.
 narrative_evidence:
 - src-1
 - src-2
@@ -71,8 +72,12 @@ walkthrough:
         - Montréal
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       The current source initially contains one value.
+    evidence:
+    - src-1
+    - src-2
   - id: change
     title: Observe the declared update
     explanation: |
@@ -92,6 +97,7 @@ walkthrough:
         - 2016-03-09 09:00
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       The source now exposes only the new city.
     code:
@@ -104,6 +110,9 @@ walkthrough:
         select * from raw.customers
         {% endsnapshot %}
       highlight_lines: []
+    evidence:
+    - src-1
+    - src-2
   - id: history
     title: Keep both versions
     explanation: |
@@ -124,8 +133,12 @@ walkthrough:
         - March 9 09:00 onward
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       History preserves the change; order-location revenue stays 12,500 cents.
+    evidence:
+    - src-1
+    - src-2
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -135,4 +148,4 @@ walkthrough:
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
 status: reviewed
-review_scope: Source and fixture review; no historical dbt execution.
+review_scope: Source and fixture review; no historical dbt engine execution.

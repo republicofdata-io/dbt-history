@@ -32,26 +32,42 @@ milestones:
   title: First published package
   evidence:
   - src-3
+- id: product-2026-07-24
+  kind: product_event
+  date: '2026-07-24'
+  precision: day
+  title: Native App maintenance notice
+  evidence:
+  - src-4
 sources:
 - id: src-1
   title: dbt 1.12 release evidence
   url: https://github.com/dbt-labs/dbt/releases/tag/v1.12.0
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Tagged release changes; package upload and public announcement remain distinct.
 - id: src-2
   title: dbt 1.12 package evidence
   url: https://www.getdbt.com/blog/dbt-core-v1-12-is-ga
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Tagged release changes; package upload and public announcement remain distinct.
 - id: src-3
   title: dbt 1.12 package evidence
   url: https://pypi.org/project/dbt-core/1.12.0/
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
+    from the package.
+- id: src-4
+  title: Native App maintenance notice
+  url: https://www.getdbt.com/blog/retiring-the-dbt-snowflake-native-app
+  retrieved: '2026-09-21'
+  supports: dbt Snowflake Native App enters maintenance; new installations disabled; November removal announced.
+    It is still in maintenance at this research cutoff, not already removed. This is distinct from Snowflake's own
+    dbt Projects product.
 narrative_evidence:
 - src-1
 - src-2
 - src-3
+- src-4
 walkthrough:
   id: wt-1.12
   learning_objective: |
@@ -77,8 +93,13 @@ walkthrough:
         - opt-in path, extra binary
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       Opting into parsing does not mean every v2 feature is present.
+    evidence:
+    - src-1
+    - src-2
+    - src-3
   - id: inspect
     title: Ask a small ad hoc question
     explanation: |
@@ -94,6 +115,7 @@ walkthrough:
         - 12500
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       The expected answer comes from the fixture, not a fabricated terminal run.
     code:
@@ -102,6 +124,10 @@ walkthrough:
       content: |
         dbt run-operation --sql "select sum(revenue_cents) as total_cents from revenue_by_location"
       highlight_lines: []
+    evidence:
+    - src-1
+    - src-2
+    - src-3
   - id: compare
     title: Keep the migration checks explicit
     explanation: |
@@ -121,8 +147,13 @@ walkthrough:
         - review before adopting the optional path
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       The transition needs observable checks, not an assumed speedup.
+    evidence:
+    - src-1
+    - src-2
+    - src-3
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -130,7 +161,9 @@ walkthrough:
     - src-1
     - src-2
     - src-3
+    - src-4
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
 status: reviewed
-review_scope: Source and fixture review; no historical dbt execution.
+review_scope: Source and fixture review; no historical dbt engine execution.
+default_milestone: 1.12.0

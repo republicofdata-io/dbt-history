@@ -44,17 +44,18 @@ sources:
   title: dbt 0.18 release evidence
   url: https://github.com/dbt-labs/dbt/releases/tag/v0.18.0
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Tagged release changes; package upload and public announcement remain distinct.
 - id: src-2
   title: dbt 0.18 release evidence
   url: https://github.com/dbt-labs/dbt-core/releases/tag/v0.18.1
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Tagged release changes; package upload and public announcement remain distinct.
 - id: src-3
   title: dbt 0.18 package evidence
   url: https://pypi.org/project/dbt/0.18.0/
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
+    from the package.
 - id: src-4
   title: dbt 0.18.1 patch evidence
   url: https://github.com/dbt-labs/dbt/releases/tag/v0.18.1
@@ -94,8 +95,14 @@ walkthrough:
         - unchanged
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       Saved state identifies a code-change boundary.
+    evidence:
+    - src-1
+    - src-2
+    - src-3
+    - src-4
   - id: build
     title: Build the affected branch
     explanation: |
@@ -113,6 +120,7 @@ walkthrough:
         - orders from saved production state
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       Deferral supports a smaller development build.
     code:
@@ -121,6 +129,11 @@ walkthrough:
       content: |
         dbt run --models state:modified+ --state ./state-prod --defer
       highlight_lines: []
+    evidence:
+    - src-1
+    - src-2
+    - src-3
+    - src-4
   - id: consumer
     title: Name the dashboard at 0.18.1
     explanation: |
@@ -138,8 +151,14 @@ walkthrough:
         - revenue_by_location
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       Exposures describe downstream use; they do not build the dashboard.
+    evidence:
+    - src-1
+    - src-2
+    - src-3
+    - src-4
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -151,4 +170,4 @@ walkthrough:
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
 status: reviewed
-review_scope: Source and fixture review; no historical dbt execution.
+review_scope: Source and fixture review; no historical dbt engine execution.

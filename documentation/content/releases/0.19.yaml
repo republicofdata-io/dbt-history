@@ -32,20 +32,34 @@ milestones:
   title: First published package
   evidence:
   - src-2
+- id: product-2021-06-30
+  kind: product_event
+  date: '2021-06-30'
+  precision: day
+  title: Company becomes dbt Labs
+  evidence:
+  - src-3
 sources:
 - id: src-1
   title: dbt 0.19 release evidence
   url: https://github.com/dbt-labs/dbt/releases/tag/v0.19.0
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Tagged release changes; package upload and public announcement remain distinct.
 - id: src-2
   title: dbt 0.19 package evidence
   url: https://pypi.org/project/dbt/0.19.0/
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
+    from the package.
+- id: src-3
+  title: Company becomes dbt Labs
+  url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+  retrieved: '2026-09-21'
+  supports: Fishtown Analytics renames to dbt Labs. This is a company rename, not a new engine.
 narrative_evidence:
 - src-1
 - src-2
+- src-3
 walkthrough:
   id: wt-0.19
   learning_objective: |
@@ -71,8 +85,12 @@ walkthrough:
         - Montréal
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       The snapshot has an active version before deletion.
+    evidence:
+    - src-1
+    - src-2
   - id: missing
     title: Observe a hard delete
     explanation: |
@@ -90,6 +108,7 @@ walkthrough:
         - 1046 and 1052 retained
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       Source deletion is different from refunding an order.
     code:
@@ -102,6 +121,9 @@ walkthrough:
         select * from raw.customers
         {% endsnapshot %}
       highlight_lines: []
+    evidence:
+    - src-1
+    - src-2
   - id: close
     title: Close the observed active interval
     explanation: |
@@ -119,15 +141,21 @@ walkthrough:
         - 12500
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       The past remains queryable without claiming the customer is still current.
+    evidence:
+    - src-1
+    - src-2
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
     - src-1
     - src-2
+    - src-3
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
 status: reviewed
-review_scope: Source and fixture review; no historical dbt execution.
+review_scope: Source and fixture review; no historical dbt engine execution.
+default_milestone: 0.19.0

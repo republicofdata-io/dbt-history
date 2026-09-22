@@ -13,14 +13,9 @@
     to: null
     from_precision: day
   owners:
-  - owner: Fishtown Analytics
+  - owner: Independent company before the merger
     from: '2016'
     from_precision: year
-    to: '2021-06-30'
-    confidence: qualified
-  - owner: dbt Labs
-    from: '2021-06-30'
-    from_precision: day
     to: '2026-06-01'
   - owner: Combined Fivetran and dbt Labs company
     from: '2026-06-01'
@@ -1101,6 +1096,9 @@
   - title: Early product family evidence
     url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
     retrieved: '2026-09-21'
+  - title: Founder retrospective on the 2016–2019 stack
+    url: https://www.getdbt.com/blog/dbt-labs-and-fivetran-merge-announcement
+    retrieved: '2026-09-21'
   catalogue_membership:
     from: '2026-06-01'
     to: null
@@ -1157,6 +1155,10 @@
     from_precision: day
     to: '2026-02-02'
     to_precision: day
+    transition_uncertainty:
+      earliest: '2025-05-01'
+      latest: '2026-02-02'
+    to_basis: upper observation bound, not exact rename day
   - name: Fivetran Activations
     from: '2026-02-02'
     to: null
@@ -1304,6 +1306,7 @@
     from: '2026-09-14'
     from_precision: day
     to: null
+    date_basis: artifact available September 14; naming policy documented September 15
   owners:
   - owner: Combined Fivetran and dbt Labs company
     from: '2026-09-14'
@@ -1816,7 +1819,7 @@
     from_precision: year
     to: null
   owners:
-  - owner: Fivetran
+  - owner: Independent company before the merger
     from: '2016'
     from_precision: year
     to: '2026-06-01'
@@ -1833,6 +1836,9 @@
     retrieved: '2026-09-21'
   - title: Early product family evidence
     url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+  - title: Founder retrospective on the 2016–2019 stack
+    url: https://www.getdbt.com/blog/dbt-labs-and-fivetran-merge-announcement
     retrieved: '2026-09-21'
   catalogue_membership:
     from: '2026-06-01'

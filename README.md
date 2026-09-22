@@ -50,6 +50,10 @@ Content lives under `documentation/content/` and is validated against `src/conte
 | `catalogue/events.yaml` | Dated product events. The catalogue at any date is computed from these; nothing is copied per chapter. |
 | `ecosystem/placements.yaml` | Which products sit in which layer from when, their relationship to dbt, and sources. |
 
+### Qualifications the UI keeps visible
+
+The catalogue derivation (`src/content/derive.ts`) carries every qualification field to the screen rather than stripping it: licence is shown separately from access and commercial conditions; `availability` distinguishes announced-but-unavailable, alpha and existing-installations-only from usable previews; `availability_scope` labels private versus public betas; a `state_override` replaces carried maturity (the June 2026 engine alpha); owner and name intervals show their notes and bounded transitions; products with a `pending_from` membership appear in a separate "announced or agreed, not yet part of the catalogue" group. Merger and licence events are labelled by their specific meaning, not their generic kind. Tests in `src/content/qualifications.test.ts` pin these rules, and `src/app/render-all.test.tsx` renders every chapter, tab, step and milestone.
+
 ### Date policy
 
 - A chapter opens on its first published package date, labelled as a package upload date, not an announcement date. `default_milestone` overrides this (v2.0 opens on the 16 September Summit milestone).
@@ -80,4 +84,12 @@ The app is its own Netlify site, served under the main domain by a proxy rule in
 
 ## Status
 
-First slice (22 September 2026): scaffold, content schema, app shell, walkthrough player, computed catalogue and ecosystem, and browser-checked navigation. Walkthroughs are being authored chapter by chapter; chapters without one show a preparation panel. Not yet done: the Netlify site and the website proxy rule.
+22 September 2026: scaffold, content schema, app shell, walkthrough player, computed catalogue and ecosystem, and browser-checked navigation. The complete first content set is integrated: 36 chapters with 110 walkthrough steps, 43 catalogue identities, 105 events and 61 ecosystem placements, all rendered with their qualifications and covered by 64 tests. Not yet done: the Netlify site and the website proxy rule.
+
+## Authored history content
+
+The first complete content set was authored on 22 September 2026, with history frozen at 21 September: 36 chapters (including origin), 110 guided steps, one base fixture and seven variants, 43 catalogue identities, 105 events and 61 ecosystem placement intervals. Every walkthrough is an illustration; no historical dbt execution is claimed.
+
+Read [the content index](documentation/content/content-index.yaml) for rendering conventions and retained uncertainty, and [the validation report](documentation/content/validation-report.yaml) for coverage and arithmetic checks. The existing 16 app/content tests also passed using the bundled current Node runtime; the shell’s older Node cannot start this Vite/Vitest toolchain.
+
+Do not discard the content’s extra qualification fields when loading it: licence versus access, announced-but-unavailable products, private/public beta, bounded ownership/name changes and the explicit alpha maturity override affect what visitors should see. Ecosystem content is a list with external identities nested under `product_definition`. The completed merger uses `kind: acquisition_closed` plus `transaction_type: merger`, within the requested event enum.

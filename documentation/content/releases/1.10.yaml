@@ -33,20 +33,69 @@ milestones:
   title: First published package
   evidence:
   - src-2
+- id: product-2025-09-03
+  kind: product_event
+  date: '2025-09-03'
+  precision: day
+  title: Fivetran acquires Tobiko
+  evidence:
+  - src-3
+- id: product-2025-10-13
+  kind: product_event
+  date: '2025-10-13'
+  precision: day
+  title: Fivetran and dbt Labs merger agreement
+  evidence:
+  - src-4
+- id: product-2025-10-14
+  kind: product_event
+  date: '2025-10-14'
+  precision: day
+  title: Insights and remote MCP GA
+  evidence:
+  - src-5
+  - src-6
 sources:
 - id: src-1
   title: dbt 1.10 release evidence
   url: https://github.com/dbt-labs/dbt/releases/tag/v1.10.0
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Tagged release changes; package upload and public announcement remain distinct.
 - id: src-2
   title: dbt 1.10 package evidence
   url: https://pypi.org/project/dbt-core/1.10.0/
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
+    from the package.
+- id: src-3
+  title: Fivetran acquires Tobiko
+  url: https://www.fivetran.com/press/fivetran-acquires-tobiko-data-to-power-the-next-generation-of-advanced-ai-ready-data-transformation
+  retrieved: '2026-09-21'
+  supports: Fivetran acquires Tobiko Data, including SQLMesh and SQLGlot. [Announcement](https://www.fivetran.com/press/fivetran-acquires-tobiko-data-to-power-the-next-generation-of-advanced-ai-ready-data-transformation)
+- id: src-4
+  title: Fivetran and dbt Labs merger agreement
+  url: https://www.getdbt.com/blog/dbt-labs-and-fivetran-merge-announcement
+  retrieved: '2026-09-21'
+  supports: Fivetran/dbt Labs merger announced. [Founder announcement](https://www.getdbt.com/blog/dbt-labs-and-fivetran-merge-announcement)
+- id: src-5
+  title: Insights and remote MCP GA
+  url: https://www.getdbt.com/blog/dbt-labs-cost-optimization-agentic-ai-product-announcements
+  retrieved: '2026-09-21'
+  supports: Insights and remote MCP GA; Fusion state-aware orchestration preview. Discovery and analyst agents beta;
+    developer/observability agents described as upcoming. MetricFlow moves to Apache 2.0.
+- id: src-6
+  title: Insights and remote MCP GA
+  url: https://www.getdbt.com/blog/coalesce-2025-rewriting-the-future
+  retrieved: '2026-09-21'
+  supports: Insights and remote MCP GA; Fusion state-aware orchestration preview. Discovery and analyst agents beta;
+    developer/observability agents described as upcoming. MetricFlow moves to Apache 2.0.
 narrative_evidence:
 - src-1
 - src-2
+- src-3
+- src-4
+- src-5
+- src-6
 walkthrough:
   id: wt-1.10
   learning_objective: |
@@ -72,6 +121,7 @@ walkthrough:
         - duplicate mapping key
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       A duplicated key makes the intended configuration ambiguous.
     code:
@@ -84,6 +134,9 @@ walkthrough:
             description: Revenue before refunds.
             description: Payments minus refunds, in cents.
       highlight_lines: []
+    evidence:
+    - src-1
+    - src-2
   - id: warning
     title: Make the ambiguity visible
     explanation: |
@@ -101,8 +154,12 @@ walkthrough:
         - 2
       result_status: warn
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       Resolve the config ambiguity before relying on its interpretation.
+    evidence:
+    - src-1
+    - src-2
   - id: correct
     title: Keep one clear definition
     explanation: |
@@ -120,6 +177,7 @@ walkthrough:
         - 12500
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       Configuration validation protects intent; accounting tests protect the calculation.
     code:
@@ -131,13 +189,21 @@ walkthrough:
           - name: revenue_by_location
             description: Payments minus refunds, in cents.
       highlight_lines: []
+    evidence:
+    - src-1
+    - src-2
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
     - src-1
     - src-2
+    - src-3
+    - src-4
+    - src-5
+    - src-6
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
 status: reviewed
-review_scope: Source and fixture review; no historical dbt execution.
+review_scope: Source and fixture review; no historical dbt engine execution.
+default_milestone: 1.10.0

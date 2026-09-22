@@ -58,17 +58,18 @@ sources:
   title: dbt 0.5 release evidence
   url: https://github.com/dbt-labs/dbt/releases/tag/v0.5.0
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Tagged release changes; package upload and public announcement remain distinct.
 - id: src-2
   title: dbt 0.5 release evidence
   url: https://github.com/dbt-labs/dbt-core/blob/v0.13.0/CHANGELOG.md
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Tagged release changes; package upload and public announcement remain distinct.
 - id: src-3
   title: dbt 0.5 package evidence
   url: https://pypi.org/project/dbt/0.5.0/
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
+    from the package.
 - id: src-4
   title: dbt 0.5.1 patch evidence
   url: https://github.com/dbt-labs/dbt/releases/tag/v0.5.1
@@ -112,8 +113,15 @@ walkthrough:
         - 4800
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       The source unit is part of the business contract.
+    evidence:
+    - src-1
+    - src-2
+    - src-3
+    - src-4
+    - src-5
   - id: variable
     title: Apply a reusable conversion
     explanation: |
@@ -129,6 +137,7 @@ walkthrough:
         - 100
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       The calculation can read a named setting.
     code:
@@ -138,6 +147,12 @@ walkthrough:
         select location_id, revenue_cents / {{ var("cents_per_unit") }}.0 as revenue_units
         from {{ ref("revenue_by_location") }}
       highlight_lines: []
+    evidence:
+    - src-1
+    - src-2
+    - src-3
+    - src-4
+    - src-5
   - id: display
     title: Keep cents and display values together
     explanation: |
@@ -161,8 +176,15 @@ walkthrough:
         - '48.00'
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       Configuration changes representation, not underlying revenue.
+    evidence:
+    - src-1
+    - src-2
+    - src-3
+    - src-4
+    - src-5
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -175,4 +197,4 @@ walkthrough:
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
 status: reviewed
-review_scope: Source and fixture review; no historical dbt execution.
+review_scope: Source and fixture review; no historical dbt engine execution.

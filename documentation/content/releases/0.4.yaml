@@ -37,12 +37,13 @@ sources:
   title: dbt 0.4 release evidence
   url: https://github.com/dbt-labs/dbt/releases/tag/v0.4.0
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Tagged release changes; package upload and public announcement remain distinct.
 - id: src-2
   title: dbt 0.4 package evidence
   url: https://pypi.org/project/dbt/0.4.0/
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
+    from the package.
 narrative_evidence:
 - src-1
 - src-2
@@ -52,6 +53,7 @@ walkthrough:
     Follow a first incremental append.
   context: |
     Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is second-day. Each state below is an authored illustration.
+     The illustrative order_revenue_input relation is a full recalculation of order_revenue over the selected raw fixture; it is the input to the incremental target.
   dataset_variant: second-day
   steps:
   - id: existing
@@ -71,8 +73,12 @@ walkthrough:
         - 12500
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       The target already contains the first day.
+    evidence:
+    - src-1
+    - src-2
   - id: filter
     title: Select two new orders
     explanation: |
@@ -93,6 +99,7 @@ walkthrough:
         - 1400
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       The historical filter selects new rows.
     code:
@@ -105,6 +112,9 @@ walkthrough:
       highlight_lines:
       - 1
       - 2
+    evidence:
+    - src-1
+    - src-2
   - id: append
     title: Read the updated totals
     explanation: |
@@ -124,8 +134,12 @@ walkthrough:
         - 4800
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       The total becomes 14,400 cents; update handling is a separate design choice.
+    evidence:
+    - src-1
+    - src-2
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -134,5 +148,9 @@ walkthrough:
     - src-2
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+  prepared_relations:
+  - name: order_revenue_input
+    definition: The dataset’s order_revenue definition evaluated over raw inputs; separate from the incremental
+      target.
 status: reviewed
-review_scope: Source and fixture review; no historical dbt execution.
+review_scope: Source and fixture review; no historical dbt engine execution.

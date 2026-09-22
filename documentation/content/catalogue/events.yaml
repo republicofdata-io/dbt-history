@@ -1293,6 +1293,9 @@
   - catalogue-event-28
   license: null
   commercial_conditions: []
+  state_override:
+    maturity: null
+    maturity_label: alpha
 - id: dbt-cloud-combined-family
   product: dbt-cloud
   kind: ownership
@@ -1322,7 +1325,7 @@
   maturity: null
   access: null
   summary: |
-    The dbt v1 lineage is within the combined family after the merger closes.
+    The Python engine lineage is within the combined family after the merger closes; its later v1 name is not applied retroactively.
   sources:
   - title: Fivetran and other ownership events evidence
     url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
@@ -1888,7 +1891,7 @@
   maturity: null
   access: free-local
   summary: |
-    Full v2 distribution is named dbt under the dbt Product Licensing Agreement.
+    Full v2 distribution is named dbt under the dbt Product Licensing Agreement. Local use is free; the documented full feature set requires login, and optional services can be paid.
   sources:
   - title: Fusion, broader interfaces and the v2 transition evidence
     url: https://github.com/dbt-labs/dbt/releases/tag/v2.0.0
@@ -1898,6 +1901,9 @@
     retrieved: '2026-09-21'
   - title: Fusion, broader interfaces and the v2 transition evidence
     url: https://www.getdbt.com/blog/dbt-summit-2026-product-announcements
+    retrieved: '2026-09-21'
+  - title: dbt feature availability
+    url: https://docs.getdbt.com/docs/dbt/dbt-availability
     retrieved: '2026-09-21'
   license:
     name: dbt Product Licensing Agreement

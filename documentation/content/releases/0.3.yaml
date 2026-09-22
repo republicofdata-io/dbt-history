@@ -38,12 +38,13 @@ sources:
   title: dbt 0.3 release evidence
   url: https://github.com/dbt-labs/dbt/releases/tag/0.3.0
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Tagged release changes; package upload and public announcement remain distinct.
 - id: src-2
   title: dbt 0.3 package evidence
   url: https://pypi.org/project/dbt/0.3.0/
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
+    from the package.
 narrative_evidence:
 - src-1
 - src-2
@@ -81,8 +82,12 @@ walkthrough:
         highlight:
         - payments
         - refunds
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       The revenue model must wait for both inputs.
+    evidence:
+    - src-1
+    - src-2
   - id: failure
     title: Isolate a broken branch
     explanation: |
@@ -102,8 +107,12 @@ walkthrough:
         - independent work may finish
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       Failure follows dependencies, not file order.
+    evidence:
+    - src-1
+    - src-2
   - id: fixed
     title: Restore the dependency
     explanation: |
@@ -135,8 +144,12 @@ walkthrough:
         - 4800
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       Parallel scheduling changes the workflow, not the answer.
+    evidence:
+    - src-1
+    - src-2
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -146,4 +159,4 @@ walkthrough:
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
 status: reviewed
-review_scope: Source and fixture review; no historical dbt execution.
+review_scope: Source and fixture review; no historical dbt engine execution.

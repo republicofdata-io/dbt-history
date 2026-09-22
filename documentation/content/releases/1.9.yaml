@@ -33,20 +33,68 @@ milestones:
   title: First published package
   evidence:
   - src-2
+- id: product-2025-01-14
+  kind: product_event
+  date: '2025-01-14'
+  precision: day
+  title: SDF acquisition announced
+  evidence:
+  - src-3
+- id: product-2025-04-23
+  kind: product_event
+  date: '2025-04-23'
+  precision: day
+  title: Datadog acquires Metaplane
+  evidence:
+  - src-4
+- id: product-2025-05-28
+  kind: product_event
+  date: '2025-05-28'
+  precision: day
+  title: Fusion beta and platform naming
+  evidence:
+  - src-5
+  - src-6
 sources:
 - id: src-1
   title: dbt 1.9 release evidence
   url: https://github.com/dbt-labs/dbt/releases/tag/v1.9.0
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Tagged release changes; package upload and public announcement remain distinct.
 - id: src-2
   title: dbt 1.9 package evidence
   url: https://pypi.org/project/dbt-core/1.9.0/
   retrieved: '2026-09-21'
-  supports: Release changes or package publication; date kinds remain distinct.
+  supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
+    from the package.
+- id: src-3
+  title: SDF acquisition announced
+  url: https://www.getdbt.com/blog/dbt-labs-announces-sdf-labs-acquisition
+  retrieved: '2026-09-21'
+  supports: SDF Labs acquisition. Fusion's SQL comprehension lineage comes from SDF; a product-family diagram must
+    not imply every product was a fork of Core's code.
+- id: src-4
+  title: Datadog acquires Metaplane
+  url: https://investors.datadoghq.com/news-releases/news-release-details/datadog-brings-observability-data-teams-acquiring-metaplane
+  retrieved: '2026-09-21'
+  supports: Datadog acquires Metaplane. [Datadog announcement](https://investors.datadoghq.com/news-releases/news-release-details/datadog-brings-observability-data-teams-acquiring-metaplane)
+- id: src-5
+  title: Fusion beta and platform naming
+  url: https://www.getdbt.com/blog/dbt-labs-redefines-dbt-with-new-fusion-engine
+  retrieved: '2026-09-21'
+  supports: Fusion and VS Code extension public beta. New development engine coexists with Python Core.
+- id: src-6
+  title: Fusion beta and platform naming
+  url: https://www.getdbt.com/fusion-in-bloom
+  retrieved: '2026-09-21'
+  supports: Fusion and VS Code extension public beta. New development engine coexists with Python Core.
 narrative_evidence:
 - src-1
 - src-2
+- src-3
+- src-4
+- src-5
+- src-6
 walkthrough:
   id: wt-1.9
   learning_objective: |
@@ -72,8 +120,12 @@ walkthrough:
         - 1900
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       Batch boundaries follow event time, not arrival time.
+    evidence:
+    - src-1
+    - src-2
   - id: late
     title: Assign the late order to its original day
     explanation: |
@@ -93,8 +145,12 @@ walkthrough:
         - 600
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       A lookback or explicit backfill must include the affected day.
+    evidence:
+    - src-1
+    - src-2
   - id: repair
     title: Replace the affected batch result
     explanation: |
@@ -114,15 +170,24 @@ walkthrough:
         - 15000
       result_status: null
       diagram: null
+      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
     takeaway: |
       The repaired location totals are 4,500, 5,700 and 4,800 cents.
+    evidence:
+    - src-1
+    - src-2
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
     - src-1
     - src-2
+    - src-3
+    - src-4
+    - src-5
+    - src-6
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
 status: reviewed
-review_scope: Source and fixture review; no historical dbt execution.
+review_scope: Source and fixture review; no historical dbt engine execution.
+default_milestone: 1.9.0

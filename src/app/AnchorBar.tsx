@@ -33,18 +33,19 @@ export default function AnchorBar({ state }: { state: HistoryState }) {
           <p className="mt-2 text-sm text-muted-foreground">
             <span className="text-foreground">{formatDate(m.date, m.precision)}</span>
             <span aria-hidden="true"> · </span>
-            {m.version && m.kind !== "package" ? `During ${release.label} · ` : ""}
+            {m.kind !== "package" && m.kind !== "origin" ? `During ${release.label} · ` : ""}
+            {m.version && m.kind === "patch" ? `${m.version} · ` : ""}
             {m.title}
             {m.kind === "package" && <span className="provenance"> · package upload date, not an announcement date</span>}
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {!isDefault && release.milestones.length > 1 && (
             <label className="flex items-center gap-2 text-xs text-muted-foreground">
               <span className="sr-only sm:not-sr-only">Milestone</span>
               <select
                 aria-label="Milestone"
-                className="max-w-[16rem] rounded-md border border-border bg-card px-2 py-1.5 font-mono text-xs text-foreground"
+                className="max-w-[14rem] rounded-md border border-border bg-card px-2 py-1.5 font-mono text-xs text-foreground"
                 value={m.id}
                 onChange={(e) => state.setMilestone(e.target.value)}
               >

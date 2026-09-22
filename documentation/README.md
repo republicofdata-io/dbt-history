@@ -35,7 +35,7 @@ The app source belongs at the project root. This folder holds the briefs, resear
 
 There are 35 published minor-series chapters: **v0.1–v0.21, v1.0–v1.12 and v2.0**. Keep all of them. Significant patch milestones belong inside their version chapter; for example, exposures shipped in 0.18.1, and native PostgreSQL support in 0.5.1.
 
-Each release now needs an authored Waffle Shop walkthrough. Use historical syntax and accurate feature dates, with clearly distinguished illustrative results and genuine captured output. The reader advances through prepared states rather than switching executable environments.
+Each release now has an authored Waffle Shop walkthrough. Use historical syntax and accurate feature dates, with clearly distinguished illustrative results and genuine captured output. The reader advances through prepared states rather than switching executable environments.
 
 The product story also has its own clock. A Core feature does not establish the release of a hosted product. The catalogue and ecosystem tabs must resolve against the same explicit historical moment as the release tab.
 
@@ -50,3 +50,9 @@ The product story also has its own clock. A Core feature does not establish the 
 The briefs reflect the guided-example direction. Previous source/package research is retained; no runtime is certified as passing. Completion now depends on accurate authored examples, working step navigation and a website-ready app, not full historical runtime coverage.
 
 The package is also saved in RoD under `Sessions/2026-09-21-dbt-history-research/`. Raw source archives and API responses remain in the original workspace's `work/` directory; this handoff contains the portable conclusions and source URLs.
+
+## Content handoff completed
+
+The first complete content set is authored and validated: **36 chapters, 110 guided steps, 43 catalogue identities, 105 events and 61 ecosystem intervals**. All 28 research-ledger records are traced into events. Independent fixture calculations reconcile the base dataset and all seven variants; the app’s 16 existing tests pass.
+
+The [content index](content/content-index.yaml) documents date handling, catalogue membership, inline ecosystem identities and the qualification fields the UI must retain. The [validation report](content/validation-report.yaml) records checks and limits. Historical engines were not executed; every result remains labelled as an illustration. UI integration should preserve licence/access distinctions, upcoming-product labels, public/private maturity and bounded ownership dates.

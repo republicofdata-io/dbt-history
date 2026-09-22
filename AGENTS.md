@@ -32,3 +32,13 @@ Current delivery direction confirmed by Olivier on 22 September 2026. This super
 - Never overwrite an authored chapter. `scripts/generate-release-skeletons.mjs` only writes chapters whose `status` is `skeleton`. A chapter without a `status` field that carries a walkthrough is treated as `draft`.
 - The research agent writes into `documentation/content/` concurrently. Adapt the schema to reasonable drift rather than re-keying content; add tests for any new invariant.
 - Keep README and AGENTS synchronized with implementation and walkthrough authoring conventions.
+
+## Authored-content handoff
+
+- The complete first content set is in `documentation/content/`; start with `content-index.yaml` and `validation-report.yaml`. Historical cutoff remains 2026-09-21; authoring/review dates can be 2026-09-22.
+- All 36 chapters now contain reviewed illustrative walkthroughs. Reviewed means source/fixture review, not historical runtime execution. Preserve these chapters when running skeleton tooling.
+- Keep all qualifications through schema parsing and UI rendering: `license`, `commercial_conditions`, `availability`, `availability_scope`, `maturity_label`, `state_override`, and uncertainty on name/owner intervals. Accepting unknown fields while dropping them can hide material historical distinctions.
+- A product’s `catalogue_membership` is separate from its age or current owner. Fivetran-lineage products stay outside the dbt catalogue until the completed merger on 2026-06-01.
+- The event schema uses `acquisition_closed` with `transaction_type: merger`; a licence change uses the allowed `pricing` category with `event_subtype: licence-change` and `price_change_asserted: false`. Render the specific meaning, not a misleading generic label.
+- `ecosystem/placements.yaml` is a list, with external products declared once in `product_definition`. Placement end dates may be editorial rotation, not retirement.
+- Keep the base fixture immutable; recursively apply named variants and their explicit change events. The orphan payment is a reported integrity failure, not revenue attributed to a fabricated location.
