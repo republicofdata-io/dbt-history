@@ -20,7 +20,7 @@ function VersionButton({ id, label, current, onSelect, className }: { id: string
       aria-current={active ? "page" : undefined}
       title={`${r.label} · ${r.title}`}
       className={cn(
-        "rounded-[5px] border border-transparent py-1.5 text-xs tabular-nums transition-colors hover:bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        "rounded-[5px] border border-transparent py-1 text-xs tabular-nums transition-colors hover:bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
         active && "bg-accent text-accent-foreground hover:bg-accent",
         className,
       )}
@@ -35,8 +35,8 @@ export default function ReleaseIndex({ current, onSelect }: { current: string; o
   const zero = releases.filter((r) => eraOf(r.id) === "0.x");
   const one = releases.filter((r) => eraOf(r.id) === "1.x");
   return (
-    <aside aria-label="Release index" className="flex h-full flex-col overflow-y-auto border-r border-border bg-muted px-4 py-5">
-      <div className="mb-4 flex items-center justify-between text-xs font-semibold">
+    <aside aria-label="Release index" className="flex h-full flex-col overflow-y-auto border-r border-border bg-muted px-4 py-4">
+      <div className="mb-3 flex items-center justify-between text-xs font-semibold">
         Release index <List className="h-4 w-4" aria-hidden="true" />
       </div>
       <button
@@ -47,20 +47,20 @@ export default function ReleaseIndex({ current, onSelect }: { current: string; o
       >
         Before the first release
       </button>
-      <span className="mb-2 mt-4 block text-xs text-muted-foreground">The road to v1</span>
+      <span className="mb-1.5 mt-3 block text-xs text-muted-foreground">The road to v1</span>
       <div className="grid grid-cols-3 gap-1">
         {zero.map((r) => (
           <VersionButton key={r.id} id={r.id} label={r.id} current={current} onSelect={onSelect} />
         ))}
       </div>
-      <span className="mb-2 mt-4 block text-xs text-muted-foreground">The v1 releases</span>
+      <span className="mb-1.5 mt-3 block text-xs text-muted-foreground">The v1 releases</span>
       <div className="grid grid-cols-3 gap-1">
         {one.map((r) => (
           <VersionButton key={r.id} id={r.id} label={r.id} current={current} onSelect={onSelect} />
         ))}
       </div>
-      <VersionButton id="2.0" label="v2.0 · September 2026" current={current} onSelect={onSelect} className="mt-4 w-full border-border px-2.5 py-2 text-left" />
-      <p className="mt-5 text-[11px] text-muted-foreground">35 version chapters. The history starts in 2016.</p>
+      <VersionButton id="2.0" label="v2.0 · September 2026" current={current} onSelect={onSelect} className="mt-3 w-full border-border px-2.5 py-1.5 text-left" />
+      <p className="mt-4 text-[11px] text-muted-foreground">35 version chapters. The history starts in 2016.</p>
     </aside>
   );
 }

@@ -9,7 +9,7 @@ Published at `republicofdata.io/labs/dbt-history` (see [Publishing](#publishing)
 - **35 version chapters plus an origin prologue**: v0.1–v0.21, v1.0–v1.12, v2.0. Nothing is invented and nothing is skipped.
 - **One date, four views.** The selected release and its dated milestone anchor four tabs: the release, the Waffle Shop walkthrough, the product catalogue at that date, and the wider data-stack diagram at that date. Changing tab keeps the release; changing release keeps the tab.
 - **Selectable milestones** inside a chapter (patches, announcements, product events) move the date for all three tabs.
-- **A guided Waffle Shop walkthrough** in each chapter, on its own tab: prepared steps with read-only code, highlighted lines, small tables, diagrams and explained results. Visitors use Next, Previous and Restart only. Nothing executes.
+- **A guided Waffle Shop walkthrough** in each chapter, on its own tab. It opens on a first screen (what this version lets you do, the scenario, the steps ahead), then prepared steps with read-only code, highlighted lines, small tables, diagrams and explained results. Visitors use Next, Previous and Restart only. Nothing executes.
 - **State in the URL**: `/<release>/<tab>?m=<milestone>&s=<step>`. Deep links and browser history restore everything. Step progress per release is remembered for the browsing session.
 - **Presentation mode** (button or `P`) hides the index and enlarges type for recording. `[` and `]` change release; `←` and `→` change step.
 

@@ -78,11 +78,20 @@ walkthrough: { ... }               # or null while in preparation
 
 ## Walkthrough
 
+Every walkthrough opens on a first screen before step 1: what this version lets you do, and what the scenario is about. Author it in `intro`; without it the app derives the screen from `what_changed` and `context`.
+
+Every step that shows a command, a result or a test must also show the code that produced it: the model SQL, the schema or test YAML, the macro, the configuration. A shell command alone is not enough. Use the syntax of that exact version.
+
 ```yaml
 walkthrough:
   id: wt-1.8
   learning_objective: |
   context: |                       # enough to enter this chapter directly
+  intro:
+    can_now:                       # 2–4 plain-language capabilities this version unlocks
+      - Write a unit test with a small fixture next to the model.
+    scenario: |                    # what the Waffle Shop scenario is about, 2–3 sentences
+    outcome: |                     # optional: what the visitor will have seen by the last step
   dataset_variant: base
   steps:
     - id: refund

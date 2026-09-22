@@ -158,11 +158,19 @@ export const Step = z.object({
 });
 export type Step = z.infer<typeof Step>;
 
+/** Authored first screen: what this version lets you do and what the scenario is about. */
+export const WalkthroughIntro = z.object({
+  can_now: z.array(z.string()).default([]), // plain-language capabilities unlocked by this version
+  scenario: z.string(), // what the Waffle Shop scenario is about
+  outcome: z.string().nullable().optional(), // what the visitor will have seen by the last step
+});
+
 export const Walkthrough = z.object({
   id: z.string(),
   title: z.string().optional(),
   learning_objective: z.string(),
   context: z.string(),
+  intro: WalkthroughIntro.nullable().optional(),
   dataset_variant: z.string().default("base"),
   steps: z.array(Step).min(1),
   evidence: WalkthroughEvidence,

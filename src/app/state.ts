@@ -70,8 +70,10 @@ export function useHistoryState(): HistoryState | null {
   const stepParam = Number(search.get("s"));
 
   const anchor = useMemo(() => (release ? resolveAnchor(release, milestoneId) : null), [release, milestoneId]);
+  // Step 0 is the walkthrough's first screen (what this version lets you do, the scenario);
+  // steps 1..n are the prepared states. A link without ?s= lands on the first screen.
   const stepCount = release?.walkthrough?.steps.length ?? 0;
-  const step = stepCount ? Math.min(Math.max(1, stepParam || 1), stepCount) : 0;
+  const step = stepCount ? Math.min(Math.max(0, Number.isFinite(stepParam) ? stepParam : 0), stepCount) : 0;
 
   useEffect(() => {
     if (release && stepCount) writeStep(release.id, step);
@@ -83,7 +85,7 @@ export function useHistoryState(): HistoryState | null {
       const m = next.m === undefined ? milestoneId : next.m;
       const s = next.s === undefined ? (stepParam || null) : next.s;
       if (m) sp.set("m", m);
-      if (s && s > 1) sp.set("s", String(s));
+      if (s && s > 0) sp.set("s", String(s));
       const str = sp.toString();
       return str ? `?${str}` : "";
     },
@@ -94,9 +96,9 @@ export function useHistoryState(): HistoryState | null {
     (id: string) => {
       const target = getRelease(id);
       if (!target) return;
-      const remembered = readSteps()[id] ?? 1;
+      const remembered = readSteps()[id] ?? 0;
       const sp = new URLSearchParams();
-      if (remembered > 1 && target.walkthrough) sp.set("s", String(remembered));
+      if (remembered > 0 && target.walkthrough) sp.set("s", String(remembered));
       const str = sp.toString();
       navigate(`/${id}/${tab}${str ? `?${str}` : ""}`);
     },
@@ -128,12 +130,12 @@ export function useHistoryState(): HistoryState | null {
   const setStep = useCallback(
     (n: number) => {
       if (!release) return;
-      const clamped = Math.min(Math.max(1, n), Math.max(1, stepCount));
+      const clamped = Math.min(Math.max(0, n), stepCount);
       writeStep(release.id, clamped);
       setSearch(
         (prev) => {
           const sp = new URLSearchParams(prev);
-          if (clamped > 1) sp.set("s", String(clamped));
+          if (clamped > 0) sp.set("s", String(clamped));
           else sp.delete("s");
           return sp;
         },
