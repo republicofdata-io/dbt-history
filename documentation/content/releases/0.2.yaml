@@ -24,10 +24,10 @@ what_changed:
     confidence: high
 in_practice: |
   Build the project, then inspect explicit data assertions. Treat the first seed command as a patch milestone.
-technical_detail: >
-  The initial package is 0.2.0. CSV seeds and accepted-values tests arrive in the real four-component version
-  0.2.3.0. This walkthrough uses a relationship assertion conceptually rather than backporting modern schema
-  YAML.
+technical_detail: |
+  The 0.2 series starts with package 0.2.0, which brings the test command. CSV seeds and accepted-values tests
+  arrive later in the series, in patch 0.2.3.0 (dbt used four-part version numbers at the time). The walkthrough
+  writes its relationship test in the schema file format of 2016, not in today's YAML.
 milestones:
   - id: 0.2.0
     kind: package
