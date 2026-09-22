@@ -1,0 +1,2202 @@
+- id: origin-first-commit
+  product: dbt-core
+  kind: launch
+  date: '2016-03-09'
+  precision: day
+  uncertainty: null
+  maturity: null
+  access: null
+  summary: |
+    First-commit origin dated by the founder retrospective; not package publication or formal GA.
+  sources:
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/on-two-years-of-dbt
+    retrieved: '2026-09-21'
+  date_basis: retrospective
+  affects_catalogue: false
+  ledger_records:
+  - catalogue-event-01
+  license: null
+  commercial_conditions: []
+  availability: null
+- id: dbt-core-first-package
+  product: dbt-core
+  kind: launch
+  date: '2016-03-23'
+  maturity: null
+  access: free-local
+  summary: |
+    First observed package, 0.0.1. Package publication is not evidence of a GA announcement; original package licence metadata is not used to infer modern Apache licensing.
+  sources:
+  - title: PyPI package 0.0.1
+    url: https://pypi.org/project/dbt/0.0.1/
+    retrieved: '2026-09-21'
+  - title: On two years of dbt
+    url: https://www.getdbt.com/blog/on-two-years-of-dbt
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  commercial_conditions:
+  - free-local
+  license: null
+  ledger_records:
+  - catalogue-event-01
+  availability: null
+- id: sinter-launch
+  product: dbt-cloud
+  kind: launch
+  date: 2017-01
+  precision: month
+  maturity: null
+  access: requires-login
+  summary: |
+    Sinter launched as a hosted-services experiment, increasingly focused on scheduling and monitoring dbt. Not yet called Cloud.
+  sources:
+  - title: What's in a name?
+    url: https://www.getdbt.com/blog/whats-in-a-name
+    retrieved: '2026-09-21'
+  uncertainty: null
+  commercial_conditions:
+  - requires-login
+  license: null
+  ledger_records:
+  - catalogue-event-02
+  - catalogue-event-03
+  maturity_label: hosted experiment; formal maturity label not established
+  availability: null
+- id: ide-preview
+  product: cloud-ide
+  kind: launch
+  date: '2019'
+  precision: year
+  maturity: preview
+  access: requires-login
+  summary: |
+    Browser IDE under development during 2019, per the v1 retrospective. Not the same event as the January 2020 GA.
+  sources:
+  - title: dbt Core v1.0 is here
+    url: https://www.getdbt.com/blog/dbt-core-v1-is-here
+    retrieved: '2026-09-21'
+  uncertainty: null
+  commercial_conditions:
+  - requires-login
+  license: null
+  ledger_records:
+  - catalogue-event-04
+  availability: null
+- id: dbt-renamed-dbt-core
+  product: dbt-core
+  kind: rename
+  date: '2019-01-15'
+  summary: |
+    The open-source tool is named dbt Core alongside the Cloud rename.
+  sources:
+  - title: What's in a name?
+    url: https://www.getdbt.com/blog/whats-in-a-name
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  maturity: null
+  commercial_conditions: []
+  access: null
+  license: null
+  ledger_records:
+  - catalogue-event-02
+  - catalogue-event-03
+  availability: null
+- id: sinter-renamed-dbt-cloud
+  product: dbt-cloud
+  kind: rename
+  date: '2019-01-15'
+  maturity: null
+  access: requires-login
+  summary: |
+    Sinter becomes dbt Cloud. Date from the article's original publication metadata, not its 2024 edit date.
+  sources:
+  - title: What's in a name?
+    url: https://www.getdbt.com/blog/whats-in-a-name
+    retrieved: '2026-09-21'
+  - title: Introducing dbt Cloud
+    url: https://www.getdbt.com/blog/introducing-dbt-cloud
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  commercial_conditions:
+  - requires-login
+  - paid-plan
+  license: null
+  ledger_records:
+  - catalogue-event-02
+  - catalogue-event-03
+  availability: null
+- id: ide-ga
+  product: cloud-ide
+  kind: maturity
+  date: '2020-01-14'
+  maturity: ga
+  access: requires-login
+  summary: |
+    IDE GA announcement, per the article's publication metadata.
+  sources:
+  - title: Announcing the dbt IDE
+    url: https://www.getdbt.com/blog/announcing-the-dbt-ide
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  commercial_conditions:
+  - requires-login
+  license: null
+  ledger_records:
+  - catalogue-event-04
+  availability: null
+- id: fishtown-renamed-dbt-labs
+  product: dbt-labs
+  kind: rename
+  date: '2021-06-30'
+  summary: |
+    Fishtown Analytics renames to dbt Labs. A company rename, not a new engine.
+  sources:
+  - title: Fishtown Analytics rebrands as dbt Labs
+    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  maturity: null
+  commercial_conditions: []
+  access: null
+  license: null
+  ledger_records:
+  - catalogue-event-05
+  availability: null
+- id: fivetran-hvr-closed
+  product: hvr
+  kind: acquisition_closed
+  date: '2021-10-01'
+  summary: |
+    Fivetran completed the HVR acquisition. Fivetran remains external to dbt.
+  sources:
+  - title: Fivetran completes acquisition of HVR
+    url: https://www.fivetran.com/press/fivetran-completes-acquisition-of-hvr
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  maturity: null
+  commercial_conditions: []
+  access: null
+  license: null
+  ledger_records:
+  - catalogue-event-21
+  availability: null
+- id: semantic-layer-preview
+  product: semantic-layer
+  kind: launch
+  date: 2022-10
+  precision: month
+  maturity: preview
+  access: requires-login
+  summary: |
+    Original Semantic Layer public preview. The July 2022 post announced a future launch; metrics metadata in Core 1.0 precedes the service.
+  sources:
+  - title: The dbt Semantic Layer
+    url: https://www.getdbt.com/blog/dbt-semantic-layer
+    retrieved: '2026-09-21'
+  - title: 'dbt Semantic Layer: what''s next'
+    url: https://www.getdbt.com/blog/dbt-semantic-layer-whats-next
+    retrieved: '2026-09-21'
+  uncertainty: null
+  commercial_conditions:
+  - requires-login
+  license: null
+  ledger_records:
+  - catalogue-event-06
+  availability: null
+- id: metricflow-joins
+  product: metricflow
+  kind: acquisition_agreed
+  date: '2023-02-08'
+  summary: |
+    MetricFlow is named in the Transform acquisition agreement; this does not establish a completed ownership transfer.
+  sources:
+  - title: dbt Labs to acquire Transform
+    url: https://www.getdbt.com/blog/press-release-dbt-acquisition-transform
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  maturity: null
+  commercial_conditions: []
+  access: null
+  license: null
+  ledger_records:
+  - catalogue-event-07
+  availability: null
+- id: transform-acquisition-agreed
+  product: transform
+  kind: acquisition_agreed
+  date: '2023-02-08'
+  summary: |
+    Agreement to acquire Transform and integrate MetricFlow. Legal completion date not established.
+  sources:
+  - title: dbt Labs to acquire Transform
+    url: https://www.getdbt.com/blog/press-release-dbt-acquisition-transform
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  maturity: null
+  commercial_conditions: []
+  access: null
+  license: null
+  ledger_records:
+  - catalogue-event-07
+  availability: null
+- id: cloud-cli-preview
+  product: cloud-cli
+  kind: launch
+  date: '2023-10-17'
+  maturity: preview
+  access: requires-login
+  summary: |
+    dbt Cloud CLI announced.
+  sources:
+  - title: New dbt Cloud features announced at Coalesce 2023
+    url: https://www.getdbt.com/blog/new-dbt-cloud-features-announced-at-coalesce-2023
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  commercial_conditions:
+  - requires-login
+  license: null
+  ledger_records:
+  - catalogue-event-08
+  availability: null
+- id: explorer-preview
+  product: explorer
+  kind: launch
+  date: '2023-10-17'
+  maturity: preview
+  access: requires-login
+  summary: |
+    dbt Explorer enters public preview.
+  sources:
+  - title: New dbt Cloud features announced at Coalesce 2023
+    url: https://www.getdbt.com/blog/new-dbt-cloud-features-announced-at-coalesce-2023
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  commercial_conditions:
+  - requires-login
+  license: null
+  ledger_records:
+  - catalogue-event-08
+  availability: null
+- id: mesh-preview
+  product: mesh
+  kind: launch
+  date: '2023-10-17'
+  maturity: preview
+  access: requires-login
+  summary: |
+    dbt Mesh enters public preview.
+  sources:
+  - title: dbt Labs announces major enhancements to dbt Cloud
+    url: https://www.getdbt.com/blog/dbt-labs-announces-major-enhancements-to-dbt-cloud-to-enable-collaboration-at-scale
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  commercial_conditions:
+  - requires-login
+  - paid-plan
+  license: null
+  ledger_records:
+  - catalogue-event-08
+  availability: null
+- id: metricflow-owned-by
+  product: metricflow
+  kind: ownership
+  date: '2023-10-17'
+  precision: day
+  uncertainty:
+    earliest: '2023-02-08'
+    latest: '2023-10-17'
+  maturity: null
+  access: null
+  summary: |
+    MetricFlow is within the dbt family by this observation; the February agreement alone did not establish legal completion.
+  sources:
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/dbt-labs-announces-major-enhancements-to-dbt-cloud-to-enable-collaboration-at-scale
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/new-dbt-cloud-features-announced-at-coalesce-2023
+    retrieved: '2026-09-21'
+  date_basis: observed-by
+  ledger_records:
+  - catalogue-event-08
+  license: null
+  commercial_conditions: []
+  availability: null
+- id: semantic-layer-ga
+  product: semantic-layer
+  kind: maturity
+  date: '2023-10-17'
+  maturity: ga
+  access: requires-login
+  summary: |
+    MetricFlow-based Semantic Layer reaches GA at Coalesce 2023.
+  sources:
+  - title: dbt Labs announces major enhancements to dbt Cloud
+    url: https://www.getdbt.com/blog/dbt-labs-announces-major-enhancements-to-dbt-cloud-to-enable-collaboration-at-scale
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  commercial_conditions:
+  - requires-login
+  - paid-plan
+  license: null
+  ledger_records:
+  - catalogue-event-08
+  availability: null
+- id: transform-closed-by
+  product: transform
+  kind: acquisition_closed
+  date: '2023-10-17'
+  precision: day
+  uncertainty:
+    earliest: '2023-02-08'
+    latest: '2023-10-17'
+  maturity: null
+  access: null
+  summary: |
+    Transform is described as acquired by the MetricFlow-based Semantic Layer GA announcement; exact legal closing date remains unresolved.
+  sources:
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/dbt-labs-announces-major-enhancements-to-dbt-cloud-to-enable-collaboration-at-scale
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/new-dbt-cloud-features-announced-at-coalesce-2023
+    retrieved: '2026-09-21'
+  date_basis: observed-by
+  ledger_records:
+  - catalogue-event-08
+  license: null
+  commercial_conditions: []
+  availability: null
+- id: advanced-ci-announced
+  product: advanced-ci
+  kind: launch
+  date: '2024-05-14'
+  precision: day
+  uncertainty: null
+  maturity: null
+  access: null
+  summary: |
+    Advanced CI is announced as beta coming soon, not available beta at this observation.
+  sources:
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/new-dbt-cloud-enhancements-empower-organizations-with-trustworthy-data-at-scale
+    retrieved: '2026-09-21'
+  availability: announced-not-available
+  affects_catalogue: true
+  ledger_records:
+  - catalogue-event-09
+  license: null
+  commercial_conditions: []
+- id: assist-beta
+  product: copilot
+  kind: launch
+  date: '2024-05-14'
+  maturity: beta
+  summary: |
+    dbt Assist announced in beta.
+  sources:
+  - title: New dbt Cloud enhancements (May 2024)
+    url: https://www.getdbt.com/blog/new-dbt-cloud-enhancements-empower-organizations-with-trustworthy-data-at-scale
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  commercial_conditions: []
+  access: null
+  license: null
+  ledger_records:
+  - catalogue-event-09
+  availability: null
+- id: automatic-exposures-announced
+  product: automatic-exposures
+  kind: launch
+  date: '2024-05-14'
+  precision: day
+  uncertainty: null
+  maturity: null
+  access: null
+  summary: |
+    Automatic exposures is announced as beta coming soon, not available beta at this observation.
+  sources:
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/new-dbt-cloud-enhancements-empower-organizations-with-trustworthy-data-at-scale
+    retrieved: '2026-09-21'
+  availability: announced-not-available
+  affects_catalogue: true
+  ledger_records:
+  - catalogue-event-09
+  license: null
+  commercial_conditions: []
+- id: cloud-cli-ga
+  product: cloud-cli
+  kind: maturity
+  date: '2024-05-14'
+  maturity: ga
+  summary: |
+    Cloud CLI GA, per the May 2024 press announcement.
+  sources:
+  - title: New dbt Cloud enhancements (May 2024)
+    url: https://www.getdbt.com/blog/new-dbt-cloud-enhancements-empower-organizations-with-trustworthy-data-at-scale
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  commercial_conditions: []
+  access: null
+  license: null
+  ledger_records:
+  - catalogue-event-09
+  availability: null
+- id: explorer-ga
+  product: explorer
+  kind: maturity
+  date: '2024-05-14'
+  maturity: ga
+  summary: |
+    Explorer's existing capabilities, including column lineage, described as GA.
+  sources:
+  - title: New dbt Cloud enhancements (May 2024)
+    url: https://www.getdbt.com/blog/new-dbt-cloud-enhancements-empower-organizations-with-trustworthy-data-at-scale
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  commercial_conditions: []
+  access: null
+  license: null
+  ledger_records:
+  - catalogue-event-09
+  availability: null
+- id: mesh-ga
+  product: mesh
+  kind: maturity
+  date: '2024-05-14'
+  maturity: ga
+  summary: |
+    Mesh multi-project support GA per the 14 May press statement; the dedicated GA article followed on 28 May and is additional evidence, not a second launch.
+  sources:
+  - title: New dbt Cloud enhancements (May 2024)
+    url: https://www.getdbt.com/blog/new-dbt-cloud-enhancements-empower-organizations-with-trustworthy-data-at-scale
+    retrieved: '2026-09-21'
+  - title: dbt Mesh is now generally available
+    url: https://www.getdbt.com/blog/dbt-mesh-is-now-generally-available
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  commercial_conditions: []
+  access: null
+  license: null
+  ledger_records:
+  - catalogue-event-09
+  - catalogue-event-10
+  availability: null
+- id: visual-editor-beta
+  product: visual-editor
+  kind: launch
+  date: '2024-05-14'
+  maturity: beta
+  summary: |
+    Visual editor announced in beta.
+  sources:
+  - title: New dbt Cloud enhancements (May 2024)
+    url: https://www.getdbt.com/blog/new-dbt-cloud-enhancements-empower-organizations-with-trustworthy-data-at-scale
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  commercial_conditions: []
+  access: null
+  license: null
+  ledger_records:
+  - catalogue-event-09
+  availability: null
+- id: copilot-announced
+  product: copilot
+  kind: rename
+  date: '2024-10-08'
+  maturity: null
+  summary: |
+    Copilot and expanded visual and multi-platform development announced at Coalesce 2024. Not every named capability is a separate product, and not every preview is GA.
+  sources:
+  - title: dbt Labs unveils AI innovations (Coalesce 2024)
+    url: https://www.getdbt.com/blog/dbt-labs-unveils-ai-innovations-and-new-features-to-improve-collaboration-and-multi-platform
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  commercial_conditions: []
+  access: null
+  license: null
+  ledger_records:
+  - catalogue-event-11
+  availability: null
+- id: sdf-acquisition
+  product: sdf-labs
+  kind: acquisition_closed
+  date: '2025-01-14'
+  summary: |
+    dbt Labs announces its SDF Labs acquisition. SDF contributes to the SQL-comprehension lineage; the announcement is the observed completion point.
+  sources:
+  - title: dbt Labs announces SDF Labs acquisition
+    url: https://www.getdbt.com/blog/dbt-labs-announces-sdf-labs-acquisition
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  maturity: null
+  commercial_conditions: []
+  access: null
+  license: null
+  ledger_records:
+  - catalogue-event-12
+  availability: null
+- id: metaplane-datadog
+  product: metaplane
+  kind: acquisition_closed
+  date: '2025-04-23'
+  precision: day
+  uncertainty: null
+  maturity: null
+  access: null
+  summary: |
+    Datadog acquires Metaplane. It is not a dbt Labs acquisition.
+  sources:
+  - title: Fivetran and other ownership events evidence
+    url: https://investors.datadoghq.com/news-releases/news-release-details/datadog-brings-observability-data-teams-acquiring-metaplane
+    retrieved: '2026-09-21'
+  affects_catalogue: false
+  ledger_records:
+  - catalogue-event-22
+  license: null
+  commercial_conditions: []
+  availability: null
+- id: census-agreement
+  product: census
+  kind: acquisition_agreed
+  date: '2025-05-01'
+  summary: |
+    Fivetran signs the Census acquisition agreement. Not a completion date.
+  sources:
+  - title: Fivetran signs agreement to acquire Census
+    url: https://www.fivetran.com/press/fivetran-signs-agreement-to-acquire-census-delivering-the-first-end-to-end-data-movement-platform-for-the-ai-era
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  maturity: null
+  commercial_conditions: []
+  access: null
+  license: null
+  ledger_records:
+  - catalogue-event-23
+  availability: null
+- id: canvas-ga
+  product: visual-editor
+  kind: maturity
+  date: '2025-05-28'
+  precision: day
+  uncertainty: null
+  maturity: ga
+  access: requires-login
+  summary: |
+    Canvas reaches GA.
+  sources:
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/blog/dbt-labs-launches-ai-powered-features-to-onboard-data-analysts-into-dbt
+    retrieved: '2026-09-21'
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/blog/dbt-launch-showcase-2025-recap
+    retrieved: '2026-09-21'
+  ledger_records:
+  - catalogue-event-15
+  license: null
+  commercial_conditions: []
+  availability: null
+- id: catalog-global-preview
+  product: catalog-global
+  kind: launch
+  date: '2025-05-28'
+  precision: day
+  uncertainty: null
+  maturity: preview
+  access: requires-login
+  summary: |
+    Global discovery of Snowflake assets is in preview; the existing Catalog experience is GA.
+  sources:
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/blog/dbt-labs-launches-ai-powered-features-to-onboard-data-analysts-into-dbt
+    retrieved: '2026-09-21'
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/blog/dbt-launch-showcase-2025-recap
+    retrieved: '2026-09-21'
+  ledger_records:
+  - catalogue-event-15
+  license: null
+  commercial_conditions: []
+  availability: null
+- id: cloud-renamed-dbt
+  product: dbt-cloud
+  kind: rename
+  date: '2025-05-28'
+  summary: |
+    Cloud branding becomes "dbt" (the platform).
+  sources:
+  - title: Updated names for the dbt platform and features
+    url: https://www.getdbt.com/blog/updated-names-for-dbt-platform-and-features
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  maturity: null
+  commercial_conditions: []
+  access: null
+  license: null
+  ledger_records:
+  - catalogue-event-14
+  availability: null
+- id: explorer-renamed-catalog
+  product: explorer
+  kind: rename
+  date: '2025-05-28'
+  maturity: null
+  summary: |
+    Explorer becomes Catalog. Core experience GA; global Snowflake asset discovery in preview.
+  sources:
+  - title: Updated names for the dbt platform and features
+    url: https://www.getdbt.com/blog/updated-names-for-dbt-platform-and-features
+    retrieved: '2026-09-21'
+  - title: dbt Launch Showcase 2025 recap
+    url: https://www.getdbt.com/blog/dbt-launch-showcase-2025-recap
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  commercial_conditions: []
+  access: null
+  license: null
+  ledger_records:
+  - catalogue-event-14
+  - catalogue-event-15
+  availability: null
+- id: fusion-beta
+  product: fusion
+  kind: launch
+  date: '2025-05-28'
+  maturity: beta
+  access: free-local
+  summary: |
+    Fusion engine public beta. Coexists with Python Core. Its 2025 licence description is not the v2 distribution description.
+  sources:
+  - title: dbt Labs redefines dbt with the Fusion engine
+    url: https://www.getdbt.com/blog/dbt-labs-redefines-dbt-with-new-fusion-engine
+    retrieved: '2026-09-21'
+  - title: Fusion in bloom
+    url: https://www.getdbt.com/fusion-in-bloom
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  commercial_conditions:
+  - free-local
+  license:
+    name: Historical Fusion licence; see cited terms
+    category: source-available
+  ledger_records:
+  - catalogue-event-13
+  availability: null
+- id: ide-renamed-studio
+  product: cloud-ide
+  kind: rename
+  date: '2025-05-28'
+  summary: |
+    Browser IDE becomes Studio.
+  sources:
+  - title: Updated names for the dbt platform and features
+    url: https://www.getdbt.com/blog/updated-names-for-dbt-platform-and-features
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  maturity: null
+  commercial_conditions: []
+  access: null
+  license: null
+  ledger_records:
+  - catalogue-event-14
+  availability: null
+- id: insights-preview
+  product: insights
+  kind: launch
+  date: '2025-05-28'
+  maturity: preview
+  summary: |
+    Insights announced in preview.
+  sources:
+  - title: dbt Labs launches AI-powered features
+    url: https://www.getdbt.com/blog/dbt-labs-launches-ai-powered-features-to-onboard-data-analysts-into-dbt
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  commercial_conditions: []
+  access: null
+  license: null
+  ledger_records:
+  - catalogue-event-15
+  availability: null
+- id: mcp-local-beta
+  product: mcp-server
+  kind: launch
+  date: '2025-05-28'
+  maturity: beta
+  access: free-local
+  summary: |
+    Local MCP server beta appears in the launch recap.
+  sources:
+  - title: dbt Launch Showcase 2025 recap
+    url: https://www.getdbt.com/blog/dbt-launch-showcase-2025-recap
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  commercial_conditions:
+  - free-local
+  license: null
+  ledger_records:
+  - catalogue-event-15
+  availability: null
+- id: visual-editor-renamed-canvas
+  product: visual-editor
+  kind: rename
+  date: '2025-05-28'
+  maturity: null
+  summary: |
+    Visual editor is renamed dbt Canvas.
+  sources:
+  - title: Updated names for the dbt platform and features
+    url: https://www.getdbt.com/blog/updated-names-for-dbt-platform-and-features
+    retrieved: '2026-09-21'
+  - title: dbt Labs launches AI-powered features
+    url: https://www.getdbt.com/blog/dbt-labs-launches-ai-powered-features-to-onboard-data-analysts-into-dbt
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  commercial_conditions: []
+  access: null
+  license: null
+  ledger_records:
+  - catalogue-event-14
+  - catalogue-event-15
+  availability: null
+- id: vscode-extension-beta
+  product: vscode-extension
+  kind: launch
+  date: '2025-05-28'
+  maturity: beta
+  access: free-local
+  summary: |
+    VS Code extension public beta shipped with Fusion.
+  sources:
+  - title: dbt Labs redefines dbt with the Fusion engine
+    url: https://www.getdbt.com/blog/dbt-labs-redefines-dbt-with-new-fusion-engine
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  commercial_conditions:
+  - free-local
+  license: null
+  ledger_records:
+  - catalogue-event-13
+  availability: null
+- id: census-closed
+  product: census
+  kind: acquisition_closed
+  date: '2025-09-03'
+  uncertainty:
+    earliest: '2025-05-01'
+    latest: '2025-09-03'
+  summary: |
+    The Tobiko announcement refers to Census as already acquired, which bounds completion. The exact closing day is open.
+  sources:
+  - title: Fivetran acquires Tobiko Data
+    url: https://www.fivetran.com/press/fivetran-acquires-tobiko-data-to-power-the-next-generation-of-advanced-ai-ready-data-transformation
+    retrieved: '2026-09-21'
+  precision: day
+  maturity: null
+  commercial_conditions: []
+  access: null
+  license: null
+  ledger_records:
+  - catalogue-event-24
+  - catalogue-event-25
+  date_basis: observed-by
+  availability: null
+- id: sqlglot-fivetran
+  product: sqlglot
+  kind: ownership
+  date: '2025-09-03'
+  precision: day
+  uncertainty: null
+  maturity: null
+  access: null
+  summary: |
+    SQLGlot is included with Tobiko Data in the Fivetran acquisition.
+  sources:
+  - title: Fivetran and other ownership events evidence
+    url: https://www.fivetran.com/press/fivetran-acquires-tobiko-data-to-power-the-next-generation-of-advanced-ai-ready-data-transformation
+    retrieved: '2026-09-21'
+  ledger_records:
+  - catalogue-event-24
+  - catalogue-event-25
+  license: null
+  commercial_conditions: []
+  availability: null
+- id: tobiko-closed
+  product: sqlmesh
+  kind: acquisition_closed
+  date: '2025-09-03'
+  summary: |
+    Fivetran acquires Tobiko Data, including SQLMesh and SQLGlot. Not proof of retirement or full integration.
+  sources:
+  - title: Fivetran acquires Tobiko Data
+    url: https://www.fivetran.com/press/fivetran-acquires-tobiko-data-to-power-the-next-generation-of-advanced-ai-ready-data-transformation
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  maturity: null
+  commercial_conditions: []
+  access: null
+  license: null
+  ledger_records:
+  - catalogue-event-24
+  - catalogue-event-25
+  availability: null
+- id: merger-announced
+  product: dbt-labs
+  kind: acquisition_agreed
+  date: '2025-10-13'
+  summary: |
+    Fivetran and dbt Labs announce their merger. Announced combination is not completed ownership.
+  sources:
+  - title: dbt Labs and Fivetran merge (announcement)
+    url: https://www.getdbt.com/blog/dbt-labs-and-fivetran-merge-announcement
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  maturity: null
+  commercial_conditions: []
+  access: null
+  license: null
+  transaction_type: merger
+  ledger_records:
+  - catalogue-event-26
+  availability: null
+- id: analyst-agent-beta
+  product: analyst-agent
+  kind: launch
+  date: '2025-10-14'
+  precision: day
+  uncertainty: null
+  maturity: beta
+  access: requires-login
+  summary: |
+    Analyst agent announced in beta.
+  sources:
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/blog/dbt-labs-cost-optimization-agentic-ai-product-announcements
+    retrieved: '2026-09-21'
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/blog/coalesce-2025-rewriting-the-future
+    retrieved: '2026-09-21'
+  ledger_records:
+  - catalogue-event-16
+  license: null
+  commercial_conditions: []
+  availability: null
+- id: discovery-agent-beta
+  product: discovery-agent
+  kind: launch
+  date: '2025-10-14'
+  precision: day
+  uncertainty: null
+  maturity: beta
+  access: requires-login
+  summary: |
+    Discovery agent announced in beta.
+  sources:
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/blog/dbt-labs-cost-optimization-agentic-ai-product-announcements
+    retrieved: '2026-09-21'
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/blog/coalesce-2025-rewriting-the-future
+    retrieved: '2026-09-21'
+  ledger_records:
+  - catalogue-event-16
+  license: null
+  commercial_conditions: []
+  availability: null
+- id: insights-ga
+  product: insights
+  kind: maturity
+  date: '2025-10-14'
+  maturity: ga
+  summary: |
+    Insights GA at Coalesce 2025.
+  sources:
+  - title: Cost optimization and agentic AI product announcements
+    url: https://www.getdbt.com/blog/dbt-labs-cost-optimization-agentic-ai-product-announcements
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  commercial_conditions: []
+  access: null
+  license: null
+  ledger_records:
+  - catalogue-event-16
+  availability: null
+- id: mcp-remote-ga
+  product: mcp-remote
+  kind: launch
+  date: '2025-10-14'
+  maturity: ga
+  access: requires-login
+  summary: |
+    Remote MCP server reaches GA; this maturity is specific to the hosted surface.
+  sources:
+  - title: Cost optimization and agentic AI product announcements
+    url: https://www.getdbt.com/blog/dbt-labs-cost-optimization-agentic-ai-product-announcements
+    retrieved: '2026-09-21'
+  - title: 'Coalesce 2025: rewriting the future'
+    url: https://www.getdbt.com/blog/coalesce-2025-rewriting-the-future
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  commercial_conditions:
+  - requires-login
+  license: null
+  ledger_records:
+  - catalogue-event-16
+  availability: null
+- id: metricflow-apache
+  product: metricflow
+  kind: pricing
+  date: '2025-10-14'
+  access: free-local
+  summary: |
+    MetricFlow moves to the Apache 2.0 licence.
+  sources:
+  - title: Cost optimization and agentic AI product announcements
+    url: https://www.getdbt.com/blog/dbt-labs-cost-optimization-agentic-ai-product-announcements
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  maturity: null
+  commercial_conditions:
+  - free-local
+  license:
+    name: Apache-2.0
+    category: open-source
+  event_subtype: licence-change
+  price_change_asserted: false
+  ledger_records:
+  - catalogue-event-16
+  availability: null
+- id: observability-agent-announced
+  product: observability-agent
+  kind: launch
+  date: '2025-10-14'
+  precision: day
+  uncertainty: null
+  maturity: null
+  access: null
+  summary: |
+    Observability agent described as upcoming; no available maturity inferred.
+  sources:
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/blog/dbt-labs-cost-optimization-agentic-ai-product-announcements
+    retrieved: '2026-09-21'
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/blog/coalesce-2025-rewriting-the-future
+    retrieved: '2026-09-21'
+  availability: announced-not-available
+  ledger_records:
+  - catalogue-event-16
+  license: null
+  commercial_conditions: []
+- id: state-aware-preview
+  product: state-aware-orchestration
+  kind: launch
+  date: '2025-10-14'
+  precision: day
+  uncertainty: null
+  maturity: preview
+  access: requires-login
+  summary: |
+    Fusion state-aware orchestration enters preview; old manifest state selection remains a different feature.
+  sources:
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/blog/dbt-labs-cost-optimization-agentic-ai-product-announcements
+    retrieved: '2026-09-21'
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/blog/coalesce-2025-rewriting-the-future
+    retrieved: '2026-09-21'
+  ledger_records:
+  - catalogue-event-16
+  license: null
+  commercial_conditions: []
+  availability: null
+- id: activations-name-observed
+  product: census
+  kind: rename
+  date: '2026-02-02'
+  precision: day
+  uncertainty:
+    earliest: '2025-05-01'
+    latest: '2026-02-02'
+  maturity: null
+  access: null
+  summary: |
+    Fivetran Activations name observed by this date; original rename day is not established and older pages may use updated names.
+  sources:
+  - title: Fivetran and other ownership events evidence
+    url: https://www.fivetran.com/blog/census-joins-fivetrans-consumption-based-pricing
+    retrieved: '2026-09-21'
+  date_basis: observed-by
+  ledger_records:
+  - catalogue-event-27
+  license: null
+  commercial_conditions: []
+  availability: null
+- id: census-renamed-activations
+  product: census
+  kind: rename
+  date: '2026-02-02'
+  uncertainty:
+    earliest: '2025-09-03'
+    latest: '2026-02-02'
+  summary: |
+    Census described as Fivetran Activations in a pricing article. An observed bound, not a proved rename day.
+  sources:
+  - title: Census joins Fivetran's consumption-based pricing
+    url: https://www.fivetran.com/blog/census-joins-fivetrans-consumption-based-pricing
+    retrieved: '2026-09-21'
+  precision: day
+  maturity: null
+  commercial_conditions: []
+  access: null
+  license: null
+  ledger_records:
+  - catalogue-event-27
+  date_basis: observed-by
+  availability: null
+- id: developer-agent-preview
+  product: developer-agent
+  kind: launch
+  date: '2026-05-06'
+  maturity: preview
+  access: requires-login
+  summary: |
+    Developer Agent preview in Studio. Original publication 6 May; the page was edited on 7 May.
+  sources:
+  - title: The dbt Developer Agent is now in preview
+    url: https://www.getdbt.com/blog/the-dbt-developer-agent-is-now-in-preview
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  commercial_conditions:
+  - requires-login
+  license: null
+  ledger_records:
+  - catalogue-event-17
+  availability: null
+- id: activations-in-family
+  product: census
+  kind: ownership
+  date: '2026-06-01'
+  summary: |
+    Fivetran Activations (formerly Census) is part of the combined family from the merger close.
+  sources:
+  - title: Fivetran and dbt Labs complete their merger
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  maturity: null
+  commercial_conditions: []
+  access: null
+  license: null
+  ledger_records:
+  - catalogue-event-18
+  - catalogue-event-28
+  availability: null
+- id: advanced-ci-combined-family
+  product: advanced-ci
+  kind: ownership
+  date: '2026-06-01'
+  precision: day
+  uncertainty: null
+  maturity: null
+  access: null
+  summary: |
+    The Advanced CI lineage is within the combined family after the merger closes.
+  sources:
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  ledger_records:
+  - catalogue-event-18
+  - catalogue-event-28
+  license: null
+  commercial_conditions: []
+  availability: null
+- id: analyst-agent-combined-family
+  product: analyst-agent
+  kind: ownership
+  date: '2026-06-01'
+  precision: day
+  uncertainty: null
+  maturity: null
+  access: null
+  summary: |
+    The Analyst agent lineage is within the combined family after the merger closes.
+  sources:
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  ledger_records:
+  - catalogue-event-18
+  - catalogue-event-28
+  license: null
+  commercial_conditions: []
+  availability: null
+- id: automatic-exposures-combined-family
+  product: automatic-exposures
+  kind: ownership
+  date: '2026-06-01'
+  precision: day
+  uncertainty: null
+  maturity: null
+  access: null
+  summary: |
+    The Automatic exposures lineage is within the combined family after the merger closes.
+  sources:
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  ledger_records:
+  - catalogue-event-18
+  - catalogue-event-28
+  license: null
+  commercial_conditions: []
+  availability: null
+- id: catalog-global-combined-family
+  product: catalog-global
+  kind: ownership
+  date: '2026-06-01'
+  precision: day
+  uncertainty: null
+  maturity: null
+  access: null
+  summary: |
+    The Catalog global discovery lineage is within the combined family after the merger closes.
+  sources:
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  ledger_records:
+  - catalogue-event-18
+  - catalogue-event-28
+  license: null
+  commercial_conditions: []
+  availability: null
+- id: cloud-cli-combined-family
+  product: cloud-cli
+  kind: ownership
+  date: '2026-06-01'
+  precision: day
+  uncertainty: null
+  maturity: null
+  access: null
+  summary: |
+    The dbt Cloud CLI lineage is within the combined family after the merger closes.
+  sources:
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  ledger_records:
+  - catalogue-event-18
+  - catalogue-event-28
+  license: null
+  commercial_conditions: []
+  availability: null
+- id: cloud-ide-combined-family
+  product: cloud-ide
+  kind: ownership
+  date: '2026-06-01'
+  precision: day
+  uncertainty: null
+  maturity: null
+  access: null
+  summary: |
+    The dbt Studio lineage is within the combined family after the merger closes.
+  sources:
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  ledger_records:
+  - catalogue-event-18
+  - catalogue-event-28
+  license: null
+  commercial_conditions: []
+  availability: null
+- id: copilot-combined-family
+  product: copilot
+  kind: ownership
+  date: '2026-06-01'
+  precision: day
+  uncertainty: null
+  maturity: null
+  access: null
+  summary: |
+    The dbt Copilot lineage is within the combined family after the merger closes.
+  sources:
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  ledger_records:
+  - catalogue-event-18
+  - catalogue-event-28
+  license: null
+  commercial_conditions: []
+  availability: null
+- id: core-v2-alpha
+  product: fusion
+  kind: maturity
+  date: '2026-06-01'
+  precision: day
+  uncertainty: null
+  maturity: null
+  access: null
+  summary: |
+    Core v2 alpha announced alongside dbt State preview. Alpha is retained explicitly because the requested maturity enum has no alpha value.
+  sources:
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/blog/what-we-announced-at-snowflake-summit-and-why-it-matters
+    retrieved: '2026-09-21'
+  maturity_label: alpha
+  availability: alpha
+  ledger_records:
+  - catalogue-event-18
+  - catalogue-event-28
+  license: null
+  commercial_conditions: []
+- id: dbt-cloud-combined-family
+  product: dbt-cloud
+  kind: ownership
+  date: '2026-06-01'
+  precision: day
+  uncertainty: null
+  maturity: null
+  access: null
+  summary: |
+    The dbt (platform) lineage is within the combined family after the merger closes.
+  sources:
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  ledger_records:
+  - catalogue-event-18
+  - catalogue-event-28
+  license: null
+  commercial_conditions: []
+  availability: null
+- id: dbt-core-combined-family
+  product: dbt-core
+  kind: ownership
+  date: '2026-06-01'
+  precision: day
+  uncertainty: null
+  maturity: null
+  access: null
+  summary: |
+    The dbt v1 lineage is within the combined family after the merger closes.
+  sources:
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  ledger_records:
+  - catalogue-event-18
+  - catalogue-event-28
+  license: null
+  commercial_conditions: []
+  availability: null
+- id: dbt-state-preview
+  product: dbt-state
+  kind: launch
+  date: '2026-06-01'
+  maturity: preview
+  summary: |
+    dbt State preview announced with the merger completion; Core v2 alpha announced the same day.
+  sources:
+  - title: What we announced at Snowflake Summit
+    url: https://www.getdbt.com/blog/what-we-announced-at-snowflake-summit-and-why-it-matters
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  commercial_conditions: []
+  access: null
+  license: null
+  ledger_records:
+  - catalogue-event-18
+  availability: null
+- id: developer-agent-combined-family
+  product: developer-agent
+  kind: ownership
+  date: '2026-06-01'
+  precision: day
+  uncertainty: null
+  maturity: null
+  access: null
+  summary: |
+    The dbt Developer Agent lineage is within the combined family after the merger closes.
+  sources:
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  ledger_records:
+  - catalogue-event-18
+  - catalogue-event-28
+  license: null
+  commercial_conditions: []
+  availability: null
+- id: discovery-agent-combined-family
+  product: discovery-agent
+  kind: ownership
+  date: '2026-06-01'
+  precision: day
+  uncertainty: null
+  maturity: null
+  access: null
+  summary: |
+    The Discovery agent lineage is within the combined family after the merger closes.
+  sources:
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  ledger_records:
+  - catalogue-event-18
+  - catalogue-event-28
+  license: null
+  commercial_conditions: []
+  availability: null
+- id: explorer-combined-family
+  product: explorer
+  kind: ownership
+  date: '2026-06-01'
+  precision: day
+  uncertainty: null
+  maturity: null
+  access: null
+  summary: |
+    The dbt Catalog lineage is within the combined family after the merger closes.
+  sources:
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  ledger_records:
+  - catalogue-event-18
+  - catalogue-event-28
+  license: null
+  commercial_conditions: []
+  availability: null
+- id: fivetran-combined-family
+  product: fivetran
+  kind: ownership
+  date: '2026-06-01'
+  precision: day
+  uncertainty: null
+  maturity: null
+  access: null
+  summary: |
+    The Fivetran lineage is within the combined family after the merger closes.
+  sources:
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  ledger_records:
+  - catalogue-event-18
+  - catalogue-event-28
+  license: null
+  commercial_conditions: []
+  availability: null
+- id: fivetran-company-combined-family
+  product: fivetran-company
+  kind: ownership
+  date: '2026-06-01'
+  precision: day
+  uncertainty: null
+  maturity: null
+  access: null
+  summary: |
+    The Fivetran lineage is within the combined family after the merger closes.
+  sources:
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  ledger_records:
+  - catalogue-event-18
+  - catalogue-event-28
+  license: null
+  commercial_conditions: []
+  availability: null
+- id: fivetran-merger-closed
+  product: fivetran
+  kind: acquisition_closed
+  date: '2026-06-01'
+  summary: |
+    Fivetran becomes part of the combined company with dbt Labs; its lineage enters the catalogue from this date.
+  sources:
+  - title: Fivetran and dbt Labs complete their merger
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  maturity: null
+  commercial_conditions: []
+  access: null
+  license: null
+  ledger_records:
+  - catalogue-event-18
+  - catalogue-event-28
+  availability: null
+- id: fusion-combined-family
+  product: fusion
+  kind: ownership
+  date: '2026-06-01'
+  precision: day
+  uncertainty: null
+  maturity: null
+  access: null
+  summary: |
+    The dbt v2 engine lineage is within the combined family after the merger closes.
+  sources:
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  ledger_records:
+  - catalogue-event-18
+  - catalogue-event-28
+  license: null
+  commercial_conditions: []
+  availability: null
+- id: hvr-in-family
+  product: hvr
+  kind: ownership
+  date: '2026-06-01'
+  summary: |
+    HVR replication is part of the combined family from the merger close.
+  sources:
+  - title: Fivetran and dbt Labs complete their merger
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  maturity: null
+  commercial_conditions: []
+  access: null
+  license: null
+  ledger_records:
+  - catalogue-event-18
+  - catalogue-event-28
+  availability: null
+- id: insights-combined-family
+  product: insights
+  kind: ownership
+  date: '2026-06-01'
+  precision: day
+  uncertainty: null
+  maturity: null
+  access: null
+  summary: |
+    The dbt Insights lineage is within the combined family after the merger closes.
+  sources:
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  ledger_records:
+  - catalogue-event-18
+  - catalogue-event-28
+  license: null
+  commercial_conditions: []
+  availability: null
+- id: mcp-remote-combined-family
+  product: mcp-remote
+  kind: ownership
+  date: '2026-06-01'
+  precision: day
+  uncertainty: null
+  maturity: null
+  access: null
+  summary: |
+    The dbt remote MCP server lineage is within the combined family after the merger closes.
+  sources:
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  ledger_records:
+  - catalogue-event-18
+  - catalogue-event-28
+  license: null
+  commercial_conditions: []
+  availability: null
+- id: mcp-server-combined-family
+  product: mcp-server
+  kind: ownership
+  date: '2026-06-01'
+  precision: day
+  uncertainty: null
+  maturity: null
+  access: null
+  summary: |
+    The dbt local MCP server lineage is within the combined family after the merger closes.
+  sources:
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  ledger_records:
+  - catalogue-event-18
+  - catalogue-event-28
+  license: null
+  commercial_conditions: []
+  availability: null
+- id: merger-closed
+  product: dbt-labs
+  kind: acquisition_closed
+  date: '2026-06-01'
+  summary: |
+    Fivetran and dbt Labs complete their merger. The combined catalogue can appear from this date; product names and access stay distinct.
+  sources:
+  - title: Fivetran and dbt Labs complete their merger
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  maturity: null
+  commercial_conditions: []
+  access: null
+  license: null
+  transaction_type: merger
+  ledger_records:
+  - catalogue-event-18
+  - catalogue-event-28
+  availability: null
+- id: mesh-combined-family
+  product: mesh
+  kind: ownership
+  date: '2026-06-01'
+  precision: day
+  uncertainty: null
+  maturity: null
+  access: null
+  summary: |
+    The dbt Mesh lineage is within the combined family after the merger closes.
+  sources:
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  ledger_records:
+  - catalogue-event-18
+  - catalogue-event-28
+  license: null
+  commercial_conditions: []
+  availability: null
+- id: metricflow-combined-family
+  product: metricflow
+  kind: ownership
+  date: '2026-06-01'
+  precision: day
+  uncertainty: null
+  maturity: null
+  access: null
+  summary: |
+    The MetricFlow lineage is within the combined family after the merger closes.
+  sources:
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  ledger_records:
+  - catalogue-event-18
+  - catalogue-event-28
+  license: null
+  commercial_conditions: []
+  availability: null
+- id: observability-agent-combined-family
+  product: observability-agent
+  kind: ownership
+  date: '2026-06-01'
+  precision: day
+  uncertainty: null
+  maturity: null
+  access: null
+  summary: |
+    The Observability agent lineage is within the combined family after the merger closes.
+  sources:
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  ledger_records:
+  - catalogue-event-18
+  - catalogue-event-28
+  license: null
+  commercial_conditions: []
+  availability: null
+- id: sdf-labs-combined-family
+  product: sdf-labs
+  kind: ownership
+  date: '2026-06-01'
+  precision: day
+  uncertainty: null
+  maturity: null
+  access: null
+  summary: |
+    The SDF Labs lineage is within the combined family after the merger closes.
+  sources:
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  ledger_records:
+  - catalogue-event-18
+  - catalogue-event-28
+  license: null
+  commercial_conditions: []
+  availability: null
+- id: semantic-layer-combined-family
+  product: semantic-layer
+  kind: ownership
+  date: '2026-06-01'
+  precision: day
+  uncertainty: null
+  maturity: null
+  access: null
+  summary: |
+    The dbt Semantic Layer lineage is within the combined family after the merger closes.
+  sources:
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  ledger_records:
+  - catalogue-event-18
+  - catalogue-event-28
+  license: null
+  commercial_conditions: []
+  availability: null
+- id: sqlglot-combined-family
+  product: sqlglot
+  kind: ownership
+  date: '2026-06-01'
+  precision: day
+  uncertainty: null
+  maturity: null
+  access: null
+  summary: |
+    The SQLGlot lineage is within the combined family after the merger closes.
+  sources:
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  ledger_records:
+  - catalogue-event-18
+  - catalogue-event-28
+  license: null
+  commercial_conditions: []
+  availability: null
+- id: sqlmesh-in-family
+  product: sqlmesh
+  kind: ownership
+  date: '2026-06-01'
+  summary: |
+    SQLMesh, Fivetran-owned since September 2025, is part of the combined family from the merger close.
+  sources:
+  - title: Fivetran and dbt Labs complete their merger
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  maturity: null
+  commercial_conditions: []
+  access: null
+  license: null
+  ledger_records:
+  - catalogue-event-18
+  - catalogue-event-28
+  availability: null
+- id: state-aware-orchestration-combined-family
+  product: state-aware-orchestration
+  kind: ownership
+  date: '2026-06-01'
+  precision: day
+  uncertainty: null
+  maturity: null
+  access: null
+  summary: |
+    The Fusion state-aware orchestration lineage is within the combined family after the merger closes.
+  sources:
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  ledger_records:
+  - catalogue-event-18
+  - catalogue-event-28
+  license: null
+  commercial_conditions: []
+  availability: null
+- id: transform-combined-family
+  product: transform
+  kind: ownership
+  date: '2026-06-01'
+  precision: day
+  uncertainty: null
+  maturity: null
+  access: null
+  summary: |
+    The Transform lineage is within the combined family after the merger closes.
+  sources:
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  ledger_records:
+  - catalogue-event-18
+  - catalogue-event-28
+  license: null
+  commercial_conditions: []
+  availability: null
+- id: visual-editor-combined-family
+  product: visual-editor
+  kind: ownership
+  date: '2026-06-01'
+  precision: day
+  uncertainty: null
+  maturity: null
+  access: null
+  summary: |
+    The dbt Canvas lineage is within the combined family after the merger closes.
+  sources:
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  ledger_records:
+  - catalogue-event-18
+  - catalogue-event-28
+  license: null
+  commercial_conditions: []
+  availability: null
+- id: vscode-extension-combined-family
+  product: vscode-extension
+  kind: ownership
+  date: '2026-06-01'
+  precision: day
+  uncertainty: null
+  maturity: null
+  access: null
+  summary: |
+    The dbt VS Code extension lineage is within the combined family after the merger closes.
+  sources:
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  ledger_records:
+  - catalogue-event-18
+  - catalogue-event-28
+  license: null
+  commercial_conditions: []
+  availability: null
+- id: native-app-maintenance
+  product: snowflake-native-app
+  kind: retirement_announced
+  date: '2026-07-24'
+  maturity: maintenance
+  summary: |
+    Snowflake Native App enters maintenance; new installations disabled; removal scheduled for November 2026. Still in maintenance at the research cutoff.
+  sources:
+  - title: Retiring the dbt Snowflake Native App
+    url: https://www.getdbt.com/blog/retiring-the-dbt-snowflake-native-app
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  commercial_conditions: []
+  access: null
+  license: null
+  ledger_records:
+  - catalogue-event-19
+  planned_retirement:
+    date: 2026-11
+    precision: month
+    status: planned-at-cutoff
+  availability: existing-installations-only
+- id: v2-artifact
+  product: dbt-full
+  kind: launch
+  date: '2026-09-14'
+  affects_catalogue: true
+  summary: |
+    v2.0.0 artifact and GitHub release published.
+  sources:
+  - title: v2.0.0 release
+    url: https://github.com/dbt-labs/dbt/releases/tag/v2.0.0
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  maturity: null
+  commercial_conditions: []
+  access: null
+  license: null
+  ledger_records:
+  - catalogue-event-20
+  event_subtype: package-publication
+  availability: null
+- id: dbt-oss-launch
+  product: dbt-oss
+  kind: launch
+  date: '2026-09-15'
+  maturity: null
+  access: free-local
+  summary: |
+    The v2 subset is named dbt OSS under Apache 2.0. Keep the naming change separate from the September 16 public GA announcement.
+  sources:
+  - title: dbt licensing FAQ
+    url: https://www.getdbt.com/licenses-faq
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  commercial_conditions:
+  - free-local
+  license:
+    name: Apache-2.0
+    category: open-source
+  ledger_records:
+  - catalogue-event-20
+  availability: null
+- id: full-dbt-naming
+  product: dbt-full
+  kind: rename
+  date: '2026-09-15'
+  precision: day
+  uncertainty: null
+  maturity: null
+  access: free-local
+  summary: |
+    Full v2 distribution is named dbt under the dbt Product Licensing Agreement.
+  sources:
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://github.com/dbt-labs/dbt/releases/tag/v2.0.0
+    retrieved: '2026-09-21'
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/licenses-faq
+    retrieved: '2026-09-21'
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/blog/dbt-summit-2026-product-announcements
+    retrieved: '2026-09-21'
+  license:
+    name: dbt Product Licensing Agreement
+    category: mixed/proprietary components
+  commercial_conditions:
+  - local use is free
+  - full feature set has documented login requirements
+  - optional paid services are separate
+  ledger_records:
+  - catalogue-event-20
+  availability: null
+- id: fusion-renamed-dbt-v2
+  product: fusion
+  kind: rename
+  date: '2026-09-15'
+  maturity: null
+  access: null
+  summary: |
+    The Rust-engine lineage becomes dbt v2. The full distribution is named dbt; Python Core continues as dbt v1.
+  sources:
+  - title: dbt licensing FAQ
+    url: https://www.getdbt.com/licenses-faq
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  commercial_conditions:
+  - free-local
+  license: null
+  ledger_records:
+  - catalogue-event-20
+  availability: null
+- id: v1-renaming
+  product: dbt-core
+  kind: rename
+  date: '2026-09-15'
+  precision: day
+  uncertainty: null
+  maturity: null
+  access: null
+  summary: |
+    The maintained Python Core line is called dbt v1.
+  sources:
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://github.com/dbt-labs/dbt/releases/tag/v2.0.0
+    retrieved: '2026-09-21'
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/licenses-faq
+    retrieved: '2026-09-21'
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/blog/dbt-summit-2026-product-announcements
+    retrieved: '2026-09-21'
+  ledger_records:
+  - catalogue-event-20
+  license: null
+  commercial_conditions: []
+  availability: null
+- id: charts-beta
+  product: charts
+  kind: launch
+  date: '2026-09-16'
+  maturity: beta
+  summary: |
+    Charts public beta, a dashboard-as-code offering.
+  sources:
+  - title: dbt Summit 2026 product announcements
+    url: https://www.getdbt.com/blog/dbt-summit-2026-product-announcements
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  commercial_conditions: []
+  access: null
+  license: null
+  ledger_records:
+  - catalogue-event-20
+  availability_scope: public
+  availability: null
+- id: context-layer-beta
+  product: context-layer
+  kind: launch
+  date: '2026-09-16'
+  maturity: beta
+  summary: |
+    Fivetran Context Layer private beta.
+  sources:
+  - title: dbt Summit 2026 product announcements
+    url: https://www.getdbt.com/blog/dbt-summit-2026-product-announcements
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  commercial_conditions: []
+  access: null
+  license: null
+  ledger_records:
+  - catalogue-event-20
+  availability_scope: private
+  availability: null
+- id: dbt-full-ga
+  product: dbt-full
+  kind: maturity
+  date: '2026-09-16'
+  precision: day
+  uncertainty: null
+  maturity: ga
+  access: null
+  summary: |
+    Public Summit GA announcement for full dbt.
+  sources:
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://github.com/dbt-labs/dbt/releases/tag/v2.0.0
+    retrieved: '2026-09-21'
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/licenses-faq
+    retrieved: '2026-09-21'
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/blog/dbt-summit-2026-product-announcements
+    retrieved: '2026-09-21'
+  ledger_records:
+  - catalogue-event-20
+  license: null
+  commercial_conditions: []
+  availability: null
+- id: dbt-oss-ga
+  product: dbt-oss
+  kind: maturity
+  date: '2026-09-16'
+  precision: day
+  uncertainty: null
+  maturity: ga
+  access: null
+  summary: |
+    Public Summit GA announcement for dbt OSS.
+  sources:
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://github.com/dbt-labs/dbt/releases/tag/v2.0.0
+    retrieved: '2026-09-21'
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/licenses-faq
+    retrieved: '2026-09-21'
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/blog/dbt-summit-2026-product-announcements
+    retrieved: '2026-09-21'
+  ledger_records:
+  - catalogue-event-20
+  license: null
+  commercial_conditions: []
+  availability: null
+- id: dbt-state-ga
+  product: dbt-state
+  kind: maturity
+  date: '2026-09-16'
+  maturity: ga
+  summary: |
+    dbt State GA as an optional service.
+  sources:
+  - title: dbt Summit 2026 product announcements
+    url: https://www.getdbt.com/blog/dbt-summit-2026-product-announcements
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  commercial_conditions: []
+  access: null
+  license: null
+  ledger_records:
+  - catalogue-event-20
+  availability: null
+- id: lake-compute-beta
+  product: lake-compute
+  kind: launch
+  date: '2026-09-16'
+  maturity: beta
+  summary: |
+    Lake Compute private beta in the detailed announcement (the recap table says beta). A limited compute offering, not a warehouse replacement.
+  sources:
+  - title: dbt Summit 2026 product announcements
+    url: https://www.getdbt.com/blog/dbt-summit-2026-product-announcements
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  commercial_conditions: []
+  access: null
+  license: null
+  ledger_records:
+  - catalogue-event-20
+  availability_scope: private
+  availability: null
+- id: v2-summit-ga
+  product: fusion
+  kind: maturity
+  date: '2026-09-16'
+  maturity: ga
+  summary: |
+    Public Summit GA announcement for v2.
+  sources:
+  - title: dbt Summit 2026 product announcements
+    url: https://www.getdbt.com/blog/dbt-summit-2026-product-announcements
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  commercial_conditions: []
+  access: null
+  license: null
+  ledger_records:
+  - catalogue-event-20
+  availability: null
+- id: wizard-cli-launch
+  product: wizard-cli
+  kind: launch
+  date: '2026-09-16'
+  precision: day
+  uncertainty: null
+  maturity: beta
+  access: null
+  summary: |
+    Wizard CLI enters public beta.
+  sources:
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://github.com/dbt-labs/dbt/releases/tag/v2.0.0
+    retrieved: '2026-09-21'
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/licenses-faq
+    retrieved: '2026-09-21'
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/blog/dbt-summit-2026-product-announcements
+    retrieved: '2026-09-21'
+  availability_scope: public
+  ledger_records:
+  - catalogue-event-20
+  license: null
+  commercial_conditions: []
+  availability: null
+- id: wizard-desktop-launch
+  product: wizard-desktop
+  kind: launch
+  date: '2026-09-16'
+  precision: day
+  uncertainty: null
+  maturity: beta
+  access: null
+  summary: |
+    Wizard Desktop enters private beta.
+  sources:
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://github.com/dbt-labs/dbt/releases/tag/v2.0.0
+    retrieved: '2026-09-21'
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/licenses-faq
+    retrieved: '2026-09-21'
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/blog/dbt-summit-2026-product-announcements
+    retrieved: '2026-09-21'
+  availability_scope: private
+  ledger_records:
+  - catalogue-event-20
+  license: null
+  commercial_conditions: []
+  availability: null
+- id: wizard-explore-launch
+  product: wizard-explore
+  kind: launch
+  date: '2026-09-16'
+  precision: day
+  uncertainty: null
+  maturity: preview
+  access: null
+  summary: |
+    Wizard Explore Mode enters public preview.
+  sources:
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://github.com/dbt-labs/dbt/releases/tag/v2.0.0
+    retrieved: '2026-09-21'
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/licenses-faq
+    retrieved: '2026-09-21'
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/blog/dbt-summit-2026-product-announcements
+    retrieved: '2026-09-21'
+  availability_scope: public
+  ledger_records:
+  - catalogue-event-20
+  license: null
+  commercial_conditions: []
+  availability: null
+- id: wizard-preview
+  product: wizard
+  kind: launch
+  date: '2026-09-16'
+  maturity: preview
+  summary: |
+    Wizard platform and Explore Mode public preview; CLI public beta; Desktop private beta.
+  sources:
+  - title: dbt Summit 2026 product announcements
+    url: https://www.getdbt.com/blog/dbt-summit-2026-product-announcements
+    retrieved: '2026-09-21'
+  precision: day
+  uncertainty: null
+  commercial_conditions: []
+  access: null
+  license: null
+  ledger_records:
+  - catalogue-event-20
+  availability_scope: public
+  availability: null

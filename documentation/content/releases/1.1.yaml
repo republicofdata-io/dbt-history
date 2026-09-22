@@ -1,0 +1,134 @@
+id: '1.1'
+label: v1.1
+title: Work only from fresher sources
+lead: |
+  Source freshness observations can guide model selection. The project can focus on descendants of feeds that became fresher.
+problem_then: |
+  Code can stay unchanged while new source data arrives. Code-state selection alone does not answer which feeds updated.
+what_changed:
+- id: change-1
+  summary: source_status:fresher+ selection.
+  introduced_in: 1.1.0
+  adapter_constraints: null
+  evidence:
+  - src-1
+  confidence: high
+- id: change-2
+  summary: Composite unique_key lists and custom generic-test names.
+  introduced_in: 1.1.0
+  adapter_constraints: null
+  evidence:
+  - src-1
+  confidence: high
+in_practice: |
+  Compare source observations and rebuild relevant descendants.
+technical_detail: |
+  source_status:fresher+ requires source freshness artifacts from the relevant observations. This is not row-level change detection or the later hosted State service. Composite unique keys and custom test names also arrive here.
+milestones:
+- id: 1.1.0
+  kind: package
+  date: '2022-04-28'
+  precision: day
+  title: First published package
+  evidence:
+  - src-2
+sources:
+- id: src-1
+  title: dbt 1.1 release evidence
+  url: https://github.com/dbt-labs/dbt/releases/tag/v1.1.0
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+- id: src-2
+  title: dbt 1.1 package evidence
+  url: https://pypi.org/project/dbt-core/1.1.0/
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+narrative_evidence:
+- src-1
+- src-2
+walkthrough:
+  id: wt-1.1
+  learning_objective: |
+    Select work based on a changed source observation.
+  context: |
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is orders-refreshed. Each state below is an authored illustration.
+  dataset_variant: orders-refreshed
+  steps:
+  - id: observe
+    title: Compare source observations
+    explanation: |
+      The orders-refreshed variant includes two new orders and fixed source timestamps.
+    state:
+      kind: comparison
+      title: Compare source observations
+      columns:
+      - source
+      - prior UTC
+      - current UTC
+      rows:
+      - - orders
+        - March 8 14:00
+        - March 9 10:00
+      - - customers
+        - March 8 07:00
+        - March 8 07:00
+      result_status: null
+      diagram: null
+    takeaway: |
+      Only the order feed became fresher in this comparison.
+  - id: select
+    title: Select the refreshed branch
+    explanation: |
+      Saved freshness observations determine the prepared branch choice.
+    state:
+      kind: comparison
+      title: Select the refreshed branch
+      columns:
+      - source
+      - selection
+      rows:
+      - - orders
+        - descendants included
+      - - customers
+        - not selected because of freshness alone
+      result_status: null
+      diagram: null
+    takeaway: |
+      New data and changed code are different selection signals.
+    code:
+    - language: shell
+      filename: commands.sh
+      content: |
+        dbt build --select source_status:fresher+ --state ./previous-freshness
+      highlight_lines: []
+  - id: result
+    title: Read the added trading day
+    explanation: |
+      The two added orders contribute 500 and 1,400 cents.
+    state:
+      kind: comparison
+      title: Read the added trading day
+      columns:
+      - location
+      - revenue_cents
+      rows:
+      - - Old Port
+        - 3900
+      - - Mile End
+        - 5700
+      - - Riverside
+        - 4800
+      result_status: null
+      diagram: null
+    takeaway: |
+      The complete fixture now totals 14,400 cents.
+  evidence:
+    status: illustration
+    review_date: '2026-09-22'
+    source_refs:
+    - src-1
+    - src-2
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+status: reviewed
+review_scope: Source and fixture review; no historical dbt execution.

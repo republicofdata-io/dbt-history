@@ -1,0 +1,1842 @@
+- id: dbt-labs
+  type: company
+  family: dbt
+  description: Company associated with the dbt project. The early package credits Analyst Collective; the later
+    Fishtown Analytics name changes to dbt Labs in June 2021.
+  names:
+  - name: Fishtown Analytics
+    from: '2016'
+    from_precision: year
+    to: '2021-06-30'
+  - name: dbt Labs
+    from: '2021-06-30'
+    to: null
+    from_precision: day
+  owners:
+  - owner: Fishtown Analytics
+    from: '2016'
+    from_precision: year
+    to: '2021-06-30'
+    confidence: qualified
+  - owner: dbt Labs
+    from: '2021-06-30'
+    from_precision: day
+    to: '2026-06-01'
+  - owner: Combined Fivetran and dbt Labs company
+    from: '2026-06-01'
+    from_precision: day
+    to: null
+  parent: null
+  roles: []
+  sources:
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+  - title: dbt Labs and Fivetran merge (announcement)
+    url: https://www.getdbt.com/blog/dbt-labs-and-fivetran-merge-announcement
+    retrieved: '2026-09-21'
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  catalogue_membership:
+    from: '2016'
+    to: null
+  license: null
+  commercial_availability_note: Availability, maturity and access are dated events; null means not established,
+    not free or GA.
+- id: dbt-core
+  type: engine
+  family: dbt
+  parent: null
+  description: The open-source Python engine. Called plain "dbt" until the January 2019 naming; remains a maintained
+    v1 line after v2.
+  roles:
+  - transformation
+  names:
+  - name: dbt
+    from: '2016-03-09'
+    to: '2019-01-15'
+    from_precision: day
+  - name: dbt Core
+    from: '2019-01-15'
+    to: '2026-09-15'
+    from_precision: day
+  - name: dbt v1
+    from: '2026-09-15'
+    to: null
+    from_precision: day
+  owners:
+  - owner: Early project contributors / Analyst Collective attribution
+    from: '2016-03-09'
+    from_precision: day
+    to: 2017-01
+    confidence: qualified
+  - owner: Fishtown Analytics
+    from: 2017-01
+    from_precision: month
+    to: '2021-06-30'
+    note: Conservative founder/company lineage observation; not a legal IP-transfer date.
+  - owner: dbt Labs
+    from: '2021-06-30'
+    from_precision: day
+    to: '2026-06-01'
+  - owner: Combined Fivetran and dbt Labs company
+    from: '2026-06-01'
+    from_precision: day
+    to: null
+  sources:
+  - title: PyPI package 0.0.1
+    url: https://pypi.org/project/dbt/0.0.1/
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/on-two-years-of-dbt
+    retrieved: '2026-09-21'
+  - title: What's in a name?
+    url: https://www.getdbt.com/blog/whats-in-a-name
+    retrieved: '2026-09-21'
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://github.com/dbt-labs/dbt/releases/tag/v2.0.0
+    retrieved: '2026-09-21'
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/licenses-faq
+    retrieved: '2026-09-21'
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/blog/dbt-summit-2026-product-announcements
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  catalogue_membership:
+    from: '2016-03-09'
+    to: null
+  license: null
+  commercial_availability_note: Availability, maturity and access are dated events; null means not established,
+    not free or GA.
+  ownership_note: Names indicate project stewardship and company lineage; early legal IP ownership is not established
+    by package author credits.
+- id: dbt-cloud
+  type: platform
+  family: dbt
+  description: Hosted platform. Began as the Sinter experiment, became dbt Cloud in 2019, and was rebranded as simply
+    "dbt" in May 2025.
+  roles:
+  - orchestration
+  - development-environment
+  names:
+  - name: Sinter
+    from: 2017-01
+    from_precision: month
+    to: '2019-01-15'
+  - name: dbt Cloud
+    from: '2019-01-15'
+    to: '2025-05-28'
+    from_precision: day
+  - name: dbt (platform)
+    from: '2025-05-28'
+    to: null
+    from_precision: day
+  owners:
+  - owner: Fishtown Analytics
+    from: 2017-01
+    from_precision: month
+    to: '2021-06-30'
+    confidence: high
+  - owner: dbt Labs
+    from: '2021-06-30'
+    from_precision: day
+    to: '2026-06-01'
+  - owner: Combined Fivetran and dbt Labs company
+    from: '2026-06-01'
+    from_precision: day
+    to: null
+  parent: null
+  sources:
+  - title: What's in a name?
+    url: https://www.getdbt.com/blog/whats-in-a-name
+    retrieved: '2026-09-21'
+  - title: Introducing dbt Cloud
+    url: https://www.getdbt.com/blog/introducing-dbt-cloud
+    retrieved: '2026-09-21'
+  - title: Updated names for the dbt platform and features
+    url: https://www.getdbt.com/blog/updated-names-for-dbt-platform-and-features
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  catalogue_membership:
+    from: 2017-01
+    to: null
+  license: null
+  commercial_availability_note: Availability, maturity and access are dated events; null means not established,
+    not free or GA.
+- id: cloud-ide
+  type: capability
+  family: dbt
+  parent: dbt-cloud
+  description: Browser development environment inside the hosted platform.
+  roles:
+  - development-environment
+  names:
+  - name: dbt IDE
+    from: '2019'
+    from_precision: year
+    to: '2025-05-28'
+  - name: dbt Studio
+    from: '2025-05-28'
+    to: null
+    from_precision: day
+  sources:
+  - title: dbt Core v1.0 is here
+    url: https://www.getdbt.com/blog/dbt-core-v1-is-here
+    retrieved: '2026-09-21'
+  - title: Announcing the dbt IDE
+    url: https://www.getdbt.com/blog/announcing-the-dbt-ide
+    retrieved: '2026-09-21'
+  - title: Updated names for the dbt platform and features
+    url: https://www.getdbt.com/blog/updated-names-for-dbt-platform-and-features
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  catalogue_membership:
+    from: '2019'
+    to: null
+  owners:
+  - owner: Fishtown Analytics
+    from: '2019'
+    from_precision: year
+    to: '2021-06-30'
+    confidence: high
+  - owner: dbt Labs
+    from: '2021-06-30'
+    from_precision: day
+    to: '2026-06-01'
+  - owner: Combined Fivetran and dbt Labs company
+    from: '2026-06-01'
+    from_precision: day
+    to: null
+  license: null
+  commercial_availability_note: Availability, maturity and access are dated events; null means not established,
+    not free or GA.
+- id: semantic-layer
+  type: capability
+  family: dbt
+  parent: dbt-cloud
+  description: Hosted metrics service. First generation previewed in October 2022; rebuilt on MetricFlow after the
+    Transform acquisition.
+  roles:
+  - semantics
+  names:
+  - name: dbt Semantic Layer
+    from: 2022-10
+    from_precision: month
+    to: null
+  sources:
+  - title: The dbt Semantic Layer
+    url: https://www.getdbt.com/blog/dbt-semantic-layer
+    retrieved: '2026-09-21'
+  - title: 'dbt Semantic Layer: what''s next'
+    url: https://www.getdbt.com/blog/dbt-semantic-layer-whats-next
+    retrieved: '2026-09-21'
+  - title: dbt Labs announces major enhancements to dbt Cloud
+    url: https://www.getdbt.com/blog/dbt-labs-announces-major-enhancements-to-dbt-cloud-to-enable-collaboration-at-scale
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  catalogue_membership:
+    from: 2022-10
+    to: null
+  owners:
+  - owner: dbt Labs
+    from: 2022-10
+    from_precision: day
+    to: '2026-06-01'
+  - owner: Combined Fivetran and dbt Labs company
+    from: '2026-06-01'
+    from_precision: day
+    to: null
+  license: null
+  commercial_availability_note: Availability, maturity and access are dated events; null means not established,
+    not free or GA.
+- id: metricflow
+  type: product
+  family: dbt
+  description: Metrics framework associated with the Transform agreement; ownership is conservatively confirmed
+    by October 2023. Apache 2.0 from October 2025.
+  roles:
+  - semantics
+  names:
+  - name: MetricFlow
+    from: '2023-02-08'
+    to: null
+    from_precision: day
+  owners:
+  - owner: Transform
+    from: '2023-02-08'
+    from_precision: day
+    to: '2023-10-17'
+    transition_uncertainty:
+      earliest: '2023-02-08'
+      latest: '2023-10-17'
+    note: Agreement pending; ownership during this interval is not settled by these sources.
+  - owner: dbt Labs
+    from: '2023-10-17'
+    from_precision: day
+    to: '2026-06-01'
+    date_basis: known-by
+  - owner: Combined Fivetran and dbt Labs company
+    from: '2026-06-01'
+    from_precision: day
+    to: null
+  parent: null
+  sources:
+  - title: dbt Labs to acquire Transform
+    url: https://www.getdbt.com/blog/press-release-dbt-acquisition-transform
+    retrieved: '2026-09-21'
+  - title: Cost optimization and agentic AI product announcements
+    url: https://www.getdbt.com/blog/dbt-labs-cost-optimization-agentic-ai-product-announcements
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/dbt-labs-announces-major-enhancements-to-dbt-cloud-to-enable-collaboration-at-scale
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/new-dbt-cloud-features-announced-at-coalesce-2023
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  catalogue_membership:
+    from: '2023-10-17'
+    to: null
+    pending_from: '2023-02-08'
+    uncertainty:
+      earliest: '2023-02-08'
+      latest: '2023-10-17'
+  license: null
+  commercial_availability_note: Availability, maturity and access are dated events; null means not established,
+    not free or GA.
+- id: explorer
+  type: capability
+  family: dbt
+  parent: dbt-cloud
+  description: Hosted lineage and metadata browser.
+  roles:
+  - metadata
+  names:
+  - name: dbt Explorer
+    from: '2023-10-17'
+    to: '2025-05-28'
+    from_precision: day
+  - name: dbt Catalog
+    from: '2025-05-28'
+    to: null
+    from_precision: day
+  sources:
+  - title: New dbt Cloud features announced at Coalesce 2023
+    url: https://www.getdbt.com/blog/new-dbt-cloud-features-announced-at-coalesce-2023
+    retrieved: '2026-09-21'
+  - title: New dbt Cloud enhancements (May 2024)
+    url: https://www.getdbt.com/blog/new-dbt-cloud-enhancements-empower-organizations-with-trustworthy-data-at-scale
+    retrieved: '2026-09-21'
+  - title: Updated names for the dbt platform and features
+    url: https://www.getdbt.com/blog/updated-names-for-dbt-platform-and-features
+    retrieved: '2026-09-21'
+  - title: dbt Launch Showcase 2025 recap
+    url: https://www.getdbt.com/blog/dbt-launch-showcase-2025-recap
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  catalogue_membership:
+    from: '2023-10-17'
+    to: null
+  owners:
+  - owner: dbt Labs
+    from: '2023-10-17'
+    from_precision: day
+    to: '2026-06-01'
+  - owner: Combined Fivetran and dbt Labs company
+    from: '2026-06-01'
+    from_precision: day
+    to: null
+  license: null
+  commercial_availability_note: Availability, maturity and access are dated events; null means not established,
+    not free or GA.
+- id: cloud-cli
+  type: capability
+  family: dbt
+  parent: dbt-cloud
+  description: Command-line client for the hosted platform.
+  roles:
+  - development-environment
+  names:
+  - name: dbt Cloud CLI
+    from: '2023-10-17'
+    to: null
+    from_precision: day
+  sources:
+  - title: New dbt Cloud features announced at Coalesce 2023
+    url: https://www.getdbt.com/blog/new-dbt-cloud-features-announced-at-coalesce-2023
+    retrieved: '2026-09-21'
+  - title: New dbt Cloud enhancements (May 2024)
+    url: https://www.getdbt.com/blog/new-dbt-cloud-enhancements-empower-organizations-with-trustworthy-data-at-scale
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  catalogue_membership:
+    from: '2023-10-17'
+    to: null
+  owners:
+  - owner: dbt Labs
+    from: '2023-10-17'
+    from_precision: day
+    to: '2026-06-01'
+  - owner: Combined Fivetran and dbt Labs company
+    from: '2026-06-01'
+    from_precision: day
+    to: null
+  license: null
+  commercial_availability_note: Availability, maturity and access are dated events; null means not established,
+    not free or GA.
+- id: mesh
+  type: capability
+  family: dbt
+  parent: dbt-cloud
+  description: Cross-project references and governance across multiple dbt projects.
+  roles:
+  - transformation
+  - governance
+  names:
+  - name: dbt Mesh
+    from: '2023-10-17'
+    to: null
+    from_precision: day
+  sources:
+  - title: dbt Labs announces major enhancements to dbt Cloud
+    url: https://www.getdbt.com/blog/dbt-labs-announces-major-enhancements-to-dbt-cloud-to-enable-collaboration-at-scale
+    retrieved: '2026-09-21'
+  - title: New dbt Cloud enhancements (May 2024)
+    url: https://www.getdbt.com/blog/new-dbt-cloud-enhancements-empower-organizations-with-trustworthy-data-at-scale
+    retrieved: '2026-09-21'
+  - title: dbt Mesh is now generally available
+    url: https://www.getdbt.com/blog/dbt-mesh-is-now-generally-available
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  catalogue_membership:
+    from: '2023-10-17'
+    to: null
+  owners:
+  - owner: dbt Labs
+    from: '2023-10-17'
+    from_precision: day
+    to: '2026-06-01'
+  - owner: Combined Fivetran and dbt Labs company
+    from: '2026-06-01'
+    from_precision: day
+    to: null
+  license: null
+  commercial_availability_note: Availability, maturity and access are dated events; null means not established,
+    not free or GA.
+- id: visual-editor
+  type: capability
+  family: dbt
+  parent: dbt-cloud
+  description: Visual, low-code model editor.
+  roles:
+  - development-environment
+  names:
+  - name: dbt visual editor
+    from: '2024-05-14'
+    to: '2025-05-28'
+    from_precision: day
+  - name: dbt Canvas
+    from: '2025-05-28'
+    to: null
+    from_precision: day
+  sources:
+  - title: New dbt Cloud enhancements (May 2024)
+    url: https://www.getdbt.com/blog/new-dbt-cloud-enhancements-empower-organizations-with-trustworthy-data-at-scale
+    retrieved: '2026-09-21'
+  - title: Updated names for the dbt platform and features
+    url: https://www.getdbt.com/blog/updated-names-for-dbt-platform-and-features
+    retrieved: '2026-09-21'
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/blog/dbt-labs-launches-ai-powered-features-to-onboard-data-analysts-into-dbt
+    retrieved: '2026-09-21'
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/blog/dbt-launch-showcase-2025-recap
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  catalogue_membership:
+    from: '2024-05-14'
+    to: null
+  owners:
+  - owner: dbt Labs
+    from: '2024-05-14'
+    from_precision: day
+    to: '2026-06-01'
+  - owner: Combined Fivetran and dbt Labs company
+    from: '2026-06-01'
+    from_precision: day
+    to: null
+  license: null
+  commercial_availability_note: Availability, maturity and access are dated events; null means not established,
+    not free or GA.
+- id: copilot
+  type: capability
+  family: dbt
+  parent: dbt-cloud
+  description: AI assistance inside the platform. First announced as dbt Assist, then Copilot; the Developer Agent
+    is described as its next evolution.
+  roles:
+  - ai-context
+  - development-environment
+  names:
+  - name: dbt Assist
+    from: '2024-05-14'
+    to: '2024-10-08'
+    from_precision: day
+  - name: dbt Copilot
+    from: '2024-10-08'
+    to: null
+    from_precision: day
+  sources:
+  - title: New dbt Cloud enhancements (May 2024)
+    url: https://www.getdbt.com/blog/new-dbt-cloud-enhancements-empower-organizations-with-trustworthy-data-at-scale
+    retrieved: '2026-09-21'
+  - title: dbt Labs unveils AI innovations (Coalesce 2024)
+    url: https://www.getdbt.com/blog/dbt-labs-unveils-ai-innovations-and-new-features-to-improve-collaboration-and-multi-platform
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  catalogue_membership:
+    from: '2024-05-14'
+    to: null
+  owners:
+  - owner: dbt Labs
+    from: '2024-05-14'
+    from_precision: day
+    to: '2026-06-01'
+  - owner: Combined Fivetran and dbt Labs company
+    from: '2026-06-01'
+    from_precision: day
+    to: null
+  license: null
+  commercial_availability_note: Availability, maturity and access are dated events; null means not established,
+    not free or GA.
+- id: insights
+  type: capability
+  family: dbt
+  parent: dbt-cloud
+  description: Analysis surface inside the platform.
+  roles:
+  - bi
+  names:
+  - name: dbt Insights
+    from: '2025-05-28'
+    to: null
+    from_precision: day
+  sources:
+  - title: dbt Labs launches AI-powered features
+    url: https://www.getdbt.com/blog/dbt-labs-launches-ai-powered-features-to-onboard-data-analysts-into-dbt
+    retrieved: '2026-09-21'
+  - title: Cost optimization and agentic AI product announcements
+    url: https://www.getdbt.com/blog/dbt-labs-cost-optimization-agentic-ai-product-announcements
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  catalogue_membership:
+    from: '2025-05-28'
+    to: null
+  owners:
+  - owner: dbt Labs
+    from: '2025-05-28'
+    from_precision: day
+    to: '2026-06-01'
+  - owner: Combined Fivetran and dbt Labs company
+    from: '2026-06-01'
+    from_precision: day
+    to: null
+  license: null
+  commercial_availability_note: Availability, maturity and access are dated events; null means not established,
+    not free or GA.
+- id: mcp-server
+  type: capability
+  family: dbt
+  parent: dbt-cloud
+  description: Local MCP server. Hosted remote MCP has its own identity and maturity.
+  roles:
+  - ai-context
+  names:
+  - name: dbt local MCP server
+    from: '2025-05-28'
+    to: null
+    from_precision: day
+  sources:
+  - title: dbt Launch Showcase 2025 recap
+    url: https://www.getdbt.com/blog/dbt-launch-showcase-2025-recap
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  catalogue_membership:
+    from: '2025-05-28'
+    to: null
+  owners:
+  - owner: dbt Labs
+    from: '2025-05-28'
+    from_precision: day
+    to: '2026-06-01'
+  - owner: Combined Fivetran and dbt Labs company
+    from: '2026-06-01'
+    from_precision: day
+    to: null
+  license: null
+  commercial_availability_note: Availability, maturity and access are dated events; null means not established,
+    not free or GA.
+- id: fusion
+  type: engine
+  family: dbt
+  description: Rust engine lineage associated with Fusion and the v2 transition. Engine identity is separate from
+    full dbt and dbt OSS distributions.
+  roles:
+  - transformation
+  names:
+  - name: dbt Fusion engine
+    from: '2025-05-28'
+    to: '2026-06-01'
+    from_precision: day
+  - name: dbt Core v2 alpha / Fusion lineage
+    from: '2026-06-01'
+    to: '2026-09-15'
+    note: Transition label; preserves alpha naming without asserting Fusion branding instantly disappeared.
+    from_precision: day
+  - name: dbt v2 engine
+    from: '2026-09-15'
+    to: null
+    from_precision: day
+  parent: null
+  sources:
+  - title: dbt Labs redefines dbt with the Fusion engine
+    url: https://www.getdbt.com/blog/dbt-labs-redefines-dbt-with-new-fusion-engine
+    retrieved: '2026-09-21'
+  - title: Fusion in bloom
+    url: https://www.getdbt.com/fusion-in-bloom
+    retrieved: '2026-09-21'
+  - title: dbt licensing FAQ
+    url: https://www.getdbt.com/licenses-faq
+    retrieved: '2026-09-21'
+  - title: dbt Summit 2026 product announcements
+    url: https://www.getdbt.com/blog/dbt-summit-2026-product-announcements
+    retrieved: '2026-09-21'
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/blog/what-we-announced-at-snowflake-summit-and-why-it-matters
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+  catalogue_membership:
+    from: '2025-05-28'
+    to: null
+  owners:
+  - owner: dbt Labs
+    from: '2025-05-28'
+    from_precision: day
+    to: '2026-06-01'
+  - owner: Combined Fivetran and dbt Labs company
+    from: '2026-06-01'
+    from_precision: day
+    to: null
+  license: null
+  commercial_availability_note: Availability, maturity and access are dated events; null means not established,
+    not free or GA.
+- id: dbt-oss
+  type: distribution
+  family: dbt
+  description: Apache 2.0 subset of the v2 engine.
+  roles:
+  - transformation
+  names:
+  - name: dbt OSS
+    from: '2026-09-15'
+    to: null
+    from_precision: day
+  parent: fusion
+  sources:
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/licenses-faq
+    retrieved: '2026-09-21'
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://github.com/dbt-labs/dbt/releases/tag/v2.0.0
+    retrieved: '2026-09-21'
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/blog/dbt-summit-2026-product-announcements
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  catalogue_membership:
+    from: '2026-09-15'
+    to: null
+  owners:
+  - owner: Combined Fivetran and dbt Labs company
+    from: '2026-09-15'
+    from_precision: day
+    to: null
+  license: null
+  commercial_availability_note: Availability, maturity and access are dated events; null means not established,
+    not free or GA.
+- id: vscode-extension
+  type: capability
+  family: dbt
+  description: VS Code extension shipped with the Fusion engine beta.
+  roles:
+  - development-environment
+  names:
+  - name: dbt VS Code extension
+    from: '2025-05-28'
+    to: null
+    from_precision: day
+  parent: null
+  sources:
+  - title: dbt Labs redefines dbt with the Fusion engine
+    url: https://www.getdbt.com/blog/dbt-labs-redefines-dbt-with-new-fusion-engine
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  catalogue_membership:
+    from: '2025-05-28'
+    to: null
+  owners:
+  - owner: dbt Labs
+    from: '2025-05-28'
+    from_precision: day
+    to: '2026-06-01'
+  - owner: Combined Fivetran and dbt Labs company
+    from: '2026-06-01'
+    from_precision: day
+    to: null
+  license: null
+  commercial_availability_note: Availability, maturity and access are dated events; null means not established,
+    not free or GA.
+- id: developer-agent
+  type: capability
+  family: dbt
+  parent: dbt-cloud
+  description: Agent inside Studio, described as Copilot's next evolution.
+  roles:
+  - ai-context
+  - development-environment
+  names:
+  - name: dbt Developer Agent
+    from: '2026-05-06'
+    to: null
+    from_precision: day
+  sources:
+  - title: The dbt Developer Agent is now in preview
+    url: https://www.getdbt.com/blog/the-dbt-developer-agent-is-now-in-preview
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  catalogue_membership:
+    from: '2026-05-06'
+    to: null
+  owners:
+  - owner: dbt Labs
+    from: '2026-05-06'
+    from_precision: day
+    to: '2026-06-01'
+  - owner: Combined Fivetran and dbt Labs company
+    from: '2026-06-01'
+    from_precision: day
+    to: null
+  license: null
+  commercial_availability_note: Availability, maturity and access are dated events; null means not established,
+    not free or GA.
+- id: dbt-state
+  type: product
+  family: dbt
+  description: Optional hosted state service, distinct from manifest-based state selection.
+  roles:
+  - orchestration
+  names:
+  - name: dbt State
+    from: '2026-06-01'
+    to: null
+    from_precision: day
+  parent: null
+  sources:
+  - title: What we announced at Snowflake Summit
+    url: https://www.getdbt.com/blog/what-we-announced-at-snowflake-summit-and-why-it-matters
+    retrieved: '2026-09-21'
+  - title: dbt Summit 2026 product announcements
+    url: https://www.getdbt.com/blog/dbt-summit-2026-product-announcements
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  catalogue_membership:
+    from: '2026-06-01'
+    to: null
+  owners:
+  - owner: Combined Fivetran and dbt Labs company
+    from: '2026-06-01'
+    from_precision: day
+    to: null
+  license: null
+  commercial_availability_note: Availability, maturity and access are dated events; null means not established,
+    not free or GA.
+- id: lake-compute
+  type: product
+  family: dbt
+  description: Limited compute offering for open-table workloads.
+  roles:
+  - open-table-compute
+  names:
+  - name: dbt Lake Compute
+    from: '2026-09-16'
+    to: null
+    from_precision: day
+  parent: null
+  sources:
+  - title: dbt Summit 2026 product announcements
+    url: https://www.getdbt.com/blog/dbt-summit-2026-product-announcements
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  catalogue_membership:
+    from: '2026-09-16'
+    to: null
+  owners:
+  - owner: Combined Fivetran and dbt Labs company
+    from: '2026-09-16'
+    from_precision: day
+    to: null
+  license: null
+  commercial_availability_note: Availability, maturity and access are dated events; null means not established,
+    not free or GA.
+- id: wizard
+  type: capability
+  family: dbt
+  description: Agentic exploration and development surface announced at Summit 2026.
+  roles:
+  - ai-context
+  - bi
+  names:
+  - name: dbt Wizard
+    from: '2026-09-16'
+    to: null
+    from_precision: day
+  parent: null
+  sources:
+  - title: dbt Summit 2026 product announcements
+    url: https://www.getdbt.com/blog/dbt-summit-2026-product-announcements
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  catalogue_membership:
+    from: '2026-09-16'
+    to: null
+  owners:
+  - owner: Combined Fivetran and dbt Labs company
+    from: '2026-09-16'
+    from_precision: day
+    to: null
+  license: null
+  commercial_availability_note: Availability, maturity and access are dated events; null means not established,
+    not free or GA.
+- id: charts
+  type: capability
+  family: dbt
+  description: Dashboard-as-code offering.
+  roles:
+  - bi
+  names:
+  - name: dbt Charts
+    from: '2026-09-16'
+    to: null
+    from_precision: day
+  parent: null
+  sources:
+  - title: dbt Summit 2026 product announcements
+    url: https://www.getdbt.com/blog/dbt-summit-2026-product-announcements
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  catalogue_membership:
+    from: '2026-09-16'
+    to: null
+  owners:
+  - owner: Combined Fivetran and dbt Labs company
+    from: '2026-09-16'
+    from_precision: day
+    to: null
+  license: null
+  commercial_availability_note: Availability, maturity and access are dated events; null means not established,
+    not free or GA.
+- id: snowflake-native-app
+  type: product
+  family: dbt
+  description: dbt Labs' Snowflake Native App. Its original launch day is not established in the research; it entered
+    maintenance in July 2026 with removal scheduled for November 2026. Distinct from Snowflake's own dbt Projects.
+  roles:
+  - transformation
+  names:
+  - name: dbt Snowflake Native App
+    from: '2026-07-24'
+    to: null
+    from_precision: day
+  known_since_basis: observed at maintenance announcement; original launch unknown
+  parent: null
+  sources:
+  - title: Retiring the dbt Snowflake Native App
+    url: https://www.getdbt.com/blog/retiring-the-dbt-snowflake-native-app
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  catalogue_membership:
+    from: '2026-07-24'
+    to: null
+  owners:
+  - owner: Combined Fivetran and dbt Labs company
+    from: '2026-07-24'
+    from_precision: day
+    to: null
+  license: null
+  commercial_availability_note: Availability, maturity and access are dated events; null means not established,
+    not free or GA.
+- id: transform
+  type: company
+  family: dbt
+  description: Maker of MetricFlow; acquisition agreement announced 8 February 2023.
+  names:
+  - name: Transform
+    from: '2023-02-08'
+    to: null
+    from_precision: day
+  parent: null
+  roles: []
+  sources:
+  - title: dbt Labs to acquire Transform
+    url: https://www.getdbt.com/blog/press-release-dbt-acquisition-transform
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/dbt-labs-announces-major-enhancements-to-dbt-cloud-to-enable-collaboration-at-scale
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/new-dbt-cloud-features-announced-at-coalesce-2023
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  catalogue_membership:
+    from: '2023-10-17'
+    to: null
+    pending_from: '2023-02-08'
+    uncertainty:
+      earliest: '2023-02-08'
+      latest: '2023-10-17'
+  owners:
+  - owner: Transform
+    from: '2023-02-08'
+    from_precision: day
+    to: '2023-10-17'
+    transition_uncertainty:
+      earliest: '2023-02-08'
+      latest: '2023-10-17'
+    note: Agreement pending; ownership during this interval is not settled by these sources.
+  - owner: dbt Labs
+    from: '2023-10-17'
+    from_precision: day
+    to: '2026-06-01'
+    date_basis: known-by
+  - owner: Combined Fivetran and dbt Labs company
+    from: '2026-06-01'
+    from_precision: day
+    to: null
+  license: null
+  commercial_availability_note: Availability, maturity and access are dated events; null means not established,
+    not free or GA.
+- id: sdf-labs
+  type: company
+  family: dbt
+  description: Maker of SDF, source of Fusion's SQL comprehension.
+  names:
+  - name: SDF Labs
+    from: '2025-01-14'
+    to: null
+    from_precision: day
+  parent: null
+  roles: []
+  sources:
+  - title: dbt Labs announces SDF Labs acquisition
+    url: https://www.getdbt.com/blog/dbt-labs-announces-sdf-labs-acquisition
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  catalogue_membership:
+    from: '2025-01-14'
+    to: null
+  owners:
+  - owner: dbt Labs
+    from: '2025-01-14'
+    from_precision: day
+    to: '2026-06-01'
+  - owner: Combined Fivetran and dbt Labs company
+    from: '2026-06-01'
+    from_precision: day
+    to: null
+  license: null
+  commercial_availability_note: Availability, maturity and access are dated events; null means not established,
+    not free or GA.
+- id: fivetran
+  type: platform
+  family: fivetran
+  description: Managed data movement. Merged with dbt Labs on 1 June 2026.
+  roles:
+  - ingestion
+  names:
+  - name: Fivetran
+    from: '2016'
+    from_precision: year
+    to: null
+  owners:
+  - owner: Fivetran
+    from: '2016'
+    from_precision: year
+    to: '2026-06-01'
+  - owner: Combined Fivetran and dbt Labs company
+    from: '2026-06-01'
+    from_precision: day
+    to: null
+  parent: fivetran-company
+  sources:
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+  catalogue_membership:
+    from: '2026-06-01'
+    to: null
+  license: null
+  commercial_availability_note: Availability, maturity and access are dated events; null means not established,
+    not free or GA.
+- id: hvr
+  type: product
+  family: fivetran
+  parent: fivetran
+  description: Enterprise replication and change data capture, acquired by Fivetran.
+  roles:
+  - ingestion
+  names:
+  - name: HVR
+    from: '2021-10-01'
+    to: null
+    from_precision: day
+  owners:
+  - owner: Fivetran
+    from: '2021-10-01'
+    from_precision: day
+    to: '2026-06-01'
+  - owner: Combined Fivetran and dbt Labs company
+    from: '2026-06-01'
+    from_precision: day
+    to: null
+  sources:
+  - title: Fivetran completes acquisition of HVR
+    url: https://www.fivetran.com/press/fivetran-completes-acquisition-of-hvr
+    retrieved: '2026-09-21'
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+  catalogue_membership:
+    from: '2026-06-01'
+    to: null
+  license: null
+  commercial_availability_note: Availability, maturity and access are dated events; null means not established,
+    not free or GA.
+- id: census
+  type: product
+  family: fivetran
+  description: Reverse ETL. Fivetran signed the acquisition on 1 May 2025 and described it as complete by 3 September
+    2025; described as Fivetran Activations by 2 February 2026.
+  roles:
+  - reverse-etl
+  names:
+  - name: Census
+    from: '2021-06-30'
+    from_precision: day
+    to: '2026-02-02'
+    to_precision: day
+  - name: Fivetran Activations
+    from: '2026-02-02'
+    to: null
+    transition_uncertainty:
+      earliest: '2025-05-01'
+      latest: '2026-02-02'
+    date_basis: known-by, not exact rename
+    from_precision: day
+  owners:
+  - owner: Census
+    from: '2021-06-30'
+    from_precision: day
+    to: '2025-05-01'
+  - owner: Census / Fivetran transition unresolved
+    from: '2025-05-01'
+    from_precision: day
+    to: '2025-09-03'
+    uncertainty:
+      earliest: '2025-05-01'
+      latest: '2025-09-03'
+  - owner: Fivetran
+    from: '2025-09-03'
+    from_precision: day
+    to: '2026-06-01'
+    date_basis: known-by
+  - owner: Combined Fivetran and dbt Labs company
+    from: '2026-06-01'
+    from_precision: day
+    to: null
+  parent: null
+  sources:
+  - title: Fivetran signs agreement to acquire Census
+    url: https://www.fivetran.com/press/fivetran-signs-agreement-to-acquire-census-delivering-the-first-end-to-end-data-movement-platform-for-the-ai-era
+    retrieved: '2026-09-21'
+  - title: Fivetran acquires Tobiko Data
+    url: https://www.fivetran.com/press/fivetran-acquires-tobiko-data-to-power-the-next-generation-of-advanced-ai-ready-data-transformation
+    retrieved: '2026-09-21'
+  - title: Fivetran and other ownership events evidence
+    url: https://www.fivetran.com/blog/census-joins-fivetrans-consumption-based-pricing
+    retrieved: '2026-09-21'
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+  - title: Fivetran and other ownership events evidence
+    url: https://www.fivetran.com/blog/census-joins-fivetrans-consumption-based-pricing
+    retrieved: '2026-09-21'
+  - title: Fivetran and other ownership events evidence
+    url: https://www.fivetran.com/press/fivetran-signs-agreement-to-acquire-census-delivering-the-first-end-to-end-data-movement-platform-for-the-ai-era
+    retrieved: '2026-09-21'
+  - title: Fivetran and other ownership events evidence
+    url: https://www.fivetran.com/press/fivetran-acquires-tobiko-data-to-power-the-next-generation-of-advanced-ai-ready-data-transformation
+    retrieved: '2026-09-21'
+  catalogue_membership:
+    from: '2026-06-01'
+    to: null
+  license: null
+  commercial_availability_note: Availability, maturity and access are dated events; null means not established,
+    not free or GA.
+- id: sqlmesh
+  type: product
+  family: fivetran
+  description: Transformation framework from Tobiko Data (with SQLGlot). Independent alternative until Fivetran
+    acquired Tobiko on 3 September 2025.
+  roles:
+  - transformation
+  names:
+  - name: SQLMesh
+    from: '2023-03-08'
+    to: null
+    from_precision: day
+  owners:
+  - owner: Tobiko Data
+    from: '2023-03-08'
+    from_precision: day
+    to: '2025-09-03'
+  - owner: Fivetran
+    from: '2025-09-03'
+    from_precision: day
+    to: '2026-06-01'
+  - owner: Combined Fivetran and dbt Labs company
+    from: '2026-06-01'
+    from_precision: day
+    to: null
+  parent: null
+  sources:
+  - title: Fivetran acquires Tobiko Data
+    url: https://www.fivetran.com/press/fivetran-acquires-tobiko-data-to-power-the-next-generation-of-advanced-ai-ready-data-transformation
+    retrieved: '2026-09-21'
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+  - title: SQLMesh launch
+    url: https://www.tobikodata.com/blog/the-future-of-dataops
+    retrieved: '2026-09-21'
+  catalogue_membership:
+    from: '2026-06-01'
+    to: null
+  license: null
+  commercial_availability_note: Availability, maturity and access are dated events; null means not established,
+    not free or GA.
+- id: context-layer
+  type: product
+  family: fivetran
+  parent: fivetran
+  description: Fivetran Context Layer, private beta at Summit 2026.
+  roles:
+  - ai-context
+  names:
+  - name: Fivetran Context Layer
+    from: '2026-09-16'
+    to: null
+    from_precision: day
+  sources:
+  - title: dbt Summit 2026 product announcements
+    url: https://www.getdbt.com/blog/dbt-summit-2026-product-announcements
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  catalogue_membership:
+    from: '2026-09-16'
+    to: null
+  owners:
+  - owner: Combined Fivetran and dbt Labs company
+    from: '2026-09-16'
+    from_precision: day
+    to: null
+  license: null
+  commercial_availability_note: Availability, maturity and access are dated events; null means not established,
+    not free or GA.
+- id: dbt-full
+  type: distribution
+  parent: fusion
+  names:
+  - name: dbt (v2 full distribution)
+    from: '2026-09-14'
+    from_precision: day
+    to: null
+  owners:
+  - owner: Combined Fivetran and dbt Labs company
+    from: '2026-09-14'
+    from_precision: day
+    to: null
+  roles:
+  - transformation
+  family: dbt
+  description: Full distribution of the v2 engine, including proprietary SQL-comprehension components.
+  sources:
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://github.com/dbt-labs/dbt/releases/tag/v2.0.0
+    retrieved: '2026-09-21'
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/licenses-faq
+    retrieved: '2026-09-21'
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/blog/dbt-summit-2026-product-announcements
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  catalogue_membership:
+    from: '2026-09-14'
+    to: null
+  license: null
+  commercial_availability_note: Availability, maturity and access are dated events; null means not established,
+    not free or GA.
+- id: mcp-remote
+  type: capability
+  parent: dbt-cloud
+  names:
+  - name: dbt remote MCP server
+    from: '2025-10-14'
+    from_precision: day
+    to: null
+  owners:
+  - owner: dbt Labs
+    from: '2025-10-14'
+    from_precision: day
+    to: '2026-06-01'
+  - owner: Combined Fivetran and dbt Labs company
+    from: '2026-06-01'
+    from_precision: day
+    to: null
+  roles:
+  - ai-context
+  family: dbt
+  description: Hosted MCP surface; distinct from the local server.
+  sources:
+  - title: Cost optimization and agentic AI product announcements
+    url: https://www.getdbt.com/blog/dbt-labs-cost-optimization-agentic-ai-product-announcements
+    retrieved: '2026-09-21'
+  - title: 'Coalesce 2025: rewriting the future'
+    url: https://www.getdbt.com/blog/coalesce-2025-rewriting-the-future
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  catalogue_membership:
+    from: '2025-10-14'
+    to: null
+  license: null
+  commercial_availability_note: Availability, maturity and access are dated events; null means not established,
+    not free or GA.
+- id: catalog-global
+  type: capability
+  parent: explorer
+  names:
+  - name: Catalog global discovery
+    from: '2025-05-28'
+    from_precision: day
+    to: null
+  owners:
+  - owner: dbt Labs
+    from: '2025-05-28'
+    from_precision: day
+    to: '2026-06-01'
+  - owner: Combined Fivetran and dbt Labs company
+    from: '2026-06-01'
+    from_precision: day
+    to: null
+  roles:
+  - metadata
+  family: dbt
+  description: Global discovery has its own maturity, separate from Catalog’s existing core experience.
+  sources:
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/blog/dbt-labs-launches-ai-powered-features-to-onboard-data-analysts-into-dbt
+    retrieved: '2026-09-21'
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/blog/dbt-launch-showcase-2025-recap
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  catalogue_membership:
+    from: '2025-05-28'
+    to: null
+  license: null
+  commercial_availability_note: Availability, maturity and access are dated events; null means not established,
+    not free or GA.
+- id: state-aware-orchestration
+  type: capability
+  parent: dbt-cloud
+  names:
+  - name: Fusion state-aware orchestration
+    from: '2025-10-14'
+    from_precision: day
+    to: null
+  owners:
+  - owner: dbt Labs
+    from: '2025-10-14'
+    from_precision: day
+    to: '2026-06-01'
+  - owner: Combined Fivetran and dbt Labs company
+    from: '2026-06-01'
+    from_precision: day
+    to: null
+  roles:
+  - orchestration
+  family: dbt
+  description: Preview capability in the platform; a precursor in the state-aware workflow history, not a proven
+    one-to-one rename of dbt State.
+  sources:
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/blog/dbt-labs-cost-optimization-agentic-ai-product-announcements
+    retrieved: '2026-09-21'
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/blog/coalesce-2025-rewriting-the-future
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  catalogue_membership:
+    from: '2025-10-14'
+    to: null
+  license: null
+  commercial_availability_note: Availability, maturity and access are dated events; null means not established,
+    not free or GA.
+- id: discovery-agent
+  type: capability
+  parent: dbt-cloud
+  names:
+  - name: Discovery agent
+    from: '2025-10-14'
+    from_precision: day
+    to: null
+  owners:
+  - owner: dbt Labs
+    from: '2025-10-14'
+    from_precision: day
+    to: '2026-06-01'
+  - owner: Combined Fivetran and dbt Labs company
+    from: '2026-06-01'
+    from_precision: day
+    to: null
+  roles:
+  - metadata
+  - ai-context
+  family: dbt
+  description: Platform capability; read its availability event before presenting it as usable.
+  sources:
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/blog/dbt-labs-cost-optimization-agentic-ai-product-announcements
+    retrieved: '2026-09-21'
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/blog/coalesce-2025-rewriting-the-future
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  catalogue_membership:
+    from: '2025-10-14'
+    to: null
+  license: null
+  commercial_availability_note: Availability, maturity and access are dated events; null means not established,
+    not free or GA.
+- id: analyst-agent
+  type: capability
+  parent: dbt-cloud
+  names:
+  - name: Analyst agent
+    from: '2025-10-14'
+    from_precision: day
+    to: null
+  owners:
+  - owner: dbt Labs
+    from: '2025-10-14'
+    from_precision: day
+    to: '2026-06-01'
+  - owner: Combined Fivetran and dbt Labs company
+    from: '2026-06-01'
+    from_precision: day
+    to: null
+  roles:
+  - bi
+  - ai-context
+  family: dbt
+  description: Platform capability; read its availability event before presenting it as usable.
+  sources:
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/blog/dbt-labs-cost-optimization-agentic-ai-product-announcements
+    retrieved: '2026-09-21'
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/blog/coalesce-2025-rewriting-the-future
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  catalogue_membership:
+    from: '2025-10-14'
+    to: null
+  license: null
+  commercial_availability_note: Availability, maturity and access are dated events; null means not established,
+    not free or GA.
+- id: observability-agent
+  type: capability
+  parent: dbt-cloud
+  names:
+  - name: Observability agent
+    from: '2025-10-14'
+    from_precision: day
+    to: null
+  owners:
+  - owner: dbt Labs
+    from: '2025-10-14'
+    from_precision: day
+    to: '2026-06-01'
+  - owner: Combined Fivetran and dbt Labs company
+    from: '2026-06-01'
+    from_precision: day
+    to: null
+  roles:
+  - quality
+  family: dbt
+  description: Platform capability; read its availability event before presenting it as usable.
+  sources:
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/blog/dbt-labs-cost-optimization-agentic-ai-product-announcements
+    retrieved: '2026-09-21'
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/blog/coalesce-2025-rewriting-the-future
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  catalogue_membership:
+    from: '2025-10-14'
+    to: null
+  license: null
+  commercial_availability_note: Availability, maturity and access are dated events; null means not established,
+    not free or GA.
+- id: advanced-ci
+  type: capability
+  parent: dbt-cloud
+  names:
+  - name: Advanced CI
+    from: '2024-05-14'
+    from_precision: day
+    to: null
+  owners:
+  - owner: dbt Labs
+    from: '2024-05-14'
+    from_precision: day
+    to: '2026-06-01'
+  - owner: Combined Fivetran and dbt Labs company
+    from: '2026-06-01'
+    from_precision: day
+    to: null
+  roles:
+  - quality
+  family: dbt
+  description: Platform capability; read its availability event before presenting it as usable.
+  sources:
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/new-dbt-cloud-enhancements-empower-organizations-with-trustworthy-data-at-scale
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  catalogue_membership:
+    from: '2024-05-14'
+    to: null
+  license: null
+  commercial_availability_note: Availability, maturity and access are dated events; null means not established,
+    not free or GA.
+- id: automatic-exposures
+  type: capability
+  parent: dbt-cloud
+  names:
+  - name: Automatic exposures
+    from: '2024-05-14'
+    from_precision: day
+    to: null
+  owners:
+  - owner: dbt Labs
+    from: '2024-05-14'
+    from_precision: day
+    to: '2026-06-01'
+  - owner: Combined Fivetran and dbt Labs company
+    from: '2026-06-01'
+    from_precision: day
+    to: null
+  roles:
+  - metadata
+  family: dbt
+  description: Platform capability; read its availability event before presenting it as usable.
+  sources:
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/new-dbt-cloud-enhancements-empower-organizations-with-trustworthy-data-at-scale
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  catalogue_membership:
+    from: '2024-05-14'
+    to: null
+  license: null
+  commercial_availability_note: Availability, maturity and access are dated events; null means not established,
+    not free or GA.
+- id: wizard-explore
+  type: capability
+  parent: wizard
+  names:
+  - name: Wizard Explore Mode
+    from: '2026-09-16'
+    from_precision: day
+    to: null
+  owners:
+  - owner: Combined Fivetran and dbt Labs company
+    from: '2026-09-16'
+    from_precision: day
+    to: null
+  roles:
+  - ai-context
+  family: dbt
+  description: ''
+  sources:
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://github.com/dbt-labs/dbt/releases/tag/v2.0.0
+    retrieved: '2026-09-21'
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/licenses-faq
+    retrieved: '2026-09-21'
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/blog/dbt-summit-2026-product-announcements
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  catalogue_membership:
+    from: '2026-09-16'
+    to: null
+  license: null
+  commercial_availability_note: Availability, maturity and access are dated events; null means not established,
+    not free or GA.
+- id: wizard-cli
+  type: capability
+  parent: wizard
+  names:
+  - name: Wizard CLI
+    from: '2026-09-16'
+    from_precision: day
+    to: null
+  owners:
+  - owner: Combined Fivetran and dbt Labs company
+    from: '2026-09-16'
+    from_precision: day
+    to: null
+  roles:
+  - ai-context
+  family: dbt
+  description: ''
+  sources:
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://github.com/dbt-labs/dbt/releases/tag/v2.0.0
+    retrieved: '2026-09-21'
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/licenses-faq
+    retrieved: '2026-09-21'
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/blog/dbt-summit-2026-product-announcements
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  catalogue_membership:
+    from: '2026-09-16'
+    to: null
+  license: null
+  commercial_availability_note: Availability, maturity and access are dated events; null means not established,
+    not free or GA.
+- id: wizard-desktop
+  type: capability
+  parent: wizard
+  names:
+  - name: Wizard Desktop
+    from: '2026-09-16'
+    from_precision: day
+    to: null
+  owners:
+  - owner: Combined Fivetran and dbt Labs company
+    from: '2026-09-16'
+    from_precision: day
+    to: null
+  roles:
+  - ai-context
+  family: dbt
+  description: ''
+  sources:
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://github.com/dbt-labs/dbt/releases/tag/v2.0.0
+    retrieved: '2026-09-21'
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/licenses-faq
+    retrieved: '2026-09-21'
+  - title: Fusion, broader interfaces and the v2 transition evidence
+    url: https://www.getdbt.com/blog/dbt-summit-2026-product-announcements
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  catalogue_membership:
+    from: '2026-09-16'
+    to: null
+  license: null
+  commercial_availability_note: Availability, maturity and access are dated events; null means not established,
+    not free or GA.
+- id: sqlglot
+  type: product
+  parent: null
+  names:
+  - name: SQLGlot
+    from: '2025-09-03'
+    from_precision: day
+    to: null
+  owners:
+  - owner: Fivetran
+    from: '2025-09-03'
+    from_precision: day
+    to: '2026-06-01'
+  - owner: Combined Fivetran and dbt Labs company
+    from: '2026-06-01'
+    from_precision: day
+    to: null
+  roles:
+  - sql-tooling
+  family: fivetran
+  description: SQL parser and transpiler lineage acquired with Tobiko; date is a conservative observation, not original
+    launch.
+  sources:
+  - title: Fivetran and other ownership events evidence
+    url: https://www.fivetran.com/press/fivetran-acquires-tobiko-data-to-power-the-next-generation-of-advanced-ai-ready-data-transformation
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  catalogue_membership:
+    from: '2026-06-01'
+    to: null
+  license: null
+  commercial_availability_note: Availability, maturity and access are dated events; null means not established,
+    not free or GA.
+- id: fivetran-company
+  type: company
+  parent: null
+  names:
+  - name: Fivetran
+    from: '2016'
+    from_precision: year
+    to: null
+  owners:
+  - owner: Fivetran
+    from: '2016'
+    from_precision: year
+    to: '2026-06-01'
+  - owner: Combined Fivetran and dbt Labs company
+    from: '2026-06-01'
+    from_precision: day
+    to: null
+  roles: []
+  family: fivetran
+  description: Company identity separate from the data-movement platform.
+  sources:
+  - title: Fivetran and other ownership events evidence
+    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+    retrieved: '2026-09-21'
+  - title: Early product family evidence
+    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+    retrieved: '2026-09-21'
+  catalogue_membership:
+    from: '2026-06-01'
+    to: null
+  license: null
+  commercial_availability_note: Availability, maturity and access are dated events; null means not established,
+    not free or GA.

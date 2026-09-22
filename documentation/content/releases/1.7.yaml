@@ -1,0 +1,133 @@
+id: '1.7'
+label: v1.7
+title: Reproducible dependencies and shareable docs
+lead: |
+  Package locking makes resolved dependencies explicit. Static documentation is easier to share as a single generated file.
+problem_then: |
+  Two environments can resolve a package range differently, complicating review and reproduction.
+what_changed:
+- id: change-1
+  summary: Package dependency locking and static documentation.
+  introduced_in: 1.7.0
+  adapter_constraints: null
+  evidence:
+  - src-1
+  confidence: high
+- id: change-2
+  summary: Saved-query semantic metadata; configurable seed delimiters.
+  introduced_in: 1.7.0
+  adapter_constraints: null
+  evidence:
+  - src-1
+  confidence: high
+in_practice: |
+  Commit the dependency lock when appropriate, then share documentation without needing a docs server.
+technical_detail: |
+  package-lock.yml records resolved dependencies. Do not hand-author a fake checksum or claim a fictional package existed in 2023. The example is a workflow comparison; actual lock content is omitted.
+milestones:
+- id: 1.7.0
+  kind: package
+  date: '2023-11-02'
+  precision: day
+  title: First published package
+  evidence:
+  - src-2
+sources:
+- id: src-1
+  title: dbt 1.7 release evidence
+  url: https://github.com/dbt-labs/dbt/releases/tag/v1.7.0
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+- id: src-2
+  title: dbt 1.7 package evidence
+  url: https://pypi.org/project/dbt-core/1.7.0/
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+narrative_evidence:
+- src-1
+- src-2
+walkthrough:
+  id: wt-1.7
+  learning_objective: |
+    See how a project becomes easier to reproduce and share.
+  context: |
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
+  dataset_variant: base
+  steps:
+  - id: range
+    title: Separate request from resolution
+    explanation: |
+      The fictional shared shop package stands for a dependency in this example.
+    state:
+      kind: comparison
+      title: Separate request from resolution
+      columns:
+      - concept
+      - meaning
+      rows:
+      - - requested dependency
+        - allowed package/version specification
+      - - resolved dependency
+        - specific version selected by dependency resolution
+      result_status: null
+      diagram: null
+    takeaway: |
+      A version range is not an exact resolved environment.
+  - id: lock
+    title: Record the resolved dependencies
+    explanation: |
+      dbt deps creates or updates the lock file as appropriate.
+    state:
+      kind: comparison
+      title: Record the resolved dependencies
+      columns:
+      - project file
+      - purpose
+      rows:
+      - - packages.yml
+        - requested dependencies
+      - - package-lock.yml
+        - resolved dependency record
+      result_status: null
+      diagram: null
+    takeaway: |
+      Review the lock when dependency resolution changes.
+    code:
+    - language: shell
+      filename: commands.sh
+      content: |
+        dbt deps
+      highlight_lines: []
+  - id: share
+    title: Generate static documentation
+    explanation: |
+      The output can be shared as project documentation, subject to its contents.
+    state:
+      kind: comparison
+      title: Generate static documentation
+      columns:
+      - command output
+      - reader sees
+      rows:
+      - - static documentation HTML
+        - shop definitions and lineage
+      result_status: null
+      diagram: null
+    takeaway: |
+      Documentation can travel without a running docs server.
+    code:
+    - language: shell
+      filename: commands.sh
+      content: |
+        dbt docs generate --static
+      highlight_lines: []
+  evidence:
+    status: illustration
+    review_date: '2026-09-22'
+    source_refs:
+    - src-1
+    - src-2
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+status: reviewed
+review_scope: Source and fixture review; no historical dbt execution.

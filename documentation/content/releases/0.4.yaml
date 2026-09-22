@@ -1,0 +1,138 @@
+id: '0.4'
+label: v0.4
+title: Materialization choices
+lead: |
+  Models can now be incremental or ephemeral. Waffle Shop can process new orders without rebuilding its entire order history.
+problem_then: |
+  A full rebuild repeats old work. Reusable intermediate SQL also need not always become a warehouse table.
+what_changed:
+- id: change-1
+  summary: Incremental and ephemeral models introduced in 0.4.0.
+  introduced_in: 0.4.0
+  adapter_constraints: null
+  evidence:
+  - src-1
+  confidence: high
+- id: change-2
+  summary: In-model config and this variable; enum materializations replace Boolean configuration.
+  introduced_in: 0.4.0
+  adapter_constraints: null
+  evidence:
+  - src-1
+  confidence: high
+in_practice: |
+  Choose how a model is built as part of the project.
+technical_detail: |
+  The historical incremental filter is sql_where, used with this; do not substitute the later is_incremental pattern. This simple increasing-ID example assumes new records only and does not solve changed refunds or late updates.
+milestones:
+- id: 0.4.0
+  kind: package
+  date: '2016-08-16'
+  precision: day
+  title: First published package
+  evidence:
+  - src-2
+sources:
+- id: src-1
+  title: dbt 0.4 release evidence
+  url: https://github.com/dbt-labs/dbt/releases/tag/v0.4.0
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+- id: src-2
+  title: dbt 0.4 package evidence
+  url: https://pypi.org/project/dbt/0.4.0/
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+narrative_evidence:
+- src-1
+- src-2
+walkthrough:
+  id: wt-0.4
+  learning_objective: |
+    Follow a first incremental append.
+  context: |
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is second-day. Each state below is an authored illustration.
+  dataset_variant: second-day
+  steps:
+  - id: existing
+    title: Start with the first day
+    explanation: |
+      The existing order_revenue table contains the 12 base orders.
+    state:
+      kind: comparison
+      title: Start with the first day
+      columns:
+      - existing_orders
+      - maximum_order_id
+      - revenue_cents
+      rows:
+      - - 12
+        - 1052
+        - 12500
+      result_status: null
+      diagram: null
+    takeaway: |
+      The target already contains the first day.
+  - id: filter
+    title: Select two new orders
+    explanation: |
+      The second-day variant adds IDs above the stored maximum.
+    state:
+      kind: comparison
+      title: Select two new orders
+      columns:
+      - order_id
+      - location_id
+      - revenue_cents
+      rows:
+      - - 1053
+        - 1
+        - 500
+      - - 1054
+        - 2
+        - 1400
+      result_status: null
+      diagram: null
+    takeaway: |
+      The historical filter selects new rows.
+    code:
+    - language: sql
+      filename: models/order_revenue.sql
+      content: |
+        {{ config(materialized="incremental",
+            sql_where="order_id > (select max(order_id) from {{ this }})") }}
+        select * from {{ ref("order_revenue_input") }}
+      highlight_lines:
+      - 1
+      - 2
+  - id: append
+    title: Read the updated totals
+    explanation: |
+      Append the two selected rows to the existing result.
+    state:
+      kind: comparison
+      title: Read the updated totals
+      columns:
+      - location
+      - revenue_cents
+      rows:
+      - - Old Port
+        - 3900
+      - - Mile End
+        - 5700
+      - - Riverside
+        - 4800
+      result_status: null
+      diagram: null
+    takeaway: |
+      The total becomes 14,400 cents; update handling is a separate design choice.
+  evidence:
+    status: illustration
+    review_date: '2026-09-22'
+    source_refs:
+    - src-1
+    - src-2
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+status: reviewed
+review_scope: Source and fixture review; no historical dbt execution.

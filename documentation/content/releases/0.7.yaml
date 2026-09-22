@@ -1,0 +1,148 @@
+id: '0.7'
+label: v0.7
+title: Snowflake joins the targets
+lead: |
+  Snowflake becomes a supported target. The project idea can travel to another warehouse while its adapter handles warehouse-specific work.
+problem_then: |
+  Teams adopting a different warehouse could not assume dbt supported it.
+what_changed:
+- id: change-1
+  summary: Snowflake adapter support.
+  introduced_in: 0.7.0
+  adapter_constraints: Requires a Snowflake account and working connection; this app executes nothing.
+  evidence:
+  - src-1
+  confidence: high
+- id: change-2
+  summary: Snowflake role configuration.
+  introduced_in: 0.7.1
+  adapter_constraints: Snowflake only.
+  evidence:
+  - src-1
+  confidence: high
+in_practice: |
+  Keep the business models recognizable while reviewing connection settings and target-specific behavior.
+technical_detail: |
+  Snowflake support ships in 0.7.0; role configuration follows in 0.7.1. This is a portability illustration, not a cross-warehouse execution certification.
+milestones:
+- id: 0.7.0
+  kind: package
+  date: '2017-02-09'
+  precision: day
+  title: First published package
+  evidence:
+  - src-3
+sources:
+- id: src-1
+  title: dbt 0.7 release evidence
+  url: https://github.com/dbt-labs/dbt/releases/tag/v0.7.0
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+- id: src-2
+  title: dbt 0.7 release evidence
+  url: https://github.com/dbt-labs/dbt-core/blob/v0.13.0/CHANGELOG.md
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+- id: src-3
+  title: dbt 0.7 package evidence
+  url: https://pypi.org/project/dbt/0.7.0/
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+narrative_evidence:
+- src-1
+- src-2
+- src-3
+walkthrough:
+  id: wt-0.7
+  learning_objective: |
+    Separate the business rule from the warehouse connection.
+  context: |
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
+  dataset_variant: base
+  steps:
+  - id: rule
+    title: Start with the business rule
+    explanation: |
+      The refund policy does not depend on which warehouse stores the tables.
+    state:
+      kind: comparison
+      title: Start with the business rule
+      columns:
+      - order_id
+      - payments
+      - refunds
+      - revenue
+      rows:
+      - - 1042
+        - 1200
+        - 200
+        - 1000
+      result_status: null
+      diagram: null
+    takeaway: |
+      Keep payments minus refunds as the invariant.
+  - id: target
+    title: Choose the new adapter
+    explanation: |
+      Snowflake joins the existing Redshift and PostgreSQL targets.
+    state:
+      kind: comparison
+      title: Choose the new adapter
+      columns:
+      - target
+      - status at 0.7.0
+      rows:
+      - - Redshift
+        - existing
+      - - PostgreSQL
+        - existing since 0.5.1
+      - - Snowflake
+        - newly supported
+      result_status: null
+      diagram: null
+    takeaway: |
+      An adapter is the warehouse-specific part of the workflow.
+  - id: check
+    title: Verify the same expectation
+    explanation: |
+      The prepared expectation remains the base fixture total.
+    state:
+      kind: table
+      title: Base revenue by location
+      columns:
+      - location_id
+      - location
+      - payment_cents
+      - refund_cents
+      - revenue_cents
+      rows:
+      - - 1
+        - Old Port
+        - 4400
+        - 1000
+        - 3400
+      - - 2
+        - Mile End
+        - 4600
+        - 300
+        - 4300
+      - - 3
+        - Riverside
+        - 4800
+        - 0
+        - 4800
+      result_status: null
+      diagram: null
+    takeaway: |
+      A real migration still needs checks of SQL types, permissions and adapter behavior.
+  evidence:
+    status: illustration
+    review_date: '2026-09-22'
+    source_refs:
+    - src-1
+    - src-2
+    - src-3
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+status: reviewed
+review_scope: Source and fixture review; no historical dbt execution.

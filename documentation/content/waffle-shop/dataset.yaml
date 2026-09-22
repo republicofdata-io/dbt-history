@@ -1,0 +1,365 @@
+id: waffle-shop
+title: One day at Waffle Shop
+provenance:
+  kind: authored-fiction
+  authored_on: '2026-09-22'
+  historical_claim: false
+  note: Names, transactions and dates are invented teaching fixtures. Their arithmetic is checked independently.
+recurring_question: How much revenue did each location earn, and can we trust the answer?
+business_rules:
+- id: revenue-definition
+  statement: Revenue per order is payments minus refunds, in cents.
+- id: attribution
+  statement: Attribute revenue and refunds to the original order location and order trading day, in UTC.
+- id: successful-events
+  statement: Every base payment is a successful capture and every refund is successful. There are no tax, currency
+    or cancellation adjustments.
+- id: aggregate-before-join
+  statement: Sum payments and refunds separately per order before joining them to orders. Missing refunds count
+    as zero.
+- id: immutable-base
+  statement: Variants add named rows or change events without altering the base fixture. Apply only the selected
+    variant and its declared parent.
+tables:
+- name: locations
+  columns:
+  - name: location_id
+    type: integer
+  - name: name
+    type: text
+  rows:
+  - - 1
+    - Old Port
+  - - 2
+    - Mile End
+  - - 3
+    - Riverside
+- name: customers
+  columns:
+  - name: customer_id
+    type: integer
+  - name: name
+    type: text
+  - name: city
+    type: text
+  rows:
+  - - 1
+    - Ada
+    - Montréal
+  - - 2
+    - Ben
+    - Montréal
+  - - 3
+    - Chloé
+    - Laval
+  - - 4
+    - Dev
+    - Montréal
+  - - 5
+    - Eva
+    - Longueuil
+  - - 6
+    - Finn
+    - Montréal
+- name: orders
+  columns:
+  - name: order_id
+    type: integer
+  - name: customer_id
+    type: integer
+  - name: location_id
+    type: integer
+  - name: ordered_at
+    type: timestamp
+  rows:
+  - - 1041
+    - 1
+    - 1
+    - '2016-03-08T08:00:00Z'
+  - - 1042
+    - 2
+    - 1
+    - '2016-03-08T08:00:00Z'
+  - - 1043
+    - 3
+    - 1
+    - '2016-03-08T09:00:00Z'
+  - - 1044
+    - 4
+    - 1
+    - '2016-03-08T09:00:00Z'
+  - - 1045
+    - 5
+    - 2
+    - '2016-03-08T10:00:00Z'
+  - - 1046
+    - 6
+    - 2
+    - '2016-03-08T10:00:00Z'
+  - - 1047
+    - 1
+    - 2
+    - '2016-03-08T11:00:00Z'
+  - - 1048
+    - 2
+    - 2
+    - '2016-03-08T11:00:00Z'
+  - - 1049
+    - 3
+    - 3
+    - '2016-03-08T12:00:00Z'
+  - - 1050
+    - 4
+    - 3
+    - '2016-03-08T12:00:00Z'
+  - - 1051
+    - 5
+    - 3
+    - '2016-03-08T13:00:00Z'
+  - - 1052
+    - 6
+    - 3
+    - '2016-03-08T13:00:00Z'
+- name: payments
+  columns:
+  - name: payment_id
+    type: integer
+  - name: order_id
+    type: integer
+  - name: amount_cents
+    type: integer
+  rows:
+  - - 2001
+    - 1041
+    - 900
+  - - 2002
+    - 1042
+    - 1200
+  - - 2003
+    - 1043
+    - 600
+  - - 2013
+    - 1043
+    - 900
+  - - 2004
+    - 1044
+    - 800
+  - - 2005
+    - 1045
+    - 1800
+  - - 2006
+    - 1046
+    - 1100
+  - - 2007
+    - 1047
+    - 1000
+  - - 2008
+    - 1048
+    - 700
+  - - 2009
+    - 1049
+    - 1300
+  - - 2010
+    - 1050
+    - 900
+  - - 2011
+    - 1051
+    - 1600
+  - - 2012
+    - 1052
+    - 1000
+- name: refunds
+  columns:
+  - name: refund_id
+    type: integer
+  - name: order_id
+    type: integer
+  - name: amount_cents
+    type: integer
+  rows:
+  - - 3001
+    - 1042
+    - 200
+  - - 3002
+    - 1044
+    - 800
+  - - 3003
+    - 1047
+    - 300
+expected_revenue:
+  columns:
+  - location_id
+  - location
+  - payment_cents
+  - refund_cents
+  - revenue_cents
+  rows:
+  - - 1
+    - Old Port
+    - 4400
+    - 1000
+    - 3400
+  - - 2
+    - Mile End
+    - 4600
+    - 300
+    - 4300
+  - - 3
+    - Riverside
+    - 4800
+    - 0
+    - 4800
+  total_cents: 12500
+  arithmetic: |
+    Old Port: 900 + (1200 - 200) + (600 + 900) + (800 - 800) = 3400.
+    Mile End: 1800 + 1100 + (1000 - 300) + 700 = 4300.
+    Riverside: 1300 + 900 + 1600 + 1000 = 4800.
+    All locations: 13800 payments - 1300 refunds = 12500 cents.
+derived_relations:
+- name: payments_by_order
+  definition: Group payments by order_id; sum amount_cents as payment_cents.
+- name: refunds_by_order
+  definition: Group refunds by order_id; sum amount_cents as refund_cents.
+- name: order_amounts
+  definition: 'One row per order: order_id, customer_id, location_id, ordered_at, payment_cents, refund_cents. Left
+    join the two per-order aggregates; coalesce missing sums to zero.'
+- name: order_revenue
+  definition: All order_amounts fields plus revenue_cents = payment_cents - refund_cents.
+- name: revenue_by_location
+  definition: Sum order_revenue.revenue_cents by location_id; join locations for its name.
+variants:
+- id: second-day
+  extends: base
+  description: Two paid orders on the next trading day.
+  extra_rows:
+  - table: orders
+    rows:
+    - - 1053
+      - 1
+      - 1
+      - '2016-03-09T09:00:00Z'
+    - - 1054
+      - 3
+      - 2
+      - '2016-03-09T10:00:00Z'
+  - table: payments
+    rows:
+    - - 2014
+      - 1053
+      - 500
+    - - 2015
+      - 1054
+      - 1400
+  expected_revenue:
+    rows:
+    - - 1
+      - 3900
+    - - 2
+      - 5700
+    - - 3
+      - 4800
+    columns:
+    - location_id
+    - revenue_cents
+    total_cents: 14400
+    arithmetic: 12500 + 500 + 1400 = 14400
+- id: late-order
+  extends: second-day
+  description: An order from the first trading day arrives after the second-day load.
+  observed_at: '2016-03-09T12:00:00Z'
+  extra_rows:
+  - table: orders
+    rows:
+    - - 1055
+      - 2
+      - 1
+      - '2016-03-08T15:00:00Z'
+  - table: payments
+    rows:
+    - - 2016
+      - 1055
+      - 600
+  expected_revenue:
+    rows:
+    - - 1
+      - 4500
+    - - 2
+      - 5700
+    - - 3
+      - 4800
+    columns:
+    - location_id
+    - revenue_cents
+    total_cents: 15000
+    arithmetic: 14400 + 600 = 15000
+- id: customer-city-change
+  extends: base
+  description: Ada moves; apply the declared update event to a working view, retaining the base row.
+  extra_rows: []
+  change_events:
+  - table: customers
+    key:
+      customer_id: 1
+    effective_at: '2016-03-09T09:00:00Z'
+    before:
+      city: Montréal
+    after:
+      city: Québec
+  expected_revenue:
+    total_cents: 12500
+    arithmetic: Changing customer city does not change the order location or revenue.
+- id: customer-removed
+  extends: base
+  description: Finn is removed from the current customer feed; existing orders and payments remain.
+  extra_rows: []
+  change_events:
+  - table: customers
+    key:
+      customer_id: 6
+    effective_at: '2016-03-09T09:00:00Z'
+    operation: delete
+  expected_revenue:
+    total_cents: 12500
+    arithmetic: Revenue uses orders and money events, not an inner join to the current customer feed.
+- id: orphan-payment
+  extends: base
+  description: A separate bad-feed fixture adds a payment whose order is missing.
+  extra_rows:
+  - table: payments
+    rows:
+    - - 2099
+      - 9999
+      - 400
+  expected_quality:
+    orphan_order_ids:
+    - 9999
+    orphan_payment_cents: 400
+  expected_revenue:
+    total_cents: 12500
+    arithmetic: The 400-cent orphan is excluded from order-based revenue and reported as an integrity failure; raw
+      payments total 14200.
+- id: stale-payments
+  extends: base
+  description: Feed freshness metadata is fixed for this illustration; business rows stay unchanged.
+  extra_rows: []
+  freshness:
+    evaluated_at: '2016-03-09T12:00:00Z'
+    latest_loaded_at: '2016-03-09T08:00:00Z'
+    age_hours: 4
+    warn_after_hours: 1
+    error_after_hours: 3
+  expected_revenue:
+    total_cents: 12500
+- id: orders-refreshed
+  extends: second-day
+  description: Current and prior source freshness observations isolate the refreshed order feed.
+  extra_rows: []
+  freshness_observations:
+  - source: orders
+    prior: '2016-03-08T14:00:00Z'
+    current: '2016-03-09T10:00:00Z'
+  - source: customers
+    prior: '2016-03-08T07:00:00Z'
+    current: '2016-03-08T07:00:00Z'
+  expected_revenue:
+    total_cents: 14400

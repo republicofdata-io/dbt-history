@@ -1,0 +1,157 @@
+id: '0.11'
+label: v0.11
+title: Generated documentation
+lead: |
+  Generated documentation and lineage make the project easier to navigate. The refund definition can live beside the column it describes.
+problem_then: |
+  A correct table is hard to trust when its meaning and dependencies live only in someone’s memory.
+what_changed:
+- id: change-1
+  summary: Auto-generated project documentation and lineage.
+  introduced_in: 0.11.0
+  adapter_constraints: null
+  evidence:
+  - src-1
+  confidence: high
+- id: change-2
+  summary: Schema YAML version 2 adds model/column descriptions.
+  introduced_in: 0.11.0
+  adapter_constraints: null
+  evidence:
+  - src-1
+  confidence: high
+in_practice: |
+  Document model and column meaning, then browse the generated project graph.
+technical_detail: |
+  Schema YAML version 2 introduces this richer documentation structure. Generated docs describe the project; they are not the later hosted Explorer/Catalog product.
+milestones:
+- id: 0.11.0
+  kind: package
+  date: '2018-09-06'
+  precision: day
+  title: First published package
+  evidence:
+  - src-2
+sources:
+- id: src-1
+  title: dbt 0.11 release evidence
+  url: https://github.com/dbt-labs/dbt/releases/tag/v0.11.0
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+- id: src-2
+  title: dbt 0.11 package evidence
+  url: https://pypi.org/project/dbt/0.11.0/
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+narrative_evidence:
+- src-1
+- src-2
+walkthrough:
+  id: wt-0.11
+  learning_objective: |
+    Find the revenue definition and its upstream dependencies.
+  context: |
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
+  dataset_variant: base
+  steps:
+  - id: meaning
+    title: Write down the measure
+    explanation: |
+      The description makes the unit and refund treatment explicit.
+    state:
+      kind: table
+      title: 'Order 1042: partial refund'
+      columns:
+      - order_id
+      - location
+      - payment_cents
+      - refund_cents
+      - revenue_cents
+      rows:
+      - - 1042
+        - Old Port
+        - 1200
+        - 200
+        - 1000
+      result_status: null
+      diagram: null
+    takeaway: |
+      Documentation turns an implicit assumption into a visible definition.
+    code:
+    - language: yaml
+      filename: models/schema.yml
+      content: |
+        version: 2
+        models:
+          - name: order_revenue
+            description: One row per order.
+            columns:
+              - name: revenue_cents
+                description: Successful payments minus refunds, in cents.
+      highlight_lines: []
+  - id: lineage
+    title: Trace the inputs
+    explanation: |
+      Payments and refunds are aggregated before joining orders.
+    state:
+      kind: diagram
+      title: Revenue lineage
+      columns: []
+      rows: []
+      result_status: null
+      diagram:
+        nodes:
+        - id: orders
+          label: orders
+        - id: payments
+          label: payments_by_order
+        - id: refunds
+          label: refunds_by_order
+        - id: revenue
+          label: order_revenue
+        edges:
+        - from: orders
+          to: revenue
+        - from: payments
+          to: revenue
+        - from: refunds
+          to: revenue
+        highlight: []
+    takeaway: |
+      A reader can follow where the number came from.
+  - id: publish
+    title: Generate project documentation
+    explanation: |
+      Commands are presented as historical examples; the app does not execute them.
+    state:
+      kind: comparison
+      title: Generate project documentation
+      columns:
+      - artifact view
+      - reader learns
+      rows:
+      - - model page
+        - definition and columns
+      - - lineage graph
+        - upstream and downstream relationships
+      result_status: null
+      diagram: null
+    takeaway: |
+      Documentation becomes a project output.
+    code:
+    - language: shell
+      filename: commands.sh
+      content: |
+        dbt docs generate
+        dbt docs serve
+      highlight_lines: []
+  evidence:
+    status: illustration
+    review_date: '2026-09-22'
+    source_refs:
+    - src-1
+    - src-2
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+status: reviewed
+review_scope: Source and fixture review; no historical dbt execution.

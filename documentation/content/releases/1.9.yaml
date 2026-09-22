@@ -1,0 +1,128 @@
+id: '1.9'
+label: v1.9
+title: Microbatch and simpler snapshots
+lead: |
+  Microbatch models process event-time windows. The shop can revisit a trading day when a late order arrives.
+problem_then: |
+  One large incremental query can make backfills and repairs hard to isolate.
+what_changed:
+- id: change-1
+  summary: Microbatch incremental strategy and batch retry.
+  introduced_in: 1.9.0
+  adapter_constraints: Requires supported adapter and correctly configured event-time inputs; concurrency support
+    varies.
+  evidence:
+  - src-1
+  confidence: high
+- id: change-2
+  summary: YAML snapshots and new snapshot configuration.
+  introduced_in: 1.9.0
+  adapter_constraints: null
+  evidence:
+  - src-1
+  confidence: high
+in_practice: |
+  Define event time and batch policy, then reason about which windows need rebuilding.
+technical_detail: |
+  Microbatch execution and parallelism depend on adapter support and event-time configuration on inputs. This walkthrough is a logical batch comparison, not a runnable cross-adapter recipe. YAML snapshot definitions are another release feature.
+milestones:
+- id: 1.9.0
+  kind: package
+  date: '2024-12-09'
+  precision: day
+  title: First published package
+  evidence:
+  - src-2
+sources:
+- id: src-1
+  title: dbt 1.9 release evidence
+  url: https://github.com/dbt-labs/dbt/releases/tag/v1.9.0
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+- id: src-2
+  title: dbt 1.9 package evidence
+  url: https://pypi.org/project/dbt-core/1.9.0/
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+narrative_evidence:
+- src-1
+- src-2
+walkthrough:
+  id: wt-1.9
+  learning_objective: |
+    Repair a late order by revisiting its event-time day.
+  context: |
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is late-order. Each state below is an authored illustration.
+  dataset_variant: late-order
+  steps:
+  - id: days
+    title: Separate the first two trading days
+    explanation: |
+      The late-order variant extends the second day and adds one late first-day order.
+    state:
+      kind: comparison
+      title: Separate the first two trading days
+      columns:
+      - day
+      - before late order revenue_cents
+      rows:
+      - - '2016-03-08'
+        - 12500
+      - - '2016-03-09'
+        - 1900
+      result_status: null
+      diagram: null
+    takeaway: |
+      Batch boundaries follow event time, not arrival time.
+  - id: late
+    title: Assign the late order to its original day
+    explanation: |
+      Order 1055 arrives on March 9 but belongs to March 8.
+    state:
+      kind: comparison
+      title: Assign the late order to its original day
+      columns:
+      - order_id
+      - event_day
+      - arrival_day
+      - revenue_cents
+      rows:
+      - - 1055
+        - '2016-03-08'
+        - '2016-03-09'
+        - 600
+      result_status: null
+      diagram: null
+    takeaway: |
+      A lookback or explicit backfill must include the affected day.
+  - id: repair
+    title: Replace the affected batch result
+    explanation: |
+      Recomputing March 8 adds 600 cents without duplicating March 9.
+    state:
+      kind: comparison
+      title: Replace the affected batch result
+      columns:
+      - day
+      - after repair revenue_cents
+      rows:
+      - - '2016-03-08'
+        - 13100
+      - - '2016-03-09'
+        - 1900
+      - - all days
+        - 15000
+      result_status: null
+      diagram: null
+    takeaway: |
+      The repaired location totals are 4,500, 5,700 and 4,800 cents.
+  evidence:
+    status: illustration
+    review_date: '2026-09-22'
+    source_refs:
+    - src-1
+    - src-2
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+status: reviewed
+review_scope: Source and fixture review; no historical dbt execution.

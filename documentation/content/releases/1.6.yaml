@@ -1,0 +1,147 @@
+id: '1.6'
+label: v1.6
+title: Recovery, cloning and semantic-model foundations
+lead: |
+  A failed command can be retried from its recorded state. Cloning and materialized views also expand deployment choices where adapters support them.
+problem_then: |
+  A transient failure can leave a large run partially complete. Restarting everything may repeat work unnecessarily.
+what_changed:
+- id: change-1
+  summary: Retry, clone command and materialized-view support.
+  introduced_in: 1.6.0
+  adapter_constraints: Cloning and materialized-view behavior depend on the adapter.
+  evidence:
+  - src-1
+  confidence: high
+- id: change-2
+  summary: Semantic-model parsing and cross-project foundations.
+  introduced_in: 1.6.0
+  adapter_constraints: null
+  evidence:
+  - src-1
+  confidence: high
+in_practice: |
+  Inspect the failure, repair its cause and retry the previous invocation’s unfinished work.
+technical_detail: |
+  retry relies on recorded artifacts from the prior invocation. It is not a promise that retries fix incorrect SQL or that every adapter supports zero-copy cloning. Semantic-model parsing is distinct from hosted Semantic Layer availability.
+milestones:
+- id: 1.6.0
+  kind: package
+  date: '2023-07-31'
+  precision: day
+  title: First published package
+  evidence:
+  - src-2
+sources:
+- id: src-1
+  title: dbt 1.6 release evidence
+  url: https://github.com/dbt-labs/dbt/releases/tag/v1.6.0
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+- id: src-2
+  title: dbt 1.6 package evidence
+  url: https://pypi.org/project/dbt-core/1.6.0/
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+narrative_evidence:
+- src-1
+- src-2
+walkthrough:
+  id: wt-1.6
+  learning_objective: |
+    Recover from a partial run without pretending the failure disappeared.
+  context: |
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
+  dataset_variant: base
+  steps:
+  - id: partial
+    title: Read the prepared prior results
+    explanation: |
+      Assume a transient connection failure while building the refund aggregate.
+    state:
+      kind: comparison
+      title: Read the prepared prior results
+      columns:
+      - model
+      - prior result
+      rows:
+      - - payments_by_order
+        - success
+      - - refunds_by_order
+        - error
+      - - order_revenue
+        - skipped
+      result_status: null
+      diagram: null
+    takeaway: |
+      The previous command contains useful progress information.
+  - id: repair
+    title: Resolve the connection issue
+    explanation: |
+      The example assumes the external connection is restored before retry.
+    state:
+      kind: comparison
+      title: Resolve the connection issue
+      columns:
+      - condition
+      - prepared state
+      rows:
+      - - connection
+        - restored
+      - - business SQL
+        - unchanged
+      - - prior artifacts
+        - available
+      result_status: null
+      diagram: null
+    takeaway: |
+      Retry is a recovery action, not a substitute for diagnosis.
+    code:
+    - language: shell
+      filename: commands.sh
+      content: |
+        dbt retry
+      highlight_lines: []
+  - id: finish
+    title: Verify the recovered result
+    explanation: |
+      The base fixture still defines the expected answer.
+    state:
+      kind: table
+      title: Base revenue by location
+      columns:
+      - location_id
+      - location
+      - payment_cents
+      - refund_cents
+      - revenue_cents
+      rows:
+      - - 1
+        - Old Port
+        - 4400
+        - 1000
+        - 3400
+      - - 2
+        - Mile End
+        - 4600
+        - 300
+        - 4300
+      - - 3
+        - Riverside
+        - 4800
+        - 0
+        - 4800
+      result_status: null
+      diagram: null
+    takeaway: |
+      Successful recovery should end with the same business checks.
+  evidence:
+    status: illustration
+    review_date: '2026-09-22'
+    source_refs:
+    - src-1
+    - src-2
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+status: reviewed
+review_scope: Source and fixture review; no historical dbt execution.

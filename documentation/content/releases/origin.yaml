@@ -1,0 +1,183 @@
+id: origin
+label: Origins
+title: Before the project had a name
+lead: |
+  The story begins in 2016, before Olivier adopted dbt. Waffle Shop starts with a question, some raw tables and a manually maintained revenue query.
+problem_then: |
+  The shop can calculate revenue, but someone must remember which scripts to run and which copy contains the latest refund rule.
+what_changed:
+- id: first-package
+  summary: The first observed dbt package is 0.0.1.
+  introduced_in: 0.0.1
+  adapter_constraints: Early code targets Redshift.
+  evidence:
+  - src-2
+  confidence: high
+in_practice: |
+  SQL business logic begins moving into a project that can build related datasets. This is the starting point, not the full modern feature set.
+technical_detail: |
+  The founder retrospective marks 9 March 2016 as the first-commit origin. PyPI records 0.0.1 on 23 March. These are different events; the package date is not asserted as GA. The raw SQL below is an authored pre-dbt illustration.
+milestones:
+- id: first-commit
+  kind: announcement
+  date: '2016-03-09'
+  precision: day
+  title: First commit, dated by the two-year retrospective
+  evidence:
+  - src-1
+  date_basis: retrospective attribution; announcement kind is the closest allowed schema category
+- id: 0.0.1
+  kind: package
+  date: '2016-03-23'
+  precision: day
+  title: 'First observed package: 0.0.1'
+  evidence:
+  - src-2
+sources:
+- id: src-1
+  title: On two years of dbt
+  url: https://www.getdbt.com/blog/on-two-years-of-dbt
+  retrieved: '2026-09-21'
+  supports: First-commit origin in March 2016.
+- id: src-2
+  title: dbt 0.0.1 package metadata
+  url: https://pypi.org/pypi/dbt/0.0.1/json
+  retrieved: '2026-09-21'
+  supports: Package version and upload date.
+- id: src-3
+  title: Olivier introduces dbt in his analytical stack
+  url: https://odupuis.medium.com/my-journey-introducing-the-data-build-tool-dbt-in-projects-analytical-stacks-69971faed2c2
+  retrieved: '2026-09-21'
+  supports: Olivier documented his use in July 2018, after the project began.
+narrative_evidence:
+- src-1
+- src-2
+- src-3
+walkthrough:
+  id: wt-origin
+  learning_objective: |
+    Separate the revenue calculation from the workflow needed to maintain it.
+  context: |
+    Twelve orders at three fictional locations produce 13,800 cents of payments and 1,300 cents of refunds.
+  dataset_variant: base
+  steps:
+  - id: raw
+    title: Five raw tables
+    explanation: |
+      Orders link money events to the location that earned them.
+    state:
+      kind: diagram
+      title: Waffle Shop before dbt
+      columns: []
+      rows: []
+      result_status: null
+      diagram:
+        nodes:
+        - id: orders
+          label: orders
+        - id: payments
+          label: payments
+        - id: refunds
+          label: refunds
+        - id: query
+          label: handwritten revenue query
+        edges:
+        - from: orders
+          to: query
+        - from: payments
+          to: query
+        - from: refunds
+          to: query
+        highlight: []
+    takeaway: |
+      A correct answer starts with a clear grain and business rule.
+  - id: manual
+    title: Write the rule once
+    explanation: |
+      Aggregate money events by order before joining, so split payments do not duplicate another relation.
+    state:
+      kind: table
+      title: Base revenue by location
+      columns:
+      - location_id
+      - location
+      - payment_cents
+      - refund_cents
+      - revenue_cents
+      rows:
+      - - 1
+        - Old Port
+        - 4400
+        - 1000
+        - 3400
+      - - 2
+        - Mile End
+        - 4600
+        - 300
+        - 4300
+      - - 3
+        - Riverside
+        - 4800
+        - 0
+        - 4800
+      result_status: null
+      diagram: null
+    takeaway: |
+      The query can be correct even when its maintenance process is fragile.
+    code:
+    - language: sql
+      filename: manual/revenue.sql
+      content: |
+        with payment_totals as (
+            select order_id, sum(amount_cents) as payment_cents
+            from raw.payments
+            group by order_id
+        ), refund_totals as (
+            select order_id, sum(amount_cents) as refund_cents
+            from raw.refunds
+            group by order_id
+        )
+        select
+            orders.location_id,
+            sum(coalesce(payment_totals.payment_cents, 0)
+                - coalesce(refund_totals.refund_cents, 0)) as revenue_cents
+        from raw.orders as orders
+        left join payment_totals on orders.order_id = payment_totals.order_id
+        left join refund_totals on orders.order_id = refund_totals.order_id
+        group by orders.location_id
+      highlight_lines:
+      - 12
+      - 13
+  - id: handoff
+    title: Make the workflow visible
+    explanation: |
+      The next person needs to know the input tables, the refund rule and the order of work.
+    state:
+      kind: comparison
+      title: Prepared workflow comparison
+      columns:
+      - responsibility
+      - manual approach
+      - project approach
+      rows:
+      - - SQL logic
+        - copied query
+        - reviewed project file
+      - - dependencies
+        - remembered by operator
+        - declared or inferred by tooling
+      - - revenue_cents
+        - 12500
+        - 12500
+      result_status: null
+      diagram: null
+    takeaway: |
+      The history that follows changes how the shop produces and trusts the answer.
+  evidence:
+    status: illustration
+    review_date: '2026-09-22'
+    source_refs:
+    - src-1
+    - src-2
+    limitations: |
+      Fictional pre-dbt scenario. No 0.0.1 runtime was executed. The workflow comparison describes the direction of development, not a claim that every later feature existed at origin.

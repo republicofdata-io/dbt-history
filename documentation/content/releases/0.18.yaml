@@ -1,0 +1,154 @@
+id: '0.18'
+label: v0.18
+title: State-aware selection and downstream context
+lead: |
+  Saved project state helps select changed work and reuse existing relations. A later patch makes dashboards visible as exposures.
+problem_then: |
+  A small change often needs only part of a project rebuilt, but the project still needs valid upstream relations.
+what_changed:
+- id: change-1
+  summary: State selection, deferral and YAML selectors.
+  introduced_in: 0.18.0
+  adapter_constraints: null
+  evidence:
+  - src-1
+  confidence: high
+- id: change-2
+  summary: Exposures represent downstream consumers.
+  introduced_in: 0.18.1
+  adapter_constraints: null
+  evidence:
+  - src-4
+  confidence: high
+in_practice: |
+  Compare the current project with saved artifacts, then choose a bounded development build.
+technical_detail: |
+  state:modified compares project definitions, not new business rows. --defer resolves eligible unselected references through saved state. Exposures arrive in 0.18.1. Keep saved state separate from the current output directory.
+milestones:
+- id: 0.18.0
+  kind: package
+  date: '2020-09-03'
+  precision: day
+  title: First published package
+  evidence:
+  - src-3
+- id: 0.18.1
+  kind: patch
+  date: '2020-10-13'
+  precision: day
+  title: Exposures
+  evidence:
+  - src-4
+sources:
+- id: src-1
+  title: dbt 0.18 release evidence
+  url: https://github.com/dbt-labs/dbt/releases/tag/v0.18.0
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+- id: src-2
+  title: dbt 0.18 release evidence
+  url: https://github.com/dbt-labs/dbt-core/releases/tag/v0.18.1
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+- id: src-3
+  title: dbt 0.18 package evidence
+  url: https://pypi.org/project/dbt/0.18.0/
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+- id: src-4
+  title: dbt 0.18.1 patch evidence
+  url: https://github.com/dbt-labs/dbt/releases/tag/v0.18.1
+  retrieved: '2026-09-21'
+  supports: Exposures
+narrative_evidence:
+- src-1
+- src-2
+- src-3
+- src-4
+walkthrough:
+  id: wt-0.18
+  learning_objective: |
+    Separate changed code, deferred references and downstream consumers.
+  context: |
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
+  dataset_variant: base
+  steps:
+  - id: change
+    title: Change the refund definition
+    explanation: |
+      Assume the refund model SQL changes while orders and payments remain unchanged.
+    state:
+      kind: comparison
+      title: Change the refund definition
+      columns:
+      - resource
+      - definition status
+      rows:
+      - - refunds_by_order
+        - modified
+      - - order_revenue
+        - downstream
+      - - revenue_by_location
+        - downstream
+      - - orders
+        - unchanged
+      result_status: null
+      diagram: null
+    takeaway: |
+      Saved state identifies a code-change boundary.
+  - id: build
+    title: Build the affected branch
+    explanation: |
+      The prepared selection includes descendants; eligible unselected parents resolve using saved state.
+    state:
+      kind: comparison
+      title: Build the affected branch
+      columns:
+      - behavior
+      - prepared choice
+      rows:
+      - - build
+        - refunds_by_order, order_revenue, revenue_by_location
+      - - reuse eligible parent
+        - orders from saved production state
+      result_status: null
+      diagram: null
+    takeaway: |
+      Deferral supports a smaller development build.
+    code:
+    - language: shell
+      filename: commands.sh
+      content: |
+        dbt run --models state:modified+ --state ./state-prod --defer
+      highlight_lines: []
+  - id: consumer
+    title: Name the dashboard at 0.18.1
+    explanation: |
+      The fictional daily dashboard consumes the location result.
+    state:
+      kind: comparison
+      title: Name the dashboard at 0.18.1
+      columns:
+      - resource
+      - kind
+      - depends on
+      rows:
+      - - shop_daily_dashboard
+        - exposure at 0.18.1
+        - revenue_by_location
+      result_status: null
+      diagram: null
+    takeaway: |
+      Exposures describe downstream use; they do not build the dashboard.
+  evidence:
+    status: illustration
+    review_date: '2026-09-22'
+    source_refs:
+    - src-1
+    - src-2
+    - src-3
+    - src-4
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+status: reviewed
+review_scope: Source and fixture review; no historical dbt execution.

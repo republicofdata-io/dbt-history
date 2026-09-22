@@ -1,0 +1,133 @@
+id: '0.19'
+label: v0.19
+title: More complete history and artifacts
+lead: |
+  Snapshots can invalidate rows when records disappear from a source. A deleted customer need not look current forever.
+problem_then: |
+  A change-tracking table can retain an open record even after the source row is removed.
+what_changed:
+- id: change-1
+  summary: Snapshot hard-delete invalidation and revival.
+  introduced_in: 0.19.0
+  adapter_constraints: null
+  evidence:
+  - src-1
+  confidence: high
+- id: change-2
+  summary: Deferral extends to tests; versioned artifact schemas and project config migrations.
+  introduced_in: 0.19.0
+  adapter_constraints: null
+  evidence:
+  - src-1
+  confidence: high
+in_practice: |
+  Choose how the snapshot represents hard deletes instead of leaving the meaning implicit.
+technical_detail: |
+  invalidate_hard_deletes closes the active interval when disappearance is observed. It does not remove historical records or erase existing orders. Artifact schemas also become versioned; deferral extends to tests.
+milestones:
+- id: 0.19.0
+  kind: package
+  date: '2021-01-27'
+  precision: day
+  title: First published package
+  evidence:
+  - src-2
+sources:
+- id: src-1
+  title: dbt 0.19 release evidence
+  url: https://github.com/dbt-labs/dbt/releases/tag/v0.19.0
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+- id: src-2
+  title: dbt 0.19 package evidence
+  url: https://pypi.org/project/dbt/0.19.0/
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+narrative_evidence:
+- src-1
+- src-2
+walkthrough:
+  id: wt-0.19
+  learning_objective: |
+    Distinguish deleted current data from retained history.
+  context: |
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is customer-removed. Each state below is an authored illustration.
+  dataset_variant: customer-removed
+  steps:
+  - id: current
+    title: Read the last customer observation
+    explanation: |
+      Finn is customer 6 in the base fixture.
+    state:
+      kind: comparison
+      title: Read the last customer observation
+      columns:
+      - customer_id
+      - name
+      - city
+      rows:
+      - - 6
+        - Finn
+        - Montréal
+      result_status: null
+      diagram: null
+    takeaway: |
+      The snapshot has an active version before deletion.
+  - id: missing
+    title: Observe a hard delete
+    explanation: |
+      The customer-removed variant deletes only the customer feed row.
+    state:
+      kind: comparison
+      title: Observe a hard delete
+      columns:
+      - customer_id
+      - current feed
+      - existing orders
+      rows:
+      - - 6
+        - absent
+        - 1046 and 1052 retained
+      result_status: null
+      diagram: null
+    takeaway: |
+      Source deletion is different from refunding an order.
+    code:
+    - language: sql
+      filename: snapshots/customers_history.sql
+      content: |
+        {% snapshot customers_history %}
+        {{ config(target_schema="snapshots", unique_key="customer_id",
+            strategy="check", check_cols=["city"], invalidate_hard_deletes=True) }}
+        select * from raw.customers
+        {% endsnapshot %}
+      highlight_lines: []
+  - id: close
+    title: Close the observed active interval
+    explanation: |
+      The historical row remains, with an end boundary at the deletion observation.
+    state:
+      kind: comparison
+      title: Close the observed active interval
+      columns:
+      - customer_id
+      - history status
+      - revenue total
+      rows:
+      - - 6
+        - closed at March 9 09:00
+        - 12500
+      result_status: null
+      diagram: null
+    takeaway: |
+      The past remains queryable without claiming the customer is still current.
+  evidence:
+    status: illustration
+    review_date: '2026-09-22'
+    source_refs:
+    - src-1
+    - src-2
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+status: reviewed
+review_scope: Source and fixture review; no historical dbt execution.

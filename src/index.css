@@ -1,0 +1,93 @@
+@import "tailwindcss";
+
+/* Signal design tokens, mirrored from the RepublicOfData.io website so the app
+   reads as part of the site when proxied under /labs/dbt-history. Keep in sync
+   with ~/dev/channels/website/src/index.css. */
+@theme {
+  --color-background: hsl(220 14% 7%);
+  --color-foreground: hsl(40 20% 94%);
+  --color-card: hsl(220 12% 11%);
+  --color-card-foreground: hsl(40 20% 94%);
+  --color-popover: hsl(220 12% 11%);
+  --color-popover-foreground: hsl(40 20% 94%);
+  --color-primary: hsl(38 92% 56%);
+  --color-primary-foreground: hsl(220 14% 7%);
+  --color-secondary: hsl(220 10% 16%);
+  --color-secondary-foreground: hsl(40 20% 94%);
+  --color-muted: hsl(220 10% 16%);
+  --color-muted-foreground: hsl(220 8% 64%);
+  --color-accent: hsl(38 92% 56%);
+  --color-accent-foreground: hsl(220 14% 7%);
+  --color-accent-bright: hsl(42 95% 66%);
+  --color-destructive: hsl(0 72% 51%);
+  --color-destructive-foreground: hsl(40 20% 94%);
+  --color-border: hsl(220 8% 20%);
+  --color-input: hsl(220 8% 20%);
+  --color-ring: hsl(38 92% 56%);
+  /* Semantic states for test results and diff highlights */
+  --color-good: hsl(150 45% 55%);
+  --color-good-wash: hsl(150 30% 14%);
+  --color-bad: hsl(0 72% 62%);
+  --color-bad-wash: hsl(0 40% 14%);
+  --color-warn: hsl(42 95% 66%);
+  --color-warn-wash: hsl(40 40% 13%);
+  --color-highlight-wash: hsl(38 60% 15%);
+
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-display: "Archivo", "Inter", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  html {
+    color-scheme: dark;
+  }
+  body {
+    background: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+  }
+  ::selection {
+    background: color-mix(in srgb, var(--color-accent) 35%, transparent);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@utility kicker {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-accent-bright);
+}
+
+@utility provenance {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-muted-foreground);
+}
+
+/* Presentation mode scales the reading surface for a recording. */
+:root[data-presentation="true"] {
+  font-size: 118%;
+}

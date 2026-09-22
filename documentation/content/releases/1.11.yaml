@@ -1,0 +1,133 @@
+id: '1.11'
+label: v1.11
+title: Functions become project resources
+lead: |
+  Warehouse functions become first-class project resources. A reusable calculation can appear as a dependency instead of living outside the project graph.
+problem_then: |
+  A warehouse function may be shared by many models while its definition and deployment order remain separate from the project.
+what_changed:
+- id: change-1
+  summary: User-defined functions become DAG resources.
+  introduced_in: 1.11.0
+  adapter_constraints: Function languages and deployment support vary by adapter.
+  evidence:
+  - src-1
+  confidence: high
+- id: change-2
+  summary: Stricter config validation and DBT_ENGINE_ environment namespace.
+  introduced_in: 1.11.0
+  adapter_constraints: null
+  evidence:
+  - src-1
+  confidence: high
+in_practice: |
+  Manage supported function definitions with the project and make their consumers visible.
+technical_detail: |
+  UDF languages and deployment behavior depend on adapter support. This diagram demonstrates the resource relationship without inventing a portable CREATE FUNCTION statement. The first 1.11.0 and 1.11.1 artifacts were later yanked; 1.11.2 is the first non-yanked patch observed in this research.
+milestones:
+- id: 1.11.0
+  kind: package
+  date: '2025-12-19'
+  precision: day
+  title: First published package
+  evidence:
+  - src-2
+sources:
+- id: src-1
+  title: dbt 1.11 release evidence
+  url: https://github.com/dbt-labs/dbt/releases/tag/v1.11.0
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+- id: src-2
+  title: dbt 1.11 package evidence
+  url: https://pypi.org/project/dbt-core/1.11.0/
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+narrative_evidence:
+- src-1
+- src-2
+walkthrough:
+  id: wt-1.11
+  learning_objective: |
+    Distinguish SQL-generating macros from deployed warehouse functions.
+  context: |
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
+  dataset_variant: base
+  steps:
+  - id: conversion
+    title: Define a presentation calculation
+    explanation: |
+      Keep accounting in cents and present decimal units when needed.
+    state:
+      kind: comparison
+      title: Define a presentation calculation
+      columns:
+      - cents
+      - units
+      rows:
+      - - 1000
+        - '10.00'
+      - - 3400
+        - '34.00'
+      result_status: null
+      diagram: null
+    takeaway: |
+      Dividing by 100 is presentation, not a new revenue definition.
+  - id: function
+    title: Make the function a dependency
+    explanation: |
+      The fictional cents_to_units function is a warehouse resource on a supported adapter.
+    state:
+      kind: diagram
+      title: Function dependency
+      columns: []
+      rows: []
+      result_status: null
+      diagram:
+        nodes:
+        - id: fn
+          label: cents_to_units function
+        - id: revenue
+          label: order_revenue
+        - id: display
+          label: revenue_display
+        edges:
+        - from: fn
+          to: display
+        - from: revenue
+          to: display
+        highlight:
+        - fn
+    takeaway: |
+      The graph can describe deployment order for a shared function.
+  - id: distinction
+    title: Separate two reuse mechanisms
+    explanation: |
+      Both mechanisms can support the same calculation, but they operate at different stages.
+    state:
+      kind: comparison
+      title: Separate two reuse mechanisms
+      columns:
+      - mechanism
+      - where it acts
+      rows:
+      - - Jinja macro
+        - generates SQL during compilation
+      - - warehouse UDF
+        - deployed function called by warehouse SQL
+      - - base accounting total
+        - 12,500 cents remains unchanged
+      result_status: null
+      diagram: null
+    takeaway: |
+      A function resource is not merely another spelling of a macro.
+  evidence:
+    status: illustration
+    review_date: '2026-09-22'
+    source_refs:
+    - src-1
+    - src-2
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+status: reviewed
+review_scope: Source and fixture review; no historical dbt execution.

@@ -1,0 +1,129 @@
+id: '1.4'
+label: v1.4
+title: Fine-tuning incremental work
+lead: |
+  Deferral gains more explicit control over which existing relations to prefer. This helps avoid accidentally reading a stale development copy.
+problem_then: |
+  An unselected parent may exist in both development and saved production state. Existence alone does not tell a developer which copy they intended.
+what_changed:
+- id: change-1
+  summary: Incremental predicates and favor-state deferral.
+  introduced_in: 1.4.0
+  adapter_constraints: null
+  evidence:
+  - src-1
+  confidence: high
+- id: change-2
+  summary: Buildable indirect test selection; richer structured logs and warning controls.
+  introduced_in: 1.4.0
+  adapter_constraints: null
+  evidence:
+  - src-1
+  confidence: high
+in_practice: |
+  Use favor-state when the saved-state relation should win for eligible deferred references.
+technical_detail: |
+  --favor-state modifies deferral resolution; it does not force selected models to run in production. Incremental predicates and buildable indirect test selection are other additions.
+milestones:
+- id: 1.4.0
+  kind: package
+  date: '2023-01-25'
+  precision: day
+  title: First published package
+  evidence:
+  - src-2
+sources:
+- id: src-1
+  title: dbt 1.4 release evidence
+  url: https://github.com/dbt-labs/dbt/releases/tag/v1.4.0
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+- id: src-2
+  title: dbt 1.4 package evidence
+  url: https://pypi.org/project/dbt-core/1.4.0/
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+narrative_evidence:
+- src-1
+- src-2
+walkthrough:
+  id: wt-1.4
+  learning_objective: |
+    Choose the correct upstream relation during development.
+  context: |
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is second-day. Each state below is an authored illustration.
+  dataset_variant: second-day
+  steps:
+  - id: copies
+    title: Notice two copies
+    explanation: |
+      Both relation names are fictional deployment names for the same logical parent.
+    state:
+      kind: comparison
+      title: Notice two copies
+      columns:
+      - relation
+      - prepared data state
+      rows:
+      - - dev.order_revenue
+        - 'old copy: first day'
+      - - prod.order_revenue
+        - 'current saved-state relation: two days'
+      result_status: null
+      diagram: null
+    takeaway: |
+      The development copy exists but is stale.
+  - id: favor
+    title: Prefer the saved-state parent
+    explanation: |
+      Build only the location aggregation, deferring its unselected parent.
+    state:
+      kind: comparison
+      title: Prefer the saved-state parent
+      columns:
+      - selected child
+      - resolved parent
+      rows:
+      - - dev.revenue_by_location
+        - prod.order_revenue
+      result_status: null
+      diagram: null
+    takeaway: |
+      The choice of relation can change what data a model sees.
+    code:
+    - language: shell
+      filename: commands.sh
+      content: |
+        dbt run --select revenue_by_location --defer --favor-state --state ./state-prod
+      highlight_lines: []
+  - id: expected
+    title: Aggregate the selected parent
+    explanation: |
+      The production parent in this illustration has the second-day fixture.
+    state:
+      kind: comparison
+      title: Aggregate the selected parent
+      columns:
+      - location
+      - revenue_cents
+      rows:
+      - - Old Port
+        - 3900
+      - - Mile End
+        - 5700
+      - - Riverside
+        - 4800
+      result_status: null
+      diagram: null
+    takeaway: |
+      The expected total is 14,400 cents because that parent contains both days.
+  evidence:
+    status: illustration
+    review_date: '2026-09-22'
+    source_refs:
+    - src-1
+    - src-2
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+status: reviewed
+review_scope: Source and fixture review; no historical dbt execution.

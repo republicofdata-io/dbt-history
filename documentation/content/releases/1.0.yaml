@@ -1,0 +1,131 @@
+id: '1.0'
+label: v1.0
+title: The stable framework
+lead: |
+  Version 1 marks a stable foundation for the project workflow. Parsing defaults and result-based selection make everyday work more practical.
+problem_then: |
+  Teams need confidence in the framework they depend on, alongside efficient ways to inspect and repeat work.
+what_changed:
+- id: change-1
+  summary: Default partial/static parsing, result selectors and interactive init.
+  introduced_in: 1.0.0
+  adapter_constraints: null
+  evidence:
+  - src-1
+  confidence: high
+- id: change-2
+  summary: Metrics nodes enter the manifest; package/adapter installation conventions evolve.
+  introduced_in: 1.0.0
+  adapter_constraints: null
+  evidence:
+  - src-1
+  confidence: high
+in_practice: |
+  Treat the stable release as a foundation, while still checking compatibility when upgrading.
+technical_detail: |
+  Partial and static parsing become defaults. Result selectors use saved run artifacts. Metrics nodes in the manifest are metadata, not the hosted Semantic Layer that previews in October 2022. Stable does not mean every dependency or adapter is identical forever.
+milestones:
+- id: 1.0.0
+  kind: package
+  date: '2021-12-03'
+  precision: day
+  title: First published package
+  evidence:
+  - src-2
+sources:
+- id: src-1
+  title: dbt 1.0 release evidence
+  url: https://github.com/dbt-labs/dbt/releases/tag/v1.0.0
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+- id: src-2
+  title: dbt 1.0 package evidence
+  url: https://pypi.org/project/dbt-core/1.0.0/
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+narrative_evidence:
+- src-1
+- src-2
+walkthrough:
+  id: wt-1.0
+  learning_objective: |
+    Understand what a stable framework does and does not promise.
+  context: |
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
+  dataset_variant: base
+  steps:
+  - id: routine
+    title: Name the established workflow
+    explanation: |
+      Waffle Shop already has models, tests, documentation and tracked dependencies.
+    state:
+      kind: comparison
+      title: Name the established workflow
+      columns:
+      - project asset
+      - shop example
+      rows:
+      - - model
+        - order_revenue
+      - - test
+        - payments have orders
+      - - documentation
+        - revenue is in cents
+      result_status: null
+      diagram: null
+    takeaway: |
+      Version 1 consolidates an existing workflow.
+  - id: results
+    title: Target a previously failed model
+    explanation: |
+      Assume saved run results identify refunds_by_order as errored.
+    state:
+      kind: comparison
+      title: Target a previously failed model
+      columns:
+      - artifact observation
+      - selected model
+      rows:
+      - - 'prior model status: error'
+        - refunds_by_order
+      result_status: null
+      diagram: null
+    takeaway: |
+      Saved results can guide the next command.
+    code:
+    - language: shell
+      filename: commands.sh
+      content: |
+        dbt run --select result:error --state ./previous-run
+      highlight_lines: []
+  - id: metrics
+    title: Keep the service boundary clear
+    explanation: |
+      A metric definition in an artifact is not itself a hosted query service.
+    state:
+      kind: comparison
+      title: Keep the service boundary clear
+      columns:
+      - at 1.0
+      - available interpretation
+      rows:
+      - - metric metadata
+        - project/manifest definition
+      - - hosted Semantic Layer
+        - not launched by this Core release
+      - - base revenue
+        - 12,500 cents
+      result_status: null
+      diagram: null
+    takeaway: |
+      Core resources and commercial services have separate timelines.
+  evidence:
+    status: illustration
+    review_date: '2026-09-22'
+    source_refs:
+    - src-1
+    - src-2
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+status: reviewed
+review_scope: Source and fixture review; no historical dbt execution.

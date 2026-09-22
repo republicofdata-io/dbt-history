@@ -2,21 +2,33 @@
 
 Current delivery direction confirmed by Olivier on 22 September 2026. This supersedes the local-lab instructions in the archived plan and older research recommendations.
 
+## Direction
+
 - Build one public app for Olivier's website, supporting both a 20-minute video and independent visitor browsing.
 - History begins in 2016, with 35 version chapters: 0.1–0.21, 1.0–1.12, 2.0. Keep version chapters, with significant patches inside them.
 - Waffle Shop is the recurring scenario. Each release contains a guided walkthrough for new and experienced practitioners.
 - Visitors advance through prepared steps using Next, Previous and Restart. Show read-only code, highlighted changes, tables, diagrams and explained results. No visitor code editing, fixture changes, live execution or separate terminal workflow.
 - Selected release/date anchors release, catalogue and wider ecosystem tabs. Preserve active tab and walkthrough progress when navigating appropriately.
-- Read `documentation/01-app-brief.md` and `documentation/02-guided-examples-brief.md` as the current implementation briefs. The separate local lab is outside scope; runtime research is reference material, not a prerequisite.
-- Preserve the visual direction. The HTML reference predates the walkthrough decision. Keep Olivier's personal recording notes out of the app.
+- Read `documentation/01-app-brief.md` and `documentation/02-guided-examples-brief.md` as the implementation briefs. The separate local lab is outside scope; runtime research is reference material, not a prerequisite.
+- Keep Olivier's personal recording notes out of the app.
 - Source historical claims and preserve exact introduction patches, contemporary product names, maturity and ownership.
 - Distinguish illustrative results from captured dbt output. Never fabricate original logs or claim execution verification from source inspection.
 - Review example logic and arithmetic independently. Actual runtime captures are optional authoring evidence, not visitor functionality.
 - Bundle examples with the app. Visitors need no dbt account, database connection or local installation. Don't add an execution backend.
-- Publication is intended for Olivier's existing website. Establish its integration and deployment requirements before choosing a hosting solution or publishing.
-- Keep README and AGENTS synchronized with implementation and walkthrough authoring conventions.
 - Historical research cutoff remains 2026-09-21; the 2026-09-22 scope decision doesn't silently update historical facts.
 
-## Repository layout
+## Technical decisions (22 September 2026)
 
-Keep application source and tooling at the project root. Keep planning and reference material in `documentation/`; its README is the handoff index. The visual prototype is `documentation/visual-reference.html`, research inventories are under `documentation/data/`, and superseded plans are under `documentation/archive/`. These reference inventories are not an implemented app data layer. Keep the root README and these agent instructions current as the app is built.
+- **Own repo, own site.** This repo (`republicofdata-io/dbt-history`) is a standalone Vite + React 19 + TypeScript app deployed as its own Netlify site and proxied under `republicofdata.io/labs/dbt-history` by the website repo. Do not move the app into the website repo.
+- **Signal look.** Use the website's dark-only design tokens copied into `src/index.css`. The purple, two-theme direction of `documentation/visual-reference.html` is superseded for colour and theming; keep its layout ideas (version index, shared anchor, three tabs, presentation mode).
+- **Content is YAML, separate from UI.** Everything visitors read is under `documentation/content/` and validated by `src/content/schema.ts`. Field names are a contract with the content author (`documentation/09-content-authoring.md`). Change a field only together with that document and the content files.
+- **Catalogue and ecosystem are computed**, never hand-copied per chapter: `src/content/derive.ts` resolves product names, owners, maturity and placements at the anchor date from the event ledger.
+- **State lives in the URL** (`/<release>/<tab>?m=&s=`); step progress per release in `sessionStorage`; presentation mode in `localStorage`.
+- **Keep the bundle lean.** No syntax-highlighting or charting libraries; the code block, tables and lineage diagram are small components in `src/components/`.
+
+## Working rules
+
+- Run `make check` (typecheck, lint, tests) before committing. The content tests encode the date-boundary acceptance criteria from the app brief; keep them green.
+- Never overwrite an authored chapter. `scripts/generate-release-skeletons.mjs` only writes chapters whose `status` is `skeleton`. A chapter without a `status` field that carries a walkthrough is treated as `draft`.
+- The research agent writes into `documentation/content/` concurrently. Adapt the schema to reasonable drift rather than re-keying content; add tests for any new invariant.
+- Keep README and AGENTS synchronized with implementation and walkthrough authoring conventions.

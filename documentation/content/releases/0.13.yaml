@@ -1,0 +1,137 @@
+id: '0.13'
+label: v0.13
+title: Sources and adapter plugins
+lead: |
+  Sources become named inputs with freshness checks. A correct calculation can now sit beside a warning that its feed is too old.
+problem_then: |
+  A table can contain internally consistent data while missing the latest business activity.
+what_changed:
+- id: change-1
+  summary: Sources with freshness checks.
+  introduced_in: 0.13.0
+  adapter_constraints: null
+  evidence:
+  - src-1
+  confidence: high
+- id: change-2
+  summary: Stable adapter API and separate adapter plugins; Presto adapter.
+  introduced_in: 0.13.0
+  adapter_constraints: null
+  evidence:
+  - src-1
+  confidence: high
+in_practice: |
+  Treat source timeliness as a separate question from model correctness.
+technical_detail: |
+  The stale-payments variant supplies fixed freshness observations, not an extra timestamp column in the base payment table. The result is a prepared age comparison. Adapter plugins also become separate packages. run-operation is present in inspected 0.13 source but announced in 0.14 notes; its exact introduction remains unresolved.
+milestones:
+- id: 0.13.0
+  kind: package
+  date: '2019-03-21'
+  precision: day
+  title: First published package
+  evidence:
+  - src-2
+sources:
+- id: src-1
+  title: dbt 0.13 release evidence
+  url: https://github.com/dbt-labs/dbt/releases/tag/v0.13.0
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+- id: src-2
+  title: dbt 0.13 package evidence
+  url: https://pypi.org/project/dbt/0.13.0/
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+narrative_evidence:
+- src-1
+- src-2
+walkthrough:
+  id: wt-0.13
+  learning_objective: |
+    Distinguish fresh data from valid arithmetic.
+  context: |
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is stale-payments. Each state below is an authored illustration.
+  dataset_variant: stale-payments
+  steps:
+  - id: clock
+    title: Inspect the feed observation
+    explanation: |
+      At noon on March 9 the last recorded payment load is 08:00.
+    state:
+      kind: comparison
+      title: Inspect the feed observation
+      columns:
+      - evaluation_utc
+      - last_loaded_utc
+      - age_hours
+      rows:
+      - - 2016-03-09 12:00
+        - 2016-03-09 08:00
+        - 4
+      result_status: null
+      diagram: null
+    takeaway: |
+      Freshness measures elapsed time since a source update.
+  - id: threshold
+    title: Compare the thresholds
+    explanation: |
+      The fictional feed allows one hour before warning and three before error.
+    state:
+      kind: result
+      title: Compare the thresholds
+      columns:
+      - check
+      - expected
+      - actual
+      rows:
+      - - age before error
+        - at most 3 hours
+        - 4 hours
+      result_status: fail
+      diagram: null
+    takeaway: |
+      This feed fails its timeliness expectation.
+  - id: business
+    title: Separate two trust questions
+    explanation: |
+      The base rows still sum correctly even though the feed is stale.
+    state:
+      kind: table
+      title: Base revenue by location
+      columns:
+      - location_id
+      - location
+      - payment_cents
+      - refund_cents
+      - revenue_cents
+      rows:
+      - - 1
+        - Old Port
+        - 4400
+        - 1000
+        - 3400
+      - - 2
+        - Mile End
+        - 4600
+        - 300
+        - 4300
+      - - 3
+        - Riverside
+        - 4800
+        - 0
+        - 4800
+      result_status: null
+      diagram: null
+    takeaway: |
+      Correct arithmetic is not proof that today’s data has arrived.
+  evidence:
+    status: illustration
+    review_date: '2026-09-22'
+    source_refs:
+    - src-1
+    - src-2
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+status: reviewed
+review_scope: Source and fixture review; no historical dbt execution.

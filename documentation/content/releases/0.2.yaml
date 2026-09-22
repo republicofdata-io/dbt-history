@@ -1,0 +1,149 @@
+id: '0.2'
+label: v0.2
+title: Tests and a project workflow
+lead: |
+  The project gains a way to check the data it builds. A later patch also brings small CSV files into the workflow.
+problem_then: |
+  A successful SQL query could still produce untrustworthy data. There was no dbt test command in the earliest package.
+what_changed:
+- id: change-1
+  summary: Project initialization, dependency installation and the test command are available.
+  introduced_in: 0.2.0
+  adapter_constraints: null
+  evidence:
+  - src-1
+  confidence: high
+- id: change-2
+  summary: CSV seeds and accepted-values tests are added.
+  introduced_in: 0.2.3.0
+  adapter_constraints: null
+  evidence:
+  - src-3
+  confidence: high
+in_practice: |
+  Build the project, then inspect explicit data assertions. Treat the first seed command as a patch milestone.
+technical_detail: |
+  The initial package is 0.2.0. CSV seeds and accepted-values tests arrive in the real four-component version 0.2.3.0. This walkthrough uses a relationship assertion conceptually rather than backporting modern schema YAML.
+milestones:
+- id: 0.2.0
+  kind: package
+  date: '2016-06-22'
+  precision: day
+  title: First published package
+  evidence:
+  - src-1
+- id: 0.2.3.0
+  kind: patch
+  date: '2016-07-15'
+  precision: day
+  title: CSV seed command and accepted-values tests
+  evidence:
+  - src-3
+sources:
+- id: src-1
+  title: dbt 0.2 package evidence
+  url: https://pypi.org/project/dbt/0.2.0/
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+- id: src-2
+  title: dbt 0.2 package evidence
+  url: https://pypi.org/pypi/dbt/json
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+- id: src-3
+  title: dbt 0.2.3.0 patch evidence
+  url: https://github.com/dbt-labs/dbt/releases/tag/v0.2.3.0
+  retrieved: '2026-09-21'
+  supports: CSV seed command and accepted-values tests
+narrative_evidence:
+- src-1
+- src-2
+- src-3
+walkthrough:
+  id: wt-0.2
+  learning_objective: |
+    Recognize the difference between a successful build and valid relationships.
+  context: |
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is orphan-payment. Each state below is an authored illustration.
+  dataset_variant: orphan-payment
+  steps:
+  - id: feed
+    title: A payment without an order
+    explanation: |
+      The orphan-payment variant adds one bad reference.
+    state:
+      kind: comparison
+      title: A payment without an order
+      columns:
+      - payment_id
+      - order_id
+      - amount_cents
+      rows:
+      - - 2099
+        - 9999
+        - 400
+      result_status: null
+      diagram: null
+    takeaway: |
+      A valid payment row can refer to an absent order.
+  - id: test
+    title: Check the relationship
+    explanation: |
+      A relationship assertion expects every payment order_id to exist in orders.
+    state:
+      kind: result
+      title: Check the relationship
+      columns:
+      - assertion
+      - expected_missing
+      - actual_missing
+      - offending_order_id
+      rows:
+      - - payments → orders
+        - 0
+        - 1
+        - 9999
+      result_status: fail
+      diagram: null
+    takeaway: |
+      The data fails even if SQL builds successfully.
+    code:
+    - language: shell
+      filename: commands.sh
+      content: |
+        dbt test
+      highlight_lines: []
+  - id: boundary
+    title: Keep the money discrepancy visible
+    explanation: |
+      Do not silently add the orphan to a location. Seeds enter this chapter only at 0.2.3.0.
+    state:
+      kind: comparison
+      title: Keep the money discrepancy visible
+      columns:
+      - measure
+      - cents
+      rows:
+      - - raw payments
+        - 14200
+      - - refunds
+        - 1300
+      - - unattributed payment
+        - 400
+      - - order-based revenue
+        - 12500
+      result_status: null
+      diagram: null
+    takeaway: |
+      Tests expose money the business result cannot safely attribute.
+  evidence:
+    status: illustration
+    review_date: '2026-09-22'
+    source_refs:
+    - src-1
+    - src-2
+    - src-3
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+status: reviewed
+review_scope: Source and fixture review; no historical dbt execution.

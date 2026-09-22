@@ -1,0 +1,161 @@
+id: '0.8'
+label: v0.8
+title: Concurrency and adapter growth
+lead: |
+  Concurrency becomes more reliable through per-model transactions. Materializations also move into macros, and BigQuery arrives in a later patch.
+problem_then: |
+  Scheduling parallel work is not enough when database transaction handling prevents useful concurrency.
+what_changed:
+- id: change-1
+  summary: Per-model transactions and macro-based materializations.
+  introduced_in: 0.8.0
+  adapter_constraints: Transaction semantics remain adapter-dependent.
+  evidence:
+  - src-1
+  confidence: high
+- id: change-2
+  summary: BigQuery support.
+  introduced_in: 0.8.3
+  adapter_constraints: BigQuery capability is added in this patch.
+  evidence:
+  - src-4
+  confidence: high
+in_practice: |
+  Independent models get independent transaction boundaries.
+technical_detail: |
+  0.8.0 changes transaction handling and materialization internals. BigQuery support is 0.8.3, not the initial package. The diagram explains isolation without asserting a measured speedup.
+milestones:
+- id: 0.8.0
+  kind: package
+  date: '2017-04-17'
+  precision: day
+  title: First published package
+  evidence:
+  - src-3
+- id: 0.8.3
+  kind: patch
+  date: '2017-07-14'
+  precision: day
+  title: BigQuery adapter
+  evidence:
+  - src-4
+sources:
+- id: src-1
+  title: dbt 0.8 release evidence
+  url: https://github.com/dbt-labs/dbt/releases/tag/v0.8.0
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+- id: src-2
+  title: dbt 0.8 release evidence
+  url: https://github.com/dbt-labs/dbt-core/blob/v0.13.0/CHANGELOG.md
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+- id: src-3
+  title: dbt 0.8 package evidence
+  url: https://pypi.org/project/dbt/0.8.0/
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+- id: src-4
+  title: dbt 0.8.3 patch evidence
+  url: https://github.com/dbt-labs/dbt/releases/tag/v0.8.3
+  retrieved: '2026-09-21'
+  supports: BigQuery adapter
+narrative_evidence:
+- src-1
+- src-2
+- src-3
+- src-4
+walkthrough:
+  id: wt-0.8
+  learning_objective: |
+    Connect concurrency with transaction boundaries.
+  context: |
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
+  dataset_variant: base
+  steps:
+  - id: independent
+    title: Identify separate aggregates
+    explanation: |
+      Both aggregates read money events, but neither needs the other.
+    state:
+      kind: comparison
+      title: Identify separate aggregates
+      columns:
+      - model
+      - source rows
+      - grouped orders
+      rows:
+      - - payments_by_order
+        - 13
+        - 12
+      - - refunds_by_order
+        - 3
+        - 3
+      result_status: null
+      diagram: null
+    takeaway: |
+      The two branches can make progress independently.
+  - id: transactions
+    title: Give each model its transaction
+    explanation: |
+      This is a logical scheduling comparison.
+    state:
+      kind: comparison
+      title: Give each model its transaction
+      columns:
+      - model
+      - transaction boundary
+      rows:
+      - - payments_by_order
+        - its own model transaction
+      - - refunds_by_order
+        - its own model transaction
+      result_status: null
+      diagram: null
+    takeaway: |
+      Transaction design makes concurrency meaningful.
+  - id: combine
+    title: Wait before combining
+    explanation: |
+      The final model still waits for both aggregates.
+    state:
+      kind: table
+      title: Base revenue by location
+      columns:
+      - location_id
+      - location
+      - payment_cents
+      - refund_cents
+      - revenue_cents
+      rows:
+      - - 1
+        - Old Port
+        - 4400
+        - 1000
+        - 3400
+      - - 2
+        - Mile End
+        - 4600
+        - 300
+        - 4300
+      - - 3
+        - Riverside
+        - 4800
+        - 0
+        - 4800
+      result_status: null
+      diagram: null
+    takeaway: |
+      Correct dependencies remain necessary even when branches run concurrently.
+  evidence:
+    status: illustration
+    review_date: '2026-09-22'
+    source_refs:
+    - src-1
+    - src-2
+    - src-3
+    - src-4
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+status: reviewed
+review_scope: Source and fixture review; no historical dbt execution.

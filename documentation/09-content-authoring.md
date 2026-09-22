@@ -1,0 +1,172 @@
+# Content authoring contract
+
+The app renders content directly from YAML under `documentation/content/`. Nothing is executed. This document is the field-name contract between the content author (a research agent) and the app schema in `src/content/schema.ts`. Extra fields are tolerated; renamed fields break validation.
+
+Run `make test` after adding or editing content. It validates every file and checks source references, highlight ranges, table widths, diagram edges and the dataset arithmetic.
+
+## Files and delivery order
+
+1. `waffle-shop/dataset.yaml`
+2. `releases/<id>.yaml` for `origin`, `0.1` … `0.21`, `1.0` … `1.12`, `2.0`
+3. `catalogue/products.yaml` and `catalogue/events.yaml`
+4. `ecosystem/placements.yaml`
+
+## Dates
+
+`"YYYY-MM-DD"`, `"YYYY-MM"` or `"YYYY"`, with `precision: day | month | year`. Where only a bound is known, add `uncertainty: { earliest, latest }`. Never invent a day for month-only evidence.
+
+## Waffle Shop dataset
+
+```yaml
+id: waffle-shop
+recurring_question: How much revenue did each location earn, and can we trust the answer?
+provenance: { kind: authored-fiction, authored_on: "2026-09-22", historical_claim: false }
+business_rules: [{ id: revenue-definition, statement: ... }]
+tables:
+  - name: locations
+    columns: [{ name: location_id, type: integer }, { name: name, type: text }]
+    rows: [[1, Old Port], ...]
+expected_revenue:
+  columns: [location_id, location, payment_cents, refund_cents, revenue_cents]
+  rows: [[1, Old Port, 4400, 1000, 3400], ...]
+  total_cents: 12500
+  arithmetic: |
+    Old Port: ...
+derived_relations: [{ name: order_revenue, definition: ... }]
+variants:
+  - id: second-day
+    extends: base
+    description: ...
+    extra_rows: [{ table: orders, rows: [[...]] }]
+    change_events: [...]          # optional, free-form
+    expected_revenue: { total_cents: 14400, arithmetic: ... }
+```
+
+## Release chapter
+
+```yaml
+id: "1.8"
+label: v1.8
+title: Native unit tests
+status: draft                      # skeleton | draft | reviewed (defaults to draft when a walkthrough exists)
+lead: |
+problem_then: |
+what_changed:
+  - id: unit-tests
+    summary: ...
+    introduced_in: "1.8.0"         # exact patch, or null with known_present_in / introduction_uncertainty
+    adapter_constraints: null
+    evidence: [src-1]              # ids from sources
+    confidence: high               # high | qualified
+in_practice: |
+technical_detail: |
+caveats: []
+milestones:
+  - id: "1.8.0"
+    kind: package                  # package | github_release | patch | announcement | product_event | snapshot | origin
+    date: "2024-05-09"
+    precision: day
+    title: First published package
+    version: "1.8.0"               # optional
+    evidence: [src-2]
+default_milestone: null            # milestone id the chapter opens on (v2.0 uses summit-ga)
+sources:
+  - { id: src-1, title: ..., url: ..., retrieved: "2026-09-21", supports: ... }
+narrative_evidence: [src-1]        # optional
+walkthrough: { ... }               # or null while in preparation
+```
+
+## Walkthrough
+
+```yaml
+walkthrough:
+  id: wt-1.8
+  learning_objective: |
+  context: |                       # enough to enter this chapter directly
+  dataset_variant: base
+  steps:
+    - id: refund
+      title: The refund problem
+      explanation: |
+      code:
+        - language: sql            # sql | yaml | jinja | shell | python | text | json | toml
+          filename: models/order_revenue.sql
+          content: |
+          highlight_lines: [3]
+      state:                       # optional; complete on its own
+        kind: table                # table | result | diagram | comparison
+        title: ...
+        columns: [...]
+        rows: [[...]]
+        highlight_rows: []         # table only
+        result_status: fail        # result only: pass | fail | warn | info
+        message: ...               # result only
+        diagram:                   # diagram only
+          nodes: [{ id: orders, label: orders }]
+          edges: [{ from: orders, to: revenue }]
+          highlight: [revenue]
+      takeaway: |
+  evidence:
+    status: illustration           # illustration | captured
+    review_date: "2026-09-22"
+    source_refs: [src-1]           # or sources: [...]
+    limitations: |
+    captured:                      # only when status is captured
+      runtime: ...
+      adapter: ...
+      capture_date: ...
+      artifact_ref: ...
+      adaptations: ...
+```
+
+Rules: 3–5 steps; each step's state is complete on its own; era-appropriate syntax; features that arrived in a patch say so; every table's arithmetic checked against the dataset; `illustration` unless real output was captured; no invented terminal logs.
+
+## Product catalogue
+
+```yaml
+# products.yaml
+- id: dbt-cloud
+  type: platform                   # engine | distribution | platform | capability | product | service | company
+  family: dbt                      # dbt | fivetran | external
+  parent: null
+  roles: [orchestration]
+  description: ...
+  names:
+    - { name: Sinter, from: "2017-01", from_precision: month, to: "2019-01-15" }
+    - { name: dbt Cloud, from: "2019-01-15", to: null }
+  owners:
+    - { owner: Fishtown Analytics, from: "2017-01", from_precision: month, to: "2021-06-30" }
+
+# events.yaml
+- id: sinter-renamed-dbt-cloud
+  product: dbt-cloud
+  kind: rename                     # launch | rename | maturity | pricing | licence | acquisition_agreed | acquisition_closed | merger_announced | merger_closed | retirement_announced | retired | ownership | note
+  date: "2019-01-15"
+  precision: day
+  uncertainty: null
+  maturity: ga                     # preview | beta | ga | maintenance | retiring | retired
+  access: [requires-login, paid-plan]   # free-local | open-source-apache | source-available | requires-login | paid-plan | proprietary
+  summary: ...
+  sources: [{ title, url, retrieved }]
+  affects_catalogue: true
+```
+
+A product appears in the catalogue at a date once at least one of its events has happened by then. Its name, owner, maturity and access are the latest applied values. Fivetran-family products appear only from the `merger_closed` event.
+
+## Ecosystem
+
+```yaml
+products: [...]                    # non-dbt players, same shape as catalogue products
+placements:
+  - product: snowflake
+    layer: warehouse               # sources | ingestion | warehouse | transformation | bi | orchestration | quality | metadata | semantics | reverse-etl | open-table-compute | ai-context
+    from: "2017-02-09"
+    from_precision: day
+    to: null                       # set a date to rotate a player out of the representative set
+    relationship: complement       # complement | partial-substitute | integration | infrastructure | dbt-owned | combined-family
+    maturity: null
+    rationale: ...
+    sources: [...]
+```
+
+At most five players per layer at any chapter date (enforced by a test). "Representative" is editorial, not a ranking.

@@ -1,0 +1,178 @@
+id: '0.5'
+label: v0.5
+title: Configuration, history and custom tests
+lead: |
+  Project variables make shared SQL configurable. This series also adds archives, PostgreSQL support and custom SQL tests in separate patches.
+problem_then: |
+  A reusable model needs a safe way to accept project-specific values, while teams also need more targets and checks.
+what_changed:
+- id: change-1
+  summary: Project variables and safer incremental writes.
+  introduced_in: 0.5.0
+  adapter_constraints: null
+  evidence:
+  - src-1
+  confidence: high
+- id: change-2
+  summary: Archives and first-class PostgreSQL support.
+  introduced_in: 0.5.1
+  adapter_constraints: PostgreSQL becomes a first-class target here, not at project origin.
+  evidence:
+  - src-4
+  confidence: high
+- id: change-3
+  summary: Custom SQL data tests.
+  introduced_in: 0.5.4
+  adapter_constraints: null
+  evidence:
+  - src-5
+  confidence: high
+in_practice: |
+  Separate reusable calculations from configuration. Select the patch that actually contains the feature being discussed.
+technical_detail: |
+  Variables arrive in 0.5.0; archives and first-class PostgreSQL support in 0.5.1; custom SQL data tests in 0.5.4. The cents conversion is presentation only and does not change the accounting definition.
+milestones:
+- id: 0.5.0
+  kind: package
+  date: '2016-09-28'
+  precision: day
+  title: First published package
+  evidence:
+  - src-3
+- id: 0.5.1
+  kind: patch
+  date: '2016-10-21'
+  precision: day
+  title: Archives; first-class Postgres
+  evidence:
+  - src-4
+- id: 0.5.4
+  kind: patch
+  date: '2016-11-29'
+  precision: day
+  title: Custom SQL data tests
+  evidence:
+  - src-5
+sources:
+- id: src-1
+  title: dbt 0.5 release evidence
+  url: https://github.com/dbt-labs/dbt/releases/tag/v0.5.0
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+- id: src-2
+  title: dbt 0.5 release evidence
+  url: https://github.com/dbt-labs/dbt-core/blob/v0.13.0/CHANGELOG.md
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+- id: src-3
+  title: dbt 0.5 package evidence
+  url: https://pypi.org/project/dbt/0.5.0/
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+- id: src-4
+  title: dbt 0.5.1 patch evidence
+  url: https://github.com/dbt-labs/dbt/releases/tag/v0.5.1
+  retrieved: '2026-09-21'
+  supports: Archives; first-class Postgres
+- id: src-5
+  title: dbt 0.5.4 patch evidence
+  url: https://github.com/dbt-labs/dbt/releases/tag/v0.5.4
+  retrieved: '2026-09-21'
+  supports: Custom SQL data tests
+narrative_evidence:
+- src-1
+- src-2
+- src-3
+- src-4
+- src-5
+walkthrough:
+  id: wt-0.5
+  learning_objective: |
+    Use a project variable without changing the revenue measure.
+  context: |
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
+  dataset_variant: base
+  steps:
+  - id: units
+    title: Keep the source unit explicit
+    explanation: |
+      Amounts in the shared dataset are integer cents.
+    state:
+      kind: comparison
+      title: Keep the source unit explicit
+      columns:
+      - location
+      - revenue_cents
+      rows:
+      - - Old Port
+        - 3400
+      - - Mile End
+        - 4300
+      - - Riverside
+        - 4800
+      result_status: null
+      diagram: null
+    takeaway: |
+      The source unit is part of the business contract.
+  - id: variable
+    title: Apply a reusable conversion
+    explanation: |
+      The example provides cents_per_unit = 100 in project variables.
+    state:
+      kind: comparison
+      title: Apply a reusable conversion
+      columns:
+      - variable
+      - value
+      rows:
+      - - cents_per_unit
+        - 100
+      result_status: null
+      diagram: null
+    takeaway: |
+      The calculation can read a named setting.
+    code:
+    - language: sql
+      filename: models/revenue_display.sql
+      content: |
+        select location_id, revenue_cents / {{ var("cents_per_unit") }}.0 as revenue_units
+        from {{ ref("revenue_by_location") }}
+      highlight_lines: []
+  - id: display
+    title: Keep cents and display values together
+    explanation: |
+      Decimal division avoids dropping fractional currency units.
+    state:
+      kind: comparison
+      title: Keep cents and display values together
+      columns:
+      - location
+      - cents
+      - display_units
+      rows:
+      - - Old Port
+        - 3400
+        - '34.00'
+      - - Mile End
+        - 4300
+        - '43.00'
+      - - Riverside
+        - 4800
+        - '48.00'
+      result_status: null
+      diagram: null
+    takeaway: |
+      Configuration changes representation, not underlying revenue.
+  evidence:
+    status: illustration
+    review_date: '2026-09-22'
+    source_refs:
+    - src-1
+    - src-2
+    - src-3
+    - src-4
+    - src-5
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+status: reviewed
+review_scope: Source and fixture review; no historical dbt execution.

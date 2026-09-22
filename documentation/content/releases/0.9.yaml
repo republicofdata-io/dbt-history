@@ -1,0 +1,125 @@
+id: '0.9'
+label: v0.9
+title: Extensible projects
+lead: |
+  Shared packages can carry more of a team’s dbt behavior. Custom schemas also help separate the shop’s models from other projects.
+problem_then: |
+  Reusing SQL is helpful, but teams also repeat tests, materializations and deployment conventions.
+what_changed:
+- id: change-1
+  summary: Macros can use adapter, ref and var; packages can supply custom tests/materializations.
+  introduced_in: 0.9.0
+  adapter_constraints: null
+  evidence:
+  - src-1
+  confidence: high
+- id: change-2
+  summary: Custom schemas; improved BigQuery table support.
+  introduced_in: 0.9.0
+  adapter_constraints: null
+  evidence:
+  - src-1
+  confidence: high
+in_practice: |
+  Put shared project behavior in dependencies and choose schemas deliberately.
+technical_detail: |
+  This release predates packages.yml. Do not display the later package file as 0.9 syntax. Macros gain richer context, including adapter, ref and var. The example uses workflow states to avoid inventing a historical package registry entry.
+milestones:
+- id: 0.9.0
+  kind: package
+  date: '2017-10-26'
+  precision: day
+  title: First published package
+  evidence:
+  - src-2
+sources:
+- id: src-1
+  title: dbt 0.9 release evidence
+  url: https://github.com/dbt-labs/dbt/releases/tag/v0.9.0
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+- id: src-2
+  title: dbt 0.9 package evidence
+  url: https://pypi.org/project/dbt/0.9.0/
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+narrative_evidence:
+- src-1
+- src-2
+walkthrough:
+  id: wt-0.9
+  learning_objective: |
+    Distinguish project-specific models from shared behavior.
+  context: |
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
+  dataset_variant: base
+  steps:
+  - id: copies
+    title: Find a maintenance problem
+    explanation: |
+      Two shop reports need the same refund rule.
+    state:
+      kind: comparison
+      title: Find a maintenance problem
+      columns:
+      - model
+      - rule
+      rows:
+      - - daily_revenue
+        - payments minus refunds
+      - - customer_revenue
+        - payments minus refunds
+      result_status: null
+      diagram: null
+    takeaway: |
+      Copies create two places to repair a mistake.
+  - id: dependency
+    title: Move shared behavior into a dependency
+    explanation: |
+      The shared package here is fictional teaching material, not a historical published package.
+    state:
+      kind: comparison
+      title: Move shared behavior into a dependency
+      columns:
+      - component
+      - belongs in
+      rows:
+      - - net-revenue macro
+        - shared dependency
+      - - shared integrity tests
+        - shared dependency
+      - - shop-specific source mappings
+        - Waffle Shop project
+      result_status: null
+      diagram: null
+    takeaway: |
+      Packages can share behavior beyond plain models.
+  - id: schema
+    title: Keep deployment names deliberate
+    explanation: |
+      Schema names below are illustrative choices.
+    state:
+      kind: comparison
+      title: Keep deployment names deliberate
+      columns:
+      - relation
+      - illustrative schema
+      rows:
+      - - order_revenue
+        - waffle_analytics
+      - - revenue_by_location
+        - waffle_analytics
+      result_status: null
+      diagram: null
+    takeaway: |
+      Shared code does not require every project to use the same schema.
+  evidence:
+    status: illustration
+    review_date: '2026-09-22'
+    source_refs:
+    - src-1
+    - src-2
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+status: reviewed
+review_scope: Source and fixture review; no historical dbt execution.

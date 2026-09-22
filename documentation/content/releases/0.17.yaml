@@ -1,0 +1,131 @@
+id: '0.17'
+label: v0.17
+title: Safer execution and configurable sources
+lead: |
+  Fail-fast gives teams a way to stop sooner when a run fails. Path selection and richer project configuration help manage larger projects.
+problem_then: |
+  After a serious failure, continuing to schedule work may spend resources without helping the immediate investigation.
+what_changed:
+- id: change-1
+  summary: fail-fast and path-based selection.
+  introduced_in: 0.17.0
+  adapter_constraints: null
+  evidence:
+  - src-1
+  confidence: high
+- id: change-2
+  summary: Source overrides/enablement; persist_docs support expands across warehouses.
+  introduced_in: 0.17.0
+  adapter_constraints: null
+  evidence:
+  - src-1
+  confidence: high
+in_practice: |
+  Choose fail-fast deliberately for runs where early termination is useful.
+technical_detail: |
+  Fail-fast is not a transaction spanning the entire project and does not erase completed work. Work already running may have progressed. Persisted documentation remains adapter-dependent.
+milestones:
+- id: 0.17.0
+  kind: package
+  date: '2020-06-08'
+  precision: day
+  title: First published package
+  evidence:
+  - src-2
+sources:
+- id: src-1
+  title: dbt 0.17 release evidence
+  url: https://github.com/dbt-labs/dbt/releases/tag/v0.17.0
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+- id: src-2
+  title: dbt 0.17 package evidence
+  url: https://pypi.org/project/dbt/0.17.0/
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+narrative_evidence:
+- src-1
+- src-2
+walkthrough:
+  id: wt-0.17
+  learning_objective: |
+    Compare ordinary failure handling with fail-fast.
+  context: |
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
+  dataset_variant: base
+  steps:
+  - id: failure
+    title: Introduce a hypothetical broken refund model
+    explanation: |
+      The fixture is unchanged; only the SQL is assumed invalid.
+    state:
+      kind: comparison
+      title: Introduce a hypothetical broken refund model
+      columns:
+      - model
+      - prepared outcome
+      rows:
+      - - refunds_by_order
+        - error
+      - - order_revenue
+        - cannot safely build
+      result_status: null
+      diagram: null
+    takeaway: |
+      A broken dependency blocks its descendants.
+  - id: policy
+    title: Choose an early-stop policy
+    explanation: |
+      The comparison describes scheduling intent, not exact parallel timing.
+    state:
+      kind: comparison
+      title: Choose an early-stop policy
+      columns:
+      - policy
+      - intent
+      rows:
+      - - normal run
+        - independent branches may continue
+      - - fail-fast
+        - stop the invocation promptly after failure
+      result_status: null
+      diagram: null
+    takeaway: |
+      Fail-fast is useful when further work should wait.
+    code:
+    - language: shell
+      filename: commands.sh
+      content: |
+        dbt run --fail-fast
+      highlight_lines: []
+  - id: repair
+    title: Repair before trying again
+    explanation: |
+      Completed database work is not automatically rolled back as one project transaction.
+    state:
+      kind: comparison
+      title: Repair before trying again
+      columns:
+      - next action
+      - reason
+      rows:
+      - - repair refund SQL
+        - remove the failure
+      - - rerun required models
+        - restore consistent outputs
+      - - 'check base total: 12500'
+        - verify the business expectation
+      result_status: null
+      diagram: null
+    takeaway: |
+      Stopping early and rolling back everything are different operations.
+  evidence:
+    status: illustration
+    review_date: '2026-09-22'
+    source_refs:
+    - src-1
+    - src-2
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+status: reviewed
+review_scope: Source and fixture review; no historical dbt execution.

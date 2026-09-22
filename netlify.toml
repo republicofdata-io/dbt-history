@@ -1,0 +1,19 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "24"
+
+# The app is a single-page app served under /labs/dbt-history/ (see vite.config.ts).
+# The website repo proxies republicofdata.io/labs/dbt-history/* to this site.
+# Any deep link must return index.html so react-router can restore the state.
+[[redirects]]
+  from = "/labs/dbt-history/*"
+  to = "/labs/dbt-history/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/"
+  to = "/labs/dbt-history/"
+  status = 302

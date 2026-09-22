@@ -1,0 +1,136 @@
+id: '0.16'
+label: v0.16
+title: Richer metadata
+lead: |
+  Custom metadata lets a project carry context such as who maintains a model. Documentation reaches more resource types.
+problem_then: |
+  A lineage graph can show what depends on a model without explaining who understands its business meaning.
+what_changed:
+- id: change-1
+  summary: meta and richer resource documentation.
+  introduced_in: 0.16.0
+  adapter_constraints: null
+  evidence:
+  - src-1
+  confidence: high
+- id: change-2
+  summary: Documentation for macros, analyses, snapshots and seeds; source/column tags.
+  introduced_in: 0.16.0
+  adapter_constraints: null
+  evidence:
+  - src-1
+  confidence: high
+in_practice: |
+  Attach team context to the resource alongside its technical definition.
+technical_detail: |
+  meta is project metadata; it does not itself create access control, approval workflows or a governance service. This example’s finance owner is fictional.
+milestones:
+- id: 0.16.0
+  kind: package
+  date: '2020-03-23'
+  precision: day
+  title: First published package
+  evidence:
+  - src-2
+sources:
+- id: src-1
+  title: dbt 0.16 release evidence
+  url: https://github.com/dbt-labs/dbt/releases/tag/v0.16.0
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+- id: src-2
+  title: dbt 0.16 package evidence
+  url: https://pypi.org/project/dbt/0.16.0/
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+narrative_evidence:
+- src-1
+- src-2
+walkthrough:
+  id: wt-0.16
+  learning_objective: |
+    Add ownership context without mistaking it for enforcement.
+  context: |
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
+  dataset_variant: base
+  steps:
+  - id: question
+    title: Find a question the schema cannot answer
+    explanation: |
+      Old Port revenue is correct, but someone must explain the refund rule.
+    state:
+      kind: comparison
+      title: Find a question the schema cannot answer
+      columns:
+      - model
+      - revenue_cents
+      - question
+      rows:
+      - - 'revenue_by_location: Old Port'
+        - 3400
+        - Who maintains this definition?
+      result_status: null
+      diagram: null
+    takeaway: |
+      A data type is not business ownership.
+  - id: meta
+    title: Attach project context
+    explanation: |
+      The metadata names the responsible fictional team.
+    state:
+      kind: comparison
+      title: Attach project context
+      columns:
+      - model
+      - owner
+      - unit
+      rows:
+      - - revenue_by_location
+        - finance
+        - cents
+      result_status: null
+      diagram: null
+    takeaway: |
+      Metadata can travel with the model.
+    code:
+    - language: yaml
+      filename: models/schema.yml
+      content: |
+        version: 2
+        models:
+          - name: revenue_by_location
+            meta:
+              owner: finance
+              unit: cents
+      highlight_lines: []
+  - id: boundary
+    title: Understand what metadata does
+    explanation: |
+      The same model retains its SQL and permissions.
+    state:
+      kind: comparison
+      title: Understand what metadata does
+      columns:
+      - property
+      - effect
+      rows:
+      - - 'owner: finance'
+        - informational context
+      - - warehouse permissions
+        - not changed by this metadata
+      - - base revenue
+        - 12,500 cents
+      result_status: null
+      diagram: null
+    takeaway: |
+      Documented ownership and enforced permissions are separate.
+  evidence:
+    status: illustration
+    review_date: '2026-09-22'
+    source_refs:
+    - src-1
+    - src-2
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+status: reviewed
+review_scope: Source and fixture review; no historical dbt execution.

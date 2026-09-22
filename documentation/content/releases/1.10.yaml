@@ -1,0 +1,143 @@
+id: '1.10'
+label: v1.10
+title: Configuration checks and migration readiness
+lead: |
+  More configuration checks help projects prepare for stricter validation. A duplicate or misplaced setting becomes easier to notice.
+problem_then: |
+  Lenient configuration can hide mistakes that later upgrades expose.
+what_changed:
+- id: change-1
+  summary: Duplicate-key checks, configuration deprecations and opt-in macro argument validation.
+  introduced_in: 1.10.0
+  adapter_constraints: null
+  evidence:
+  - src-1
+  confidence: high
+- id: change-2
+  summary: Initial sample-mode implementation and custom freshness SQL queries.
+  introduced_in: 1.10.0
+  adapter_constraints: Initial implementation does not establish universal hosted-feature availability or adapter
+    support.
+  evidence:
+  - src-1
+  confidence: high
+in_practice: |
+  Review warnings as project-maintenance work, while keeping them distinct from failures in the business data.
+technical_detail: |
+  This release adds initial sample-mode implementation, custom freshness queries and opt-in macro argument validation. The walkthrough focuses on documented duplicate-key checking rather than claiming a universally available sampling CLI. Warning severity depends on configuration and behavior flags.
+milestones:
+- id: 1.10.0
+  kind: package
+  date: '2025-06-16'
+  precision: day
+  title: First published package
+  evidence:
+  - src-2
+sources:
+- id: src-1
+  title: dbt 1.10 release evidence
+  url: https://github.com/dbt-labs/dbt/releases/tag/v1.10.0
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+- id: src-2
+  title: dbt 1.10 package evidence
+  url: https://pypi.org/project/dbt-core/1.10.0/
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+narrative_evidence:
+- src-1
+- src-2
+walkthrough:
+  id: wt-1.10
+  learning_objective: |
+    Recognize a configuration problem without inventing a data discrepancy.
+  context: |
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
+  dataset_variant: base
+  steps:
+  - id: duplicate
+    title: Find an ambiguous setting
+    explanation: |
+      The proposed YAML repeats the model description key; it is shown as invalid teaching input.
+    state:
+      kind: comparison
+      title: Find an ambiguous setting
+      columns:
+      - key
+      - occurrences
+      - problem
+      rows:
+      - - description
+        - 2
+        - duplicate mapping key
+      result_status: null
+      diagram: null
+    takeaway: |
+      A duplicated key makes the intended configuration ambiguous.
+    code:
+    - language: yaml
+      filename: models/schema.yml
+      content: |
+        version: 2
+        models:
+          - name: revenue_by_location
+            description: Revenue before refunds.
+            description: Payments minus refunds, in cents.
+      highlight_lines: []
+  - id: warning
+    title: Make the ambiguity visible
+    explanation: |
+      This is an explanatory assessment, not original dbt diagnostic text.
+    state:
+      kind: result
+      title: Make the ambiguity visible
+      columns:
+      - check
+      - expected
+      - actual
+      rows:
+      - - description keys per mapping
+        - 1
+        - 2
+      result_status: warn
+      diagram: null
+    takeaway: |
+      Resolve the config ambiguity before relying on its interpretation.
+  - id: correct
+    title: Keep one clear definition
+    explanation: |
+      Use the shared accounting definition.
+    state:
+      kind: comparison
+      title: Keep one clear definition
+      columns:
+      - model
+      - description
+      - base total
+      rows:
+      - - revenue_by_location
+        - Payments minus refunds, in cents.
+        - 12500
+      result_status: null
+      diagram: null
+    takeaway: |
+      Configuration validation protects intent; accounting tests protect the calculation.
+    code:
+    - language: yaml
+      filename: models/schema.yml
+      content: |
+        version: 2
+        models:
+          - name: revenue_by_location
+            description: Payments minus refunds, in cents.
+      highlight_lines: []
+  evidence:
+    status: illustration
+    review_date: '2026-09-22'
+    source_refs:
+    - src-1
+    - src-2
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+status: reviewed
+review_scope: Source and fixture review; no historical dbt execution.

@@ -1,0 +1,131 @@
+id: '0.20'
+label: v0.20
+title: Actionable data-test failures
+lead: |
+  Failed test rows can be stored for inspection. The shop can investigate the actual orphan payment instead of stopping at a failure count.
+problem_then: |
+  A red test tells a team something is wrong, but finding the offending records can require another query.
+what_changed:
+- id: change-1
+  summary: Store test failures in the database.
+  introduced_in: 0.20.0
+  adapter_constraints: null
+  evidence:
+  - src-1
+  confidence: high
+- id: change-2
+  summary: Test where/limit/warn_if/error_if/fail_calc configuration; experimental parser.
+  introduced_in: 0.20.0
+  adapter_constraints: null
+  evidence:
+  - src-1
+  confidence: high
+in_practice: |
+  Keep the failures as a inspectable relation where the adapter and permissions allow it.
+technical_detail: |
+  The singular test below returns violating rows. store_failures persists those rows; the displayed relation name is illustrative, not a promise about a target schema. Test thresholds and row filters are additional release features.
+milestones:
+- id: 0.20.0
+  kind: package
+  date: '2021-07-12'
+  precision: day
+  title: First published package
+  evidence:
+  - src-2
+sources:
+- id: src-1
+  title: dbt 0.20 release evidence
+  url: https://github.com/dbt-labs/dbt/releases/tag/v0.20.0
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+- id: src-2
+  title: dbt 0.20 package evidence
+  url: https://pypi.org/project/dbt/0.20.0/
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+narrative_evidence:
+- src-1
+- src-2
+walkthrough:
+  id: wt-0.20
+  learning_objective: |
+    Move from a failure count to the offending record.
+  context: |
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is orphan-payment. Each state below is an authored illustration.
+  dataset_variant: orphan-payment
+  steps:
+  - id: count
+    title: See the failed relationship
+    explanation: |
+      The orphan-payment variant contains one missing order reference.
+    state:
+      kind: result
+      title: See the failed relationship
+      columns:
+      - assertion
+      - expected failures
+      - actual failures
+      rows:
+      - - payments have orders
+        - 0
+        - 1
+      result_status: fail
+      diagram: null
+    takeaway: |
+      One failed row needs investigation.
+  - id: test
+    title: Store the failing rows
+    explanation: |
+      The test returns only payments without matching orders.
+    state:
+      kind: comparison
+      title: Store the failing rows
+      columns:
+      - test configuration
+      - value
+      rows:
+      - - store_failures
+        - true
+      result_status: null
+      diagram: null
+    takeaway: |
+      The test query defines the records worth keeping.
+    code:
+    - language: sql
+      filename: tests/payments_have_orders.sql
+      content: |
+        {{ config(store_failures=true) }}
+        select p.payment_id, p.order_id, p.amount_cents
+        from {{ ref("payments") }} p
+        left join {{ ref("orders") }} o on p.order_id = o.order_id
+        where o.order_id is null
+      highlight_lines: []
+  - id: inspect
+    title: Inspect the prepared failure relation
+    explanation: |
+      This is the one violation calculated from the fixture.
+    state:
+      kind: result
+      title: Inspect the prepared failure relation
+      columns:
+      - payment_id
+      - order_id
+      - amount_cents
+      rows:
+      - - 2099
+        - 9999
+        - 400
+      result_status: fail
+      diagram: null
+    takeaway: |
+      The 400 cents stay unattributed until the missing relationship is resolved.
+  evidence:
+    status: illustration
+    review_date: '2026-09-22'
+    source_refs:
+    - src-1
+    - src-2
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+status: reviewed
+review_scope: Source and fixture review; no historical dbt execution.

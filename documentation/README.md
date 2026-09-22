@@ -27,7 +27,9 @@ The app source belongs at the project root. This folder holds the briefs, resear
 | [Data inventory](data/release-inventory.json) | Machine-readable releases, exact patch milestones and 250 stable package versions observed. |
 | [Product event ledger](data/product-event-ledger.json) | 28 sourced catalogue and ownership records, preserving uncertain date labels for editorial normalization. |
 | [Approved shaping document](project-shaping.md) | Olivier's confirmed direction. |
-| [Visual reference](visual-reference.html) | Earlier visual direction. Its example interaction predates the guided-walkthrough decision; historical content is provisional. |
+| [Visual reference](visual-reference.html) | Earlier visual direction. Its example interaction predates the guided-walkthrough decision; historical content is provisional. Its purple two-theme styling is superseded by the website's Signal look (decision of 22 September 2026). |
+| [Content authoring contract](09-content-authoring.md) | Field-name contract for the YAML content under `content/`, shared with the research agent. |
+| [App content](content/) | The YAML the app renders: dataset, release chapters with walkthroughs, catalogue products and events, ecosystem placements. |
 
 ## What the research establishes
 
@@ -43,6 +45,8 @@ The product story also has its own clock. A Core feature does not establish the 
 
 ## Delivery status
 
-The briefs now reflect the guided-example direction. The app has not been changed in this documentation pass. Previous source/package research is retained; no runtime is certified as passing. Completion now depends on accurate authored examples, working step navigation and a website-ready app, not full historical runtime coverage.
+**22 September 2026, first slice built:** the app scaffold, content schema, shell, walkthrough player and computed catalogue and ecosystem views exist at the project root (see the root README). Chapters are being authored into `content/releases/`; those without a walkthrough show a preparation panel.
+
+The briefs reflect the guided-example direction. Previous source/package research is retained; no runtime is certified as passing. Completion now depends on accurate authored examples, working step navigation and a website-ready app, not full historical runtime coverage.
 
 The package is also saved in RoD under `Sessions/2026-09-21-dbt-history-research/`. Raw source archives and API responses remain in the original workspace's `work/` directory; this handoff contains the portable conclusions and source URLs.

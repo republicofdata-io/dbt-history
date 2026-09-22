@@ -1,0 +1,137 @@
+id: '1.3'
+label: v1.3
+title: Python models
+lead: |
+  Python models join SQL models on supported platforms. Both can participate in the project’s dependency graph.
+problem_then: |
+  Some transformations are more natural in a dataframe API, but separate notebooks can lose the project’s dependency context.
+what_changed:
+- id: change-1
+  summary: Python models, including incremental support where implemented.
+  introduced_in: 1.3.0
+  adapter_constraints: Supported Python platforms include Snowflake, BigQuery and Databricks; APIs and materializations
+    differ.
+  evidence:
+  - src-1
+  confidence: high
+- id: change-2
+  summary: Additional portable macros and .dbtignore.
+  introduced_in: 1.3.0
+  adapter_constraints: null
+  evidence:
+  - src-1
+  confidence: high
+in_practice: |
+  Use Python where it earns its place and keep the upstream references visible.
+technical_detail: |
+  Python model support depends on the adapter; initial supported platforms include Snowflake, BigQuery and Databricks. This Snowpark-shaped example is not a PostgreSQL or universal Python example. No Python runtime was executed.
+milestones:
+- id: 1.3.0
+  kind: package
+  date: '2022-10-12'
+  precision: day
+  title: First published package
+  evidence:
+  - src-2
+sources:
+- id: src-1
+  title: dbt 1.3 release evidence
+  url: https://github.com/dbt-labs/dbt/releases/tag/v1.3.0
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+- id: src-2
+  title: dbt 1.3 package evidence
+  url: https://pypi.org/project/dbt-core/1.3.0/
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+narrative_evidence:
+- src-1
+- src-2
+walkthrough:
+  id: wt-1.3
+  learning_objective: |
+    Recognize a Python model as another graph node.
+  context: |
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
+  dataset_variant: base
+  steps:
+  - id: input
+    title: Start from the SQL model
+    explanation: |
+      The input is the derived order_revenue relation.
+    state:
+      kind: table
+      title: 'Order 1042: partial refund'
+      columns:
+      - order_id
+      - location
+      - payment_cents
+      - refund_cents
+      - revenue_cents
+      rows:
+      - - 1042
+        - Old Port
+        - 1200
+        - 200
+        - 1000
+      result_status: null
+      diagram: null
+    takeaway: |
+      Python receives a defined upstream dataset.
+  - id: python
+    title: Add a simple dataframe step
+    explanation: |
+      The example selects the order key and net revenue without changing either.
+    state:
+      kind: comparison
+      title: Add a simple dataframe step
+      columns:
+      - selected columns
+      - source
+      rows:
+      - - order_id, revenue_cents
+        - order_revenue
+      result_status: null
+      diagram: null
+    takeaway: |
+      The ref call keeps the dependency explicit.
+    code:
+    - language: python
+      filename: models/python_order_revenue.py
+      content: |
+        def model(dbt, session):
+            dbt.config(materialized="table")
+            orders = dbt.ref("order_revenue")
+            return orders.select("order_id", "revenue_cents")
+      highlight_lines: []
+  - id: scope
+    title: Keep adapter support visible
+    explanation: |
+      The identity transformation preserves the fixture values.
+    state:
+      kind: comparison
+      title: Keep adapter support visible
+      columns:
+      - check
+      - expected
+      rows:
+      - - order 1042 revenue_cents
+        - 1000
+      - - all 12 orders total_cents
+        - 12500
+      - - example adapter
+        - Snowflake / Snowpark
+      result_status: null
+      diagram: null
+    takeaway: |
+      Language choice does not remove warehouse-specific requirements.
+  evidence:
+    status: illustration
+    review_date: '2026-09-22'
+    source_refs:
+    - src-1
+    - src-2
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+status: reviewed
+review_scope: Source and fixture review; no historical dbt execution.

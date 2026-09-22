@@ -1,0 +1,148 @@
+id: '0.12'
+label: v0.12
+title: Faster and more selective runs
+lead: |
+  Tags make it easier to work on a purposeful subset of models. Relation caching also reduces repeated warehouse introspection.
+problem_then: |
+  As the project grows, rebuilding everything is often more work than a small edit needs.
+what_changed:
+- id: change-1
+  summary: Relation caching speeds introspection.
+  introduced_in: 0.12.0
+  adapter_constraints: null
+  evidence:
+  - src-1
+  confidence: high
+- id: change-2
+  summary: Model tags and selection by tag.
+  introduced_in: 0.12.0
+  adapter_constraints: null
+  evidence:
+  - src-1
+  confidence: high
+in_practice: |
+  Group the revenue models with a tag and select that group.
+technical_detail: |
+  Tags are selection metadata, not a claim that all dependencies are automatically selected. Relation caching is an internal improvement; no speed measurement is shown.
+milestones:
+- id: 0.12.0
+  kind: package
+  date: '2018-11-12'
+  precision: day
+  title: First published package
+  evidence:
+  - src-2
+sources:
+- id: src-1
+  title: dbt 0.12 release evidence
+  url: https://github.com/dbt-labs/dbt/releases/tag/v0.12.0
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+- id: src-2
+  title: dbt 0.12 package evidence
+  url: https://pypi.org/project/dbt/0.12.0/
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+narrative_evidence:
+- src-1
+- src-2
+walkthrough:
+  id: wt-0.12
+  learning_objective: |
+    Select a named slice of the project.
+  context: |
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
+  dataset_variant: base
+  steps:
+  - id: tag
+    title: Label the revenue model
+    explanation: |
+      The tag expresses an editorial grouping in the shop project.
+    state:
+      kind: comparison
+      title: Label the revenue model
+      columns:
+      - model
+      - tag
+      rows:
+      - - order_revenue
+        - finance
+      - - revenue_by_location
+        - finance
+      result_status: null
+      diagram: null
+    takeaway: |
+      Tags make selection intent readable.
+    code:
+    - language: sql
+      filename: models/order_amounts_tagged.sql
+      content: |
+        {{ config(tags=["finance"]) }}
+        select * from {{ ref("order_amounts") }}
+      highlight_lines: []
+  - id: select
+    title: Select the finance slice
+    explanation: |
+      Assume required upstream relations already exist for this example.
+    state:
+      kind: comparison
+      title: Select the finance slice
+      columns:
+      - selection
+      - models in this prepared slice
+      rows:
+      - - tag:finance
+        - order_revenue, revenue_by_location
+      result_status: null
+      diagram: null
+    takeaway: |
+      Selection controls the work requested.
+    code:
+    - language: shell
+      filename: commands.sh
+      content: |
+        dbt run --models tag:finance
+      highlight_lines: []
+  - id: answer
+    title: Keep the same accounting expectation
+    explanation: |
+      Selecting a subset does not redefine revenue.
+    state:
+      kind: table
+      title: Base revenue by location
+      columns:
+      - location_id
+      - location
+      - payment_cents
+      - refund_cents
+      - revenue_cents
+      rows:
+      - - 1
+        - Old Port
+        - 4400
+        - 1000
+        - 3400
+      - - 2
+        - Mile End
+        - 4600
+        - 300
+        - 4300
+      - - 3
+        - Riverside
+        - 4800
+        - 0
+        - 4800
+      result_status: null
+      diagram: null
+    takeaway: |
+      Use dependency selection as needed when upstream models also change.
+  evidence:
+    status: illustration
+    review_date: '2026-09-22'
+    source_refs:
+    - src-1
+    - src-2
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+status: reviewed
+review_scope: Source and fixture review; no historical dbt execution.

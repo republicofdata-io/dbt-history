@@ -1,0 +1,138 @@
+id: '0.14'
+label: v0.14
+title: Snapshots replace archives
+lead: |
+  Snapshots preserve changes to mutable source records. Waffle Shop can remember a customer’s old city after the current record changes.
+problem_then: |
+  Reading only the latest customer table loses earlier values.
+what_changed:
+- id: change-1
+  summary: Snapshots replace archives.
+  introduced_in: 0.14.0
+  adapter_constraints: null
+  evidence:
+  - src-1
+  confidence: high
+- id: change-2
+  summary: Resource listing, RPC server and configurable test severity.
+  introduced_in: 0.14.0
+  adapter_constraints: null
+  evidence:
+  - src-1
+  confidence: high
+in_practice: |
+  Capture change history instead of overwriting the only available record.
+technical_detail: |
+  Snapshots replace archives. This check-strategy example watches city. Validity timestamps are conceptual observation boundaries; actual snapshot identifiers and run timestamps are not fabricated. run-operation has conflicting introduction evidence across 0.13 source and 0.14 notes, so no exact first-shipped claim is made here.
+milestones:
+- id: 0.14.0
+  kind: package
+  date: '2019-07-10'
+  precision: day
+  title: First published package
+  evidence:
+  - src-2
+sources:
+- id: src-1
+  title: dbt 0.14 release evidence
+  url: https://github.com/dbt-labs/dbt/releases/tag/v0.14.0
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+- id: src-2
+  title: dbt 0.14 package evidence
+  url: https://pypi.org/project/dbt/0.14.0/
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+narrative_evidence:
+- src-1
+- src-2
+walkthrough:
+  id: wt-0.14
+  learning_objective: |
+    Follow one changing customer through a snapshot.
+  context: |
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is customer-city-change. Each state below is an authored illustration.
+  dataset_variant: customer-city-change
+  steps:
+  - id: before
+    title: Read the original customer
+    explanation: |
+      The base fixture gives Ada a Montréal address.
+    state:
+      kind: comparison
+      title: Read the original customer
+      columns:
+      - customer_id
+      - name
+      - city
+      rows:
+      - - 1
+        - Ada
+        - Montréal
+      result_status: null
+      diagram: null
+    takeaway: |
+      The current source initially contains one value.
+  - id: change
+    title: Observe the declared update
+    explanation: |
+      The customer-city-change variant changes city at the named second observation.
+    state:
+      kind: comparison
+      title: Observe the declared update
+      columns:
+      - customer_id
+      - before
+      - after
+      - observed_utc
+      rows:
+      - - 1
+        - Montréal
+        - Québec
+        - 2016-03-09 09:00
+      result_status: null
+      diagram: null
+    takeaway: |
+      The source now exposes only the new city.
+    code:
+    - language: sql
+      filename: snapshots/customers_history.sql
+      content: |
+        {% snapshot customers_history %}
+        {{ config(target_schema="snapshots", unique_key="customer_id",
+            strategy="check", check_cols=["city"]) }}
+        select * from raw.customers
+        {% endsnapshot %}
+      highlight_lines: []
+  - id: history
+    title: Keep both versions
+    explanation: |
+      These are human-readable history intervals, not captured dbt metadata.
+    state:
+      kind: comparison
+      title: Keep both versions
+      columns:
+      - customer_id
+      - city
+      - interval
+      rows:
+      - - 1
+        - Montréal
+        - first observation until March 9 09:00
+      - - 1
+        - Québec
+        - March 9 09:00 onward
+      result_status: null
+      diagram: null
+    takeaway: |
+      History preserves the change; order-location revenue stays 12,500 cents.
+  evidence:
+    status: illustration
+    review_date: '2026-09-22'
+    source_refs:
+    - src-1
+    - src-2
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+status: reviewed
+review_scope: Source and fixture review; no historical dbt execution.

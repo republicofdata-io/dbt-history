@@ -1,0 +1,196 @@
+id: '0.1'
+label: v0.1
+title: Earliest SQL build workflow
+lead: |
+  SQL files become inputs to a repeatable build. This earliest series still looks quite different from modern dbt.
+problem_then: |
+  The shop has a revenue query but must repeatedly turn it into a database object by hand.
+what_changed:
+- id: sql-build
+  summary: Jinja-templated SQL compiled into database models.
+  introduced_in: 0.1.1
+  adapter_constraints: Redshift-oriented implementation.
+  evidence:
+  - src-1
+  confidence: high
+- id: ref-known-present
+  summary: ref() and deps are present by 0.1.14; first introduction is unresolved.
+  introduced_in: null
+  adapter_constraints: null
+  evidence:
+  - src-3
+  confidence: qualified
+  known_present_in: 0.1.14
+  introduction_uncertainty: Not present in 0.1.1; confirmed by inspection of 0.1.14.
+in_practice: |
+  A project can compile and build SQL definitions. Later in this series, ref-based dependencies are visible in the source.
+technical_detail: |
+  The first observed 0.1 package is 0.1.1, not 0.1.0. It uses Boolean materialization configuration and lacks ref() and a test command. ref()/deps are present by 0.1.14; the exact first introducing patch is not established.
+milestones:
+- id: 0.1.1
+  kind: package
+  date: '2016-04-03'
+  precision: day
+  title: First published package
+  evidence:
+  - src-1
+- id: 0.1.14
+  kind: patch
+  date: '2016-05-06'
+  precision: day
+  title: ref()/deps present by this package; absence in 0.1.1 source confirmed
+  evidence:
+  - src-3
+sources:
+- id: src-1
+  title: dbt 0.1 package evidence
+  url: https://pypi.org/project/dbt/0.1.1/
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+- id: src-2
+  title: dbt 0.1 package evidence
+  url: https://pypi.org/pypi/dbt/json
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+- id: src-3
+  title: dbt 0.1.14 patch evidence
+  url: https://pypi.org/project/dbt/0.1.14/
+  retrieved: '2026-09-21'
+  supports: ref()/deps present by this package; absence in 0.1.1 source confirmed
+narrative_evidence:
+- src-1
+- src-2
+- src-3
+walkthrough:
+  id: wt-0.1
+  learning_objective: |
+    Recognize what the first build workflow did without borrowing later syntax.
+  context: |
+    Waffle Shop still earns 12,500 cents. The example compares how the same rule is represented in 0.1.1 and in the later 0.1.14 patch.
+  dataset_variant: base
+  steps:
+  - id: query
+    title: Start with a model file
+    explanation: |
+      In the 0.1.1 illustration, the model reads raw relations directly.
+    state:
+      kind: table
+      title: Base revenue by location
+      columns:
+      - location_id
+      - location
+      - payment_cents
+      - refund_cents
+      - revenue_cents
+      rows:
+      - - 1
+        - Old Port
+        - 4400
+        - 1000
+        - 3400
+      - - 2
+        - Mile End
+        - 4600
+        - 300
+        - 4300
+      - - 3
+        - Riverside
+        - 4800
+        - 0
+        - 4800
+      result_status: null
+      diagram: null
+    takeaway: |
+      A model is a saved SQL definition.
+    code:
+    - language: sql
+      filename: models/revenue_by_location.sql
+      content: |
+        with payment_totals as (
+            select order_id, sum(amount_cents) as payment_cents
+            from raw.payments
+            group by order_id
+        ), refund_totals as (
+            select order_id, sum(amount_cents) as refund_cents
+            from raw.refunds
+            group by order_id
+        )
+        select
+            orders.location_id,
+            sum(coalesce(payment_totals.payment_cents, 0)
+                - coalesce(refund_totals.refund_cents, 0)) as revenue_cents
+        from raw.orders as orders
+        left join payment_totals on orders.order_id = payment_totals.order_id
+        left join refund_totals on orders.order_id = refund_totals.order_id
+        group by orders.location_id
+      highlight_lines: []
+  - id: config
+    title: Choose a stored result
+    explanation: |
+      This 0.1.1 project excerpt uses the historical Boolean setting, before named materializations.
+    state:
+      kind: comparison
+      title: 0.1.1 project choice
+      columns:
+      - setting
+      - meaning
+      rows:
+      - - 'materialized: true'
+        - table-backed model
+      - - ref()
+        - not available in this package
+      - - test command
+        - not available in this package
+      result_status: null
+      diagram: null
+    takeaway: |
+      The first release has its own configuration language.
+    code:
+    - language: yaml
+      filename: dbt_project.yml (excerpt)
+      content: |
+        model-defaults:
+          materialized: true
+      highlight_lines:
+      - 2
+  - id: patch
+    title: Advance to patch 0.1.14
+    explanation: |
+      The downloaded 0.1.14 source includes ref(). This is a later patch, not evidence for 0.1.1.
+    state:
+      kind: diagram
+      title: 0.1.14 dependency illustration
+      columns: []
+      rows: []
+      result_status: null
+      diagram:
+        nodes:
+        - id: order_revenue
+          label: order_revenue
+        - id: revenue
+          label: revenue_by_location
+        edges:
+        - from: order_revenue
+          to: revenue
+        highlight:
+        - revenue
+    takeaway: |
+      Record the patch when showing a feature added during a series.
+    code:
+    - language: sql
+      filename: models/revenue_by_location.sql
+      content: |
+        select location_id, sum(revenue_cents) as revenue_cents
+        from {{ ref('order_revenue') }}
+        group by location_id
+      highlight_lines:
+      - 2
+  evidence:
+    status: illustration
+    review_date: '2026-09-22'
+    source_refs:
+    - src-1
+    - src-2
+    - src-3
+    limitations: |
+      Illustration only. Early engine code targets Redshift; no local compatibility is claimed. The 0.1.1 project setting and 0.1.14 ref helper were inspected in original package source; the exact ref introduction patch remains unknown.

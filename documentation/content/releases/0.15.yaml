@@ -1,0 +1,127 @@
+id: '0.15'
+label: v0.15
+title: Partial parsing and structured operations
+lead: |
+  Parsing can reuse earlier project work, and structured logs make runs easier to inspect programmatically. This is an operational release, not a new revenue formula.
+problem_then: |
+  Repeated project parsing adds overhead, while free-form logs are awkward for tools to consume.
+what_changed:
+- id: change-1
+  summary: Opt-in partial parsing; structured/JSON logging.
+  introduced_in: 0.15.0
+  adapter_constraints: null
+  evidence:
+  - src-1
+  confidence: high
+- id: change-2
+  summary: Python 2 support dropped; improved snapshot/docs/RPC behavior.
+  introduced_in: 0.15.0
+  adapter_constraints: null
+  evidence:
+  - src-1
+  confidence: high
+in_practice: |
+  Opt into partial parsing where suitable and use structured events for operational tooling.
+technical_detail: |
+  Partial parsing is opt-in at this point, not the later default. Python 2 support ends. No timing or original event payload is claimed in these prepared comparisons.
+milestones:
+- id: 0.15.0
+  kind: package
+  date: '2019-11-25'
+  precision: day
+  title: First published package
+  evidence:
+  - src-2
+sources:
+- id: src-1
+  title: dbt 0.15 release evidence
+  url: https://github.com/dbt-labs/dbt/releases/tag/v0.15.0
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+- id: src-2
+  title: dbt 0.15 package evidence
+  url: https://pypi.org/project/dbt/0.15.0/
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+narrative_evidence:
+- src-1
+- src-2
+walkthrough:
+  id: wt-0.15
+  learning_objective: |
+    See why project preparation and observability matter.
+  context: |
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
+  dataset_variant: base
+  steps:
+  - id: project
+    title: Change one model
+    explanation: |
+      The example edit changes only a description attached to revenue.
+    state:
+      kind: comparison
+      title: Change one model
+      columns:
+      - project area
+      - prepared change
+      rows:
+      - - revenue_by_location description
+        - edited
+      - - business SQL
+        - unchanged
+      - - base fixture
+        - unchanged
+      result_status: null
+      diagram: null
+    takeaway: |
+      Not every edit changes the business result.
+  - id: parse
+    title: Reuse eligible parse work
+    explanation: |
+      Exact invalidation depends on the project and change.
+    state:
+      kind: comparison
+      title: Reuse eligible parse work
+      columns:
+      - mode
+      - behavior
+      rows:
+      - - full parsing
+        - read the whole project
+      - - partial parsing, opt-in
+        - reuse eligible prior parse information
+      result_status: null
+      diagram: null
+    takeaway: |
+      Parsing is a distinct stage from warehouse execution.
+  - id: events
+    title: Make operational output easier to consume
+    explanation: |
+      This table describes fields conceptually, not a fabricated JSON log.
+    state:
+      kind: comparison
+      title: Make operational output easier to consume
+      columns:
+      - operational need
+      - structured-event benefit
+      rows:
+      - - identify event type
+        - machine-readable classification
+      - - associate event with model
+        - structured context
+      - - read revenue
+        - still query the model result
+      result_status: null
+      diagram: null
+    takeaway: |
+      Logs describe execution; they do not replace the data result.
+  evidence:
+    status: illustration
+    review_date: '2026-09-22'
+    source_refs:
+    - src-1
+    - src-2
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+status: reviewed
+review_scope: Source and fixture review; no historical dbt execution.

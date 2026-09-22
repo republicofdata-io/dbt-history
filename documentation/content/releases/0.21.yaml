@@ -1,0 +1,129 @@
+id: '0.21'
+label: v0.21
+title: Build in dependency order
+lead: |
+  dbt build brings models and tests into one dependency-aware workflow. Downstream work can wait for upstream validation.
+problem_then: |
+  Running models and tests as unrelated commands makes it easier to publish a downstream result before noticing an upstream failure.
+what_changed:
+- id: change-1
+  summary: dbt build runs seeds, snapshots, models and tests in DAG order.
+  introduced_in: 0.21.0
+  adapter_constraints: null
+  evidence:
+  - src-1
+  confidence: high
+- id: change-2
+  summary: on_schema_change for incremental models; state detects macro changes.
+  introduced_in: 0.21.0
+  adapter_constraints: null
+  evidence:
+  - src-1
+  confidence: high
+in_practice: |
+  Build the selected graph with its checks in the relevant order.
+technical_detail: |
+  The illustration assumes a selected upstream relationship test on the payment staging model and an ordinary single-parent failure barrier. Actual blocking rules depend on test dependencies and selection. Incremental schema-change handling is another feature, not a historical backfill guarantee.
+milestones:
+- id: 0.21.0
+  kind: package
+  date: '2021-10-04'
+  precision: day
+  title: First published package
+  evidence:
+  - src-2
+sources:
+- id: src-1
+  title: dbt 0.21 release evidence
+  url: https://github.com/dbt-labs/dbt/releases/tag/v0.21.0
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+- id: src-2
+  title: dbt 0.21 package evidence
+  url: https://pypi.org/project/dbt/0.21.0/
+  retrieved: '2026-09-21'
+  supports: Release changes or package publication; date kinds remain distinct.
+narrative_evidence:
+- src-1
+- src-2
+walkthrough:
+  id: wt-0.21
+  learning_objective: |
+    See a test prevent an untrustworthy downstream build.
+  context: |
+    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is orphan-payment. Each state below is an authored illustration.
+  dataset_variant: orphan-payment
+  steps:
+  - id: graph
+    title: Place a check before revenue
+    explanation: |
+      The selected payment staging model includes the orphan row.
+    state:
+      kind: comparison
+      title: Place a check before revenue
+      columns:
+      - stage
+      - dependency
+      rows:
+      - - stage payments
+        - raw payments
+      - - payments-have-orders test
+        - staged payments
+      - - order_revenue
+        - staged payments
+      result_status: null
+      diagram: null
+    takeaway: |
+      The test is part of the build graph.
+  - id: build
+    title: Build with the failing assertion
+    explanation: |
+      Expected missing references are zero; actual is one.
+    state:
+      kind: result
+      title: Build with the failing assertion
+      columns:
+      - resource
+      - prepared result
+      rows:
+      - - payment relationship test
+        - 'fail: expected 0, actual 1'
+      - - dependent revenue model
+        - skip because upstream test failed
+      result_status: fail
+      diagram: null
+    takeaway: |
+      The shop should not publish a fresh-looking result from a failed branch.
+    code:
+    - language: shell
+      filename: commands.sh
+      content: |
+        dbt build
+      highlight_lines: []
+  - id: limit
+    title: Read the existing result carefully
+    explanation: |
+      An old relation may still exist after the new build is blocked.
+    state:
+      kind: comparison
+      title: Read the existing result carefully
+      columns:
+      - existing base total
+      - freshly validated output
+      rows:
+      - - 12500
+        - not produced by this failed build
+      result_status: null
+      diagram: null
+    takeaway: |
+      A table’s existence is not proof that the latest build passed.
+  evidence:
+    status: illustration
+    review_date: '2026-09-22'
+    source_refs:
+    - src-1
+    - src-2
+    limitations: |
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+status: reviewed
+review_scope: Source and fixture review; no historical dbt execution.
