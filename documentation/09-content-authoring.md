@@ -49,6 +49,7 @@ id: "1.8"
 label: v1.8
 title: Native unit tests
 status: draft                      # skeleton | draft | reviewed (defaults to draft when a walkthrough exists)
+featured: true                     # optional: highlights the chapter in the sidebar index (chapters to dwell on)
 lead: |
 problem_then: |
 what_changed:

@@ -58,6 +58,10 @@ Content lives under `documentation/content/` and is validated against `src/conte
 
 The catalogue derivation (`src/content/derive.ts`) carries every qualification field to the screen rather than stripping it: licence is shown separately from access and commercial conditions; `availability` distinguishes announced-but-unavailable, alpha and existing-installations-only from usable previews; `availability_scope` labels private versus public betas; a `state_override` replaces carried maturity (the June 2026 engine alpha); owner and name intervals show their notes and bounded transitions; products with a `pending_from` membership appear in a separate "announced or agreed, not yet part of the catalogue" group. Merger and licence events are labelled by their specific meaning, not their generic kind. Tests in `src/content/qualifications.test.ts` pin these rules, and `src/app/render-all.test.tsx` renders every chapter, tab, step and milestone.
 
+### Featured chapters
+
+Set `featured: true` in a chapter file to highlight it in the sidebar index, for the versions the recording dwells on. The sidebar shows a small legend when any chapter is featured.
+
 ### Date policy
 
 - A chapter opens on its first published package date, labelled as a package upload date, not an announcement date. `default_milestone` overrides this (v2.0 opens on the 16 September Summit milestone).

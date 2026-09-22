@@ -1,5 +1,6 @@
 id: '0.2'
 label: v0.2
+featured: true
 title: Tests and a project workflow
 lead: >
   The project gains a way to check the data it builds. A later patch also brings small CSV files into the

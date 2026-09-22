@@ -1,5 +1,6 @@
 id: '0.1'
 label: v0.1
+featured: true
 title: Earliest SQL build workflow
 lead: >
   SQL files become inputs to a repeatable build. This earliest series still looks quite different from modern
