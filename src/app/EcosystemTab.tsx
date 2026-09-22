@@ -47,7 +47,7 @@ function Chip({ s, date, tag }: { s: PlacementState; date: string; tag?: string 
         <div className="flex flex-wrap gap-1">
           <Badge variant={own ? "accent" : "default"}>{REL[s.relationship]}</Badge>
           {s.placement.maturity && <Badge variant="warn">{s.placement.maturity}</Badge>}
-          {s.owner && <Badge>owner: {s.owner}</Badge>}
+          {s.owner && s.owner !== s.name && <Badge>owner: {s.owner}</Badge>}
           {ownerQualified && <Badge variant="warn">ownership qualified</Badge>}
         </div>
         {ownerInterval?.note && <p className="text-xs text-muted-foreground">{ownerInterval.note}</p>}

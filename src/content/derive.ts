@@ -64,13 +64,17 @@ export function ownerIntervalAt(product: Product, date: string): (Interval & { o
   return activeInterval(product.owners, date);
 }
 
-/** True when an interval's own qualification covers the date (its start is uncertain around the anchor). */
+/**
+ * True only for a genuine doubt: the researcher marked the interval as
+ * qualified, or the date falls inside a bounded transition window (for
+ * example Census between the May and September 2025 dates). Month- or
+ * year-precision start dates alone are not a doubt about who owned what.
+ */
 export function intervalQualified(i: Interval | undefined, date: string): boolean {
   if (!i) return false;
   if (i.confidence === "qualified") return true;
   const u = i.uncertainty ?? i.transition_uncertainty;
-  if (u && date >= u.earliest && date < u.latest) return true;
-  return relation(date, i.from, i.from_precision) === "within";
+  return !!u && date >= u.earliest && date < u.latest;
 }
 
 // ---------- Catalogue ----------
