@@ -31,10 +31,11 @@ export default function AnchorBar({ state }: { state: HistoryState }) {
           ))}
         </select>
         <span className="text-[13px]" aria-live="polite">
-          <span className="font-semibold">{formatDate(m.date, m.precision)}</span>
+          <span className="font-semibold text-accent">{release.label}</span>
+          <span className="font-semibold"> {release.title}</span>
           {m.kind !== "package" && (
             <span className="text-muted-foreground">
-              {" "}· {m.version ? `${m.version} · ` : ""}
+              {" "}· {formatDate(m.date, m.precision)} · {m.version ? `${m.version} · ` : ""}
               {m.title}
             </span>
           )}
