@@ -44,9 +44,37 @@ sources:
   retrieved: '2026-09-21'
   supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
     from the package.
+  rechecked: '2026-09-22'
+- id: src-3
+  title: 0.9.0 dependency loader
+  url: https://files.pythonhosted.org/packages/06/b1/351da5005cfeb17525beac3de7ba86efce9dbd093863abb2ae6bfef2349c/dbt-0.9.0.tar.gz
+  retrieved: '2026-09-22'
+  supports: repositories cloning and local file URL form; no packages.yml backport.
+  historical_scope: Syntax at the named immutable version; research cutoff remains 2026-09-21.
+  source_path: dbt/task/deps.py
+  sha256: ee26f68014221f32ed73467bf11fb6981701ff952e247b3ac39ed4b3dcaa7c5e
+- id: src-4
+  title: 0.9.0 default custom schema macro
+  url: https://files.pythonhosted.org/packages/06/b1/351da5005cfeb17525beac3de7ba86efce9dbd093863abb2ae6bfef2349c/dbt-0.9.0.tar.gz
+  retrieved: '2026-09-22'
+  supports: Default schema prefix behavior.
+  historical_scope: Syntax at the named immutable version; research cutoff remains 2026-09-21.
+  source_path: dbt/include/global_project/macros/etc/get_custom_schema.sql
+  sha256: ee26f68014221f32ed73467bf11fb6981701ff952e247b3ac39ed4b3dcaa7c5e
+- id: src-5
+  title: 0.9.0 schema-test macro parser
+  url: https://files.pythonhosted.org/packages/06/b1/351da5005cfeb17525beac3de7ba86efce9dbd093863abb2ae6bfef2349c/dbt-0.9.0.tar.gz
+  retrieved: '2026-09-22'
+  supports: parse_schema_test builds a package-qualified test_ macro call with model=ref and configured keyword
+    arguments.
+  source_path: dbt/parser.py
+  sha256: ee26f68014221f32ed73467bf11fb6981701ff952e247b3ac39ed4b3dcaa7c5e
 narrative_evidence:
 - src-1
 - src-2
+- src-3
+- src-4
+- src-5
 walkthrough:
   id: wt-0.9
   learning_objective: |
@@ -78,6 +106,37 @@ walkthrough:
     evidence:
     - src-1
     - src-2
+    - src-3
+    - src-4
+    - src-5
+    code:
+    - language: jinja
+      filename: shared_shop/macros/net_cents.sql
+      content: |
+        {% macro net_cents(payment, refund) %}
+          ({{ payment }} - {{ refund }})
+        {% endmacro %}
+      highlight_lines:
+      - 2
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/daily_revenue.sql
+      content: |
+        select order_id,
+            {{ shared_shop.net_cents("payment_cents", "refund_cents") }} as revenue_cents
+        from {{ ref("order_amounts") }}
+      highlight_lines:
+      - 2
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/customer_revenue.sql
+      content: |
+        select customer_id,
+            sum({{ shared_shop.net_cents("payment_cents", "refund_cents") }}) as revenue_cents
+        from {{ ref("order_amounts") }}
+        group by customer_id
+      highlight_lines:
+      - 2
   - id: dependency
     title: Move shared behavior into a dependency
     explanation: |
@@ -103,6 +162,79 @@ walkthrough:
     evidence:
     - src-1
     - src-2
+    - src-3
+    - src-4
+    - src-5
+    code:
+    - language: jinja
+      filename: shared_shop/macros/net_cents.sql
+      content: |
+        {% macro net_cents(payment, refund) %}
+          ({{ payment }} - {{ refund }})
+        {% endmacro %}
+      highlight_lines:
+      - 2
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/daily_revenue.sql
+      content: |
+        select order_id,
+            {{ shared_shop.net_cents("payment_cents", "refund_cents") }} as revenue_cents
+        from {{ ref("order_amounts") }}
+      highlight_lines:
+      - 2
+      purpose: authored executable syntax; illustration only
+    - language: yaml
+      filename: dbt_project.yml (excerpt)
+      content: |
+        name: waffle_shop
+        version: "1.0"
+        profile: waffle_shop
+        repositories:
+          - "file:///tmp/shared_shop"
+      highlight_lines:
+      - 4
+      - 5
+      purpose: authored executable syntax; illustration only
+    - language: yaml
+      filename: shared_shop/dbt_project.yml
+      content: |
+        name: shared_shop
+        version: "1.0"
+        macro-paths: [macros]
+      highlight_lines:
+      - 1
+      - 3
+      purpose: authored executable syntax; illustration only
+    - language: jinja
+      filename: shared_shop/macros/test_non_negative.sql
+      content: |
+        {% macro test_non_negative(model, column_name) %}
+        select count(*) from {{ model }}
+        where {{ column_name }} < 0
+        {% endmacro %}
+      highlight_lines:
+      - 1
+      - 2
+      - 3
+    - language: yaml
+      filename: models/schema.yml
+      content: |
+        order_revenue:
+          constraints:
+            shared_shop.non_negative:
+              - {column_name: revenue_cents}
+      highlight_lines:
+      - 2
+      - 3
+      - 4
+    - language: shell
+      filename: commands.sh
+      content: |
+        dbt deps
+      highlight_lines:
+      - 1
+      purpose: authored executable syntax; illustration only
   - id: schema
     title: Keep deployment names deliberate
     explanation: |
@@ -126,13 +258,56 @@ walkthrough:
     evidence:
     - src-1
     - src-2
+    - src-3
+    - src-4
+    - src-5
+    code:
+    - language: sql
+      filename: models/revenue_by_location.sql
+      content: |
+        {{ config(schema="analytics") }}
+        select location_id, sum(revenue_cents) as revenue_cents
+        from {{ ref("order_revenue") }}
+        group by location_id
+      highlight_lines:
+      - 1
+      purpose: authored executable syntax; illustration only
+    - language: yaml
+      filename: profiles.yml (target excerpt)
+      content: |
+        waffle_shop:
+          target: dev
+          outputs:
+            dev:
+              schema: waffle
+      highlight_lines:
+      - 5
+      purpose: authored executable syntax; illustration only
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
     - src-1
     - src-2
+    - src-3
+    - src-4
+    - src-5
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+      The dependency is an authored local Git repository at /tmp/shared_shop, not a claimed historical published package; it must exist and contain the shown macro/project files. The old repositories key is used, not packages.yml. With target schema waffle and custom schema analytics, the default schema macro produces waffle_analytics.
+      The shared 0.9 test uses a test_ macro returning a count, invoked through the v1 constraints mapping and package namespace; it is not a modern data-test block.
+    code_review:
+      reviewed_on: '2026-09-22'
+      historical_cutoff: '2026-09-21'
+      method: Original source/archive and release documentation inspection; no historical dbt execution.
+  intro:
+    can_now:
+    - Share custom tests and materializations through dependencies.
+    - Call adapter, ref and var from inside macros.
+    - Give selected models a custom schema.
+    scenario: |
+      Two shop reports need the same net-revenue calculation and deployment conventions. A fictional shared package holds that behavior while the shop retains its source mappings.
+    outcome: |
+      Read the shared macro, dependency declaration and schema setting using pre-packages.yml syntax.
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

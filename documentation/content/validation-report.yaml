@@ -110,6 +110,28 @@ limitations:
 - Schema checks do not constitute exhaustive factual verification of every vendor claim.
 errors: []
 app_validation:
+  command: make test (compatible bundled Node on PATH)
+  test_files_passed: 3
+  tests_passed: 64
+  status: pass
+  review_date: '2026-09-22'
+walkthrough_enrichment:
+  review_date: '2026-09-22'
+  research_cutoff: '2026-09-21'
+  walkthroughs_with_intro: 36
+  steps_with_non_shell_code: 110
+  code_blocks: 281
+  maximum_lines_per_block: 17
+  existing_fields_and_original_code_preserved: true
+  historical_relationship_query_checked: true
+  common_revenue_sql_checked: true
+  all_results_remain_illustrations: true
+  notes:
+  - 0.2.0 relationship orientation differs from the proposed example; declaring parent is orders, child is payments.
+  - 0.3.0 uses run-target under the default user profile, not modern target syntax.
+  - Derived feed metadata and step-specific data phases are disclosed without changing base rows.
+  - SQLite checks verify fixture arithmetic and relationship-query logic, not dbt or warehouse adapter compatibility.
+previous_app_validation:
   command: vitest run (bundled current Node runtime)
   test_files_passed: 1
   tests_passed: 16

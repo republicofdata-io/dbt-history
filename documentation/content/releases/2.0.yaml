@@ -84,12 +84,27 @@ sources:
   url: https://docs.getdbt.com/docs/dbt/dbt-availability
   retrieved: '2026-09-21'
   supports: Detailed login/access requirements recorded in the v2 runtime research.
+- id: src-6
+  title: Historical source archive reviewed for example syntax
+  url: https://pypi.org/project/dbt/2.0.2/
+  retrieved: '2026-09-21'
+  supports: Original source package and tagged release evidence for the example’s syntax; review is not runtime
+    execution.
+  rechecked: '2026-09-22'
+- id: src-7
+  title: dbt OSS 2.0.2 package metadata
+  url: https://pypi.org/pypi/dbt-oss/2.0.2/json
+  retrieved: '2026-09-22'
+  supports: OSS package pin exists on September 15, independently of full dbt.
+  historical_scope: Syntax at the named immutable version; research cutoff remains 2026-09-21.
 narrative_evidence:
 - src-1
 - src-2
 - src-3
 - src-4
 - src-5
+- src-6
+- src-7
 walkthrough:
   id: wt-2.0
   learning_objective: |
@@ -127,6 +142,35 @@ walkthrough:
     - src-3
     - src-4
     - src-5
+    - src-6
+    - src-7
+    code:
+    - language: text
+      filename: requirements-full.txt
+      content: |
+        dbt==2.0.2
+      highlight_lines:
+      - 1
+      purpose: authored executable syntax; illustration only
+    - language: text
+      filename: requirements-oss.txt
+      content: |
+        dbt-oss==2.0.2
+      highlight_lines:
+      - 1
+      purpose: authored executable syntax; illustration only
+    - language: yaml
+      filename: dbt_project.yml
+      content: |
+        name: waffle_shop
+        version: "1.0"
+        config-version: 2
+        model-paths: [models]
+      highlight_lines:
+      - 1
+      - 3
+      - 4
+      purpose: authored executable syntax; illustration only
   - id: typo
     title: Reference a missing column
     explanation: |
@@ -162,6 +206,8 @@ walkthrough:
     - src-3
     - src-4
     - src-5
+    - src-6
+    - src-7
   - id: correction
     title: Use the known column
     explanation: |
@@ -211,6 +257,8 @@ walkthrough:
     - src-3
     - src-4
     - src-5
+    - src-6
+    - src-7
   - id: boundary
     title: Read the wider offering carefully
     explanation: |
@@ -243,6 +291,26 @@ walkthrough:
     - src-3
     - src-4
     - src-5
+    - src-6
+    - src-7
+    code:
+    - language: yaml
+      filename: reference/summit-availability.yml
+      content: |
+        as_of: "2026-09-16"
+        products:
+          - {name: dbt v2, maturity: ga}
+          - {name: dbt State, maturity: ga}
+          - {name: Lake Compute, maturity: beta, scope: private}
+          - {name: dbt Charts, maturity: beta, scope: public}
+          - {name: Fivetran Context Layer, maturity: beta, scope: private}
+      highlight_lines:
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      purpose: authored executable syntax; illustration only
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -252,8 +320,23 @@ walkthrough:
     - src-3
     - src-4
     - src-5
+    - src-6
+    - src-7
     limitations: |
       All states are authored illustrations. No full/OSS engine was run and no diagnostic text is an original terminal log. SQL-comprehension behavior depends on the full distribution, login, metadata and supported adapter. No speed comparison is claimed.
+      The distribution requirements are alternative environments at the 2.0.2 September 15 checkpoint, never a combined installation instruction. reference/summit-availability.yml is the authored data behind the product-status comparison, not dbt project syntax or output. Product maturity comes from the cited announcement, not SQL execution.
+    code_review:
+      reviewed_on: '2026-09-22'
+      historical_cutoff: '2026-09-21'
+      method: Original source/archive and release documentation inspection; no historical dbt execution.
+  intro:
+    can_now:
+    - Use the GA Rust engine through separate full dbt and dbt OSS distributions.
+    - With full dbt and its documented access requirements, catch SQL column problems through SQL comprehension.
+    scenario: |
+      The location model asks for revenue_amount_cents, but its input contains revenue_cents. The example fixes that mismatch and distinguishes the engine release from adjacent products with different maturity.
+    outcome: |
+      Compare the distribution choices, inspect the column reference and retain the 12,500-cent business expectation.
 default_milestone: summit-ga
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

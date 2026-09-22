@@ -44,9 +44,17 @@ sources:
   retrieved: '2026-09-21'
   supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
     from the package.
+- id: src-3
+  title: Historical source archive reviewed for example syntax
+  url: https://pypi.org/project/dbt-core/0.20.0/
+  retrieved: '2026-09-21'
+  supports: Original source package and tagged release evidence for the example’s syntax; review is not runtime
+    execution.
+  rechecked: '2026-09-22'
 narrative_evidence:
 - src-1
 - src-2
+- src-3
 walkthrough:
   id: wt-0.20
   learning_objective: |
@@ -79,6 +87,30 @@ walkthrough:
     evidence:
     - src-1
     - src-2
+    - src-3
+    code:
+    - language: sql
+      filename: tests/payments_have_orders.sql
+      content: |
+        select p.payment_id, p.order_id, p.amount_cents
+        from {{ ref("payments") }} as p
+        left join {{ ref("orders") }} as o on p.order_id = o.order_id
+        where o.order_id is null
+      highlight_lines:
+      - 3
+      - 4
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: analyses/count_orphans.sql
+      content: |
+        select count(*) as actual_violations
+        from {{ ref("payments") }} as p
+        left join {{ ref("orders") }} as o on p.order_id = o.order_id
+        where o.order_id is null
+      highlight_lines:
+      - 1
+      - 4
+      purpose: authored executable syntax; illustration only
   - id: test
     title: Store the failing rows
     explanation: |
@@ -106,10 +138,15 @@ walkthrough:
         from {{ ref("payments") }} p
         left join {{ ref("orders") }} o on p.order_id = o.order_id
         where o.order_id is null
-      highlight_lines: []
+      highlight_lines:
+      - 1
+      - 2
+      - 3
+      - 4
     evidence:
     - src-1
     - src-2
+    - src-3
   - id: inspect
     title: Inspect the prepared failure relation
     explanation: |
@@ -137,13 +174,59 @@ walkthrough:
     evidence:
     - src-1
     - src-2
+    - src-3
+    code:
+    - language: sql
+      filename: tests/payments_have_orders.sql
+      content: |
+        {{ config(store_failures=true) }}
+        select p.payment_id, p.order_id, p.amount_cents
+        from {{ ref("payments") }} p
+        left join {{ ref("orders") }} o on p.order_id = o.order_id
+        where o.order_id is null
+      highlight_lines:
+      - 1
+      - 2
+      - 3
+      - 4
+    - language: sql
+      filename: inspection/stored_failures.sql
+      content: |
+        -- Default audit schema with target.schema = waffle.
+        select payment_id, order_id, amount_cents
+        from waffle_dbt_test__audit.payments_have_orders;
+      highlight_lines:
+      - 2
+      - 3
+      purpose: authored executable syntax; illustration only
+    - language: shell
+      filename: commands.sh
+      content: |
+        dbt test --select payments_have_orders
+      highlight_lines:
+      - 1
+      purpose: authored executable syntax; illustration only
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
     - src-1
     - src-2
+    - src-3
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+      The stored-failure inspection assumes the default audit schema and target.schema=waffle; permissions must allow its creation. A custom schema macro would change the physical name.
+    code_review:
+      reviewed_on: '2026-09-22'
+      historical_cutoff: '2026-09-21'
+      method: Original source/archive and release documentation inspection; no historical dbt execution.
+  intro:
+    can_now:
+    - Save failing test rows in the database for inspection.
+    - Configure test filters, limits and warning or error thresholds.
+    scenario: |
+      A relationship test finds one payment whose order is missing. The shop needs the offending row, not just a red test count.
+    outcome: |
+      See the test SQL, persistence setting and the exact 400-cent violation.
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

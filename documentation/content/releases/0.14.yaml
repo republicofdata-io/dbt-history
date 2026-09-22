@@ -44,9 +44,17 @@ sources:
   retrieved: '2026-09-21'
   supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
     from the package.
+- id: src-3
+  title: Historical source archive reviewed for example syntax
+  url: https://pypi.org/project/dbt-core/0.14.0/
+  retrieved: '2026-09-21'
+  supports: Original source package and tagged release evidence for the example’s syntax; review is not runtime
+    execution.
+  rechecked: '2026-09-22'
 narrative_evidence:
 - src-1
 - src-2
+- src-3
 walkthrough:
   id: wt-0.14
   learning_objective: |
@@ -78,6 +86,33 @@ walkthrough:
     evidence:
     - src-1
     - src-2
+    - src-3
+    code:
+    - language: sql
+      filename: snapshots/customers_history.sql
+      content: |
+        -- Fixture phase: Before the declared customer-city change.
+        {% snapshot customers_history %}
+        {{ config(target_schema="snapshots", unique_key="customer_id",
+            strategy="check", check_cols=["city"]) }}
+        select customer_id, name, city from raw.customers
+        {% endsnapshot %}
+      highlight_lines:
+      - 3
+      - 4
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: analyses/current_customer.sql
+      content: |
+        -- Fixture phase: Before the declared customer-city change.
+        select customer_id, name, city from raw.customers
+        where customer_id = 1
+      highlight_lines:
+      - 3
+      purpose: authored executable syntax; illustration only
+    data_context:
+      dataset_variant: base
+      phase: Before the declared customer-city change.
   - id: change
     title: Observe the declared update
     explanation: |
@@ -109,10 +144,15 @@ walkthrough:
             strategy="check", check_cols=["city"]) }}
         select * from raw.customers
         {% endsnapshot %}
-      highlight_lines: []
+      highlight_lines:
+      - 1
+      - 2
+      - 3
+      - 4
     evidence:
     - src-1
     - src-2
+    - src-3
   - id: history
     title: Keep both versions
     explanation: |
@@ -139,13 +179,63 @@ walkthrough:
     evidence:
     - src-1
     - src-2
+    - src-3
+    code:
+    - language: sql
+      filename: snapshots/customers_history.sql
+      content: |
+        -- Fixture phase: After the second snapshot observation.
+        {% snapshot customers_history %}
+        {{ config(target_schema="snapshots", unique_key="customer_id",
+            strategy="check", check_cols=["city"]) }}
+        select customer_id, name, city from raw.customers
+        {% endsnapshot %}
+      highlight_lines:
+      - 3
+      - 4
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: analyses/customer_history.sql
+      content: |
+        -- Fixture phase: After the second snapshot observation.
+        select customer_id, city, dbt_valid_from, dbt_valid_to
+        from snapshots.customers_history
+        where customer_id = 1
+        order by dbt_valid_from
+      highlight_lines:
+      - 2
+      - 5
+      purpose: authored executable syntax; illustration only
+    - language: shell
+      filename: commands.sh
+      content: |
+        dbt snapshot
+      highlight_lines:
+      - 1
+      purpose: authored executable syntax; illustration only
+    data_context:
+      dataset_variant: customer-city-change
+      phase: After the second snapshot observation.
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
     - src-1
     - src-2
+    - src-3
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+    code_review:
+      reviewed_on: '2026-09-22'
+      historical_cutoff: '2026-09-21'
+      method: Original source/archive and release documentation inspection; no historical dbt execution.
+  intro:
+    can_now:
+    - Track changing records with the new snapshot workflow, replacing archives.
+    - Choose whether a data test warns or errors.
+    scenario: |
+      Ada’s current city changes from Montréal to Québec. The shop needs to retain both observations without changing the location assigned to old orders.
+    outcome: |
+      Inspect the check-strategy snapshot and its two historical versions.
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

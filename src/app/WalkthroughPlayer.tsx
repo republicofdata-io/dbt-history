@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Camera, ChevronLeft, ChevronRight, FlaskConical, RotateCcw } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import CodeBlock from "@/components/CodeBlock";
+import CodeFiles from "@/components/CodeFiles";
 import StateView from "@/components/StateView";
 import EvidenceDrawer, { SourceList } from "@/components/EvidenceDrawer";
 import { formatDate } from "@/content/dates";
@@ -132,13 +132,17 @@ export default function WalkthroughPlayer({ release, walkthrough, step, onStep, 
           <div className={cn("grid min-h-0 gap-4", current!.code.length && current!.state ? "lg:grid-cols-2" : "")}>
             {current!.code.length > 0 && (
               <div className="flex min-h-0 flex-col gap-2">
-                {current!.code.map((c, i) => (
-                  <CodeBlock key={i} block={c} />
-                ))}
+                <CodeFiles key={`${release.id}/${current!.id}`} blocks={current!.code} />
               </div>
             )}
             {current!.state && (
               <div className="flex min-h-0 flex-col gap-2">
+                {current!.data_context && (
+                  <p className="provenance">
+                    Data: {current!.data_context.dataset_variant ?? walkthrough.dataset_variant}
+                    {current!.data_context.phase ? ` · ${current!.data_context.phase}` : ""}
+                  </p>
+                )}
                 <StateView state={current!.state} />
               </div>
             )}

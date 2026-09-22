@@ -44,6 +44,7 @@ sources:
   retrieved: '2026-09-21'
   supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
     from the package.
+  rechecked: '2026-09-22'
 narrative_evidence:
 - src-1
 - src-2
@@ -90,7 +91,21 @@ walkthrough:
                 data_type: integer
               - name: revenue_cents
                 data_type: bigint
-      highlight_lines: []
+      highlight_lines:
+      - 1
+      - 2
+      - 3
+      - 4
+    - language: sql
+      filename: models/revenue_by_location.sql (corrected)
+      content: |
+        select cast(location_id as integer) as location_id,
+            cast(sum(revenue_cents) as bigint) as revenue_cents
+        from {{ ref("order_revenue") }}
+        group by location_id
+      highlight_lines:
+      - 2
+      purpose: authored executable syntax; illustration only
     evidence:
     - src-1
     - src-2
@@ -117,6 +132,36 @@ walkthrough:
     evidence:
     - src-1
     - src-2
+    code:
+    - language: yaml
+      filename: models/schema.yml
+      content: |
+        version: 2
+        models:
+          - name: revenue_by_location
+            config:
+              contract:
+                enforced: true
+            columns:
+              - name: location_id
+                data_type: integer
+              - name: revenue_cents
+                data_type: bigint
+      highlight_lines:
+      - 1
+      - 2
+      - 3
+      - 4
+    - language: sql
+      filename: models/revenue_by_location.sql (proposed edit)
+      content: |
+        select cast(location_id as integer) as location_id,
+            cast(sum(revenue_cents) as bigint) as net_cents
+        from {{ ref("order_revenue") }}
+        group by location_id
+      highlight_lines:
+      - 2
+      purpose: authored executable syntax; illustration only
   - id: repair
     title: Restore the public name
     explanation: |
@@ -154,6 +199,36 @@ walkthrough:
     evidence:
     - src-1
     - src-2
+    code:
+    - language: yaml
+      filename: models/schema.yml
+      content: |
+        version: 2
+        models:
+          - name: revenue_by_location
+            config:
+              contract:
+                enforced: true
+            columns:
+              - name: location_id
+                data_type: integer
+              - name: revenue_cents
+                data_type: bigint
+      highlight_lines:
+      - 1
+      - 2
+      - 3
+      - 4
+    - language: sql
+      filename: models/revenue_by_location.sql (corrected)
+      content: |
+        select cast(location_id as integer) as location_id,
+            cast(sum(revenue_cents) as bigint) as revenue_cents
+        from {{ ref("order_revenue") }}
+        group by location_id
+      highlight_lines:
+      - 2
+      purpose: authored executable syntax; illustration only
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -162,5 +237,18 @@ walkthrough:
     - src-2
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+    code_review:
+      reviewed_on: '2026-09-22'
+      historical_cutoff: '2026-09-21'
+      method: Original source/archive and release documentation inspection; no historical dbt execution.
+  intro:
+    can_now:
+    - Declare a model’s column names and types as an enforced contract where supported.
+    - Version model interfaces and control access between project groups.
+    - Preview a model with dbt show.
+    scenario: |
+      A proposed edit renames revenue_cents to net_cents. The values may still be right, but the dashboard’s expected interface would break.
+    outcome: |
+      See the contract, mismatching SQL and corrected public column name.
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

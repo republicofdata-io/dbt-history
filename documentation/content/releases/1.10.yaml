@@ -67,6 +67,7 @@ sources:
   retrieved: '2026-09-21'
   supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
     from the package.
+  rechecked: '2026-09-22'
 - id: src-3
   title: Fivetran acquires Tobiko
   url: https://www.fivetran.com/press/fivetran-acquires-tobiko-data-to-power-the-next-generation-of-advanced-ai-ready-data-transformation
@@ -133,7 +134,11 @@ walkthrough:
           - name: revenue_by_location
             description: Revenue before refunds.
             description: Payments minus refunds, in cents.
-      highlight_lines: []
+      highlight_lines:
+      - 1
+      - 2
+      - 3
+      - 4
     evidence:
     - src-1
     - src-2
@@ -160,6 +165,20 @@ walkthrough:
     evidence:
     - src-1
     - src-2
+    code:
+    - language: yaml
+      filename: models/schema.yml
+      content: |
+        version: 2
+        models:
+          - name: revenue_by_location
+            description: Revenue before refunds.
+            description: Payments minus refunds, in cents.
+      highlight_lines:
+      - 1
+      - 2
+      - 3
+      - 4
   - id: correct
     title: Keep one clear definition
     explanation: |
@@ -188,7 +207,11 @@ walkthrough:
         models:
           - name: revenue_by_location
             description: Payments minus refunds, in cents.
-      highlight_lines: []
+      highlight_lines:
+      - 1
+      - 2
+      - 3
+      - 4
     evidence:
     - src-1
     - src-2
@@ -204,6 +227,19 @@ walkthrough:
     - src-6
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+    code_review:
+      reviewed_on: '2026-09-22'
+      historical_cutoff: '2026-09-21'
+      method: Original source/archive and release documentation inspection; no historical dbt execution.
+  intro:
+    can_now:
+    - Detect duplicate or misplaced configuration keys more explicitly.
+    - Opt into checks of documented macro argument names and types.
+    - Calculate source freshness through a custom SQL query.
+    scenario: |
+      The revenue model’s YAML contains two descriptions with conflicting meanings. The shop removes the ambiguity while keeping the accounting definition unchanged.
+    outcome: |
+      See the invalid mapping and its corrected single definition.
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.
 default_milestone: 1.10.0

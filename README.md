@@ -97,3 +97,7 @@ The first complete content set was authored on 22 September 2026, with history f
 Read [the content index](documentation/content/content-index.yaml) for rendering conventions and retained uncertainty, and [the validation report](documentation/content/validation-report.yaml) for coverage and arithmetic checks. The existing 16 app/content tests also passed using the bundled current Node runtime; the shell’s older Node cannot start this Vite/Vitest toolchain.
 
 Do not discard the content’s extra qualification fields when loading it: licence versus access, announced-but-unavailable products, private/public beta, bounded ownership/name changes and the explicit alpha maturity override affect what visitors should see. Ecosystem content is a list with external identities nested under `product_definition`. The completed merger uses `kind: acquisition_closed` plus `transaction_type: merger`, within the requested event enum.
+
+### Walkthrough first screens and code
+
+All 36 walkthroughs now have an authored `intro` with version-specific capabilities and a self-contained scenario. All 110 steps include non-shell code, with 281 blocks of at most 17 lines. Commands follow the relevant model, test or configuration. Original fields, snippets and prepared values are preserved; examples remain illustrations. See `walkthrough_enrichment` in the content validation report for the independent checks and historical syntax corrections.

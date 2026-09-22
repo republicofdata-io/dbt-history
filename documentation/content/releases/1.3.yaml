@@ -45,6 +45,7 @@ sources:
   retrieved: '2026-09-21'
   supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
     from the package.
+  rechecked: '2026-09-22'
 narrative_evidence:
 - src-1
 - src-2
@@ -83,6 +84,47 @@ walkthrough:
     evidence:
     - src-1
     - src-2
+    code:
+    - language: sql
+      filename: models/order_amounts.sql
+      content: |
+        with paid as (
+            select order_id, sum(amount_cents) as payment_cents
+            from raw.payments group by order_id
+        ), refunded as (
+            select order_id, sum(amount_cents) as refund_cents
+            from raw.refunds group by order_id
+        )
+        select o.*, coalesce(p.payment_cents, 0) as payment_cents,
+            coalesce(r.refund_cents, 0) as refund_cents
+        from raw.orders as o
+        left join paid as p on o.order_id = p.order_id
+        left join refunded as r on o.order_id = r.order_id
+      highlight_lines:
+      - 2
+      - 5
+      - 8
+      - 9
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/order_revenue.sql
+      content: |
+        select *, payment_cents - refund_cents as revenue_cents
+        from {{ ref("order_amounts") }}
+      highlight_lines:
+      - 1
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: analyses/order_1042.sql
+      content: |
+        select order_id, payment_cents, refund_cents,
+            payment_cents - refund_cents as revenue_cents
+        from {{ ref("order_amounts") }}
+        where order_id = 1042
+      highlight_lines:
+      - 2
+      - 4
+      purpose: authored executable syntax; illustration only
   - id: python
     title: Add a simple dataframe step
     explanation: |
@@ -109,7 +151,11 @@ walkthrough:
             dbt.config(materialized="table")
             orders = dbt.ref("order_revenue")
             return orders.select("order_id", "revenue_cents")
-      highlight_lines: []
+      highlight_lines:
+      - 1
+      - 2
+      - 3
+      - 4
     evidence:
     - src-1
     - src-2
@@ -138,6 +184,30 @@ walkthrough:
     evidence:
     - src-1
     - src-2
+    code:
+    - language: python
+      filename: models/python_order_revenue.py
+      content: |
+        def model(dbt, session):
+            dbt.config(materialized="table")
+            orders = dbt.ref("order_revenue")
+            return orders.select("order_id", "revenue_cents")
+      highlight_lines:
+      - 1
+      - 2
+      - 3
+      - 4
+    - language: sql
+      filename: inspection/python_totals.sql
+      content: |
+        select sum(revenue_cents) as total_cents
+        from python_order_revenue;
+        select order_id, revenue_cents from python_order_revenue
+        where order_id = 1042;
+      highlight_lines:
+      - 1
+      - 4
+      purpose: authored executable syntax; illustration only
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -146,5 +216,17 @@ walkthrough:
     - src-2
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+    code_review:
+      reviewed_on: '2026-09-22'
+      historical_cutoff: '2026-09-21'
+      method: Original source/archive and release documentation inspection; no historical dbt execution.
+  intro:
+    can_now:
+    - Build Python models inside the dbt graph on supported adapters.
+    - Use supported incremental materializations for Python models.
+    scenario: |
+      The shop passes a defined SQL dataset into a small Python dataframe model. The selected columns and accounting values stay the same.
+    outcome: |
+      Read the SQL input and Snowpark-shaped Python model with its adapter boundary visible.
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

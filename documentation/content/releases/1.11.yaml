@@ -59,6 +59,7 @@ sources:
   retrieved: '2026-09-21'
   supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
     from the package.
+  rechecked: '2026-09-22'
 - id: src-3
   title: Developer Agent preview
   url: https://www.getdbt.com/blog/the-dbt-developer-agent-is-now-in-preview
@@ -75,12 +76,38 @@ sources:
   url: https://www.getdbt.com/blog/what-we-announced-at-snowflake-summit-and-why-it-matters
   retrieved: '2026-09-21'
   supports: Merger closes; Core v2 alpha and dbt State preview announced. Separate these from September GA.
+- id: src-6
+  title: 1.11.0 function contracts
+  url: https://files.pythonhosted.org/packages/ba/4f/f0a8689231b982d06c293e745ff3a800c6423a7fc32f19d08496e3a6c9ec/dbt_core-1.11.0.tar.gz
+  retrieved: '2026-09-22'
+  supports: Function arguments and returns contracts at this exact release.
+  historical_scope: Syntax at the named immutable version; research cutoff remains 2026-09-21.
+  source_path: dbt/artifacts/resources/v1/function.py
+  sha256: c943e4b59350a0d013708059f4dada0aa349c12942f39425803c1d0019879bd6
+- id: src-7
+  title: 1.11.0 function context
+  url: https://files.pythonhosted.org/packages/ba/4f/f0a8689231b982d06c293e745ff3a800c6423a7fc32f19d08496e3a6c9ec/dbt_core-1.11.0.tar.gz
+  retrieved: '2026-09-22'
+  supports: function() dependency and relation resolution.
+  historical_scope: Syntax at the named immutable version; research cutoff remains 2026-09-21.
+  source_path: dbt/context/providers.py
+  sha256: c943e4b59350a0d013708059f4dada0aa349c12942f39425803c1d0019879bd6
+- id: src-8
+  title: SQL UDF configuration reference
+  url: https://docs.getdbt.com/docs/build/udfs
+  retrieved: '2026-09-22'
+  supports: Snowflake expression-body example; fields cross-checked with 1.11.0 source, excluding later overload/JavaScript
+    additions.
+  historical_scope: Syntax at the named immutable version; research cutoff remains 2026-09-21.
 narrative_evidence:
 - src-1
 - src-2
 - src-3
 - src-4
 - src-5
+- src-6
+- src-7
+- src-8
 walkthrough:
   id: wt-1.11
   learning_objective: |
@@ -112,6 +139,46 @@ walkthrough:
     evidence:
     - src-1
     - src-2
+    - src-6
+    - src-7
+    - src-8
+    code:
+    - language: sql
+      filename: functions/cents_to_units.sql
+      content: |
+        amount_cents / 100.0
+      highlight_lines:
+      - 1
+      purpose: authored executable syntax; illustration only
+    - language: yaml
+      filename: functions/cents_to_units.yml
+      content: |
+        functions:
+          - name: cents_to_units
+            config:
+              schema: finance_functions
+            arguments:
+              - name: amount_cents
+                data_type: number
+            returns:
+              data_type: number(18, 2)
+      highlight_lines:
+      - 2
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/revenue_display.sql
+      content: |
+        select order_id, revenue_cents,
+            {{ function("cents_to_units") }}(revenue_cents) as revenue_units
+        from {{ ref("order_revenue") }}
+      highlight_lines:
+      - 2
+      purpose: authored executable syntax; illustration only
   - id: function
     title: Make the function a dependency
     explanation: |
@@ -143,6 +210,53 @@ walkthrough:
     evidence:
     - src-1
     - src-2
+    - src-6
+    - src-7
+    - src-8
+    code:
+    - language: sql
+      filename: functions/cents_to_units.sql
+      content: |
+        amount_cents / 100.0
+      highlight_lines:
+      - 1
+      purpose: authored executable syntax; illustration only
+    - language: yaml
+      filename: functions/cents_to_units.yml
+      content: |
+        functions:
+          - name: cents_to_units
+            config:
+              schema: finance_functions
+            arguments:
+              - name: amount_cents
+                data_type: number
+            returns:
+              data_type: number(18, 2)
+      highlight_lines:
+      - 2
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/revenue_display.sql
+      content: |
+        select order_id, revenue_cents,
+            {{ function("cents_to_units") }}(revenue_cents) as revenue_units
+        from {{ ref("order_revenue") }}
+      highlight_lines:
+      - 2
+      purpose: authored executable syntax; illustration only
+    - language: shell
+      filename: commands.sh
+      content: |
+        dbt build --select +revenue_display
+      highlight_lines:
+      - 1
+      purpose: authored executable syntax; illustration only
   - id: distinction
     title: Separate two reuse mechanisms
     explanation: |
@@ -168,6 +282,63 @@ walkthrough:
     evidence:
     - src-1
     - src-2
+    - src-6
+    - src-7
+    - src-8
+    code:
+    - language: sql
+      filename: functions/cents_to_units.sql
+      content: |
+        amount_cents / 100.0
+      highlight_lines:
+      - 1
+      purpose: authored executable syntax; illustration only
+    - language: yaml
+      filename: functions/cents_to_units.yml
+      content: |
+        functions:
+          - name: cents_to_units
+            config:
+              schema: finance_functions
+            arguments:
+              - name: amount_cents
+                data_type: number
+            returns:
+              data_type: number(18, 2)
+      highlight_lines:
+      - 2
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/revenue_display.sql
+      content: |
+        select order_id, revenue_cents,
+            {{ function("cents_to_units") }}(revenue_cents) as revenue_units
+        from {{ ref("order_revenue") }}
+      highlight_lines:
+      - 2
+      purpose: authored executable syntax; illustration only
+    - language: jinja
+      filename: macros/cents_to_units.sql
+      content: |
+        {% macro cents_to_units_sql(column_name) %}
+          ({{ column_name }} / 100.0)
+        {% endmacro %}
+      highlight_lines:
+      - 2
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/revenue_display_macro.sql
+      content: |
+        select order_id,
+            {{ cents_to_units_sql("revenue_cents") }} as revenue_units
+        from {{ ref("order_revenue") }}
+      highlight_lines:
+      - 2
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -177,8 +348,24 @@ walkthrough:
     - src-3
     - src-4
     - src-5
+    - src-6
+    - src-7
+    - src-8
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+      The concrete UDF recipe is Snowflake SQL: an expression body, arguments/returns properties and function() reference. These fields were checked in the 1.11.0 parser/contracts; it is not a portable promise for every adapter. Function deployment still requires a compatible adapter and warehouse privileges.
+    code_review:
+      reviewed_on: '2026-09-22'
+      historical_cutoff: '2026-09-21'
+      method: Original source/archive and release documentation inspection; no historical dbt execution.
+  intro:
+    can_now:
+    - Manage supported warehouse functions as project resources.
+    - Make model references to those functions visible in the dependency graph.
+    scenario: |
+      The shop keeps revenue in cents but wants a reusable warehouse function for currency-unit display. Unlike a macro, the deployed function can be called by warehouse SQL.
+    outcome: |
+      Read the function body, properties and consuming model on a named supported adapter.
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.
 default_milestone: 1.11.0

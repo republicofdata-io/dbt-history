@@ -56,6 +56,7 @@ sources:
   retrieved: '2026-09-21'
   supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
     from the package.
+  rechecked: '2026-09-22'
 - id: src-4
   title: dbt 0.8.3 patch evidence
   url: https://github.com/dbt-labs/dbt/releases/tag/v0.8.3
@@ -102,6 +103,40 @@ walkthrough:
     - src-2
     - src-3
     - src-4
+    code:
+    - language: sql
+      filename: models/payments_by_order.sql
+      content: |
+        select order_id, sum(amount_cents) as payment_cents
+        from {{ ref("payments") }}
+        group by order_id
+      highlight_lines:
+      - 1
+      - 2
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/refunds_by_order.sql
+      content: |
+        select order_id, sum(amount_cents) as refund_cents
+        from {{ ref("refunds") }}
+        group by order_id
+      highlight_lines:
+      - 1
+      - 2
+      purpose: authored executable syntax; illustration only
+    - language: yaml
+      filename: profiles.yml (target excerpt)
+      content: |
+        waffle_shop:
+          target: dev
+          outputs:
+            dev:
+              type: redshift
+              threads: 2
+      highlight_lines:
+      - 5
+      - 6
+      purpose: authored executable syntax; illustration only
   - id: transactions
     title: Give each model its transaction
     explanation: |
@@ -127,6 +162,40 @@ walkthrough:
     - src-2
     - src-3
     - src-4
+    code:
+    - language: sql
+      filename: models/payments_by_order.sql
+      content: |
+        select order_id, sum(amount_cents) as payment_cents
+        from {{ ref("payments") }}
+        group by order_id
+      highlight_lines:
+      - 1
+      - 2
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/refunds_by_order.sql
+      content: |
+        select order_id, sum(amount_cents) as refund_cents
+        from {{ ref("refunds") }}
+        group by order_id
+      highlight_lines:
+      - 1
+      - 2
+      purpose: authored executable syntax; illustration only
+    - language: yaml
+      filename: profiles.yml (target excerpt)
+      content: |
+        waffle_shop:
+          target: dev
+          outputs:
+            dev:
+              type: redshift
+              threads: 2
+      highlight_lines:
+      - 5
+      - 6
+      purpose: authored executable syntax; illustration only
   - id: combine
     title: Wait before combining
     explanation: |
@@ -166,6 +235,47 @@ walkthrough:
     - src-2
     - src-3
     - src-4
+    code:
+    - language: sql
+      filename: models/order_amounts.sql
+      content: |
+        select o.*, coalesce(p.payment_cents, 0) as payment_cents,
+            coalesce(r.refund_cents, 0) as refund_cents
+        from {{ ref("orders") }} as o
+        left join {{ ref("payments_by_order") }} as p
+          on o.order_id = p.order_id
+        left join {{ ref("refunds_by_order") }} as r
+          on o.order_id = r.order_id
+      highlight_lines:
+      - 3
+      - 4
+      - 6
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/order_revenue.sql
+      content: |
+        select *, payment_cents - refund_cents as revenue_cents
+        from {{ ref("order_amounts") }}
+      highlight_lines:
+      - 1
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/revenue_by_location.sql
+      content: |
+        select
+            r.location_id, l.name as location,
+            sum(r.payment_cents) as payment_cents,
+            sum(r.refund_cents) as refund_cents,
+            sum(r.revenue_cents) as revenue_cents
+        from {{ ref("order_revenue") }} as r
+        join raw.locations as l on r.location_id = l.location_id
+        group by r.location_id, l.name
+        order by r.location_id
+      highlight_lines:
+      - 3
+      - 4
+      - 5
+      purpose: authored executable syntax; illustration only
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -176,5 +286,19 @@ walkthrough:
     - src-4
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+      Separate transactions are adapter behavior, not a user-written transaction toggle. The two model files and two-thread profile are the inputs to that behavior. No concurrency measurement or transaction log is fabricated.
+    code_review:
+      reviewed_on: '2026-09-22'
+      historical_cutoff: '2026-09-21'
+      method: Original source/archive and release documentation inspection; no historical dbt execution.
+  intro:
+    can_now:
+    - Give independently running models separate transaction boundaries.
+    - Extend materialization behavior through macros.
+    - From 0.8.3, target BigQuery.
+    scenario: |
+      The payment and refund aggregates are independent work. The example follows the SQL on each branch and the transaction boundaries that allow it to proceed separately.
+    outcome: |
+      See why parallel scheduling still waits for both inputs before producing revenue.
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

@@ -44,9 +44,17 @@ sources:
   retrieved: '2026-09-21'
   supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
     from the package.
+- id: src-3
+  title: Historical source archive reviewed for example syntax
+  url: https://pypi.org/project/dbt-core/0.16.0/
+  retrieved: '2026-09-21'
+  supports: Original source package and tagged release evidence for the example’s syntax; review is not runtime
+    execution.
+  rechecked: '2026-09-22'
 narrative_evidence:
 - src-1
 - src-2
+- src-3
 walkthrough:
   id: wt-0.16
   learning_objective: |
@@ -78,6 +86,39 @@ walkthrough:
     evidence:
     - src-1
     - src-2
+    - src-3
+    code:
+    - language: sql
+      filename: models/revenue_by_location.sql
+      content: |
+        select
+            r.location_id, l.name as location,
+            sum(r.payment_cents) as payment_cents,
+            sum(r.refund_cents) as refund_cents,
+            sum(r.revenue_cents) as revenue_cents
+        from {{ ref("order_revenue") }} as r
+        join raw.locations as l on r.location_id = l.location_id
+        group by r.location_id, l.name
+        order by r.location_id
+      highlight_lines:
+      - 3
+      - 4
+      - 5
+      purpose: authored executable syntax; illustration only
+    - language: yaml
+      filename: models/schema.yml
+      content: |
+        version: 2
+        models:
+          - name: revenue_by_location
+            meta:
+              owner: finance
+              unit: cents
+      highlight_lines:
+      - 1
+      - 2
+      - 3
+      - 4
   - id: meta
     title: Attach project context
     explanation: |
@@ -108,10 +149,15 @@ walkthrough:
             meta:
               owner: finance
               unit: cents
-      highlight_lines: []
+      highlight_lines:
+      - 1
+      - 2
+      - 3
+      - 4
     evidence:
     - src-1
     - src-2
+    - src-3
   - id: boundary
     title: Understand what metadata does
     explanation: |
@@ -137,13 +183,59 @@ walkthrough:
     evidence:
     - src-1
     - src-2
+    - src-3
+    code:
+    - language: sql
+      filename: models/revenue_by_location.sql
+      content: |
+        select
+            r.location_id, l.name as location,
+            sum(r.payment_cents) as payment_cents,
+            sum(r.refund_cents) as refund_cents,
+            sum(r.revenue_cents) as revenue_cents
+        from {{ ref("order_revenue") }} as r
+        join raw.locations as l on r.location_id = l.location_id
+        group by r.location_id, l.name
+        order by r.location_id
+      highlight_lines:
+      - 3
+      - 4
+      - 5
+      purpose: authored executable syntax; illustration only
+    - language: yaml
+      filename: models/schema.yml
+      content: |
+        version: 2
+        models:
+          - name: revenue_by_location
+            meta:
+              owner: finance
+              unit: cents
+      highlight_lines:
+      - 1
+      - 2
+      - 3
+      - 4
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
     - src-1
     - src-2
+    - src-3
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+    code_review:
+      reviewed_on: '2026-09-22'
+      historical_cutoff: '2026-09-21'
+      method: Original source/archive and release documentation inspection; no historical dbt execution.
+  intro:
+    can_now:
+    - Attach custom metadata such as a model’s responsible team.
+    - Document more resource types, including macros, seeds and snapshots.
+    scenario: |
+      A finance team needs to know who maintains the shop’s revenue definition. The model carries that context alongside its SQL.
+    outcome: |
+      See metadata describe responsibility without pretending to grant warehouse permissions.
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

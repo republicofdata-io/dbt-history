@@ -44,6 +44,7 @@ sources:
   retrieved: '2026-09-21'
   supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
     from the package.
+  rechecked: '2026-09-22'
 narrative_evidence:
 - src-1
 - src-2
@@ -78,6 +79,19 @@ walkthrough:
     evidence:
     - src-1
     - src-2
+    code:
+    - language: sql
+      filename: models/revenue_by_location.sql
+      content: |
+        {{ config(grants={"select": ["finance_reader"]}) }}
+        select location_id, sum(revenue_cents) as revenue_cents
+        from {{ ref("order_revenue") }}
+        group by location_id
+      highlight_lines:
+      - 1
+      - 2
+      - 3
+      - 4
   - id: grant
     title: Declare the intended grant
     explanation: |
@@ -104,7 +118,11 @@ walkthrough:
         select location_id, sum(revenue_cents) as revenue_cents
         from {{ ref("order_revenue") }}
         group by location_id
-      highlight_lines: []
+      highlight_lines:
+      - 1
+      - 2
+      - 3
+      - 4
     evidence:
     - src-1
     - src-2
@@ -145,6 +163,36 @@ walkthrough:
     evidence:
     - src-1
     - src-2
+    code:
+    - language: sql
+      filename: models/revenue_by_location.sql
+      content: |
+        {{ config(grants={"select": ["finance_reader"]}) }}
+        select location_id, sum(revenue_cents) as revenue_cents
+        from {{ ref("order_revenue") }}
+        group by location_id
+      highlight_lines:
+      - 1
+      - 2
+      - 3
+      - 4
+    - language: sql
+      filename: models/revenue_by_location.sql
+      content: |
+        select
+            r.location_id, l.name as location,
+            sum(r.payment_cents) as payment_cents,
+            sum(r.refund_cents) as refund_cents,
+            sum(r.revenue_cents) as revenue_cents
+        from {{ ref("order_revenue") }} as r
+        join raw.locations as l on r.location_id = l.location_id
+        group by r.location_id, l.name
+        order by r.location_id
+      highlight_lines:
+      - 3
+      - 4
+      - 5
+      purpose: authored executable syntax; illustration only
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -153,5 +201,17 @@ walkthrough:
     - src-2
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+    code_review:
+      reviewed_on: '2026-09-22'
+      historical_cutoff: '2026-09-21'
+      method: Original source/archive and release documentation inspection; no historical dbt execution.
+  intro:
+    can_now:
+    - Declare model grants alongside SQL.
+    - Use Core’s newly included cross-database macros.
+    scenario: |
+      The finance reader needs access to the location revenue model. The shop makes that read-access intent part of the model configuration.
+    outcome: |
+      Separate the permission change from the unchanged revenue values.
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

@@ -136,3 +136,14 @@ authoring_corrections:
     rechecked: '2026-09-22'
 publication_gate: |
   Content files and the existing app’s content tests pass. The coding agent should verify that the rendered UI retains the qualifications listed above, including licence/access separation, upcoming products, private beta labels and bounded ownership dates. This is an integration review, not a request to add execution.
+walkthrough_enrichment:
+  reviewed_on: '2026-09-22'
+  intro_count: 36
+  code_blocks: 281
+  maximum_lines_per_block: 17
+  notes:
+  - Every step has non-shell code; commands are last.
+  - intro.can_now contains 2–4 exact-version capabilities; scenario stands alone.
+  - data_context records before/after fixture phases without changing base rows.
+  - The 0.2.0 relationship declaration uses parent orders pointing to child payments.
+  - All original fields, original code blocks and prepared table values were preserved.

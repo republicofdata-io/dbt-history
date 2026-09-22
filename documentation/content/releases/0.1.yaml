@@ -48,6 +48,7 @@ sources:
   retrieved: '2026-09-21'
   supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
     from the package.
+  rechecked: '2026-09-22'
 - id: src-2
   title: dbt 0.1 package evidence
   url: https://pypi.org/pypi/dbt/json
@@ -126,7 +127,11 @@ walkthrough:
         left join payment_totals on orders.order_id = payment_totals.order_id
         left join refund_totals on orders.order_id = refund_totals.order_id
         group by orders.location_id
-      highlight_lines: []
+      highlight_lines:
+      - 1
+      - 2
+      - 3
+      - 4
     evidence:
     - src-1
     - src-2
@@ -161,6 +166,17 @@ walkthrough:
           materialized: true
       highlight_lines:
       - 2
+    - language: sql
+      filename: models/order_payments.sql
+      content: |
+        select order_id, sum(amount_cents) as payment_cents
+        from raw.payments
+        group by order_id
+      highlight_lines:
+      - 1
+      - 2
+      - 3
+      purpose: authored executable syntax; illustration only
     evidence:
     - src-1
     - src-2
@@ -211,5 +227,18 @@ walkthrough:
     - src-3
     limitations: |
       Illustration only. Early engine code targets Redshift; no local compatibility is claimed. The 0.1.1 project setting and 0.1.14 ref helper were inspected in original package source; the exact ref introduction patch remains unknown.
+    code_review:
+      reviewed_on: '2026-09-22'
+      historical_cutoff: '2026-09-21'
+      method: Original source/archive and release documentation inspection; no historical dbt execution.
+  intro:
+    can_now:
+    - Turn SQL files into stored models with the early Boolean materialization setting.
+    - By 0.1.14, refer to another model by name and let dbt track the dependency; the first introducing patch remains
+      uncertain.
+    scenario: |
+      Waffle Shop needs the same revenue calculation rebuilt every day. The example starts with 0.1.1 and then advances explicitly to the later 0.1.14 dependency workflow.
+    outcome: |
+      See the same revenue rule represented in two historical checkpoints without importing modern configuration.
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

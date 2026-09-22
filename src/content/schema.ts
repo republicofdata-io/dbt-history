@@ -97,6 +97,8 @@ export const CodeBlock = z.object({
   content: z.string(),
   highlight_lines: z.array(z.number().int().positive()).default([]),
   caption: z.string().nullable().optional(),
+  /** Authoring note on the block's status (e.g. "authored executable syntax; illustration only"). */
+  purpose: z.string().nullable().optional(),
 });
 export type CodeBlock = z.infer<typeof CodeBlock>;
 
@@ -155,6 +157,8 @@ export const Step = z.object({
   state: StepState.nullable().optional(),
   takeaway: z.string().nullable().optional(),
   evidence: z.array(z.string()).default([]),
+  /** Which fixture phase the step's data shows (existing tables versus newly arrived inputs). */
+  data_context: z.object({ dataset_variant: z.string().optional(), phase: z.string().optional() }).nullable().optional(),
 });
 export type Step = z.infer<typeof Step>;
 

@@ -52,6 +52,7 @@ sources:
   retrieved: '2026-09-21'
   supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
     from the package.
+  rechecked: '2026-09-22'
 - id: src-3
   title: Sinter becomes dbt Cloud
   url: https://www.getdbt.com/blog/whats-in-a-name
@@ -105,7 +106,10 @@ walkthrough:
         {{ config(tags=["finance"]) }}
         select *, payment_cents - refund_cents as revenue_cents
         from {{ ref("order_amounts") }}
-      highlight_lines: []
+      highlight_lines:
+      - 1
+      - 2
+      - 3
     evidence:
     - src-1
     - src-2
@@ -128,11 +132,32 @@ walkthrough:
     takeaway: |
       Selection controls the work requested.
     code:
+    - language: sql
+      filename: models/order_revenue.sql
+      content: |
+        {{ config(tags=["finance"]) }}
+        select *, payment_cents - refund_cents as revenue_cents
+        from {{ ref("order_amounts") }}
+      highlight_lines:
+      - 1
+      - 2
+      - 3
+    - language: sql
+      filename: models/revenue_by_location.sql
+      content: |
+        {{ config(tags=["finance"]) }}
+        select location_id, sum(revenue_cents) as revenue_cents
+        from {{ ref("order_revenue") }}
+        group by location_id
+      highlight_lines:
+      - 1
+      purpose: authored executable syntax; illustration only
     - language: shell
       filename: commands.sh
       content: |
         dbt run --models tag:finance
-      highlight_lines: []
+      highlight_lines:
+      - 1
     evidence:
     - src-1
     - src-2
@@ -173,6 +198,32 @@ walkthrough:
     evidence:
     - src-1
     - src-2
+    code:
+    - language: sql
+      filename: models/order_revenue.sql
+      content: |
+        select *, payment_cents - refund_cents as revenue_cents
+        from {{ ref("order_amounts") }}
+      highlight_lines:
+      - 1
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/revenue_by_location.sql
+      content: |
+        select
+            r.location_id, l.name as location,
+            sum(r.payment_cents) as payment_cents,
+            sum(r.refund_cents) as refund_cents,
+            sum(r.revenue_cents) as revenue_cents
+        from {{ ref("order_revenue") }} as r
+        join raw.locations as l on r.location_id = l.location_id
+        group by r.location_id, l.name
+        order by r.location_id
+      highlight_lines:
+      - 3
+      - 4
+      - 5
+      purpose: authored executable syntax; illustration only
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -183,6 +234,18 @@ walkthrough:
     - src-4
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+    code_review:
+      reviewed_on: '2026-09-22'
+      historical_cutoff: '2026-09-21'
+      method: Original source/archive and release documentation inspection; no historical dbt execution.
+  intro:
+    can_now:
+    - Tag models and select the group by tag.
+    - Let dbt reuse cached relation information instead of repeating some warehouse introspection.
+    scenario: |
+      A finance-only change should have a clear selection boundary. The shop labels its revenue models and runs that slice with existing upstream inputs.
+    outcome: |
+      Connect the tag configuration, selection command and unchanged revenue result.
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.
 default_milestone: 0.12.0

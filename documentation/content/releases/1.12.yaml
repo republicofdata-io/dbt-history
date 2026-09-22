@@ -56,6 +56,7 @@ sources:
   retrieved: '2026-09-21'
   supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
     from the package.
+  rechecked: '2026-09-22'
 - id: src-4
   title: Native App maintenance notice
   url: https://www.getdbt.com/blog/retiring-the-dbt-snowflake-native-app
@@ -63,11 +64,20 @@ sources:
   supports: dbt Snowflake Native App enters maintenance; new installations disabled; November removal announced.
     It is still in maintenance at this research cutoff, not already removed. This is distinct from Snowflake's own
     dbt Projects product.
+- id: src-5
+  title: 1.12.0 parser switches
+  url: https://files.pythonhosted.org/packages/50/a8/da65cff9c221b944040b35122ffcbaf0e7b583c6f0729a473c63d15536c5/dbt_core-1.12.0.tar.gz
+  retrieved: '2026-09-22'
+  supports: --use-v2-parser option and experimental parser command.
+  historical_scope: Syntax at the named immutable version; research cutoff remains 2026-09-21.
+  source_path: dbt/cli/params.py
+  sha256: f7d6a34f6600a371b8771e813f6b1566ab6d1fb8cea691619c791f527b1f8d7e
 narrative_evidence:
 - src-1
 - src-2
 - src-3
 - src-4
+- src-5
 walkthrough:
   id: wt-1.12
   learning_objective: |
@@ -100,6 +110,53 @@ walkthrough:
     - src-1
     - src-2
     - src-3
+    - src-5
+    code:
+    - language: sql
+      filename: models/order_revenue.sql
+      content: |
+        select *, payment_cents - refund_cents as revenue_cents
+        from {{ ref("order_amounts") }}
+      highlight_lines:
+      - 1
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/revenue_by_location.sql
+      content: |
+        select
+            r.location_id, l.name as location,
+            sum(r.payment_cents) as payment_cents,
+            sum(r.refund_cents) as refund_cents,
+            sum(r.revenue_cents) as revenue_cents
+        from {{ ref("order_revenue") }} as r
+        join raw.locations as l on r.location_id = l.location_id
+        group by r.location_id, l.name
+        order by r.location_id
+      highlight_lines:
+      - 3
+      - 4
+      - 5
+      purpose: authored executable syntax; illustration only
+    - language: yaml
+      filename: dbt_project.yml (excerpt)
+      content: |
+        name: waffle_shop
+        version: "1.0"
+        config-version: 2
+        flags:
+          use_v2_parser: true
+      highlight_lines:
+      - 4
+      - 5
+    - language: shell
+      filename: commands.sh
+      content: |
+        dbt parse --no-use-v2-parser
+        dbt parse --use-v2-parser
+      highlight_lines:
+      - 1
+      - 2
+      purpose: authored executable syntax; illustration only
   - id: inspect
     title: Ask a small ad hoc question
     explanation: |
@@ -119,15 +176,25 @@ walkthrough:
     takeaway: |
       The expected answer comes from the fixture, not a fabricated terminal run.
     code:
+    - language: sql
+      filename: inspection/total_revenue.sql
+      content: |
+        select sum(revenue_cents) as total_cents
+        from revenue_by_location
+      highlight_lines:
+      - 1
+      purpose: authored executable syntax; illustration only
     - language: shell
       filename: commands.sh
       content: |
         dbt run-operation --sql "select sum(revenue_cents) as total_cents from revenue_by_location"
-      highlight_lines: []
+      highlight_lines:
+      - 1
     evidence:
     - src-1
     - src-2
     - src-3
+    - src-5
   - id: compare
     title: Keep the migration checks explicit
     explanation: |
@@ -154,6 +221,53 @@ walkthrough:
     - src-1
     - src-2
     - src-3
+    - src-5
+    code:
+    - language: sql
+      filename: models/order_revenue.sql
+      content: |
+        select *, payment_cents - refund_cents as revenue_cents
+        from {{ ref("order_amounts") }}
+      highlight_lines:
+      - 1
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/revenue_by_location.sql
+      content: |
+        select
+            r.location_id, l.name as location,
+            sum(r.payment_cents) as payment_cents,
+            sum(r.refund_cents) as refund_cents,
+            sum(r.revenue_cents) as revenue_cents
+        from {{ ref("order_revenue") }} as r
+        join raw.locations as l on r.location_id = l.location_id
+        group by r.location_id, l.name
+        order by r.location_id
+      highlight_lines:
+      - 3
+      - 4
+      - 5
+      purpose: authored executable syntax; illustration only
+    - language: yaml
+      filename: dbt_project.yml (excerpt)
+      content: |
+        name: waffle_shop
+        version: "1.0"
+        config-version: 2
+        flags:
+          use_v2_parser: true
+      highlight_lines:
+      - 4
+      - 5
+    - language: shell
+      filename: commands.sh
+      content: |
+        dbt parse --no-use-v2-parser
+        dbt parse --use-v2-parser
+      highlight_lines:
+      - 1
+      - 2
+      purpose: authored executable syntax; illustration only
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -162,8 +276,23 @@ walkthrough:
     - src-2
     - src-3
     - src-4
+    - src-5
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+      The parser switches are verified in 1.12.0 CLI parameters. The opt-in path needs the experimental parser binary; the model SQL is shown so parser comparison has a concrete input. No equality of runtime behavior is asserted from these illustrations.
+    code_review:
+      reviewed_on: '2026-09-22'
+      historical_cutoff: '2026-09-21'
+      method: Original source/archive and release documentation inspection; no historical dbt execution.
+  intro:
+    can_now:
+    - Opt into the v2 Rust parser while using the Python engine line.
+    - Move project variables into vars.yml.
+    - Execute an ad hoc SQL statement through run-operation --sql.
+    scenario: |
+      The shop prepares for the next parser while retaining a known revenue expectation. A small inspection checks the same total rather than assuming migration correctness.
+    outcome: |
+      Read parser configuration and the SQL behind the 12,500-cent check.
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.
 default_milestone: 1.12.0

@@ -51,6 +51,7 @@ sources:
   retrieved: '2026-09-21'
   supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
     from the package.
+  rechecked: '2026-09-22'
 - id: src-3
   title: Transform acquisition agreement
   url: https://www.getdbt.com/blog/press-release-dbt-acquisition-transform
@@ -92,6 +93,23 @@ walkthrough:
     evidence:
     - src-1
     - src-2
+    code:
+    - language: sql
+      filename: inspection/compare_parent_relations.sql
+      content: |
+        -- Fixture phase: dev.order_revenue uses base; prod.order_revenue uses second-day.
+        select 'development' as environment, sum(revenue_cents) as total_cents
+        from dev.order_revenue
+        union all
+        select 'production', sum(revenue_cents)
+        from prod.order_revenue;
+      highlight_lines:
+      - 3
+      - 6
+      purpose: authored executable syntax; illustration only
+    data_context:
+      dataset_variant: second-day
+      phase: dev.order_revenue uses base; prod.order_revenue uses second-day.
   - id: favor
     title: Prefer the saved-state parent
     explanation: |
@@ -111,11 +129,29 @@ walkthrough:
     takeaway: |
       The choice of relation can change what data a model sees.
     code:
+    - language: sql
+      filename: models/revenue_by_location.sql
+      content: |
+        select
+            r.location_id, l.name as location,
+            sum(r.payment_cents) as payment_cents,
+            sum(r.refund_cents) as refund_cents,
+            sum(r.revenue_cents) as revenue_cents
+        from {{ ref("order_revenue") }} as r
+        join raw.locations as l on r.location_id = l.location_id
+        group by r.location_id, l.name
+        order by r.location_id
+      highlight_lines:
+      - 3
+      - 4
+      - 5
+      purpose: authored executable syntax; illustration only
     - language: shell
       filename: commands.sh
       content: |
         dbt run --select revenue_by_location --defer --favor-state --state ./state-prod
-      highlight_lines: []
+      highlight_lines:
+      - 1
     evidence:
     - src-1
     - src-2
@@ -144,6 +180,24 @@ walkthrough:
     evidence:
     - src-1
     - src-2
+    code:
+    - language: sql
+      filename: models/revenue_by_location.sql
+      content: |
+        select
+            r.location_id, l.name as location,
+            sum(r.payment_cents) as payment_cents,
+            sum(r.refund_cents) as refund_cents,
+            sum(r.revenue_cents) as revenue_cents
+        from {{ ref("order_revenue") }} as r
+        join raw.locations as l on r.location_id = l.location_id
+        group by r.location_id, l.name
+        order by r.location_id
+      highlight_lines:
+      - 3
+      - 4
+      - 5
+      purpose: authored executable syntax; illustration only
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -153,6 +207,18 @@ walkthrough:
     - src-3
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+    code_review:
+      reviewed_on: '2026-09-22'
+      historical_cutoff: '2026-09-21'
+      method: Original source/archive and release documentation inspection; no historical dbt execution.
+  intro:
+    can_now:
+    - Prefer saved-state relations over existing development copies during deferral.
+    - Limit supported incremental target scans with incremental predicates.
+    scenario: |
+      An old development copy contains only the first trading day, while the saved production relation has both days. The shop deliberately chooses which parent the development aggregation reads.
+    outcome: |
+      Compare the two parents and the favor-state command that produces the two-day expectation.
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.
 default_milestone: 1.4.0

@@ -44,9 +44,17 @@ sources:
   retrieved: '2026-09-21'
   supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
     from the package.
+- id: src-3
+  title: Historical source archive reviewed for example syntax
+  url: https://pypi.org/project/dbt-core/0.21.0/
+  retrieved: '2026-09-21'
+  supports: Original source package and tagged release evidence for the example’s syntax; review is not runtime
+    execution.
+  rechecked: '2026-09-22'
 narrative_evidence:
 - src-1
 - src-2
+- src-3
 walkthrough:
   id: wt-0.21
   learning_objective: |
@@ -80,6 +88,65 @@ walkthrough:
     evidence:
     - src-1
     - src-2
+    - src-3
+    code:
+    - language: sql
+      filename: models/payments.sql
+      content: |
+        select payment_id, order_id, amount_cents
+        from raw.payments
+      highlight_lines:
+      - 1
+      - 2
+      purpose: authored executable syntax; illustration only
+    - language: yaml
+      filename: models/schema.yml
+      content: |
+        version: 2
+        models:
+          - name: payments
+            columns:
+              - name: order_id
+                tests:
+                  - not_null
+                  - relationships:
+                      to: ref("orders")
+                      field: order_id
+      highlight_lines:
+      - 8
+      - 9
+      - 10
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/order_revenue.sql
+      content: |
+        select *, payment_cents - refund_cents as revenue_cents
+        from {{ ref("order_amounts") }}
+      highlight_lines:
+      - 1
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/order_amounts.sql
+      content: |
+        select o.*, coalesce(p.payment_cents, 0) as payment_cents,
+            coalesce(r.refund_cents, 0) as refund_cents
+        from {{ ref("orders") }} as o
+        left join {{ ref("payments_by_order") }} as p
+          on o.order_id = p.order_id
+        left join {{ ref("refunds_by_order") }} as r
+          on o.order_id = r.order_id
+      highlight_lines:
+      - 3
+      - 4
+      - 6
+    - language: sql
+      filename: models/payments_by_order.sql
+      content: |
+        select order_id, sum(amount_cents) as payment_cents
+        from {{ ref("payments") }}
+        group by order_id
+      highlight_lines:
+      - 2
   - id: build
     title: Build with the failing assertion
     explanation: |
@@ -101,14 +168,73 @@ walkthrough:
     takeaway: |
       The shop should not publish a fresh-looking result from a failed branch.
     code:
+    - language: sql
+      filename: models/payments.sql
+      content: |
+        select payment_id, order_id, amount_cents
+        from raw.payments
+      highlight_lines:
+      - 1
+      - 2
+      purpose: authored executable syntax; illustration only
+    - language: yaml
+      filename: models/schema.yml
+      content: |
+        version: 2
+        models:
+          - name: payments
+            columns:
+              - name: order_id
+                tests:
+                  - not_null
+                  - relationships:
+                      to: ref("orders")
+                      field: order_id
+      highlight_lines:
+      - 8
+      - 9
+      - 10
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/order_revenue.sql
+      content: |
+        select *, payment_cents - refund_cents as revenue_cents
+        from {{ ref("order_amounts") }}
+      highlight_lines:
+      - 1
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/order_amounts.sql
+      content: |
+        select o.*, coalesce(p.payment_cents, 0) as payment_cents,
+            coalesce(r.refund_cents, 0) as refund_cents
+        from {{ ref("orders") }} as o
+        left join {{ ref("payments_by_order") }} as p
+          on o.order_id = p.order_id
+        left join {{ ref("refunds_by_order") }} as r
+          on o.order_id = r.order_id
+      highlight_lines:
+      - 3
+      - 4
+      - 6
+    - language: sql
+      filename: models/payments_by_order.sql
+      content: |
+        select order_id, sum(amount_cents) as payment_cents
+        from {{ ref("payments") }}
+        group by order_id
+      highlight_lines:
+      - 2
     - language: shell
       filename: commands.sh
       content: |
         dbt build
-      highlight_lines: []
+      highlight_lines:
+      - 1
     evidence:
     - src-1
     - src-2
+    - src-3
   - id: limit
     title: Read the existing result carefully
     explanation: |
@@ -130,13 +256,57 @@ walkthrough:
     evidence:
     - src-1
     - src-2
+    - src-3
+    code:
+    - language: sql
+      filename: inspection/existing_revenue.sql
+      content: |
+        -- Read the relation retained from the last successful build.
+        select sum(revenue_cents) as existing_total_cents
+        from waffle.revenue_by_location;
+      highlight_lines:
+      - 2
+      - 3
+      purpose: authored executable syntax; illustration only
+    - language: yaml
+      filename: models/schema.yml
+      content: |
+        version: 2
+        models:
+          - name: payments
+            columns:
+              - name: order_id
+                tests:
+                  - not_null
+                  - relationships:
+                      to: ref("orders")
+                      field: order_id
+      highlight_lines:
+      - 8
+      - 9
+      - 10
+      purpose: authored executable syntax; illustration only
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
     - src-1
     - src-2
+    - src-3
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+      The concrete relationships test references both payments and orders; both are ancestors of order_revenue in the shown graph. It is therefore eligible to block that dependent branch. This clarifies the earlier simplified single-parent description without removing it.
+    code_review:
+      reviewed_on: '2026-09-22'
+      historical_cutoff: '2026-09-21'
+      method: Original source/archive and release documentation inspection; no historical dbt execution.
+  intro:
+    can_now:
+    - Build seeds, snapshots, models and tests together in dependency order.
+    - Choose how an incremental model handles schema changes.
+    scenario: |
+      An orphan payment reaches the staging model. The shop needs its upstream check to block a fresh-looking downstream revenue build.
+    outcome: |
+      Follow the test definition and build command, and distinguish an existing old table from newly validated output.
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

@@ -56,10 +56,20 @@ sources:
   retrieved: '2026-09-21'
   supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
     from the package.
+  rechecked: '2026-09-22'
+- id: src-4
+  title: 0.7.0 Snowflake connection contract
+  url: https://files.pythonhosted.org/packages/10/24/6a06082afbaf7171387a1dc37b067c2d15bd946981a77c731209db0d4112/dbt-0.7.0.tar.gz
+  retrieved: '2026-09-22'
+  supports: Snowflake account, database, schema, user/password and warehouse fields.
+  historical_scope: Syntax at the named immutable version; research cutoff remains 2026-09-21.
+  source_path: dbt/contracts/connection.py
+  sha256: f52b87724b551be90b873870e0acc9865c1ae16786b769d09de570f3280efeb5
 narrative_evidence:
 - src-1
 - src-2
 - src-3
+- src-4
 walkthrough:
   id: wt-0.7
   learning_objective: |
@@ -94,6 +104,40 @@ walkthrough:
     - src-1
     - src-2
     - src-3
+    - src-4
+    code:
+    - language: sql
+      filename: models/order_amounts.sql
+      content: |
+        with paid as (
+            select order_id, sum(amount_cents) as payment_cents
+            from raw.payments group by order_id
+        ), refunded as (
+            select order_id, sum(amount_cents) as refund_cents
+            from raw.refunds group by order_id
+        )
+        select o.*, coalesce(p.payment_cents, 0) as payment_cents,
+            coalesce(r.refund_cents, 0) as refund_cents
+        from raw.orders as o
+        left join paid as p on o.order_id = p.order_id
+        left join refunded as r on o.order_id = r.order_id
+      highlight_lines:
+      - 2
+      - 5
+      - 8
+      - 9
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: analyses/order_1042.sql
+      content: |
+        select order_id, payment_cents, refund_cents,
+            payment_cents - refund_cents as revenue_cents
+        from {{ ref("order_amounts") }}
+        where order_id = 1042
+      highlight_lines:
+      - 2
+      - 4
+      purpose: authored executable syntax; illustration only
   - id: target
     title: Choose the new adapter
     explanation: |
@@ -120,6 +164,47 @@ walkthrough:
     - src-1
     - src-2
     - src-3
+    - src-4
+    code:
+    - language: yaml
+      filename: profiles.yml (connection excerpt)
+      content: |
+        waffle_shop:
+          target: dev
+          outputs:
+            dev:
+              type: snowflake
+              account: "<account identifier>"
+              user: "<username>"
+              password: "<password>"
+              database: ANALYTICS
+              schema: WAFFLE
+              warehouse: TRANSFORMING
+              threads: 2
+      highlight_lines:
+      - 5
+      - 6
+      - 9
+      - 10
+      - 11
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/order_revenue.sql
+      content: |
+        select *, payment_cents - refund_cents as revenue_cents
+        from {{ ref("order_amounts") }}
+      highlight_lines:
+      - 1
+      purpose: authored executable syntax; illustration only
+    - language: yaml
+      filename: dbt_project.yml (excerpt)
+      content: |
+        name: waffle_shop
+        version: "1.0"
+        profile: waffle_shop
+        source-paths: [models]
+      highlight_lines:
+      - 3
   - id: check
     title: Verify the same expectation
     explanation: |
@@ -158,6 +243,47 @@ walkthrough:
     - src-1
     - src-2
     - src-3
+    - src-4
+    code:
+    - language: yaml
+      filename: profiles.yml (connection excerpt)
+      content: |
+        waffle_shop:
+          target: dev
+          outputs:
+            dev:
+              type: snowflake
+              account: "<account identifier>"
+              user: "<username>"
+              password: "<password>"
+              database: ANALYTICS
+              schema: WAFFLE
+              warehouse: TRANSFORMING
+              threads: 2
+      highlight_lines:
+      - 5
+      - 6
+      - 9
+      - 10
+      - 11
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/revenue_by_location.sql
+      content: |
+        select
+            r.location_id, l.name as location,
+            sum(r.payment_cents) as payment_cents,
+            sum(r.refund_cents) as refund_cents,
+            sum(r.revenue_cents) as revenue_cents
+        from {{ ref("order_revenue") }} as r
+        join raw.locations as l on r.location_id = l.location_id
+        group by r.location_id, l.name
+        order by r.location_id
+      highlight_lines:
+      - 3
+      - 4
+      - 5
+      purpose: authored executable syntax; illustration only
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -165,7 +291,21 @@ walkthrough:
     - src-1
     - src-2
     - src-3
+    - src-4
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+      The 0.7.0 Snowflake profile is a configuration example with visibly marked credentials, not a live connection. role is deliberately omitted because it arrives in 0.7.1.
+    code_review:
+      reviewed_on: '2026-09-22'
+      historical_cutoff: '2026-09-21'
+      method: Original source/archive and release documentation inspection; no historical dbt execution.
+  intro:
+    can_now:
+    - Run a dbt project against the newly supported Snowflake target.
+    - From 0.7.1, select a Snowflake role in the connection profile.
+    scenario: |
+      The same shop project is considered for a different warehouse. Its payment and refund rule must stay recognizable while the connection and adapter change.
+    outcome: |
+      Separate Snowflake connection settings from the unchanged 12,500-cent expectation.
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

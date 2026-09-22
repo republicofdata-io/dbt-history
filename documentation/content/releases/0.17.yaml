@@ -44,9 +44,17 @@ sources:
   retrieved: '2026-09-21'
   supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
     from the package.
+- id: src-3
+  title: Historical source archive reviewed for example syntax
+  url: https://pypi.org/project/dbt-core/0.17.0/
+  retrieved: '2026-09-21'
+  supports: Original source package and tagged release evidence for the example’s syntax; review is not runtime
+    execution.
+  rechecked: '2026-09-22'
 narrative_evidence:
 - src-1
 - src-2
+- src-3
 walkthrough:
   id: wt-0.17
   learning_objective: |
@@ -78,6 +86,39 @@ walkthrough:
     evidence:
     - src-1
     - src-2
+    - src-3
+    code:
+    - language: sql
+      filename: models/refunds_by_order.sql (deliberately invalid)
+      content: |
+        select order_id, sum(refund_amount_cents) as refund_cents
+        from raw.refunds
+        group by order_id
+      highlight_lines:
+      - 1
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/order_revenue.sql
+      content: |
+        select *, payment_cents - refund_cents as revenue_cents
+        from {{ ref("order_amounts") }}
+      highlight_lines:
+      - 1
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/order_amounts.sql
+      content: |
+        select o.*, coalesce(p.payment_cents, 0) as payment_cents,
+            coalesce(r.refund_cents, 0) as refund_cents
+        from {{ ref("orders") }} as o
+        left join {{ ref("payments_by_order") }} as p
+          on o.order_id = p.order_id
+        left join {{ ref("refunds_by_order") }} as r
+          on o.order_id = r.order_id
+      highlight_lines:
+      - 3
+      - 4
+      - 6
   - id: policy
     title: Choose an early-stop policy
     explanation: |
@@ -99,14 +140,47 @@ walkthrough:
     takeaway: |
       Fail-fast is useful when further work should wait.
     code:
+    - language: sql
+      filename: models/refunds_by_order.sql (deliberately invalid)
+      content: |
+        select order_id, sum(refund_amount_cents) as refund_cents
+        from raw.refunds
+        group by order_id
+      highlight_lines:
+      - 1
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/order_revenue.sql
+      content: |
+        select *, payment_cents - refund_cents as revenue_cents
+        from {{ ref("order_amounts") }}
+      highlight_lines:
+      - 1
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/order_amounts.sql
+      content: |
+        select o.*, coalesce(p.payment_cents, 0) as payment_cents,
+            coalesce(r.refund_cents, 0) as refund_cents
+        from {{ ref("orders") }} as o
+        left join {{ ref("payments_by_order") }} as p
+          on o.order_id = p.order_id
+        left join {{ ref("refunds_by_order") }} as r
+          on o.order_id = r.order_id
+      highlight_lines:
+      - 3
+      - 4
+      - 6
     - language: shell
       filename: commands.sh
       content: |
         dbt run --fail-fast
-      highlight_lines: []
+      highlight_lines:
+      - 1
     evidence:
     - src-1
     - src-2
+    - src-3
   - id: repair
     title: Repair before trying again
     explanation: |
@@ -132,13 +206,78 @@ walkthrough:
     evidence:
     - src-1
     - src-2
+    - src-3
+    code:
+    - language: sql
+      filename: models/refunds_by_order.sql
+      content: |
+        select order_id, sum(amount_cents) as refund_cents
+        from {{ ref("refunds") }}
+        group by order_id
+      highlight_lines:
+      - 1
+      - 2
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/order_amounts.sql
+      content: |
+        select o.*, coalesce(p.payment_cents, 0) as payment_cents,
+            coalesce(r.refund_cents, 0) as refund_cents
+        from {{ ref("orders") }} as o
+        left join {{ ref("payments_by_order") }} as p
+          on o.order_id = p.order_id
+        left join {{ ref("refunds_by_order") }} as r
+          on o.order_id = r.order_id
+      highlight_lines:
+      - 3
+      - 4
+      - 6
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/order_revenue.sql
+      content: |
+        select *, payment_cents - refund_cents as revenue_cents
+        from {{ ref("order_amounts") }}
+      highlight_lines:
+      - 1
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/revenue_by_location.sql
+      content: |
+        select
+            r.location_id, l.name as location,
+            sum(r.payment_cents) as payment_cents,
+            sum(r.refund_cents) as refund_cents,
+            sum(r.revenue_cents) as revenue_cents
+        from {{ ref("order_revenue") }} as r
+        join raw.locations as l on r.location_id = l.location_id
+        group by r.location_id, l.name
+        order by r.location_id
+      highlight_lines:
+      - 3
+      - 4
+      - 5
+      purpose: authored executable syntax; illustration only
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
     - src-1
     - src-2
+    - src-3
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+    code_review:
+      reviewed_on: '2026-09-22'
+      historical_cutoff: '2026-09-21'
+      method: Original source/archive and release documentation inspection; no historical dbt execution.
+  intro:
+    can_now:
+    - Stop a run promptly after a failure with fail-fast.
+    - Select models by their project path.
+    scenario: |
+      A broken refund model blocks a trustworthy revenue build. Waffle Shop chooses whether unrelated work should continue while the failure is investigated.
+    outcome: |
+      Read the faulty SQL, the early-stop command and the repaired model.
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

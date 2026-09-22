@@ -44,9 +44,19 @@ sources:
   retrieved: '2026-09-21'
   supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
     from the package.
+  rechecked: '2026-09-22'
+- id: src-3
+  title: 1.0.0 metric schema
+  url: https://files.pythonhosted.org/packages/9b/c9/a54e72b7defd4fe7b6e75f3b8791642ef0b7f64759bb2c18a59a8fbe2e5a/dbt-core-1.0.0.tar.gz
+  retrieved: '2026-09-22'
+  supports: Initial model/type/sql metric fields, before MetricFlow semantic-model syntax.
+  historical_scope: Syntax at the named immutable version; research cutoff remains 2026-09-21.
+  source_path: dbt/contracts/graph/unparsed.py
+  sha256: 90bde01d078b1d673dc490b9defff07e7f3b702b920c65feae6fb27e07ce73d2
 narrative_evidence:
 - src-1
 - src-2
+- src-3
 walkthrough:
   id: wt-1.0
   learning_objective: |
@@ -80,6 +90,49 @@ walkthrough:
     evidence:
     - src-1
     - src-2
+    - src-3
+    code:
+    - language: sql
+      filename: models/order_revenue.sql
+      content: |
+        select *, payment_cents - refund_cents as revenue_cents
+        from {{ ref("order_amounts") }}
+      highlight_lines:
+      - 1
+      purpose: authored executable syntax; illustration only
+    - language: yaml
+      filename: models/schema.yml
+      content: |
+        version: 2
+        models:
+          - name: payments
+            columns:
+              - name: order_id
+                tests:
+                  - not_null
+                  - relationships:
+                      to: ref("orders")
+                      field: order_id
+      highlight_lines:
+      - 8
+      - 9
+      - 10
+      purpose: authored executable syntax; illustration only
+    - language: yaml
+      filename: models/schema.yml
+      content: |
+        version: 2
+        models:
+          - name: revenue_by_location
+            description: Payments minus refunds, in cents.
+            columns:
+              - name: revenue_cents
+                description: Net successful payments after refunds.
+      highlight_lines:
+      - 4
+      - 6
+      - 7
+      purpose: authored executable syntax; illustration only
   - id: results
     title: Target a previously failed model
     explanation: |
@@ -99,14 +152,26 @@ walkthrough:
     takeaway: |
       Saved results can guide the next command.
     code:
+    - language: sql
+      filename: models/refunds_by_order.sql
+      content: |
+        select order_id, sum(amount_cents) as refund_cents
+        from {{ ref("refunds") }}
+        group by order_id
+      highlight_lines:
+      - 1
+      - 2
+      purpose: authored executable syntax; illustration only
     - language: shell
       filename: commands.sh
       content: |
         dbt run --select result:error --state ./previous-run
-      highlight_lines: []
+      highlight_lines:
+      - 1
     evidence:
     - src-1
     - src-2
+    - src-3
   - id: metrics
     title: Keep the service boundary clear
     explanation: |
@@ -132,13 +197,56 @@ walkthrough:
     evidence:
     - src-1
     - src-2
+    - src-3
+    code:
+    - language: yaml
+      filename: models/metrics.yml
+      content: |
+        version: 2
+        metrics:
+          - name: net_revenue
+            label: Net revenue
+            model: ref("order_revenue")
+            type: sum
+            sql: revenue_cents
+            timestamp: ordered_at
+            time_grains: [day]
+            dimensions: [location_id]
+      highlight_lines:
+      - 2
+      - 5
+      - 6
+      - 7
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/order_revenue.sql
+      content: |
+        select *, payment_cents - refund_cents as revenue_cents
+        from {{ ref("order_amounts") }}
+      highlight_lines:
+      - 1
+      purpose: authored executable syntax; illustration only
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
     - src-1
     - src-2
+    - src-3
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+    code_review:
+      reviewed_on: '2026-09-22'
+      historical_cutoff: '2026-09-21'
+      method: Original source/archive and release documentation inspection; no historical dbt execution.
+  intro:
+    can_now:
+    - Reuse partial and static parsing by default.
+    - Select models or tests using saved previous results.
+    - Record metric definitions as project metadata.
+    scenario: |
+      A previous run failed on the refund aggregate. Waffle Shop uses its recorded result to target the repair and distinguishes metric metadata from a hosted metrics service.
+    outcome: |
+      Read the repair selection and an era-correct metric definition.
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

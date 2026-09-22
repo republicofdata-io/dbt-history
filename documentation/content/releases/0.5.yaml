@@ -57,8 +57,9 @@ sources:
 - id: src-1
   title: dbt 0.5 release evidence
   url: https://github.com/dbt-labs/dbt/releases/tag/v0.5.0
-  retrieved: '2026-09-21'
+  retrieved: '2026-09-22'
   supports: Tagged release changes; package upload and public announcement remain distinct.
+  historical_scope: Syntax at the named immutable version; research cutoff remains 2026-09-21.
 - id: src-2
   title: dbt 0.5 release evidence
   url: https://github.com/dbt-labs/dbt-core/blob/v0.13.0/CHANGELOG.md
@@ -70,6 +71,7 @@ sources:
   retrieved: '2026-09-21'
   supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
     from the package.
+  rechecked: '2026-09-22'
 - id: src-4
   title: dbt 0.5.1 patch evidence
   url: https://github.com/dbt-labs/dbt/releases/tag/v0.5.1
@@ -122,6 +124,32 @@ walkthrough:
     - src-3
     - src-4
     - src-5
+    code:
+    - language: sql
+      filename: models/order_revenue.sql
+      content: |
+        select *, payment_cents - refund_cents as revenue_cents
+        from {{ ref("order_amounts") }}
+      highlight_lines:
+      - 1
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/revenue_by_location.sql
+      content: |
+        select
+            r.location_id, l.name as location,
+            sum(r.payment_cents) as payment_cents,
+            sum(r.refund_cents) as refund_cents,
+            sum(r.revenue_cents) as revenue_cents
+        from {{ ref("order_revenue") }} as r
+        join raw.locations as l on r.location_id = l.location_id
+        group by r.location_id, l.name
+        order by r.location_id
+      highlight_lines:
+      - 3
+      - 4
+      - 5
+      purpose: authored executable syntax; illustration only
   - id: variable
     title: Apply a reusable conversion
     explanation: |
@@ -146,7 +174,23 @@ walkthrough:
       content: |
         select location_id, revenue_cents / {{ var("cents_per_unit") }}.0 as revenue_units
         from {{ ref("revenue_by_location") }}
-      highlight_lines: []
+      highlight_lines:
+      - 1
+      - 2
+    - language: yaml
+      filename: dbt_project.yml (excerpt)
+      content: |
+        name: waffle_shop
+        version: "1.0"
+        models:
+          waffle_shop:
+            vars:
+              cents_per_unit: 100
+      highlight_lines:
+      - 3
+      - 5
+      - 6
+      purpose: authored executable syntax; illustration only
     evidence:
     - src-1
     - src-2
@@ -185,6 +229,30 @@ walkthrough:
     - src-3
     - src-4
     - src-5
+    code:
+    - language: yaml
+      filename: dbt_project.yml (excerpt)
+      content: |
+        name: waffle_shop
+        version: "1.0"
+        models:
+          waffle_shop:
+            vars:
+              cents_per_unit: 100
+      highlight_lines:
+      - 3
+      - 5
+      - 6
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/revenue_display.sql
+      content: |
+        select location_id, revenue_cents,
+            revenue_cents / {{ var("cents_per_unit") }}.0 as revenue_units
+        from {{ ref("revenue_by_location") }}
+      highlight_lines:
+      - 2
+      purpose: authored executable syntax; illustration only
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -196,5 +264,18 @@ walkthrough:
     - src-5
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+    code_review:
+      reviewed_on: '2026-09-22'
+      historical_cutoff: '2026-09-21'
+      method: Original source/archive and release documentation inspection; no historical dbt execution.
+  intro:
+    can_now:
+    - Pass named project variables into reusable model SQL.
+    - From 0.5.1, target PostgreSQL directly and preserve changing records with archives.
+    - From 0.5.4, write a custom SQL query that identifies failing data.
+    scenario: |
+      The shop keeps its accounting in cents but needs a currency-unit display. A shared variable supplies the conversion without changing the refund rule.
+    outcome: |
+      Compare the integer accounting values with their decimal presentation.
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

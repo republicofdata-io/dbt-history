@@ -44,6 +44,7 @@ sources:
   retrieved: '2026-09-21'
   supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
     from the package.
+  rechecked: '2026-09-22'
 narrative_evidence:
 - src-1
 - src-2
@@ -85,7 +86,11 @@ walkthrough:
         1,Old Port
         2,Mile End
         3,Riverside
-      highlight_lines: []
+      highlight_lines:
+      - 1
+      - 2
+      - 3
+      - 4
     evidence:
     - src-1
     - src-2
@@ -108,17 +113,20 @@ walkthrough:
     takeaway: |
       A seed can participate in the dependency graph.
     code:
-    - language: shell
-      filename: commands.sh
-      content: |
-        dbt seed
-      highlight_lines: []
     - language: sql
       filename: models/location_names.sql
       content: |
         select location_id, name
         from {{ ref("locations") }}
-      highlight_lines: []
+      highlight_lines:
+      - 1
+      - 2
+    - language: shell
+      filename: commands.sh
+      content: |
+        dbt seed
+      highlight_lines:
+      - 1
     evidence:
     - src-1
     - src-2
@@ -159,6 +167,21 @@ walkthrough:
     evidence:
     - src-1
     - src-2
+    code:
+    - language: sql
+      filename: models/revenue_by_location_labeled.sql
+      content: |
+        select r.location_id, l.name as location,
+            r.payment_cents, r.refund_cents, r.revenue_cents
+        from {{ ref("revenue_by_location") }} as r
+        join {{ ref("locations") }} as l
+          on r.location_id = l.location_id
+        order by r.location_id
+      highlight_lines:
+      - 3
+      - 4
+      - 5
+      purpose: authored executable syntax; illustration only
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -167,5 +190,17 @@ walkthrough:
     - src-2
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+    code_review:
+      reviewed_on: '2026-09-22'
+      historical_cutoff: '2026-09-21'
+      method: Original source/archive and release documentation inspection; no historical dbt execution.
+  intro:
+    can_now:
+    - Load CSV seeds across supported adapters and reference them with ref.
+    - Declare dependencies in packages.yml, including local project paths.
+    scenario: |
+      Three location names belong with the project instead of being retyped in reports. Waffle Shop uses the same small CSV lookup to label every location’s revenue.
+    outcome: |
+      Follow the seed from its three rows through the join to the revenue result.
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

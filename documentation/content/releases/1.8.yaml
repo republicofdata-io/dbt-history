@@ -58,6 +58,7 @@ sources:
   retrieved: '2026-09-21'
   supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
     from the package.
+  rechecked: '2026-09-22'
 - id: src-3
   title: Upgrade to dbt Core 1.8
   url: https://docs.getdbt.com/docs/dbt-versions/dbt-upgrade/upgrading-to-v1.8
@@ -118,6 +119,39 @@ walkthrough:
     - src-1
     - src-2
     - src-3
+    code:
+    - language: sql
+      filename: models/order_amounts.sql
+      content: |
+        with paid as (
+            select order_id, sum(amount_cents) as payment_cents
+            from raw.payments group by order_id
+        ), refunded as (
+            select order_id, sum(amount_cents) as refund_cents
+            from raw.refunds group by order_id
+        )
+        select o.*, coalesce(p.payment_cents, 0) as payment_cents,
+            coalesce(r.refund_cents, 0) as refund_cents
+        from raw.orders as o
+        left join paid as p on o.order_id = p.order_id
+        left join refunded as r on o.order_id = r.order_id
+      highlight_lines:
+      - 2
+      - 5
+      - 8
+      - 9
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: analyses/order_1042.sql
+      content: |
+        select order_id, payment_cents, refund_cents,
+            payment_cents - refund_cents as revenue_cents
+        from {{ ref("order_amounts") }}
+        where order_id = 1042
+      highlight_lines:
+      - 2
+      - 4
+      purpose: authored executable syntax; illustration only
   - id: bug
     title: The calculation has a bug
     explanation: |
@@ -148,6 +182,23 @@ walkthrough:
         from {{ ref('order_amounts') }}
       highlight_lines:
       - 3
+    - language: yaml
+      filename: models/order_revenue.yml
+      content: |
+        version: 2
+        unit_tests:
+          - name: subtract_partial_refund
+            model: order_revenue
+            given:
+              - input: ref('order_amounts')
+                rows:
+                  - {order_id: 1042, payment_cents: 1200, refund_cents: 200}
+            expect:
+              rows:
+                - {order_id: 1042, revenue_cents: 1000}
+      highlight_lines:
+      - 8
+      - 11
     evidence:
     - src-1
     - src-2
@@ -194,6 +245,15 @@ walkthrough:
       highlight_lines:
       - 8
       - 11
+    - language: sql
+      filename: models/order_revenue.sql
+      content: |
+        select
+            order_id,
+            payment_cents + refund_cents as revenue_cents
+        from {{ ref('order_amounts') }}
+      highlight_lines:
+      - 3
     evidence:
     - src-1
     - src-2
@@ -228,6 +288,23 @@ walkthrough:
         from {{ ref('order_amounts') }}
       highlight_lines:
       - 3
+    - language: yaml
+      filename: models/order_revenue.yml
+      content: |
+        version: 2
+        unit_tests:
+          - name: subtract_partial_refund
+            model: order_revenue
+            given:
+              - input: ref('order_amounts')
+                rows:
+                  - {order_id: 1042, payment_cents: 1200, refund_cents: 200}
+            expect:
+              rows:
+                - {order_id: 1042, revenue_cents: 1000}
+      highlight_lines:
+      - 8
+      - 11
     evidence:
     - src-1
     - src-2
@@ -243,6 +320,18 @@ walkthrough:
     - src-5
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+    code_review:
+      reviewed_on: '2026-09-22'
+      historical_cutoff: '2026-09-21'
+      method: Original source/archive and release documentation inspection; no historical dbt execution.
+  intro:
+    can_now:
+    - Write native SQL unit tests with small, controlled input fixtures.
+    - Run schema-only builds with --empty while still using a database.
+    scenario: |
+      Order 1042 has a 1,200-cent payment and a 200-cent refund. A plus sign mistakenly turns its correct 1,000-cent revenue into 1,400 cents.
+    outcome: |
+      See the model, fixture and expected rows catch the error, then pass after subtraction is restored.
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.
 default_milestone: 1.8.0

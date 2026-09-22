@@ -56,6 +56,7 @@ sources:
   retrieved: '2026-09-21'
   supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
     from the package.
+  rechecked: '2026-09-22'
 - id: src-4
   title: Sinter hosted experiment
   url: https://www.getdbt.com/blog/whats-in-a-name
@@ -101,6 +102,18 @@ walkthrough:
     - src-1
     - src-2
     - src-3
+    code:
+    - language: sql
+      filename: analyses/order_1042.sql
+      content: |
+        select order_id, payment_cents, refund_cents,
+            payment_cents - refund_cents as revenue_cents
+        from {{ ref("order_amounts") }}
+        where order_id = 1042
+      highlight_lines:
+      - 2
+      - 4
+      purpose: authored executable syntax; illustration only
   - id: macro
     title: Name the SQL expression
     explanation: |
@@ -128,7 +141,10 @@ walkthrough:
         {% macro net_cents(payment, refund) %}
             ({{ payment }} - {{ refund }})
         {% endmacro %}
-      highlight_lines: []
+      highlight_lines:
+      - 1
+      - 2
+      - 3
     evidence:
     - src-1
     - src-2
@@ -163,7 +179,19 @@ walkthrough:
       content: |
         select order_id, {{ net_cents("payment_cents", "refund_cents") }} as revenue_cents
         from {{ ref("order_amounts") }}
-      highlight_lines: []
+      highlight_lines:
+      - 1
+      - 2
+    - language: jinja
+      filename: macros/net_cents.sql
+      content: |
+        {% macro net_cents(payment, refund) %}
+            ({{ payment }} - {{ refund }})
+        {% endmacro %}
+      highlight_lines:
+      - 1
+      - 2
+      - 3
     evidence:
     - src-1
     - src-2
@@ -178,6 +206,18 @@ walkthrough:
     - src-4
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+    code_review:
+      reviewed_on: '2026-09-22'
+      historical_cutoff: '2026-09-21'
+      method: Original source/archive and release documentation inspection; no historical dbt execution.
+  intro:
+    can_now:
+    - Define a SQL expression once in a macro and reuse it in models.
+    - Rebuild an incremental model completely with full-refresh control.
+    scenario: |
+      Several reports subtract refunds from payments. Waffle Shop moves that repeated expression into a macro so the definition is easier to keep consistent.
+    outcome: |
+      See the macro definition, its call and the 1,000-cent net value of order 1042.
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.
 default_milestone: 0.6.0

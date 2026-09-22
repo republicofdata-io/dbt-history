@@ -44,6 +44,7 @@ sources:
   retrieved: '2026-09-21'
   supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
     from the package.
+  rechecked: '2026-09-22'
 narrative_evidence:
 - src-1
 - src-2
@@ -78,6 +79,27 @@ walkthrough:
     evidence:
     - src-1
     - src-2
+    code:
+    - language: yaml
+      filename: packages.yml
+      content: |
+        packages:
+          - local: ../shared_shop
+      highlight_lines:
+      - 1
+      - 2
+      purpose: authored executable syntax; illustration only
+    - language: yaml
+      filename: ../shared_shop/dbt_project.yml
+      content: |
+        name: shared_shop
+        version: "1.0"
+        config-version: 2
+        macro-paths: [macros]
+      highlight_lines:
+      - 1
+      - 3
+      purpose: authored executable syntax; illustration only
   - id: lock
     title: Record the resolved dependencies
     explanation: |
@@ -99,11 +121,32 @@ walkthrough:
     takeaway: |
       Review the lock when dependency resolution changes.
     code:
+    - language: yaml
+      filename: packages.yml
+      content: |
+        packages:
+          - local: ../shared_shop
+      highlight_lines:
+      - 1
+      - 2
+      purpose: authored executable syntax; illustration only
+    - language: yaml
+      filename: ../shared_shop/dbt_project.yml
+      content: |
+        name: shared_shop
+        version: "1.0"
+        config-version: 2
+        macro-paths: [macros]
+      highlight_lines:
+      - 1
+      - 3
+      purpose: authored executable syntax; illustration only
     - language: shell
       filename: commands.sh
       content: |
         dbt deps
-      highlight_lines: []
+      highlight_lines:
+      - 1
     evidence:
     - src-1
     - src-2
@@ -126,11 +169,44 @@ walkthrough:
     takeaway: |
       Documentation can travel without a running docs server.
     code:
+    - language: yaml
+      filename: models/schema.yml
+      content: |
+        version: 2
+        models:
+          - name: revenue_by_location
+            description: Payments minus refunds, in cents.
+            columns:
+              - name: revenue_cents
+                description: Net successful payments after refunds.
+      highlight_lines:
+      - 4
+      - 6
+      - 7
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/revenue_by_location.sql
+      content: |
+        select
+            r.location_id, l.name as location,
+            sum(r.payment_cents) as payment_cents,
+            sum(r.refund_cents) as refund_cents,
+            sum(r.revenue_cents) as revenue_cents
+        from {{ ref("order_revenue") }} as r
+        join raw.locations as l on r.location_id = l.location_id
+        group by r.location_id, l.name
+        order by r.location_id
+      highlight_lines:
+      - 3
+      - 4
+      - 5
+      purpose: authored executable syntax; illustration only
     - language: shell
       filename: commands.sh
       content: |
         dbt docs generate --static
-      highlight_lines: []
+      highlight_lines:
+      - 1
     evidence:
     - src-1
     - src-2
@@ -142,5 +218,18 @@ walkthrough:
     - src-2
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+      The local shared_shop dependency is authored teaching material; it must exist at the shown sibling path. dbt deps resolves the project’s declarations; no lock-file hash or historical public package version is invented.
+    code_review:
+      reviewed_on: '2026-09-22'
+      historical_cutoff: '2026-09-21'
+      method: Original source/archive and release documentation inspection; no historical dbt execution.
+  intro:
+    can_now:
+    - Record resolved dependencies in package-lock.yml.
+    - Generate a self-contained static documentation page.
+    scenario: |
+      The shop wants a repeatable dependency choice and documentation that can be shared without a docs server. The example shows the configuration behind both outputs.
+    outcome: |
+      Follow dependency resolution and static documentation generation without fabricating lock-file hashes.
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

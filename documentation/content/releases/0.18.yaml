@@ -61,11 +61,26 @@ sources:
   url: https://github.com/dbt-labs/dbt/releases/tag/v0.18.1
   retrieved: '2026-09-21'
   supports: Exposures
+- id: src-5
+  title: Historical source archive reviewed for example syntax
+  url: https://pypi.org/project/dbt-core/0.18.0/
+  retrieved: '2026-09-21'
+  supports: Original source package and tagged release evidence for the example’s syntax; review is not runtime
+    execution.
+  rechecked: '2026-09-22'
+- id: src-6
+  title: 0.18.1 exposure schema
+  url: https://github.com/dbt-labs/dbt-core/blob/v0.18.1/core/dbt/contracts/graph/unparsed.py
+  retrieved: '2026-09-22'
+  supports: Patch-specific exposures, owner and dependency definition.
+  historical_scope: Syntax at the named immutable version; research cutoff remains 2026-09-21.
 narrative_evidence:
 - src-1
 - src-2
 - src-3
 - src-4
+- src-5
+- src-6
 walkthrough:
   id: wt-0.18
   learning_objective: |
@@ -103,6 +118,58 @@ walkthrough:
     - src-2
     - src-3
     - src-4
+    - src-5
+    - src-6
+    code:
+    - language: sql
+      filename: models/refunds_by_order.sql
+      content: |
+        select order_id, sum(amount_cents) as refund_cents
+        from {{ ref("refunds") }}
+        group by order_id
+      highlight_lines:
+      - 1
+      - 2
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/order_revenue.sql
+      content: |
+        select *, payment_cents - refund_cents as revenue_cents
+        from {{ ref("order_amounts") }}
+      highlight_lines:
+      - 1
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/revenue_by_location.sql
+      content: |
+        select
+            r.location_id, l.name as location,
+            sum(r.payment_cents) as payment_cents,
+            sum(r.refund_cents) as refund_cents,
+            sum(r.revenue_cents) as revenue_cents
+        from {{ ref("order_revenue") }} as r
+        join raw.locations as l on r.location_id = l.location_id
+        group by r.location_id, l.name
+        order by r.location_id
+      highlight_lines:
+      - 3
+      - 4
+      - 5
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/order_amounts.sql
+      content: |
+        select o.*, coalesce(p.payment_cents, 0) as payment_cents,
+            coalesce(r.refund_cents, 0) as refund_cents
+        from {{ ref("orders") }} as o
+        left join {{ ref("payments_by_order") }} as p
+          on o.order_id = p.order_id
+        left join {{ ref("refunds_by_order") }} as r
+          on o.order_id = r.order_id
+      highlight_lines:
+      - 3
+      - 4
+      - 6
   - id: build
     title: Build the affected branch
     explanation: |
@@ -124,16 +191,68 @@ walkthrough:
     takeaway: |
       Deferral supports a smaller development build.
     code:
+    - language: sql
+      filename: models/refunds_by_order.sql
+      content: |
+        select order_id, sum(amount_cents) as refund_cents
+        from {{ ref("refunds") }}
+        group by order_id
+      highlight_lines:
+      - 1
+      - 2
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/order_revenue.sql
+      content: |
+        select *, payment_cents - refund_cents as revenue_cents
+        from {{ ref("order_amounts") }}
+      highlight_lines:
+      - 1
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/revenue_by_location.sql
+      content: |
+        select
+            r.location_id, l.name as location,
+            sum(r.payment_cents) as payment_cents,
+            sum(r.refund_cents) as refund_cents,
+            sum(r.revenue_cents) as revenue_cents
+        from {{ ref("order_revenue") }} as r
+        join raw.locations as l on r.location_id = l.location_id
+        group by r.location_id, l.name
+        order by r.location_id
+      highlight_lines:
+      - 3
+      - 4
+      - 5
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/order_amounts.sql
+      content: |
+        select o.*, coalesce(p.payment_cents, 0) as payment_cents,
+            coalesce(r.refund_cents, 0) as refund_cents
+        from {{ ref("orders") }} as o
+        left join {{ ref("payments_by_order") }} as p
+          on o.order_id = p.order_id
+        left join {{ ref("refunds_by_order") }} as r
+          on o.order_id = r.order_id
+      highlight_lines:
+      - 3
+      - 4
+      - 6
     - language: shell
       filename: commands.sh
       content: |
         dbt run --models state:modified+ --state ./state-prod --defer
-      highlight_lines: []
+      highlight_lines:
+      - 1
     evidence:
     - src-1
     - src-2
     - src-3
     - src-4
+    - src-5
+    - src-6
   - id: consumer
     title: Name the dashboard at 0.18.1
     explanation: |
@@ -159,6 +278,43 @@ walkthrough:
     - src-2
     - src-3
     - src-4
+    - src-5
+    - src-6
+    code:
+    - language: yaml
+      filename: models/exposures.yml (0.18.1)
+      content: |
+        version: 2
+        exposures:
+          - name: shop_daily_dashboard
+            type: dashboard
+            depends_on:
+              - ref("revenue_by_location")
+            owner:
+              name: Waffle Shop finance
+              email: finance@example.invalid
+      highlight_lines:
+      - 2
+      - 5
+      - 6
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/revenue_by_location.sql
+      content: |
+        select
+            r.location_id, l.name as location,
+            sum(r.payment_cents) as payment_cents,
+            sum(r.refund_cents) as refund_cents,
+            sum(r.revenue_cents) as revenue_cents
+        from {{ ref("order_revenue") }} as r
+        join raw.locations as l on r.location_id = l.location_id
+        group by r.location_id, l.name
+        order by r.location_id
+      highlight_lines:
+      - 3
+      - 4
+      - 5
+      purpose: authored executable syntax; illustration only
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -167,7 +323,22 @@ walkthrough:
     - src-2
     - src-3
     - src-4
+    - src-5
+    - src-6
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+    code_review:
+      reviewed_on: '2026-09-22'
+      historical_cutoff: '2026-09-21'
+      method: Original source/archive and release documentation inspection; no historical dbt execution.
+  intro:
+    can_now:
+    - Select changed model definitions by comparing saved project state.
+    - Reuse eligible unselected production relations through deferral.
+    - From 0.18.1, describe downstream dashboards as exposures.
+    scenario: |
+      The refund model changes while its other inputs stay stable. The shop builds the affected branch and records which dashboard consumes the result.
+    outcome: |
+      Connect the model edit, state-based command and patch-specific exposure definition.
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

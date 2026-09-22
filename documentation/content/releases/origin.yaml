@@ -49,10 +49,18 @@ sources:
   url: https://odupuis.medium.com/my-journey-introducing-the-data-build-tool-dbt-in-projects-analytical-stacks-69971faed2c2
   retrieved: '2026-09-21'
   supports: A practitioner account from July 2018, two years after the project began.
+- id: src-4
+  title: Historical source archive reviewed for example syntax
+  url: https://pypi.org/project/dbt/0.0.1/
+  retrieved: '2026-09-21'
+  supports: Original source package and tagged release evidence for the example’s syntax; review is not runtime
+    execution.
+  rechecked: '2026-09-22'
 narrative_evidence:
 - src-1
 - src-2
 - src-3
+- src-4
 walkthrough:
   id: wt-origin
   learning_objective: |
@@ -96,6 +104,20 @@ walkthrough:
     - src-1
     - src-2
     - src-3
+    - src-4
+    code:
+    - language: sql
+      filename: manual/read_money_events.sql
+      content: |
+        select payment_id, order_id, amount_cents
+        from raw.payments order by payment_id;
+
+        select refund_id, order_id, amount_cents
+        from raw.refunds order by refund_id;
+      highlight_lines:
+      - 1
+      - 4
+      purpose: authored executable syntax; illustration only
   - id: manual
     title: Write the rule once
     explanation: |
@@ -158,6 +180,7 @@ walkthrough:
     - src-1
     - src-2
     - src-3
+    - src-4
   - id: handoff
     title: Make the workflow visible
     explanation: |
@@ -188,13 +211,66 @@ walkthrough:
     - src-1
     - src-2
     - src-3
+    - src-4
+    code:
+    - language: sql
+      filename: manual/payment_totals.sql
+      content: |
+        create view payment_totals as
+        select order_id, sum(amount_cents) as payment_cents
+        from raw.payments group by order_id;
+      highlight_lines:
+      - 1
+      - 2
+      - 3
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: manual/refund_totals.sql
+      content: |
+        create view refund_totals as
+        select order_id, sum(amount_cents) as refund_cents
+        from raw.refunds group by order_id;
+      highlight_lines:
+      - 1
+      - 2
+      - 3
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: manual/location_revenue.sql
+      content: |
+        select o.location_id,
+            sum(coalesce(p.payment_cents, 0)
+              - coalesce(r.refund_cents, 0)) as revenue_cents
+        from raw.orders as o
+        left join payment_totals as p on o.order_id = p.order_id
+        left join refund_totals as r on o.order_id = r.order_id
+        group by o.location_id;
+      highlight_lines:
+      - 2
+      - 3
+      - 5
+      - 6
+      purpose: authored executable syntax; illustration only
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
     - src-1
     - src-2
+    - src-4
     limitations: |
       Fictional pre-dbt scenario. No 0.0.1 runtime was executed. The workflow comparison describes the direction of development, not a claim that every later feature existed at origin.
+    code_review:
+      reviewed_on: '2026-09-22'
+      historical_cutoff: '2026-09-21'
+      method: Original source/archive and release documentation inspection; no historical dbt execution.
+  intro:
+    can_now:
+    - From the first 0.0.1 package, keep transformation SQL in a project that dbt can compile.
+    - Let the early tool build database models from those SQL files.
+    scenario: |
+      Waffle Shop has twelve orders, split payments and refunds, but its revenue query is handed around manually. The opening example separates the correct calculation from the work of maintaining it.
+    outcome: |
+      Follow 13,800 cents of payments and 1,300 cents of refunds to 12,500 cents of revenue, then see what a repeatable project begins to replace.
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

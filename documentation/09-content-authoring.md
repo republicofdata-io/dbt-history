@@ -185,3 +185,7 @@ At most five players per layer at any chapter date (enforced by a test). "Repres
 The complete content authored on 22 September follows the narrower enums in Olivier’s request. `access` is a scalar or null; the app may normalize it to an array. `license` and `commercial_conditions` remain separate. Merger completion is `acquisition_closed` with `transaction_type: merger`. The schema-limited `pricing` event for MetricFlow has `event_subtype: licence-change`; it does not assert a price change.
 
 The delivered ecosystem file is a bare list of placements with external identities under `product_definition`; register these before resolving references. Read [content-index.yaml](content/content-index.yaml) for the full rendering contract, especially availability, maturity overrides and uncertainty fields. A decoder must preserve these fields if the UI needs to communicate the underlying qualification.
+
+## Step input phases and source inspection
+
+The enriched walkthroughs retain the original fields and add an optional `data_context: { dataset_variant, phase }` to distinguish an existing target from newly arrived source data. Short SQL comments also explain these phases where needed. A historical freshness example may use a derived view and a fixed evaluation time; native freshness still uses the real warehouse clock. Source evidence may include `source_path` and `sha256` for the exact package archive inspected. All examples retain `status: illustration`.

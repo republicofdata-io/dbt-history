@@ -44,6 +44,7 @@ sources:
   retrieved: '2026-09-21'
   supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
     from the package.
+  rechecked: '2026-09-22'
 narrative_evidence:
 - src-1
 - src-2
@@ -79,6 +80,70 @@ walkthrough:
     evidence:
     - src-1
     - src-2
+    code:
+    - language: sql
+      filename: models/order_amounts.sql
+      content: |
+        -- Fixture phase: Existing incremental target before second-day rows arrive.
+        with paid as (
+            select order_id, sum(amount_cents) as payment_cents
+            from raw.payments group by order_id
+        ), refunded as (
+            select order_id, sum(amount_cents) as refund_cents
+            from raw.refunds group by order_id
+        )
+        select o.*, coalesce(p.payment_cents, 0) as payment_cents,
+            coalesce(r.refund_cents, 0) as refund_cents
+        from raw.orders as o
+        left join paid as p on o.order_id = p.order_id
+        left join refunded as r on o.order_id = r.order_id
+      highlight_lines:
+      - 3
+      - 6
+      - 9
+      - 10
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/order_revenue.sql
+      content: |
+        -- Fixture phase: Existing incremental target before second-day rows arrive.
+        select *, payment_cents - refund_cents as revenue_cents
+        from {{ ref("order_amounts") }}
+      highlight_lines:
+      - 2
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/revenue_by_location.sql
+      content: |
+        -- Fixture phase: Existing incremental target before second-day rows arrive.
+        select
+            r.location_id, l.name as location,
+            sum(r.payment_cents) as payment_cents,
+            sum(r.refund_cents) as refund_cents,
+            sum(r.revenue_cents) as revenue_cents
+        from {{ ref("order_revenue") }} as r
+        join raw.locations as l on r.location_id = l.location_id
+        group by r.location_id, l.name
+        order by r.location_id
+      highlight_lines:
+      - 4
+      - 5
+      - 6
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: analyses/existing_target.sql
+      content: |
+        -- Fixture phase: Existing incremental target before second-day rows arrive.
+        select count(*) as existing_orders, max(order_id) as maximum_order_id,
+            sum(revenue_cents) as revenue_cents
+        from {{ ref("order_revenue") }}
+      highlight_lines:
+      - 2
+      - 3
+      purpose: authored executable syntax; illustration only
+    data_context:
+      dataset_variant: base
+      phase: Existing incremental target before second-day rows arrive.
   - id: filter
     title: Select two new orders
     explanation: |
@@ -112,9 +177,21 @@ walkthrough:
       highlight_lines:
       - 1
       - 2
+    - language: sql
+      filename: models/order_revenue_input.sql
+      content: |
+        -- Fixture phase: Current raw inputs include the added orders; the target still contains the base day.
+        select *, payment_cents - refund_cents as revenue_cents
+        from {{ ref("order_amounts") }}
+      highlight_lines:
+      - 2
+      purpose: authored executable syntax; illustration only
     evidence:
     - src-1
     - src-2
+    data_context:
+      dataset_variant: second-day
+      phase: Current raw inputs include the added orders; the target still contains the base day.
   - id: append
     title: Read the updated totals
     explanation: |
@@ -140,6 +217,59 @@ walkthrough:
     evidence:
     - src-1
     - src-2
+    code:
+    - language: sql
+      filename: models/order_amounts.sql
+      content: |
+        -- Fixture phase: Target after the incremental append.
+        with paid as (
+            select order_id, sum(amount_cents) as payment_cents
+            from raw.payments group by order_id
+        ), refunded as (
+            select order_id, sum(amount_cents) as refund_cents
+            from raw.refunds group by order_id
+        )
+        select o.*, coalesce(p.payment_cents, 0) as payment_cents,
+            coalesce(r.refund_cents, 0) as refund_cents
+        from raw.orders as o
+        left join paid as p on o.order_id = p.order_id
+        left join refunded as r on o.order_id = r.order_id
+      highlight_lines:
+      - 3
+      - 6
+      - 9
+      - 10
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/order_revenue.sql
+      content: |
+        -- Fixture phase: Target after the incremental append.
+        select *, payment_cents - refund_cents as revenue_cents
+        from {{ ref("order_amounts") }}
+      highlight_lines:
+      - 2
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/revenue_by_location.sql
+      content: |
+        -- Fixture phase: Target after the incremental append.
+        select
+            r.location_id, l.name as location,
+            sum(r.payment_cents) as payment_cents,
+            sum(r.refund_cents) as refund_cents,
+            sum(r.revenue_cents) as revenue_cents
+        from {{ ref("order_revenue") }} as r
+        join raw.locations as l on r.location_id = l.location_id
+        group by r.location_id, l.name
+        order by r.location_id
+      highlight_lines:
+      - 4
+      - 5
+      - 6
+      purpose: authored executable syntax; illustration only
+    data_context:
+      dataset_variant: second-day
+      phase: Target after the incremental append.
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -148,9 +278,22 @@ walkthrough:
     - src-2
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+    code_review:
+      reviewed_on: '2026-09-22'
+      historical_cutoff: '2026-09-21'
+      method: Original source/archive and release documentation inspection; no historical dbt execution.
   prepared_relations:
   - name: order_revenue_input
     definition: The dataset’s order_revenue definition evaluated over raw inputs; separate from the incremental
       target.
+  intro:
+    can_now:
+    - Append new records through an incremental model instead of rebuilding its complete history.
+    - Reuse intermediate SQL without creating a separate table by using an ephemeral model.
+    - Choose materialization inside a model with the new config call.
+    scenario: |
+      Two new orders arrive on the second trading day. Waffle Shop wants to add their 1,900 cents without rewriting the twelve existing orders.
+    outcome: |
+      Trace the original sql_where filter and the resulting 14,400-cent total.
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

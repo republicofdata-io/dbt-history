@@ -56,10 +56,18 @@ sources:
   url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
   retrieved: '2026-09-21'
   supports: Fishtown Analytics renames to dbt Labs. This is a company rename, not a new engine.
+- id: src-4
+  title: Historical source archive reviewed for example syntax
+  url: https://pypi.org/project/dbt-core/0.19.0/
+  retrieved: '2026-09-21'
+  supports: Original source package and tagged release evidence for the example’s syntax; review is not runtime
+    execution.
+  rechecked: '2026-09-22'
 narrative_evidence:
 - src-1
 - src-2
 - src-3
+- src-4
 walkthrough:
   id: wt-0.19
   learning_objective: |
@@ -91,6 +99,34 @@ walkthrough:
     evidence:
     - src-1
     - src-2
+    - src-4
+    code:
+    - language: sql
+      filename: snapshots/customers_history.sql
+      content: |
+        -- Fixture phase: Before the declared customer deletion.
+        {% snapshot customers_history %}
+        {{ config(target_schema="snapshots", unique_key="customer_id",
+            strategy="check", check_cols=["city"], invalidate_hard_deletes=True) }}
+        select * from raw.customers
+        {% endsnapshot %}
+      highlight_lines:
+      - 2
+      - 3
+      - 4
+      - 5
+    - language: sql
+      filename: analyses/customer_before_delete.sql
+      content: |
+        -- Fixture phase: Before the declared customer deletion.
+        select customer_id, name, city from raw.customers
+        where customer_id = 6
+      highlight_lines:
+      - 3
+      purpose: authored executable syntax; illustration only
+    data_context:
+      dataset_variant: base
+      phase: Before the declared customer deletion.
   - id: missing
     title: Observe a hard delete
     explanation: |
@@ -120,10 +156,15 @@ walkthrough:
             strategy="check", check_cols=["city"], invalidate_hard_deletes=True) }}
         select * from raw.customers
         {% endsnapshot %}
-      highlight_lines: []
+      highlight_lines:
+      - 1
+      - 2
+      - 3
+      - 4
     evidence:
     - src-1
     - src-2
+    - src-4
   - id: close
     title: Close the observed active interval
     explanation: |
@@ -147,6 +188,44 @@ walkthrough:
     evidence:
     - src-1
     - src-2
+    - src-4
+    code:
+    - language: sql
+      filename: snapshots/customers_history.sql
+      content: |
+        -- Fixture phase: After deletion has been observed by the snapshot.
+        {% snapshot customers_history %}
+        {{ config(target_schema="snapshots", unique_key="customer_id",
+            strategy="check", check_cols=["city"], invalidate_hard_deletes=True) }}
+        select * from raw.customers
+        {% endsnapshot %}
+      highlight_lines:
+      - 2
+      - 3
+      - 4
+      - 5
+    - language: sql
+      filename: analyses/closed_customer.sql
+      content: |
+        -- Fixture phase: After deletion has been observed by the snapshot.
+        select customer_id, city, dbt_valid_from, dbt_valid_to
+        from snapshots.customers_history
+        where customer_id = 6
+        order by dbt_valid_from
+      highlight_lines:
+      - 2
+      - 4
+      purpose: authored executable syntax; illustration only
+    - language: shell
+      filename: commands.sh
+      content: |
+        dbt snapshot
+      highlight_lines:
+      - 1
+      purpose: authored executable syntax; illustration only
+    data_context:
+      dataset_variant: customer-removed
+      phase: After deletion has been observed by the snapshot.
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -154,8 +233,21 @@ walkthrough:
     - src-1
     - src-2
     - src-3
+    - src-4
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+    code_review:
+      reviewed_on: '2026-09-22'
+      historical_cutoff: '2026-09-21'
+      method: Original source/archive and release documentation inspection; no historical dbt execution.
+  intro:
+    can_now:
+    - Close a snapshot’s active record when the source row disappears.
+    - Apply deferral to tests as well as model builds.
+    scenario: |
+      Finn disappears from the current customer feed, but the shop’s old orders remain. The example distinguishes a hard delete from removing history or refunding those orders.
+    outcome: |
+      Inspect the hard-delete setting and the closed customer-history interval.
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.
 default_milestone: 0.19.0

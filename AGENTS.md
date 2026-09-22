@@ -45,3 +45,12 @@ Current delivery direction confirmed by Olivier on 22 September 2026. This super
 - The event schema uses `acquisition_closed` with `transaction_type: merger`; a licence change uses the allowed `pricing` category with `event_subtype: licence-change` and `price_change_asserted: false`. Render the specific meaning, not a misleading generic label.
 - `ecosystem/placements.yaml` is a list, with external products declared once in `product_definition`. Placement end dates may be editorial rotation, not retirement.
 - Keep the base fixture immutable; recursively apply named variants and their explicit change events. The orphan payment is a reported integrity failure, not revenue attributed to a fabricated location.
+
+## Walkthrough enrichment conventions
+
+- Preserve `walkthrough.intro` with 2–4 version-specific `can_now` capabilities, a short `scenario`, and optional `outcome`.
+- Every command/result/test step includes its model, test or configuration; shell commands come last. Keep blocks short and highlights in range.
+- Preserve original authored fields, existing snippets and prepared values when adding material.
+- `data_context` can identify the before/after phase of a named fixture variant. These phases do not mutate the shared base dataset.
+- Historical details matter: 0.2.0 declares this relationship under parent `orders`, pointing to child `payments`; 0.3.0 uses `run-target` in the default `user` profile. Do not modernize these examples.
+- New source inspections cite package archives with source paths and hashes where available. Their review date can be later than the unchanged historical cutoff.

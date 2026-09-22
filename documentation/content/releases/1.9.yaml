@@ -67,6 +67,7 @@ sources:
   retrieved: '2026-09-21'
   supports: Package existence and upload timestamp. Implementation claims refer to the original source archive linked
     from the package.
+  rechecked: '2026-09-22'
 - id: src-3
   title: SDF acquisition announced
   url: https://www.getdbt.com/blog/dbt-labs-announces-sdf-labs-acquisition
@@ -88,6 +89,14 @@ sources:
   url: https://www.getdbt.com/fusion-in-bloom
   retrieved: '2026-09-21'
   supports: Fusion and VS Code extension public beta. New development engine coexists with Python Core.
+- id: src-7
+  title: 1.9.0 batch model configuration
+  url: https://files.pythonhosted.org/packages/95/d9/f08c5459e0e84f9ba46a4a39970ccf743f24a53d6dbbc707b6e22cfb1e07/dbt_core-1.9.0.tar.gz
+  retrieved: '2026-09-22'
+  supports: Microbatch event_time, batch_size, begin and lookback fields.
+  historical_scope: Syntax at the named immutable version; research cutoff remains 2026-09-21.
+  source_path: dbt/artifacts/resources/v1/config.py
+  sha256: 2b4c19f190abff4280837ea8bab4e3e1e70b9a846bed397df970b628dd6c51cc
 narrative_evidence:
 - src-1
 - src-2
@@ -95,6 +104,7 @@ narrative_evidence:
 - src-4
 - src-5
 - src-6
+- src-7
 walkthrough:
   id: wt-1.9
   learning_objective: |
@@ -126,6 +136,54 @@ walkthrough:
     evidence:
     - src-1
     - src-2
+    - src-7
+    code:
+    - language: yaml
+      filename: models/order_revenue.yml
+      content: |
+        version: 2
+        models:
+          - name: order_revenue
+            config:
+              event_time: ordered_at
+      highlight_lines:
+      - 3
+      - 4
+      - 5
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/daily_revenue.sql
+      content: |
+        -- Fixture phase: Existing daily_revenue before late order 1055 arrives.
+        {{ config(materialized="incremental",
+            incremental_strategy="microbatch",
+            event_time="ordered_at", batch_size="day",
+            begin="2016-03-08", lookback=1) }}
+        select order_id, location_id, ordered_at, revenue_cents
+        from {{ ref("order_revenue") }}
+      highlight_lines:
+      - 2
+      - 3
+      - 4
+      - 5
+      - 7
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: analyses/revenue_by_day.sql
+      content: |
+        -- Fixture phase: Existing daily_revenue before late order 1055 arrives.
+        select cast(ordered_at as date) as trading_day,
+            sum(revenue_cents) as revenue_cents
+        from {{ ref("daily_revenue") }}
+        group by cast(ordered_at as date)
+        order by trading_day
+      highlight_lines:
+      - 2
+      - 3
+      purpose: authored executable syntax; illustration only
+    data_context:
+      dataset_variant: second-day
+      phase: Existing daily_revenue before late order 1055 arrives.
   - id: late
     title: Assign the late order to its original day
     explanation: |
@@ -151,6 +209,53 @@ walkthrough:
     evidence:
     - src-1
     - src-2
+    - src-7
+    code:
+    - language: yaml
+      filename: models/order_revenue.yml
+      content: |
+        version: 2
+        models:
+          - name: order_revenue
+            config:
+              event_time: ordered_at
+      highlight_lines:
+      - 3
+      - 4
+      - 5
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/daily_revenue.sql
+      content: |
+        -- Fixture phase: Upstream order_revenue has the late order; the batch target has not been repaired.
+        {{ config(materialized="incremental",
+            incremental_strategy="microbatch",
+            event_time="ordered_at", batch_size="day",
+            begin="2016-03-08", lookback=1) }}
+        select order_id, location_id, ordered_at, revenue_cents
+        from {{ ref("order_revenue") }}
+      highlight_lines:
+      - 2
+      - 3
+      - 4
+      - 5
+      - 7
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: analyses/late_order.sql
+      content: |
+        -- Fixture phase: Upstream order_revenue has the late order; the batch target has not been repaired.
+        select order_id, cast(ordered_at as date) as event_day,
+            revenue_cents
+        from {{ ref("order_revenue") }}
+        where order_id = 1055
+      highlight_lines:
+      - 2
+      - 5
+      purpose: authored executable syntax; illustration only
+    data_context:
+      dataset_variant: late-order
+      phase: Upstream order_revenue has the late order; the batch target has not been repaired.
   - id: repair
     title: Replace the affected batch result
     explanation: |
@@ -176,6 +281,68 @@ walkthrough:
     evidence:
     - src-1
     - src-2
+    - src-7
+    code:
+    - language: yaml
+      filename: models/order_revenue.yml
+      content: |
+        version: 2
+        models:
+          - name: order_revenue
+            config:
+              event_time: ordered_at
+      highlight_lines:
+      - 3
+      - 4
+      - 5
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: models/daily_revenue.sql
+      content: |
+        -- Fixture phase: After refreshing the input and rebuilding the March 8 batch.
+        {{ config(materialized="incremental",
+            incremental_strategy="microbatch",
+            event_time="ordered_at", batch_size="day",
+            begin="2016-03-08", lookback=1) }}
+        select order_id, location_id, ordered_at, revenue_cents
+        from {{ ref("order_revenue") }}
+      highlight_lines:
+      - 2
+      - 3
+      - 4
+      - 5
+      - 7
+      purpose: authored executable syntax; illustration only
+    - language: sql
+      filename: analyses/revenue_by_day.sql
+      content: |
+        -- Fixture phase: After refreshing the input and rebuilding the March 8 batch.
+        select cast(ordered_at as date) as trading_day,
+            sum(revenue_cents) as revenue_cents
+        from {{ ref("daily_revenue") }}
+        group by cast(ordered_at as date)
+        order by trading_day
+      highlight_lines:
+      - 2
+      - 3
+      purpose: authored executable syntax; illustration only
+    - language: shell
+      filename: commands.sh
+      content: |
+        # First refresh order_revenue from the late-order fixture.
+        dbt run --select +order_revenue
+        dbt run --select daily_revenue \
+          --event-time-start "2016-03-08" \
+          --event-time-end "2016-03-09"
+      highlight_lines:
+      - 2
+      - 3
+      - 4
+      - 5
+      purpose: authored executable syntax; illustration only
+    data_context:
+      dataset_variant: late-order
+      phase: After refreshing the input and rebuilding the March 8 batch.
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -186,8 +353,23 @@ walkthrough:
     - src-4
     - src-5
     - src-6
+    - src-7
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
+      The added recipe targets Snowflake with a matching 1.9 adapter that implements microbatch. order_revenue must be refreshed from the selected fixture before the bounded repair; event_time is declared on that immediate input so automatic filtering applies. The March 8 repair ends at the exclusive March 9 boundary and leaves the existing March 9 batch intact.
+    code_review:
+      reviewed_on: '2026-09-22'
+      historical_cutoff: '2026-09-21'
+      method: Original source/archive and release documentation inspection; no historical dbt execution.
+  intro:
+    can_now:
+    - Build incremental models in event-time batches on supported adapters.
+    - Retry or backfill particular batch windows.
+    - Define snapshots in YAML.
+    scenario: |
+      A 600-cent order arrives late, after the shop has processed the second trading day. Its event timestamp still places the money in the first day’s batch.
+    outcome: |
+      Follow event-time configuration and a bounded repair to the 15,000-cent total.
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.
 default_milestone: 1.9.0
