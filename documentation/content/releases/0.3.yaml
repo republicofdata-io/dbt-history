@@ -85,8 +85,8 @@ walkthrough:
   steps:
     - id: branches
       title: Two branches that do not need each other
-      explanation: |
-        Highlighted lines 1 and 2 of the payment and refund models total their separate feeds. Highlighted line 6 of profiles.yml allows two workers. Lines 3, 4 and 6 of order_amounts join both finished totals to orders. The diagram shows both branches meeting at order_amounts, which order_revenue then reads.
+      explanation: |-
+        Highlighted lines 1 and 2 of payments_by_order and refunds_by_order total their separate feeds. Highlighted line 6 of profiles.yml allows two workers. Neither model needs the other's result. The diagram shows both branches meeting at order_amounts, which supplies order_revenue, so the revenue calculation waits for both totals.
       state:
         kind: diagram
         title: Two independent branches meet at order_amounts
@@ -146,17 +146,6 @@ walkthrough:
             - 2
             - 6
           purpose: authored executable syntax; illustration only
-        - language: yaml
-          filename: dbt_project.yml (excerpt)
-          content: |
-            name: jaffle_shop
-            version: "1.0"
-            model-defaults:
-              materialized: true
-          highlight_lines:
-            - 3
-            - 4
-          purpose: authored executable syntax; illustration only
         - language: sql
           filename: models/refunds_by_order.sql
           content: |
@@ -167,38 +156,10 @@ walkthrough:
             - 1
             - 2
           purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: models/refunds.sql
-          content: |
-            select refund_id, order_id, amount_cents from raw.refunds
-          highlight_lines:
-            - 1
-          purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: models/order_amounts.sql
-          content: |
-            select o.*, coalesce(p.payment_cents, 0) as payment_cents,
-                coalesce(r.refund_cents, 0) as refund_cents
-            from {{ ref("orders") }} as o
-            left join {{ ref("payments_by_order") }} as p
-              on o.order_id = p.order_id
-            left join {{ ref("refunds_by_order") }} as r
-              on o.order_id = r.order_id
-          highlight_lines:
-            - 3
-            - 4
-            - 6
-          purpose: Authored era-specific example; illustration only.
     - id: failure
       title: Break the refund branch on purpose
-      explanation: >
-        The refund model now has a deliberate mistake. Highlighted line 1 sums a column called
-        refund_amount_cents, which does not exist, so the database rejects the query. The data itself is
-        unchanged. Highlighted lines 4 and 6 of order_amounts show that it needs both branches, and
-        highlighted line 1 of order_revenue shows that it needs order_amounts. The result panel shows what
-        dbt
-        does: the refund model fails, the revenue model is skipped because it depends on refunds, and the
-        payment model finishes on its own.
+      explanation: |-
+        Highlighted line 1 of refunds_by_order now sums refund_amount_cents, a column that doesn't exist. The database rejects the query; the input rows haven't changed. The panel shows the consequence: this model fails, dependent revenue is skipped, and the independent payments branch may finish. The dependency chain is the one shown on the previous screen.
       state:
         kind: comparison
         title: What happens when one branch fails
@@ -225,41 +186,6 @@ walkthrough:
         - alignment-0-3-0
       code:
         - language: sql
-          filename: models/payments_by_order.sql
-          content: |
-            select order_id, sum(amount_cents) as payment_cents
-            from {{ ref("payments") }}
-            group by order_id
-          highlight_lines:
-            - 1
-            - 2
-          purpose: authored executable syntax; illustration only
-        - language: yaml
-          filename: profiles.yml (target excerpt)
-          content: |
-            user:
-              run-target: dev
-              outputs:
-                dev:
-                  type: redshift
-                  threads: 2
-          highlight_lines:
-            - 1
-            - 2
-            - 6
-          purpose: authored executable syntax; illustration only
-        - language: yaml
-          filename: dbt_project.yml (excerpt)
-          content: |
-            name: jaffle_shop
-            version: "1.0"
-            model-defaults:
-              materialized: true
-          highlight_lines:
-            - 3
-            - 4
-          purpose: authored executable syntax; illustration only
-        - language: sql
           filename: models/refunds_by_order.sql (deliberately invalid)
           content: |
             select order_id, sum(refund_amount_cents) as refund_cents
@@ -268,36 +194,10 @@ walkthrough:
           highlight_lines:
             - 1
           purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: models/order_revenue.sql
-          content: |
-            select *, payment_cents - refund_cents as revenue_cents
-            from {{ ref("order_amounts") }}
-          highlight_lines:
-            - 1
-          purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: models/order_amounts.sql
-          content: |
-            select o.*, coalesce(p.payment_cents, 0) as payment_cents,
-                coalesce(r.refund_cents, 0) as refund_cents
-            from {{ ref("orders") }} as o
-            left join {{ ref("payments_by_order") }} as p
-              on o.order_id = p.order_id
-            left join {{ ref("refunds_by_order") }} as r
-              on o.order_id = r.order_id
-          highlight_lines:
-            - 3
-            - 4
-            - 6
-          purpose: Authored era-specific example; illustration only.
     - id: fixed
       title: Fix the refund model and read the totals
-      explanation: >
-        With the column name corrected, the same files build in full. Highlighted lines 4 and 6 of
-        order_amounts join both branches back in, and highlighted lines 3 to 5 of the location model add up
-        payments, refunds and revenue per location. The result panel shows the familiar figures: 12,500 cents
-        across the three locations.
+      explanation: |-
+        After the refund column name is corrected and the branches are rebuilt, revenue_by_location totals the results. Its highlighted lines 3 to 5 sum payments, refunds and revenue per location. The panel shows the recovered answer: 3,400, 4,300 and 4,800 cents, totalling 12,500. This screen reads the repaired result; the correction itself isn't shown here.
       state:
         kind: table
         title: Revenue by location after the repair
@@ -335,64 +235,6 @@ walkthrough:
         - src-3
         - alignment-0-3-0
       code:
-        - language: sql
-          filename: models/payments_by_order.sql
-          content: |
-            select order_id, sum(amount_cents) as payment_cents
-            from {{ ref("payments") }}
-            group by order_id
-          highlight_lines:
-            - 1
-            - 2
-          purpose: authored executable syntax; illustration only
-        - language: yaml
-          filename: profiles.yml (target excerpt)
-          content: |
-            user:
-              run-target: dev
-              outputs:
-                dev:
-                  type: redshift
-                  threads: 2
-          highlight_lines:
-            - 1
-            - 2
-            - 6
-          purpose: authored executable syntax; illustration only
-        - language: yaml
-          filename: dbt_project.yml (excerpt)
-          content: |
-            name: jaffle_shop
-            version: "1.0"
-            model-defaults:
-              materialized: true
-          highlight_lines:
-            - 3
-            - 4
-          purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: models/order_amounts.sql
-          content: |
-            select o.*, coalesce(p.payment_cents, 0) as payment_cents,
-                coalesce(r.refund_cents, 0) as refund_cents
-            from {{ ref("orders") }} as o
-            left join {{ ref("payments_by_order") }} as p
-              on o.order_id = p.order_id
-            left join {{ ref("refunds_by_order") }} as r
-              on o.order_id = r.order_id
-          highlight_lines:
-            - 3
-            - 4
-            - 6
-          purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: models/order_revenue.sql
-          content: |
-            select *, payment_cents - refund_cents as revenue_cents
-            from {{ ref("order_amounts") }}
-          highlight_lines:
-            - 1
-          purpose: authored executable syntax; illustration only
         - language: sql
           filename: models/revenue_by_location.sql
           content: |

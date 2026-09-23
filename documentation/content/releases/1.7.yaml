@@ -79,10 +79,8 @@ walkthrough:
   steps:
     - id: range
       title: 'An allowed version range and one resolved version'
-      explanation: >-
-        Highlighted lines 2 and 3 request dbt_utils from the package registry and allow versions from 1.1.0
-        up to, but not including, 1.2.0. The panel contrasts that range with the prepared choice 1.1.1, a
-        real release available by this chapter’s date. No registry resolution run is claimed.
+      explanation: |-
+        Highlighted lines 2 and 3 of packages.yml request dbt_utils and allow versions from 1.1.0 up to, but not including, 1.2.0. The panel compares that range with the prepared choice 1.1.1, a real release available by this chapter's date. No registry resolution run is claimed.
       state:
         kind: comparison
         title: Request and prepared resolution
@@ -118,11 +116,8 @@ walkthrough:
           purpose: Authored era-specific example; illustration only.
     - id: lock
       title: Write the lock file with dbt deps
-      explanation: >-
-        Highlighted line 3 of package-lock.yml records version 1.1.1. Line 4 is the request hash, computed
-        here with dbt 1.7.0’s own hashing function. It lets dbt detect a changed request; it is not a checksum
-        of the package download. The panel distinguishes the allowed range from the exact version subsequent
-        installs retain.
+      explanation: |-
+        The command runs dbt deps. Highlighted line 3 of package-lock.yml records the prepared choice, 1.1.1; line 4 holds the request hash, computed with dbt 1.7.0's own function. That hash detects a changed request, rather than verifying a download. The panel compares the earlier allowed range with the exact version subsequent installs retain.
       state:
         kind: comparison
         title: Two files, distinct version values
@@ -152,16 +147,6 @@ walkthrough:
             - 3
             - 4
           purpose: Authored era-specific example; illustration only.
-        - language: yaml
-          filename: packages.yml
-          content: |
-            packages:
-              - package: dbt-labs/dbt_utils
-                version: [">=1.1.0", "<1.2.0"]
-          highlight_lines:
-            - 2
-            - 3
-          purpose: Authored era-specific example; illustration only.
         - language: shell
           filename: commands.sh
           content: |
@@ -176,10 +161,8 @@ walkthrough:
         - alignment-utils
     - id: share
       title: Generate the docs as one file
-      explanation: >-
-        Highlighted lines 4, 6 and 7 of schema.yml provide the descriptions; lines 3 to 5 of the model total
-        the amounts they describe. Highlighted command line 1 adds --static to docs generate. The panel identifies
-        target/static_index.html, the single HTML file containing the definitions and model dependency picture.
+      explanation: |-
+        Highlighted lines 4, 6 and 7 of schema.yml supply the model and column descriptions. Highlighted line 1 of the command adds --static to docs generate. The panel identifies target/static_index.html, one HTML file containing the project's definitions and dependency picture.
       state:
         kind: comparison
         title: What the static docs contain
@@ -210,23 +193,6 @@ walkthrough:
             - 4
             - 6
             - 7
-          purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: models/revenue_by_location.sql
-          content: |
-            select
-                r.location_id, l.name as location,
-                sum(r.payment_cents) as payment_cents,
-                sum(r.refund_cents) as refund_cents,
-                sum(r.revenue_cents) as revenue_cents
-            from {{ ref("order_revenue") }} as r
-            join raw.locations as l on r.location_id = l.location_id
-            group by r.location_id, l.name
-            order by r.location_id
-          highlight_lines:
-            - 3
-            - 4
-            - 5
           purpose: authored executable syntax; illustration only
         - language: shell
           filename: commands.sh

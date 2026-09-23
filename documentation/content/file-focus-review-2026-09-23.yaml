@@ -1,0 +1,1296 @@
+id: step-file-focus-2026-09-23
+reviewed_on: '2026-09-23'
+research_cutoff: '2026-09-21'
+status: pass-with-follow-up-flags
+summary:
+  chapter_count: 36
+  step_count: 121
+  before: 352
+  after: 214
+  removed: 138
+  pure_result_steps:
+  - 0.14/change
+  - 0.19/missing
+baseline_note: The working tree began with 352 blocks. The hand-edited 0.4 reference had already removed seven from
+  the earlier 359-block pass; this pass removed another 138.
+checks:
+  chapter_count: 36
+  step_count: 121
+  before: 352
+  after: 214
+  removed: 138
+  pure_result_steps:
+  - 0.14/change
+  - 0.19/missing
+  status: pass
+  all_retained_code_objects_unchanged: true
+  retained_code_order_preserved: true
+  all_other_chapter_fields_unchanged: true
+  reference_0_4_unchanged: true
+  base_and_variants_unchanged: true
+  unnamed_retained_files: []
+  ambiguous_prose_links:
+  - - 0.18/change
+    - models/refunds_by_order.sql (saved production version)
+  - - 0.6/refresh
+    - macros/net_cents.sql
+  command_only_steps:
+  - 1.12/inspect
+  - 1.12/compare
+  - 1.6/repair
+  maximum_files_per_step: 4
+unnamed_retained_file_exceptions: []
+flags:
+- id: file-focus-0.6-refresh-links
+  chapter: '0.6'
+  step: refresh
+  status: open-ui-follow-up
+  kind: ambiguous-file-link
+  description: Both macro versions are named and needed for the before/after comparison. CodeFiles.tsx strips filename
+    suffixes when building aliases, so both use macros/net_cents.sql and prose links select the first block. The
+    corrected macro remains accessible through its file tab.
+  requested_follow_up: Make each full displayed filename select its own block, including the version without a suffix.
+    Preserve both filenames and code blocks.
+- id: file-focus-0.18-change-links
+  chapter: '0.18'
+  step: change
+  status: open-ui-follow-up
+  kind: ambiguous-file-link
+  description: The current and saved production versions are both explicitly named. Their shared models/refunds_by_order.sql
+    alias makes prose links select the current version even when the saved version is named. The saved version remains
+    accessible through its file tab.
+  requested_follow_up: Disambiguate the full displayed filename with its saved-production suffix in the app link
+    resolver.
+- id: file-focus-0.3-fixed-code
+  chapter: '0.3'
+  step: fixed
+  status: flagged-content-gap
+  kind: missing-file
+  description: The supplied step has no corrected refunds_by_order.sql block. It now explicitly presents the result
+    after repair, using the existing revenue_by_location.sql block. No corrected file was invented.
+  requested_follow_up: If this step should show the repair itself, add a source-checked corrected refunds_by_order.sql
+    excerpt in a separately scoped authoring pass. The present pass only permits removals.
+per_chapter:
+- chapter: origin
+  before: 4
+  after: 4
+  removed: 0
+- chapter: '0.1'
+  before: 6
+  after: 5
+  removed: 1
+- chapter: '0.2'
+  before: 9
+  after: 5
+  removed: 4
+- chapter: '0.3'
+  before: 18
+  after: 5
+  removed: 13
+- chapter: '0.4'
+  before: 7
+  after: 7
+  removed: 0
+- chapter: '0.5'
+  before: 11
+  after: 7
+  removed: 4
+- chapter: '0.6'
+  before: 11
+  after: 9
+  removed: 2
+- chapter: '0.7'
+  before: 7
+  after: 4
+  removed: 3
+- chapter: '0.8'
+  before: 11
+  after: 7
+  removed: 4
+- chapter: '0.9'
+  before: 11
+  after: 8
+  removed: 3
+- chapter: '0.10'
+  before: 8
+  after: 6
+  removed: 2
+- chapter: '0.11'
+  before: 8
+  after: 5
+  removed: 3
+- chapter: '0.12'
+  before: 7
+  after: 6
+  removed: 1
+- chapter: '0.13'
+  before: 10
+  after: 6
+  removed: 4
+- chapter: '0.14'
+  before: 9
+  after: 6
+  removed: 3
+- chapter: '0.15'
+  before: 9
+  after: 5
+  removed: 4
+- chapter: '0.16'
+  before: 6
+  after: 4
+  removed: 2
+- chapter: '0.17'
+  before: 12
+  after: 5
+  removed: 7
+- chapter: '0.18'
+  before: 13
+  after: 5
+  removed: 8
+- chapter: '0.19'
+  before: 7
+  after: 5
+  removed: 2
+- chapter: '0.20'
+  before: 6
+  after: 5
+  removed: 1
+- chapter: '0.21'
+  before: 15
+  after: 4
+  removed: 11
+- chapter: '1.0'
+  before: 7
+  after: 6
+  removed: 1
+- chapter: '1.1'
+  before: 10
+  after: 6
+  removed: 4
+- chapter: '1.2'
+  before: 6
+  after: 5
+  removed: 1
+- chapter: '1.3'
+  before: 6
+  after: 4
+  removed: 2
+- chapter: '1.4'
+  before: 8
+  after: 6
+  removed: 2
+- chapter: '1.5'
+  before: 12
+  after: 9
+  removed: 3
+- chapter: '1.6'
+  before: 16
+  after: 6
+  removed: 10
+- chapter: '1.7'
+  before: 7
+  after: 5
+  removed: 2
+- chapter: '1.8'
+  before: 12
+  after: 7
+  removed: 5
+- chapter: '1.9'
+  before: 16
+  after: 9
+  removed: 7
+- chapter: '1.10'
+  before: 10
+  after: 8
+  removed: 2
+- chapter: '1.11'
+  before: 13
+  after: 7
+  removed: 6
+- chapter: '1.12'
+  before: 15
+  after: 6
+  removed: 9
+- chapter: '2.0'
+  before: 9
+  after: 7
+  removed: 2
+per_step:
+- chapter: origin
+  step: question
+  before: 1
+  after: 1
+  removed: []
+  retained:
+  - raw/look_around.sql
+- chapter: origin
+  step: answer
+  before: 1
+  after: 1
+  removed: []
+  retained:
+  - analyst/revenue_by_location.sql
+- chapter: origin
+  step: problem
+  before: 2
+  after: 2
+  removed: []
+  retained:
+  - analyst/revenue_by_location.sql
+  - dashboard/revenue_copy.sql
+- chapter: '0.1'
+  step: query
+  before: 1
+  after: 1
+  removed: []
+  retained:
+  - models/revenue_by_location.sql
+- chapter: '0.1'
+  step: config
+  before: 3
+  after: 3
+  removed: []
+  retained:
+  - dbt_project.yml (excerpt)
+  - models/order_payments.sql
+  - commands.sh
+- chapter: '0.1'
+  step: patch
+  before: 2
+  after: 1
+  removed:
+  - models/order_revenue.sql
+  retained:
+  - models/revenue_by_location.sql
+- chapter: '0.2'
+  step: feed
+  before: 3
+  after: 1
+  removed:
+  - models/payments.sql
+  - models/orders.sql
+  retained:
+  - inspection/orphan_payments.sql (warehouse query)
+- chapter: '0.2'
+  step: test
+  before: 4
+  after: 2
+  removed:
+  - models/payments.sql
+  - models/orders.sql
+  retained:
+  - models/schema.yml
+  - commands.sh
+- chapter: '0.2'
+  step: seed
+  before: 2
+  after: 2
+  removed: []
+  retained:
+  - data/locations.csv
+  - commands.sh
+- chapter: '0.3'
+  step: branches
+  before: 6
+  after: 3
+  removed:
+  - dbt_project.yml (excerpt)
+  - models/refunds.sql
+  - models/order_amounts.sql
+  retained:
+  - models/payments_by_order.sql
+  - profiles.yml (target excerpt)
+  - models/refunds_by_order.sql
+- chapter: '0.3'
+  step: failure
+  before: 6
+  after: 1
+  removed:
+  - models/payments_by_order.sql
+  - profiles.yml (target excerpt)
+  - dbt_project.yml (excerpt)
+  - models/order_revenue.sql
+  - models/order_amounts.sql
+  retained:
+  - models/refunds_by_order.sql (deliberately invalid)
+- chapter: '0.3'
+  step: fixed
+  before: 6
+  after: 1
+  removed:
+  - models/payments_by_order.sql
+  - profiles.yml (target excerpt)
+  - dbt_project.yml (excerpt)
+  - models/order_amounts.sql
+  - models/order_revenue.sql
+  retained:
+  - models/revenue_by_location.sql
+- chapter: '0.4'
+  step: existing
+  before: 2
+  after: 2
+  removed: []
+  retained:
+  - analyses/existing_target.sql
+  - models/order_revenue.sql
+- chapter: '0.4'
+  step: filter
+  before: 2
+  after: 2
+  removed: []
+  retained:
+  - models/order_revenue.sql
+  - commands.sh
+- chapter: '0.4'
+  step: append
+  before: 1
+  after: 1
+  removed: []
+  retained:
+  - analyses/location_totals.sql
+- chapter: '0.4'
+  step: ephemeral
+  before: 2
+  after: 2
+  removed: []
+  retained:
+  - models/order_revenue_input.sql
+  - models/order_revenue.sql
+- chapter: '0.5'
+  step: variable
+  before: 3
+  after: 2
+  removed:
+  - models/revenue_by_location.sql
+  retained:
+  - dbt_project.yml (excerpt)
+  - models/revenue_display.sql
+- chapter: '0.5'
+  step: archive
+  before: 4
+  after: 3
+  removed:
+  - setup/archive_input.sql
+  retained:
+  - dbt_project.yml (archive excerpt)
+  - inspection/customer_archive.sql
+  - commands.sh
+- chapter: '0.5'
+  step: reconcile
+  before: 4
+  after: 2
+  removed:
+  - models/order_revenue.sql
+  - models/revenue_by_location.sql
+  retained:
+  - tests/revenue_reconciles.sql
+  - commands.sh
+- chapter: '0.6'
+  step: repeat
+  before: 2
+  after: 2
+  removed: []
+  retained:
+  - analyses/order_1042.sql
+  - models/customer_revenue.sql (before the macro)
+- chapter: '0.6'
+  step: macro
+  before: 1
+  after: 1
+  removed: []
+  retained:
+  - macros/net_cents.sql
+- chapter: '0.6'
+  step: use
+  before: 3
+  after: 2
+  removed:
+  - macros/net_cents.sql
+  retained:
+  - models/order_revenue.sql
+  - analyses/order_1042.sql
+- chapter: '0.6'
+  step: refresh
+  before: 5
+  after: 4
+  removed:
+  - analyses/total.sql
+  retained:
+  - models/order_revenue.sql
+  - macros/net_cents.sql (before correction)
+  - macros/net_cents.sql
+  - commands.sh
+- chapter: '0.7'
+  step: rule
+  before: 2
+  after: 1
+  removed:
+  - models/order_amounts.sql
+  retained:
+  - analyses/order_1042.sql
+- chapter: '0.7'
+  step: target
+  before: 3
+  after: 2
+  removed:
+  - models/order_revenue.sql
+  retained:
+  - profiles.yml (connection excerpt)
+  - dbt_project.yml (excerpt)
+- chapter: '0.7'
+  step: check
+  before: 2
+  after: 1
+  removed:
+  - models/revenue_by_location.sql
+  retained:
+  - profiles.yml (connection excerpt)
+- chapter: '0.8'
+  step: independent
+  before: 3
+  after: 3
+  removed: []
+  retained:
+  - models/payments_by_order.sql
+  - models/refunds_by_order.sql
+  - profiles.yml (target excerpt)
+- chapter: '0.8'
+  step: transactions
+  before: 4
+  after: 2
+  removed:
+  - models/payments_by_order.sql
+  - models/refunds_by_order.sql
+  retained:
+  - profiles.yml (target excerpt)
+  - commands.sh
+- chapter: '0.8'
+  step: combine
+  before: 3
+  after: 1
+  removed:
+  - models/order_revenue.sql
+  - models/revenue_by_location.sql
+  retained:
+  - models/order_amounts.sql
+- chapter: '0.8'
+  step: bigquery
+  before: 1
+  after: 1
+  removed: []
+  retained:
+  - profiles.yml (BigQuery excerpt)
+- chapter: '0.9'
+  step: copies
+  before: 2
+  after: 2
+  removed: []
+  retained:
+  - models/daily_revenue.sql
+  - models/customer_revenue.sql
+- chapter: '0.9'
+  step: dependency
+  before: 7
+  after: 4
+  removed:
+  - shared_shop/macros/net_cents.sql
+  - models/daily_revenue.sql
+  - shared_shop/dbt_project.yml
+  retained:
+  - dbt_project.yml (excerpt)
+  - shared_shop/macros/test_non_negative.sql
+  - models/schema.yml
+  - commands.sh
+- chapter: '0.9'
+  step: schema
+  before: 2
+  after: 2
+  removed: []
+  retained:
+  - models/revenue_by_location.sql
+  - profiles.yml (target excerpt)
+- chapter: '0.10'
+  step: csv
+  before: 1
+  after: 1
+  removed: []
+  retained:
+  - data/locations.csv
+- chapter: '0.10'
+  step: seed
+  before: 2
+  after: 2
+  removed: []
+  retained:
+  - models/location_names.sql
+  - commands.sh
+- chapter: '0.10'
+  step: package
+  before: 3
+  after: 2
+  removed:
+  - ../jaffle_utils/dbt_project.yml
+  retained:
+  - packages.yml
+  - commands.sh
+- chapter: '0.10'
+  step: labels
+  before: 2
+  after: 1
+  removed:
+  - models/order_revenue.sql
+  retained:
+  - models/revenue_by_location_labeled.sql
+- chapter: '0.11'
+  step: meaning
+  before: 2
+  after: 2
+  removed: []
+  retained:
+  - models/schema.yml
+  - inspection/order_1042.sql
+- chapter: '0.11'
+  step: lineage
+  before: 3
+  after: 1
+  removed:
+  - models/payments_by_order.sql
+  - models/refunds_by_order.sql
+  retained:
+  - models/order_revenue.sql
+- chapter: '0.11'
+  step: publish
+  before: 3
+  after: 2
+  removed:
+  - models/revenue_by_location.sql
+  retained:
+  - models/schema.yml
+  - commands.sh
+- chapter: '0.12'
+  step: tag
+  before: 2
+  after: 2
+  removed: []
+  retained:
+  - models/order_revenue.sql
+  - models/revenue_by_location.sql
+- chapter: '0.12'
+  step: select
+  before: 3
+  after: 3
+  removed: []
+  retained:
+  - models/order_revenue.sql
+  - models/revenue_by_location.sql
+  - commands.sh
+- chapter: '0.12'
+  step: answer
+  before: 2
+  after: 1
+  removed:
+  - models/order_revenue.sql
+  retained:
+  - models/revenue_by_location.sql
+- chapter: '0.13'
+  step: clock
+  before: 3
+  after: 2
+  removed:
+  - models/sources.yml
+  retained:
+  - setup/payments_feed.sql
+  - analyses/payment_feed_age.sql
+- chapter: '0.13'
+  step: threshold
+  before: 3
+  after: 2
+  removed:
+  - analyses/payment_feed_age.sql
+  retained:
+  - models/sources.yml
+  - commands.sh
+- chapter: '0.13'
+  step: business
+  before: 4
+  after: 2
+  removed:
+  - models/order_revenue.sql
+  - models/revenue_by_location.sql
+  retained:
+  - models/payments.sql
+  - models/order_amounts.sql
+- chapter: '0.14'
+  step: before
+  before: 2
+  after: 2
+  removed: []
+  retained:
+  - snapshots/customers_history.sql
+  - analyses/current_customer.sql
+- chapter: '0.14'
+  step: change
+  before: 1
+  after: 0
+  removed:
+  - snapshots/customers_history.sql
+  retained: []
+- chapter: '0.14'
+  step: history
+  before: 3
+  after: 2
+  removed:
+  - snapshots/customers_history.sql
+  retained:
+  - analyses/customer_history.sql
+  - commands.sh
+- chapter: '0.14'
+  step: warning
+  before: 3
+  after: 2
+  removed:
+  - models/refunds_by_order.sql
+  retained:
+  - tests/review_large_refunds.sql
+  - commands.sh
+- chapter: '0.15'
+  step: project
+  before: 2
+  after: 1
+  removed:
+  - models/revenue_by_location.sql
+  retained:
+  - models/schema.yml
+- chapter: '0.15'
+  step: parse
+  before: 4
+  after: 2
+  removed:
+  - models/schema.yml
+  - models/revenue_by_location.sql
+  retained:
+  - profiles.yml (global config excerpt)
+  - commands.sh
+- chapter: '0.15'
+  step: events
+  before: 3
+  after: 2
+  removed:
+  - models/revenue_by_location.sql
+  retained:
+  - reference/json-format-example.json (authored field excerpt)
+  - commands.sh
+- chapter: '0.16'
+  step: question
+  before: 2
+  after: 1
+  removed:
+  - models/revenue_by_location.sql
+  retained:
+  - models/schema.yml
+- chapter: '0.16'
+  step: meta
+  before: 1
+  after: 1
+  removed: []
+  retained:
+  - models/schema.yml
+- chapter: '0.16'
+  step: boundary
+  before: 3
+  after: 2
+  removed:
+  - data/locations.csv
+  retained:
+  - models/seed_docs.yml
+  - commands.sh
+- chapter: '0.17'
+  step: failure
+  before: 3
+  after: 1
+  removed:
+  - models/order_revenue.sql
+  - models/order_amounts.sql
+  retained:
+  - models/refunds_by_order.sql (deliberately invalid)
+- chapter: '0.17'
+  step: policy
+  before: 4
+  after: 2
+  removed:
+  - models/order_revenue.sql
+  - models/order_amounts.sql
+  retained:
+  - models/refunds_by_order.sql (deliberately invalid)
+  - commands.sh
+- chapter: '0.17'
+  step: repair
+  before: 5
+  after: 2
+  removed:
+  - models/order_amounts.sql
+  - models/order_revenue.sql
+  - models/revenue_by_location.sql
+  retained:
+  - models/refunds_by_order.sql
+  - commands.sh
+- chapter: '0.18'
+  step: change
+  before: 5
+  after: 2
+  removed:
+  - models/order_amounts.sql
+  - models/order_revenue.sql
+  - models/revenue_by_location.sql
+  retained:
+  - models/refunds_by_order.sql
+  - models/refunds_by_order.sql (saved production version)
+- chapter: '0.18'
+  step: build
+  before: 6
+  after: 2
+  removed:
+  - models/order_amounts.sql
+  - models/order_revenue.sql
+  - models/revenue_by_location.sql
+  - models/payments_by_order.sql
+  retained:
+  - models/refunds_by_order.sql
+  - commands.sh
+- chapter: '0.18'
+  step: consumer
+  before: 2
+  after: 1
+  removed:
+  - models/revenue_by_location.sql
+  retained:
+  - models/exposures.yml (0.18.1)
+- chapter: '0.19'
+  step: current
+  before: 2
+  after: 2
+  removed: []
+  retained:
+  - snapshots/customers_history.sql
+  - analyses/customer_before_delete.sql
+- chapter: '0.19'
+  step: missing
+  before: 1
+  after: 0
+  removed:
+  - snapshots/customers_history.sql
+  retained: []
+- chapter: '0.19'
+  step: close
+  before: 4
+  after: 3
+  removed:
+  - snapshots/customers_history.sql
+  retained:
+  - analyses/closed_customer.sql
+  - inspection/revenue_total.sql
+  - commands.sh
+- chapter: '0.20'
+  step: count
+  before: 2
+  after: 2
+  removed: []
+  retained:
+  - tests/payments_have_orders.sql
+  - analyses/count_orphans.sql
+- chapter: '0.20'
+  step: test
+  before: 1
+  after: 1
+  removed: []
+  retained:
+  - tests/payments_have_orders.sql
+- chapter: '0.20'
+  step: inspect
+  before: 3
+  after: 2
+  removed:
+  - tests/payments_have_orders.sql
+  retained:
+  - inspection/stored_failures.sql
+  - commands.sh
+- chapter: '0.21'
+  step: graph
+  before: 6
+  after: 1
+  removed:
+  - models/payments.sql
+  - models/order_revenue.sql
+  - models/order_amounts.sql
+  - models/payments_by_order.sql
+  - models/revenue_by_location.sql
+  retained:
+  - models/schema.yml
+- chapter: '0.21'
+  step: build
+  before: 7
+  after: 2
+  removed:
+  - models/payments.sql
+  - models/order_revenue.sql
+  - models/order_amounts.sql
+  - models/payments_by_order.sql
+  - models/revenue_by_location.sql
+  retained:
+  - models/schema.yml
+  - commands.sh
+- chapter: '0.21'
+  step: limit
+  before: 2
+  after: 1
+  removed:
+  - models/schema.yml
+  retained:
+  - inspection/existing_revenue.sql
+- chapter: '1.0'
+  step: routine
+  before: 3
+  after: 3
+  removed: []
+  retained:
+  - models/order_revenue.sql
+  - models/schema.yml
+  - models/revenue.yml
+- chapter: '1.0'
+  step: results
+  before: 2
+  after: 2
+  removed: []
+  retained:
+  - models/refunds_by_order.sql
+  - commands.sh
+- chapter: '1.0'
+  step: metrics
+  before: 2
+  after: 1
+  removed:
+  - models/order_revenue.sql
+  retained:
+  - models/metrics.yml
+- chapter: '1.1'
+  step: observe
+  before: 2
+  after: 2
+  removed: []
+  retained:
+  - setup/source_observations.sql
+  - models/sources.yml
+- chapter: '1.1'
+  step: select
+  before: 4
+  after: 3
+  removed:
+  - models/sources.yml
+  retained:
+  - models/orders.sql
+  - freshness-command.sh
+  - commands.sh
+- chapter: '1.1'
+  step: result
+  before: 4
+  after: 1
+  removed:
+  - models/orders.sql
+  - models/order_revenue.sql
+  - models/revenue_by_location.sql
+  retained:
+  - models/order_amounts.sql
+- chapter: '1.2'
+  step: access
+  before: 2
+  after: 2
+  removed: []
+  retained:
+  - models/revenue_by_location.sql
+  - inspection/as_finance_reader.sql
+- chapter: '1.2'
+  step: grant
+  before: 2
+  after: 2
+  removed: []
+  retained:
+  - models/revenue_by_location.sql
+  - commands.sh
+- chapter: '1.2'
+  step: read
+  before: 2
+  after: 1
+  removed:
+  - models/revenue_by_location.sql
+  retained:
+  - inspection/as_finance_reader.sql
+- chapter: '1.3'
+  step: input
+  before: 3
+  after: 2
+  removed:
+  - models/order_amounts.sql
+  retained:
+  - models/order_revenue.sql
+  - analyses/order_1042.sql
+- chapter: '1.3'
+  step: python
+  before: 1
+  after: 1
+  removed: []
+  retained:
+  - models/python_order_revenue.py
+- chapter: '1.3'
+  step: scope
+  before: 2
+  after: 1
+  removed:
+  - models/python_order_revenue.py
+  retained:
+  - inspection/python_totals.sql
+- chapter: '1.4'
+  step: copies
+  before: 1
+  after: 1
+  removed: []
+  retained:
+  - inspection/compare_parent_relations.sql
+- chapter: '1.4'
+  step: favor
+  before: 2
+  after: 2
+  removed: []
+  retained:
+  - models/revenue_by_location.sql
+  - commands.sh
+- chapter: '1.4'
+  step: expected
+  before: 1
+  after: 1
+  removed: []
+  retained:
+  - models/revenue_by_location.sql
+- chapter: '1.4'
+  step: predicate
+  before: 4
+  after: 2
+  removed:
+  - models/order_amounts.sql
+  - inspection/merged_total.sql
+  retained:
+  - models/order_revenue.sql (Snowflake merge example)
+  - commands.sh
+- chapter: '1.5'
+  step: promise
+  before: 2
+  after: 1
+  removed:
+  - models/revenue_by_location.sql
+  retained:
+  - models/schema.yml
+- chapter: '1.5'
+  step: mismatch
+  before: 3
+  after: 3
+  removed: []
+  retained:
+  - models/schema.yml
+  - models/revenue_by_location.sql (proposed edit)
+  - commands.sh
+- chapter: '1.5'
+  step: repair
+  before: 2
+  after: 1
+  removed:
+  - models/schema.yml
+  retained:
+  - models/revenue_by_location.sql
+- chapter: '1.5'
+  step: versions
+  before: 5
+  after: 4
+  removed:
+  - models/revenue_by_location.sql
+  retained:
+  - models/schema.yml
+  - models/revenue_by_location_v2.sql
+  - models/dashboard_input.sql
+  - commands.sh
+- chapter: '1.6'
+  step: partial
+  before: 5
+  after: 2
+  removed:
+  - models/order_revenue.sql
+  - models/order_amounts.sql
+  - models/revenue_by_location.sql
+  retained:
+  - models/refunds_by_order.sql
+  - models/payments_by_order.sql
+- chapter: '1.6'
+  step: repair
+  before: 5
+  after: 1
+  removed:
+  - models/refunds_by_order.sql
+  - models/payments_by_order.sql
+  - models/order_revenue.sql
+  - models/order_amounts.sql
+  retained:
+  - commands.sh
+- chapter: '1.6'
+  step: finish
+  before: 4
+  after: 1
+  removed:
+  - models/order_amounts.sql
+  - models/payments_by_order.sql
+  - models/order_revenue.sql
+  retained:
+  - models/revenue_by_location.sql
+- chapter: '1.6'
+  step: materialized_view
+  before: 2
+  after: 2
+  removed: []
+  retained:
+  - models/revenue_by_location.sql
+  - commands.sh
+- chapter: '1.7'
+  step: range
+  before: 1
+  after: 1
+  removed: []
+  retained:
+  - packages.yml
+- chapter: '1.7'
+  step: lock
+  before: 3
+  after: 2
+  removed:
+  - packages.yml
+  retained:
+  - package-lock.yml (prepared resolution)
+  - commands.sh
+- chapter: '1.7'
+  step: share
+  before: 3
+  after: 2
+  removed:
+  - models/revenue_by_location.sql
+  retained:
+  - models/schema.yml
+  - commands.sh
+- chapter: '1.8'
+  step: refund
+  before: 4
+  after: 1
+  removed:
+  - models/order_amounts.sql
+  - models/payments_by_order.sql
+  - models/refunds_by_order.sql
+  retained:
+  - analyses/order_1042.sql
+- chapter: '1.8'
+  step: bug
+  before: 3
+  after: 3
+  removed: []
+  retained:
+  - models/order_revenue.sql
+  - models/order_revenue.yml
+  - commands.sh
+- chapter: '1.8'
+  step: fixture
+  before: 2
+  after: 1
+  removed:
+  - models/order_revenue.sql
+  retained:
+  - models/order_revenue.yml
+- chapter: '1.8'
+  step: fixed
+  before: 3
+  after: 2
+  removed:
+  - models/order_revenue.yml
+  retained:
+  - models/order_revenue.sql
+  - commands.sh
+- chapter: '1.9'
+  step: days
+  before: 3
+  after: 3
+  removed: []
+  retained:
+  - models/order_revenue.yml
+  - models/daily_revenue.sql
+  - analyses/revenue_by_day.sql
+- chapter: '1.9'
+  step: late
+  before: 3
+  after: 1
+  removed:
+  - models/order_revenue.yml
+  - models/daily_revenue.sql
+  retained:
+  - analyses/late_order.sql
+- chapter: '1.9'
+  step: repair
+  before: 5
+  after: 3
+  removed:
+  - models/order_revenue.yml
+  - models/daily_revenue.sql
+  retained:
+  - analyses/revenue_by_day.sql
+  - analyses/all_days.sql
+  - commands.sh
+- chapter: '1.9'
+  step: yaml_snapshot
+  before: 5
+  after: 2
+  removed:
+  - models/customers_current.sql
+  - setup/archive_input.sql
+  - inspection/customer_history.sql
+  retained:
+  - snapshots/customers.yml
+  - commands.sh
+- chapter: '1.10'
+  step: sample
+  before: 4
+  after: 3
+  removed:
+  - inspection/sample_totals.sql
+  retained:
+  - models/order_revenue.yml
+  - models/daily_revenue.sql
+  - commands.sh
+- chapter: '1.10'
+  step: duplicate
+  before: 1
+  after: 1
+  removed: []
+  retained:
+  - models/schema.yml
+- chapter: '1.10'
+  step: warning
+  before: 2
+  after: 2
+  removed: []
+  retained:
+  - models/schema.yml
+  - commands.sh
+- chapter: '1.10'
+  step: correct
+  before: 3
+  after: 2
+  removed:
+  - models/revenue_by_location.sql
+  retained:
+  - models/schema.yml
+  - inspection/total.sql
+- chapter: '1.11'
+  step: conversion
+  before: 4
+  after: 3
+  removed:
+  - models/location_display.sql
+  retained:
+  - functions/cents_to_units.sql
+  - functions/cents_to_units.yml
+  - models/revenue_display.sql
+- chapter: '1.11'
+  step: function
+  before: 4
+  after: 2
+  removed:
+  - functions/cents_to_units.sql
+  - functions/cents_to_units.yml
+  retained:
+  - models/revenue_display.sql
+  - commands.sh
+- chapter: '1.11'
+  step: distinction
+  before: 5
+  after: 2
+  removed:
+  - functions/cents_to_units.sql
+  - functions/cents_to_units.yml
+  - models/revenue_display_macro.sql
+  retained:
+  - macros/cents_to_units.sql
+  - models/revenue_display.sql
+- chapter: '1.12'
+  step: parser
+  before: 4
+  after: 2
+  removed:
+  - models/order_revenue.sql
+  - models/revenue_by_location.sql
+  retained:
+  - dbt_project.yml
+  - commands.sh
+- chapter: '1.12'
+  step: variables
+  before: 3
+  after: 2
+  removed:
+  - dbt_project.yml
+  retained:
+  - vars.yml
+  - models/revenue_display.sql
+- chapter: '1.12'
+  step: inspect
+  before: 2
+  after: 1
+  removed:
+  - models/revenue_by_location.sql
+  retained:
+  - commands.sh
+- chapter: '1.12'
+  step: compare
+  before: 6
+  after: 1
+  removed:
+  - dbt_project.yml
+  - models/orders.sql
+  - models/order_amounts.sql
+  - models/order_revenue.sql
+  - models/revenue_by_location.sql
+  retained:
+  - commands.sh
+- chapter: '2.0'
+  step: distributions
+  before: 3
+  after: 2
+  removed:
+  - dbt_project.yml
+  retained:
+  - requirements-full.txt
+  - requirements-oss.txt
+- chapter: '2.0'
+  step: typo
+  before: 4
+  after: 3
+  removed:
+  - models/order_amounts.sql
+  retained:
+  - models/revenue_by_location.sql
+  - models/order_revenue.sql
+  - commands.sh
+- chapter: '2.0'
+  step: correction
+  before: 1
+  after: 1
+  removed: []
+  retained:
+  - models/revenue_by_location.sql
+- chapter: '2.0'
+  step: boundary
+  before: 1
+  after: 1
+  removed: []
+  retained:
+  - reference/summit-availability.yml

@@ -71,10 +71,8 @@ walkthrough:
   steps:
     - id: question
       title: A question the SQL cannot answer
-      explanation: >-
-        Highlighted lines 3 and 4 of schema.yml name and describe the model but give no owner. The supporting
-        SQL totals revenue per location. The panel separates the model name from Old Port and shows 3,400
-        cents beside the unanswered ownership question.
+      explanation: |-
+        Highlighted lines 3 and 4 of schema.yml name and describe the revenue model but give no owner. The panel places the prepared Old Port result, 3,400 cents, beside the unanswered question of who maintains its definition. The calculation exists; the ownership information is missing.
       state:
         kind: comparison
         title: Correct number, owner still unspecified
@@ -110,28 +108,10 @@ walkthrough:
             - 3
             - 4
           purpose: Authored era-specific example; illustration only.
-        - language: sql
-          filename: models/revenue_by_location.sql
-          content: |
-            select r.location_id, l.name as location,
-                sum(r.payment_cents) as payment_cents,
-                sum(r.refund_cents) as refund_cents,
-                sum(r.revenue_cents) as revenue_cents
-            from {{ ref("order_revenue") }} as r
-            join raw.locations as l on r.location_id = l.location_id
-            group by r.location_id, l.name
-            order by r.location_id
-          highlight_lines:
-            - 2
-            - 3
-            - 4
-          purpose: Authored era-specific example; illustration only.
     - id: meta
       title: Record the owner next to the model
-      explanation: >-
-        Highlighted lines 5 and 6 fill the meta block with owner: finance and unit: cents. meta is descriptive
-        information that travels with a resource. The panel now shows the named owner and unit; no database
-        permission changes.
+      explanation: |-
+        Highlighted lines 5 and 6 of the schema file add owner: finance and unit: cents inside meta, descriptive information that travels with a resource. The panel now shows the named owner and unit. These descriptions don't change database permissions.
       state:
         kind: comparison
         title: Owner and unit recorded on the model
@@ -169,10 +149,8 @@ walkthrough:
         - src-3
     - id: boundary
       title: Describe the location seed as well
-      explanation: >-
-        Highlighted lines 2, 4 and 7 put a seed and its column description into the documentation. The supporting
-        CSV has the three location rows. After docs generate, the prepared panel shows the seed description
-        and the name-column description alongside the model metadata from the previous step.
+      explanation: |-
+        Highlighted lines 2, 4 and 7 of seed_docs.yml describe the locations seed and its name column. The command generates documentation. The prepared panel shows the seed description and column description, extending the documentation beyond the model metadata on the previous screen.
       state:
         kind: comparison
         title: Prepared documentation entries
@@ -209,19 +187,6 @@ walkthrough:
             - 2
             - 4
             - 7
-          purpose: Authored era-specific example; illustration only.
-        - language: text
-          filename: data/locations.csv
-          content: |
-            location_id,name
-            1,Old Port
-            2,Mile End
-            3,Riverside
-          highlight_lines:
-            - 1
-            - 2
-            - 3
-            - 4
           purpose: Authored era-specific example; illustration only.
         - language: shell
           filename: commands.sh

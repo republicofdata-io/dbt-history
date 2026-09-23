@@ -109,11 +109,8 @@ walkthrough:
   steps:
     - id: partial
       title: Look at what the failed run left behind
-      explanation: >-
-        Highlighted lines 1 and 2 of the payment and refund models total the two feeds. Lines 3, 4 and 6 of
-        order_amounts link orders to those totals; order_revenue then subtracts refunds. The panel shows an
-        assumed connection outage: payments succeeded, refunds errored, and the three downstream models were
-        skipped.
+      explanation: |-
+        Highlighted lines 1 and 2 of refunds_by_order and payments_by_order total their separate feeds. The panel shows a prepared connection-outage scenario: payments succeeded, refunds errored, and the three models downstream of refunds were skipped. The failure is assumed to come from the connection, not a change in either calculation.
       state:
         kind: comparison
         title: Prepared prior run record
@@ -166,52 +163,10 @@ walkthrough:
             - 1
             - 2
           purpose: Authored era-specific example; illustration only.
-        - language: sql
-          filename: models/order_revenue.sql
-          content: |
-            select *, payment_cents - refund_cents as revenue_cents
-            from {{ ref("order_amounts") }}
-          highlight_lines:
-            - 1
-          purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: models/order_amounts.sql
-          content: |
-            select o.*, coalesce(p.payment_cents, 0) as payment_cents,
-                coalesce(r.refund_cents, 0) as refund_cents
-            from {{ ref("orders") }} as o
-            left join {{ ref("payments_by_order") }} as p
-              on o.order_id = p.order_id
-            left join {{ ref("refunds_by_order") }} as r
-              on o.order_id = r.order_id
-          highlight_lines:
-            - 3
-            - 4
-            - 6
-          purpose: Authored era-specific example; illustration only.
-        - language: sql
-          filename: models/revenue_by_location.sql
-          content: |
-            select r.location_id, l.name as location,
-                sum(r.payment_cents) as payment_cents,
-                sum(r.refund_cents) as refund_cents,
-                sum(r.revenue_cents) as revenue_cents
-            from {{ ref("order_revenue") }} as r
-            join raw.locations as l on r.location_id = l.location_id
-            group by r.location_id, l.name
-            order by r.location_id
-          highlight_lines:
-            - 2
-            - 3
-            - 4
-          purpose: Authored era-specific example; illustration only.
     - id: repair
       title: Fix the cause, then run dbt retry
-      explanation: >-
-        The same model files remain on screen with dependency lines 3, 4 and 6 of order_amounts highlighted.
-        Here the assumed cause was a lost connection, not the SQL. The dbt retry command on highlighted line
-        1 uses the saved result record to rerun failed and skipped nodes. The panel confirms the connection
-        is restored and the prior artifact is available; unchanged SQL is not a retry requirement.
+      explanation: |-
+        Highlighted line 1 of the command runs dbt retry. With the connection restored, it uses the saved result record to rerun failed and skipped work. The panel confirms those prerequisites: a repaired connection and the prior results available. The SQL happens to be unchanged here, but unchanged SQL isn't a requirement for retry.
       state:
         kind: comparison
         title: Prepared recovery context
@@ -232,49 +187,6 @@ walkthrough:
       takeaway: |-
         With the connection restored, retry can use the prior result record to finish the failed branch.
       code:
-        - language: sql
-          filename: models/refunds_by_order.sql
-          content: |
-            select order_id, sum(amount_cents) as refund_cents
-            from {{ ref("refunds") }}
-            group by order_id
-          highlight_lines:
-            - 1
-            - 2
-          purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: models/payments_by_order.sql
-          content: |
-            select order_id, sum(amount_cents) as payment_cents
-            from {{ ref("payments") }}
-            group by order_id
-          highlight_lines:
-            - 1
-            - 2
-          purpose: Authored era-specific example; illustration only.
-        - language: sql
-          filename: models/order_revenue.sql
-          content: |
-            select *, payment_cents - refund_cents as revenue_cents
-            from {{ ref("order_amounts") }}
-          highlight_lines:
-            - 1
-          purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: models/order_amounts.sql
-          content: |
-            select o.*, coalesce(p.payment_cents, 0) as payment_cents,
-                coalesce(r.refund_cents, 0) as refund_cents
-            from {{ ref("orders") }} as o
-            left join {{ ref("payments_by_order") }} as p
-              on o.order_id = p.order_id
-            left join {{ ref("refunds_by_order") }} as r
-              on o.order_id = r.order_id
-          highlight_lines:
-            - 3
-            - 4
-            - 6
-          purpose: Authored era-specific example; illustration only.
         - language: shell
           filename: commands.sh
           content: |
@@ -333,39 +245,6 @@ walkthrough:
         - alignment-postgres
       code:
         - language: sql
-          filename: models/order_amounts.sql
-          content: |
-            select o.*, coalesce(p.payment_cents, 0) as payment_cents,
-                coalesce(r.refund_cents, 0) as refund_cents
-            from {{ ref("orders") }} as o
-            left join {{ ref("payments_by_order") }} as p
-              on o.order_id = p.order_id
-            left join {{ ref("refunds_by_order") }} as r
-              on o.order_id = r.order_id
-          highlight_lines:
-            - 3
-            - 4
-            - 6
-          purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: models/payments_by_order.sql
-          content: |
-            select order_id, sum(amount_cents) as payment_cents
-            from {{ ref("payments") }}
-            group by order_id
-          highlight_lines:
-            - 1
-            - 2
-          purpose: Authored era-specific example; illustration only.
-        - language: sql
-          filename: models/order_revenue.sql
-          content: |
-            select *, payment_cents - refund_cents as revenue_cents
-            from {{ ref("order_amounts") }}
-          highlight_lines:
-            - 1
-          purpose: authored executable syntax; illustration only
-        - language: sql
           filename: models/revenue_by_location.sql
           content: |
             select
@@ -384,10 +263,8 @@ walkthrough:
           purpose: authored executable syntax; illustration only
     - id: materialized_view
       title: Store the query result as a PostgreSQL materialized view
-      explanation: Highlighted line 1 selects materialized_view, a database object that stores a query’s
-        result. On PostgreSQL 1.6, dbt creates it on the first run and can refresh it on a later run.
-        The panel contrasts an ordinary view with the stored result. PostgreSQL does not refresh it
-        automatically after every input change.
+      explanation: |-
+        Highlighted line 1 of revenue_by_location selects materialized_view, a database object that stores a query's result. The command creates it on the first PostgreSQL 1.6 run and can refresh it on a later run. The panel contrasts an ordinary view with this stored result. PostgreSQL doesn't refresh it automatically after every input change.
       state:
         kind: comparison
         title: View compared with a PostgreSQL materialized view

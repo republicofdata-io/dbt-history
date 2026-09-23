@@ -93,11 +93,8 @@ walkthrough:
   steps:
     - id: query
       title: Start with one SQL file
-      explanation: >
-        This is the whole revenue query saved as a model. A model is one SQL file that dbt turns into a table
-        or view. Highlighted lines 1 to 4 add up payments per order straight from the raw payments table.
-        There is no dbt shorthand yet, just plain table names. The result panel shows what this rule produces
-        for the three locations: 12,500 cents in all.
+      explanation: |-
+        revenue_by_location.sql saves the whole revenue query as a model, a SQL file that dbt turns into a table or view. Highlighted lines 1 to 4 total payments per order straight from the raw table. There's no dbt shorthand yet, just plain table names. The result panel shows 12,500 cents across three locations.
       state:
         kind: table
         title: Revenue from the saved query
@@ -151,11 +148,8 @@ walkthrough:
         - alignment-0-1-1
     - id: config
       title: Tell dbt to store the result as a table
-      explanation: >-
-        Highlighted line 2 of dbt_project.yml is a Boolean switch: true stores a table; false stores a view.
-        The payment model totals raw payments per order. With target schema analytics, the panel shows the
-        CREATE statement the 0.1.1 compiler would wrap around that SELECT in each case. These are prepared
-        compiler examples, not captured output.
+      explanation: |-
+        Highlighted line 2 of dbt_project.yml is a Boolean switch: true stores a table; false stores a view. Highlighted lines 1 to 3 of order_payments.sql total raw payments per order. The command compiles the project. With target schema analytics, the panel compares the CREATE statements that the 0.1.1 compiler would generate. These are prepared examples, not captured output.
       state:
         kind: comparison
         title: Generated statements at 0.1.1 (illustration)
@@ -209,9 +203,8 @@ walkthrough:
         - alignment-0-1-1
     - id: patch
       title: 'Jump to patch 0.1.14: one model points at another'
-      explanation: |
-        Same revenue rule, now in patch 0.1.14. Highlighted line 2 no longer names a raw table. It uses ref('order_revenue'), a placeholder that dbt swaps for the real table name. The placeholder also tells dbt that this model depends on order_revenue. The diagram shows that dependency: order_revenue is built first, revenue by location after it.
-         The supporting order_revenue file, highlighted on lines 11 to 13, supplies that parent: one row per order with payments minus refunds.
+      explanation: |-
+        At patch 0.1.14, highlighted line 2 of revenue_by_location.sql uses ref('order_revenue') instead of a raw table name. dbt replaces that placeholder with the real table name and records the dependency. The existing order_revenue model supplies one row per order with payments minus refunds. The diagram shows it building before revenue_by_location.
       state:
         kind: diagram
         title: Build order at 0.1.14
@@ -244,30 +237,6 @@ walkthrough:
             group by location_id
           highlight_lines:
             - 2
-          purpose: Authored era-specific example; illustration only.
-        - language: sql
-          filename: models/order_revenue.sql
-          content: |
-            with payment_totals as (
-                select order_id, sum(amount_cents) as payment_cents
-                from raw.payments
-                group by order_id
-            ), refund_totals as (
-                select order_id, sum(amount_cents) as refund_cents
-                from raw.refunds
-                group by order_id
-            )
-            select
-                orders.order_id, orders.location_id,
-                coalesce(payment_totals.payment_cents, 0)
-                    - coalesce(refund_totals.refund_cents, 0) as revenue_cents
-            from raw.orders as orders
-            left join payment_totals on orders.order_id = payment_totals.order_id
-            left join refund_totals on orders.order_id = refund_totals.order_id
-          highlight_lines:
-            - 11
-            - 12
-            - 13
           purpose: Authored era-specific example; illustration only.
       evidence:
         - src-1

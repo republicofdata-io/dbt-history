@@ -65,10 +65,8 @@ walkthrough:
   steps:
     - id: access
       title: Who needs to read the table
-      explanation: >-
-        Highlighted line 1 of the model builds a table without a grants declaration. The inspection query
-        switches to finance_reader and tries to read it. The prepared panel shows permission denied: the role
-        exists and can use the schema, but lacks SELECT on this table.
+      explanation: |-
+        Highlighted line 1 of revenue_by_location builds a table without declaring grants. as_finance_reader.sql is a plain query that checks access to the stored table, not a model. Its highlighted lines 1 to 3 select the finance_reader role and attempt a read. The panel shows permission denied: the role exists and can use the schema, but lacks SELECT on the table.
       state:
         kind: result
         title: Prepared read before the grant
@@ -119,10 +117,8 @@ walkthrough:
           purpose: Authored era-specific example; illustration only.
     - id: grant
       title: The grant is declared on the model
-      explanation: >-
-        Highlighted line 1 adds SELECT permission for finance_reader to the model config. After rebuilding
-        the table, dbt applies the PostgreSQL grant shown in the prepared panel. The dbt connection must own
-        the relation or have permission to grant access.
+      explanation: |-
+        Highlighted line 1 of revenue_by_location adds SELECT permission for finance_reader. The command rebuilds the model, after which dbt applies the PostgreSQL grant shown in the prepared panel. The dbt connection must own the relation or have permission to grant access.
       state:
         kind: result
         title: Prepared statement applied after the build
@@ -164,10 +160,8 @@ walkthrough:
         - src-2
     - id: read
       title: The numbers are exactly the same
-      explanation: >-
-        Highlighted lines 1 to 3 repeat the same query as finance_reader. The supporting model has the grant
-        config and the same full set of revenue columns. The panel now shows all three locations, totalling
-        12,500 cents. The permission changed; the calculation did not.
+      explanation: |-
+        Highlighted lines 1 to 3 of as_finance_reader.sql repeat the same role and read attempt from the first screen. After the grant, the panel now shows all three locations, totalling 12,500 cents. The permission changed; the query and revenue calculation didn't.
       state:
         kind: table
         title: Read succeeds as finance_reader
@@ -214,21 +208,6 @@ walkthrough:
             - 1
             - 2
             - 3
-          purpose: Authored era-specific example; illustration only.
-        - language: sql
-          filename: models/revenue_by_location.sql
-          content: |
-            {{ config(materialized="table", grants={"select": ["finance_reader"]}) }}
-            select r.location_id, l.name as location,
-                sum(r.payment_cents) as payment_cents,
-                sum(r.refund_cents) as refund_cents,
-                sum(r.revenue_cents) as revenue_cents
-            from {{ ref("order_revenue") }} as r
-            join raw.locations as l on r.location_id = l.location_id
-            group by r.location_id, l.name
-            order by r.location_id
-          highlight_lines:
-            - 1
           purpose: Authored era-specific example; illustration only.
   evidence:
     status: illustration

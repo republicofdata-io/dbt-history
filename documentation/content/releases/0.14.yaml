@@ -85,10 +85,8 @@ walkthrough:
   steps:
     - id: before
       title: Ada's record before the change
-      explanation: >-
-        Highlighted lines 2 and 3 set up a snapshot, a table of earlier row versions. customer_id identifies
-        the row, and check_cols watches city for changes. Highlighted line 2 of the inspection query picks
-        customer 1. The panel shows Ada in Montréal before the declared change.
+      explanation: |-
+        Highlighted lines 2 and 3 of the snapshot identify customers by customer_id and watch city for changes. A snapshot saves earlier row versions. current_customer.sql is an inspection query: a plain query under analyses that reads a result without building a model. Its highlighted line 2 selects customer 1. The panel shows Ada in Montréal before the change.
       state:
         kind: comparison
         title: Ada's record before the change
@@ -138,10 +136,8 @@ walkthrough:
         phase: Before the declared customer-city change.
     - id: change
       title: The source table is updated
-      explanation: >-
-        Highlighted lines 2 and 3 are the same snapshot settings. The named customer-city-change variant updates
-        Ada’s city to Québec at 09:00 on March 9. The panel shows the old and new values; the current source
-        now contains only Québec.
+      explanation: |-
+        The named customer-city-change variant updates Ada's city to Québec at 09:00 on March 9. This result-only panel compares the fixture's declared before and after values. The current source now contains only Québec; the snapshot definition was shown on the previous screen.
       state:
         kind: comparison
         title: Ada's city before and after the update
@@ -161,19 +157,7 @@ walkthrough:
           captured dbt run.
       takeaway: |
         After the update, the source table shows only Québec. Without a snapshot, Montréal would be lost.
-      code:
-        - language: sql
-          filename: snapshots/customers_history.sql
-          content: |
-            {% snapshot customers_history %}
-            {{ config(target_schema="snapshots", unique_key="customer_id",
-                strategy="check", check_cols=["city"]) }}
-            select customer_id, name, city from raw.customers
-            {% endsnapshot %}
-          highlight_lines:
-            - 2
-            - 3
-          purpose: Authored era-specific example; illustration only.
+      code: []
       evidence:
         - src-1
         - src-2
@@ -181,10 +165,8 @@ walkthrough:
         - alignment-0-14-0
     - id: history
       title: The snapshot keeps both versions
-      explanation: >-
-        Highlighted lines 2 and 3 keep the snapshot definition unchanged. After the second dbt snapshot observation,
-        the inspection query reads its two validity dates, the times each saved version began and ended. The
-        panel expresses those intervals in words: Montréal until March 9 at 09:00, then Québec onward.
+      explanation: |-
+        The command runs the same snapshot after the city change. Highlighted lines 1 and 4 of the inspection query read and order the saved validity dates, the times each version began and ended. The panel expresses those intervals in words: Montréal until March 9 at 09:00, then Québec onward.
       state:
         kind: comparison
         title: Ada's two dated rows in the snapshot
@@ -212,18 +194,6 @@ walkthrough:
         - alignment-0-14-0
       code:
         - language: sql
-          filename: snapshots/customers_history.sql
-          content: |
-            {% snapshot customers_history %}
-            {{ config(target_schema="snapshots", unique_key="customer_id",
-                strategy="check", check_cols=["city"]) }}
-            select customer_id, name, city from raw.customers
-            {% endsnapshot %}
-          highlight_lines:
-            - 2
-            - 3
-          purpose: Authored era-specific example; illustration only.
-        - language: sql
           filename: analyses/customer_history.sql
           content: |
             select customer_id, city, dbt_valid_from, dbt_valid_to
@@ -246,9 +216,8 @@ walkthrough:
         phase: After the second snapshot observation.
     - id: warning
       title: Warn about a large refund without failing the run
-      explanation: 'Highlighted line 1 of the custom test sets severity to warn. Highlighted line 4 returns
-        orders with refunds above 500 cents, a soft review rule. The base has one such order: 1044, refunded
-        800 cents. The panel shows one warning, so this check does not turn the run into an error.'
+      explanation: |-
+        Highlighted line 1 of the test sets severity to warn. Highlighted line 4 returns orders with refunds above 500 cents, a review rule that needn't stop the run. The command runs dbt test. The panel shows the one matching order, 1044, with an 800-cent refund, as a warning rather than an error.
       state:
         kind: result
         title: Refund review warning
@@ -276,15 +245,6 @@ walkthrough:
           highlight_lines:
             - 1
             - 4
-          purpose: Authored era-specific example; illustration only.
-        - language: sql
-          filename: models/refunds_by_order.sql
-          content: |
-            select order_id, sum(amount_cents) as refund_cents
-            from raw.refunds
-            group by order_id
-          highlight_lines:
-            - 1
           purpose: Authored era-specific example; illustration only.
         - language: shell
           filename: commands.sh

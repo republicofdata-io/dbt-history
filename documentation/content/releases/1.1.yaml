@@ -64,13 +64,8 @@ walkthrough:
   steps:
     - id: observe
       title: 'Two freshness checks: only orders got newer'
-      explanation: >
-        The first file sets up the two source feeds with a loaded_at timestamp. Highlighted line 1 notes the
-        earlier orders timestamp, March 8 at 14:00. Highlighted line 3 gives the new one, March 9 at 10:00.
-        Highlighted line 6 shows the customers feed still at March 8, 07:00. The second file tells dbt which
-        column to read as the load time (highlighted line 5) and names the two feeds as sources (highlighted
-        lines 10 to 13). The result panel puts the two checks side by side: orders moved forward, customers
-        did not.
+      explanation: |-
+        Highlighted lines 1, 3 and 6 of source_observations.sql show the earlier orders timestamp, its newer timestamp and the unchanged customers timestamp. Highlighted line 5 of sources.yml names the load-time column; lines 10 to 13 identify the feeds. The panel compares the two checks: orders advanced from March 8 to March 9, while customers didn't change.
       state:
         kind: comparison
         title: Orders got newer, customers did not
@@ -135,13 +130,8 @@ walkthrough:
           purpose: authored executable syntax; illustration only
     - id: select
       title: Select only what comes after the fresher source
-      explanation: >
-        The sources file is the same, highlighted at line 5 and lines 10 to 13. The orders model reads from
-        the orders source. Highlighted line 2 is that link, which is how dbt knows the model comes after the
-        source. The first command records a freshness check. The second command is the new part. It builds
-        every model after any source that is fresher than in the saved check kept in the previous-freshness
-        folder. The result panel shows the choice: models under orders are included, models under customers
-        are not, because that feed did not change.
+      explanation: |-
+        Highlighted line 2 of orders links the model to the declared source. freshness-command.sh records a freshness check on its highlighted line 1. Highlighted line 1 of commands.sh builds models below sources that are newer than in previous-freshness. The panel selects the orders branch and leaves the unchanged customers branch out. The source declarations remain as shown on the previous screen.
       state:
         kind: comparison
         title: Orders branch selected, customers branch left alone
@@ -161,29 +151,6 @@ walkthrough:
         dbt picked the orders branch to rebuild because its source got newer, and left the customer branch
         alone.
       code:
-        - language: yaml
-          filename: models/sources.yml
-          content: |
-            version: 2
-            sources:
-              - name: raw
-                schema: raw
-                loaded_at_field: loaded_at
-                freshness:
-                  warn_after: {count: 1, period: hour}
-                  error_after: {count: 3, period: hour}
-                tables:
-                  - name: orders
-                    identifier: orders_feed
-                  - name: customers
-                    identifier: customers_feed
-          highlight_lines:
-            - 5
-            - 10
-            - 11
-            - 12
-            - 13
-          purpose: authored executable syntax; illustration only
         - language: sql
           filename: models/orders.sql
           content: |
@@ -211,11 +178,8 @@ walkthrough:
         - src-2
     - id: result
       title: The rebuilt revenue includes the new day
-      explanation: >-
-        Highlighted line 2 of orders links it to the declared source. Highlighted line 10 of order_amounts
-        now reads that orders model, so source_status:fresher+ reaches the full revenue branch. Payment and
-        refund totals are read from the current feeds. The panel shows the two new orders included: 3,900,
-        5,700 and 4,800 cents, totalling 14,400.
+      explanation: |-
+        Highlighted line 10 of order_amounts reads the source-backed orders model, carrying the source dependency into the revenue branch. Highlighted lines 2, 5, 8 and 9 total payments and refunds and attach them to orders. After rebuilding the fresher branch, the panel includes the two new orders: 3,900, 5,700 and 4,800 cents, totalling 14,400.
       state:
         kind: comparison
         title: Revenue by location with the second day
@@ -242,14 +206,6 @@ walkthrough:
         - src-2
       code:
         - language: sql
-          filename: models/orders.sql
-          content: |
-            select order_id, customer_id, location_id, ordered_at
-            from {{ source("raw", "orders") }}
-          highlight_lines:
-            - 2
-          purpose: authored executable syntax; illustration only
-        - language: sql
           filename: models/order_amounts.sql
           content: |
             with paid as (
@@ -270,31 +226,6 @@ walkthrough:
             - 8
             - 9
             - 10
-          purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: models/order_revenue.sql
-          content: |
-            select *, payment_cents - refund_cents as revenue_cents
-            from {{ ref("order_amounts") }}
-          highlight_lines:
-            - 1
-          purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: models/revenue_by_location.sql
-          content: |
-            select
-                r.location_id, l.name as location,
-                sum(r.payment_cents) as payment_cents,
-                sum(r.refund_cents) as refund_cents,
-                sum(r.revenue_cents) as revenue_cents
-            from {{ ref("order_revenue") }} as r
-            join raw.locations as l on r.location_id = l.location_id
-            group by r.location_id, l.name
-            order by r.location_id
-          highlight_lines:
-            - 3
-            - 4
-            - 5
           purpose: authored executable syntax; illustration only
   evidence:
     status: illustration

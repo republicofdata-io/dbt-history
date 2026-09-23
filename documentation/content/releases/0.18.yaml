@@ -99,10 +99,8 @@ walkthrough:
   steps:
     - id: change
       title: The refund model changes
-      explanation: >-
-        Highlighted lines 1 and 2 of the current refund model add coalesce, which treats a missing amount
-        as zero. The saved production file shows the earlier sum. The base has no missing amounts, so values
-        stay the same. The panel lists the changed model, all three descendants and the unchanged input models.
+      explanation: |-
+        Highlighted lines 1 and 2 of models/refunds_by_order.sql add coalesce, which treats a missing amount as zero. Compare models/refunds_by_order.sql (saved production version): its highlighted lines 1 and 2 show the earlier sum and the same input. The base has no missing amounts, so values stay unchanged. The panel identifies the changed model, its three descendants and unchanged inputs.
       state:
         kind: comparison
         title: Saved definition compared with current definition
@@ -156,52 +154,10 @@ walkthrough:
             - 1
             - 2
           purpose: Authored era-specific example; illustration only.
-        - language: sql
-          filename: models/order_amounts.sql
-          content: |
-            select o.*, coalesce(p.payment_cents, 0) as payment_cents,
-                coalesce(r.refund_cents, 0) as refund_cents
-            from {{ ref("orders") }} as o
-            left join {{ ref("payments_by_order") }} as p
-              on o.order_id = p.order_id
-            left join {{ ref("refunds_by_order") }} as r
-              on o.order_id = r.order_id
-          highlight_lines:
-            - 3
-            - 4
-            - 6
-          purpose: Authored era-specific example; illustration only.
-        - language: sql
-          filename: models/order_revenue.sql
-          content: |
-            select *, payment_cents - refund_cents as revenue_cents
-            from {{ ref("order_amounts") }}
-          highlight_lines:
-            - 1
-          purpose: Authored era-specific example; illustration only.
-        - language: sql
-          filename: models/revenue_by_location.sql
-          content: |
-            select r.location_id, l.name as location,
-                sum(r.payment_cents) as payment_cents,
-                sum(r.refund_cents) as refund_cents,
-                sum(r.revenue_cents) as revenue_cents
-            from {{ ref("order_revenue") }} as r
-            join raw.locations as l on r.location_id = l.location_id
-            group by r.location_id, l.name
-            order by r.location_id
-          highlight_lines:
-            - 2
-            - 3
-            - 4
-          purpose: Authored era-specific example; illustration only.
     - id: build
       title: Build only the changed branch
-      explanation: >-
-        The refund change highlighted on lines 1 and 2 is selected by state:modified, and + includes all three
-        descendants shown by the ref calls. The command compares the saved production manifest and enables
-        deferral, which reuses eligible unselected relations. With no development copies of the parents, the
-        panel shows orders, payments_by_order and refunds read from production.
+      explanation: |-
+        Highlighted lines 1 and 2 of refunds_by_order retain the change from the previous screen. The command selects changed models with state:modified and their descendants with +. It also enables deferral, which borrows eligible unselected inputs from saved production state. With no development copies of those parents, the panel shows the rebuilt branch and the three inputs read from production.
       state:
         kind: comparison
         title: Development build and reused production inputs
@@ -232,55 +188,6 @@ walkthrough:
             - 1
             - 2
           purpose: Authored era-specific example; illustration only.
-        - language: sql
-          filename: models/order_amounts.sql
-          content: |
-            select o.*, coalesce(p.payment_cents, 0) as payment_cents,
-                coalesce(r.refund_cents, 0) as refund_cents
-            from {{ ref("orders") }} as o
-            left join {{ ref("payments_by_order") }} as p
-              on o.order_id = p.order_id
-            left join {{ ref("refunds_by_order") }} as r
-              on o.order_id = r.order_id
-          highlight_lines:
-            - 3
-            - 4
-            - 6
-          purpose: Authored era-specific example; illustration only.
-        - language: sql
-          filename: models/order_revenue.sql
-          content: |
-            select *, payment_cents - refund_cents as revenue_cents
-            from {{ ref("order_amounts") }}
-          highlight_lines:
-            - 1
-          purpose: Authored era-specific example; illustration only.
-        - language: sql
-          filename: models/revenue_by_location.sql
-          content: |
-            select r.location_id, l.name as location,
-                sum(r.payment_cents) as payment_cents,
-                sum(r.refund_cents) as refund_cents,
-                sum(r.revenue_cents) as revenue_cents
-            from {{ ref("order_revenue") }} as r
-            join raw.locations as l on r.location_id = l.location_id
-            group by r.location_id, l.name
-            order by r.location_id
-          highlight_lines:
-            - 2
-            - 3
-            - 4
-          purpose: Authored era-specific example; illustration only.
-        - language: sql
-          filename: models/payments_by_order.sql
-          content: |
-            select order_id, sum(amount_cents) as payment_cents
-            from {{ ref("payments") }}
-            group by order_id
-          highlight_lines:
-            - 1
-            - 2
-          purpose: Authored era-specific example; illustration only.
         - language: shell
           filename: commands.sh
           content: |
@@ -297,12 +204,8 @@ walkthrough:
         - src-6
     - id: consumer
       title: Name the dashboard that uses the result (added in 0.18.1)
-      explanation: >
-        Two files are shown. The YAML file, highlighted on lines 2, 5 and 6, declares an exposure: a named
-        downstream use of the project, here a daily dashboard, with the model it depends on. The SQL file
-        is
-        the revenue-by-location model it reads, highlighted on its sum lines. The result panel shows the
-        exposure and its dependency. Exposures were added in patch 0.18.1, after the main release.
+      explanation: |-
+        Highlighted lines 2, 5 and 6 of exposures.yml declare an exposure: a named use of the project, here a daily dashboard, with the model it reads. The panel shows the dashboard depending on revenue_by_location. Exposures arrived in patch 0.18.1. The definition documents the dependency; it doesn't build the dashboard.
       state:
         kind: comparison
         title: The dashboard as an exposure
@@ -345,23 +248,6 @@ walkthrough:
             - 2
             - 5
             - 6
-          purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: models/revenue_by_location.sql
-          content: |
-            select
-                r.location_id, l.name as location,
-                sum(r.payment_cents) as payment_cents,
-                sum(r.refund_cents) as refund_cents,
-                sum(r.revenue_cents) as revenue_cents
-            from {{ ref("order_revenue") }} as r
-            join raw.locations as l on r.location_id = l.location_id
-            group by r.location_id, l.name
-            order by r.location_id
-          highlight_lines:
-            - 3
-            - 4
-            - 5
           purpose: authored executable syntax; illustration only
   evidence:
     status: illustration

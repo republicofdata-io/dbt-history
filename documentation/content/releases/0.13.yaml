@@ -82,13 +82,8 @@ walkthrough:
   steps:
     - id: clock
       title: Check when the payment feed last loaded
-      explanation: >
-        Three files are shown. The first, highlighted on lines 2 to 4, stamps every payment row with the time
-        it was loaded: 08:00 on March 9. The YAML file, highlighted on lines 7 to 11, tells dbt which column
-        holds that timestamp and how old is too old. The third file is a query, highlighted on lines 2 to
-        4,
-        that compares the last load time to noon. The result panel shows the answer: the feed is four hours
-        old.
+      explanation: |-
+        Highlighted lines 2 to 4 of payments_feed.sql stamp each payment with its load time, 08:00 on March 9. payment_feed_age.sql is an inspection query: a plain query under analyses that reads a result without building a model. Its highlighted lines 2 to 4 compare the last load to noon. The panel shows that the feed is four hours old.
       state:
         kind: comparison
         title: Age of the payment feed at noon
@@ -125,27 +120,6 @@ walkthrough:
             - 3
             - 4
           purpose: authored executable syntax; illustration only
-        - language: yaml
-          filename: models/sources.yml
-          content: |
-            version: 2
-            sources:
-              - name: raw
-                schema: raw
-                tables:
-                  - name: payments
-                    identifier: payments_feed
-                    loaded_at_field: loaded_at
-                    freshness:
-                      warn_after: {count: 1, period: hour}
-                      error_after: {count: 3, period: hour}
-          highlight_lines:
-            - 7
-            - 8
-            - 9
-            - 10
-            - 11
-          purpose: authored executable syntax; illustration only
         - language: sql
           filename: analyses/payment_feed_age.sql
           content: |
@@ -161,11 +135,8 @@ walkthrough:
           purpose: authored executable syntax; illustration only
     - id: threshold
       title: Compare the age with the allowed limits
-      explanation: >
-        The same YAML file is shown, with lines 7 to 11 highlighted. Line 10 says warn after one hour. Line
-        11
-        says error after three hours. The command file runs the dbt freshness check. The result panel compares
-        the limit with the actual age: at most three hours allowed, four hours observed. The check fails.
+      explanation: |-
+        Highlighted lines 7 to 11 of sources.yml name the feed and its load-time column, then set the limits: warn after one hour and error after three. The command runs the freshness check. The panel compares three hours allowed with four hours observed, so the check fails.
       state:
         kind: result
         title: 'Freshness check: three hours allowed, four observed'
@@ -210,19 +181,6 @@ walkthrough:
             - 10
             - 11
           purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: analyses/payment_feed_age.sql
-          content: |
-            select max(loaded_at) as last_loaded_utc,
-                cast('2016-03-09 12:00:00' as timestamp) as evaluation_utc,
-                datediff(hour, max(loaded_at),
-                    cast('2016-03-09 12:00:00' as timestamp)) as age_hours
-            from {{ source("raw", "payments") }}
-          highlight_lines:
-            - 2
-            - 3
-            - 4
-          purpose: authored executable syntax; illustration only
         - language: shell
           filename: commands.sh
           content: |
@@ -232,11 +190,8 @@ walkthrough:
           purpose: authored executable syntax; illustration only
     - id: business
       title: The arithmetic is still right
-      explanation: >-
-        Highlighted line 2 of payments reads the declared source. Highlighted line 3 of order_amounts now
-        reads that payments model through ref(), so the source link reaches the revenue calculation. Lines
-        5, 8 and 9 add refunds and attach both totals to orders. The panel still totals 12,500 cents, despite
-        the four-hour-old feed.
+      explanation: |-
+        Highlighted line 2 of payments reads the declared source. Highlighted line 3 of order_amounts reads that model through ref(), carrying the source link into the revenue calculation. Lines 5, 8 and 9 add refunds and attach both totals to orders. The panel shows the downstream revenue still totalling 12,500 cents, despite the four-hour-old feed.
       state:
         kind: table
         title: Revenue by location on the stale feed
@@ -303,31 +258,6 @@ walkthrough:
             - 5
             - 8
             - 9
-          purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: models/order_revenue.sql
-          content: |
-            select *, payment_cents - refund_cents as revenue_cents
-            from {{ ref("order_amounts") }}
-          highlight_lines:
-            - 1
-          purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: models/revenue_by_location.sql
-          content: |
-            select
-                r.location_id, l.name as location,
-                sum(r.payment_cents) as payment_cents,
-                sum(r.refund_cents) as refund_cents,
-                sum(r.revenue_cents) as revenue_cents
-            from {{ ref("order_revenue") }} as r
-            join raw.locations as l on r.location_id = l.location_id
-            group by r.location_id, l.name
-            order by r.location_id
-          highlight_lines:
-            - 3
-            - 4
-            - 5
           purpose: authored executable syntax; illustration only
   evidence:
     status: illustration

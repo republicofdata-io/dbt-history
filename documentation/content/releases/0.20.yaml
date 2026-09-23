@@ -72,15 +72,8 @@ walkthrough:
   steps:
     - id: count
       title: 'A test fails: one payment has no matching order'
-      explanation: >
-        A test in dbt is a query that returns the rows that break a rule. Zero rows means pass. The first
-        file
-        is that test. The highlighted lines 3 and 4 do the work: line 3 tries to match each payment to its
-        order, and line 4 keeps only payments where no order was found. The second file is the same logic
-        wrapped in a count. The highlighted lines 1 and 4 show it counts those unmatched rows. The result
-        panel shows the outcome: 0 failures expected, 1 found. The test fails, but the panel does not tell
-        you
-        which payment.
+      explanation: |-
+        Highlighted lines 3 and 4 of the test match payments to orders and keep payments whose order is missing. Zero returned rows would mean a pass. count_orphans.sql is an inspection query: a plain query under analyses that reads data without building a model. Its highlighted lines 1 and 4 count the unmatched rows. The panel shows zero expected and one found, without identifying the payment.
       state:
         kind: result
         title: One payment has no matching order
@@ -127,11 +120,8 @@ walkthrough:
           purpose: authored executable syntax; illustration only
     - id: test
       title: Turn on store_failures so the failing row is kept
-      explanation: >
-        This is the same test file with one addition. Highlighted line 1 sets store_failures=true. The
-        highlighted lines 2 to 4 are the same query as before: pick the payment id, order id and amount, and
-        look for orders that are missing. With the setting on, dbt writes whatever rows this query returns
-        into a table instead of only counting them. The result panel confirms the setting.
+      explanation: |-
+        Highlighted line 1 of the test adds store_failures=true. Highlighted lines 2 to 4 retain the payment columns and the join used to find missing orders. With this setting, dbt saves the failing rows in a table instead of only counting them. The result panel confirms the setting.
       state:
         kind: comparison
         title: The test is set to store its failing rows
@@ -168,12 +158,8 @@ walkthrough:
         - src-3
     - id: inspect
       title: Run the test and read the stored failure
-      explanation: >
-        The command runs just this test. The test file is unchanged from the last step. The new file is a
-        plain query against the table dbt created. The highlighted lines 2 and 3 read from a schema named
-        after the project plus dbt_test__audit, in a table named after the test. The result panel shows the
-        single stored row: payment 2099, pointing at order 9999, for 400 cents. That is the payment the shop
-        needs to chase.
+      explanation: |-
+        The command runs the test configured on the previous screen. stored_failures.sql reads the resulting audit table directly. Its highlighted lines 2 and 3 select the saved failure from jaffle_dbt_test__audit. The panel now identifies the row behind the count: payment 2099, pointing to missing order 9999, for 400 cents.
       state:
         kind: result
         title: 'The stored failing row: payment 2099, order 9999, 400 cents'
@@ -200,20 +186,6 @@ walkthrough:
         - src-2
         - src-3
       code:
-        - language: sql
-          filename: tests/payments_have_orders.sql
-          content: |
-            {{ config(store_failures=true) }}
-            select p.payment_id, p.order_id, p.amount_cents
-            from {{ ref("payments") }} p
-            left join {{ ref("orders") }} o on p.order_id = o.order_id
-            where o.order_id is null
-          highlight_lines:
-            - 1
-            - 2
-            - 3
-            - 4
-          purpose: Authored era-specific example; illustration only.
         - language: sql
           filename: inspection/stored_failures.sql
           content: |

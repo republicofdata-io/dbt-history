@@ -145,11 +145,8 @@ walkthrough:
   steps:
     - id: conversion
       title: Divide by 100, for display only
-      explanation: >-
-        This example targets Snowflake. Highlighted line 1 of the function body divides the input by 100.
-        YAML lines 2 and 5 to 9 name its argument as number and its return type as number(18, 2), both Snowflake
-        types. Highlighted line 2 of the display model calls function("cents_to_units"). The panel shows 1,000
-        cents becoming 10.00; a separate location example converts 3,400 to 34.00.
+      explanation: |-
+        This example targets Snowflake. Highlighted line 1 of functions/cents_to_units.sql divides by 100. Highlighted lines 2 and 5 to 9 of functions/cents_to_units.yml declare the function and its Snowflake number types. Highlighted line 2 of revenue_display calls it. The panel shows 1,000 cents becoming 10.00, alongside the prepared location example of 3,400 becoming 34.00.
       state:
         kind: comparison
         title: Cents to units
@@ -214,19 +211,10 @@ walkthrough:
           highlight_lines:
             - 2
           purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: models/location_display.sql
-          content: |
-            select location_id, revenue_cents,
-                {{ function("cents_to_units") }}(revenue_cents) as revenue_units
-            from {{ ref("revenue_by_location") }}
-          highlight_lines:
-            - 2
-          purpose: Authored era-specific example; illustration only.
     - id: function
       title: dbt builds the function before the model
-      explanation: |
-        Highlighted line 2 of revenue_display names the function it calls. The supporting YAML names the function’s argument and return type on lines 5 to 9. Highlighted command line 1 builds this model and its dependencies. The diagram shows both order_revenue and cents_to_units feeding revenue_display, so dbt deploys the function before its consumer.
+      explanation: |-
+        Highlighted line 2 of revenue_display calls the function defined on the previous screen. Highlighted line 1 of the command builds this model and its dependencies. The diagram shows order_revenue and cents_to_units feeding revenue_display, so dbt deploys the function before the model that calls it.
       state:
         kind: diagram
         title: Function dependency
@@ -272,33 +260,6 @@ walkthrough:
           highlight_lines:
             - 2
           purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: functions/cents_to_units.sql
-          content: |
-            amount_cents / 100.0
-          highlight_lines:
-            - 1
-          purpose: authored executable syntax; illustration only
-        - language: yaml
-          filename: functions/cents_to_units.yml
-          content: |
-            functions:
-              - name: cents_to_units
-                config:
-                  schema: finance_functions
-                arguments:
-                  - name: amount_cents
-                    data_type: number
-                returns:
-                  data_type: number(18, 2)
-          highlight_lines:
-            - 2
-            - 5
-            - 6
-            - 7
-            - 8
-            - 9
-          purpose: authored executable syntax; illustration only
         - language: shell
           filename: commands.sh
           content: |
@@ -308,10 +269,8 @@ walkthrough:
           purpose: authored executable syntax; illustration only
     - id: distinction
       title: Function or macro?
-      explanation: >-
-        Highlighted line 2 of the macro inserts division by 100 into the compiled SQL. Highlighted line 2
-        of revenue_display calls the stored function instead. The panel contrasts when each acts: the macro
-        writes SQL during compilation; the Snowflake function executes when the database runs the query.
+      explanation: |-
+        Highlighted line 2 of the macro inserts division by 100 into compiled SQL. Highlighted line 2 of revenue_display instead calls the stored function. The panel compares when each acts: the macro writes SQL during compilation, while the Snowflake function executes when the database runs the query.
       state:
         kind: comparison
         title: Macro versus function
@@ -350,33 +309,6 @@ walkthrough:
             - 2
           purpose: authored executable syntax; illustration only
         - language: sql
-          filename: functions/cents_to_units.sql
-          content: |
-            amount_cents / 100.0
-          highlight_lines:
-            - 1
-          purpose: authored executable syntax; illustration only
-        - language: yaml
-          filename: functions/cents_to_units.yml
-          content: |
-            functions:
-              - name: cents_to_units
-                config:
-                  schema: finance_functions
-                arguments:
-                  - name: amount_cents
-                    data_type: number
-                returns:
-                  data_type: number(18, 2)
-          highlight_lines:
-            - 2
-            - 5
-            - 6
-            - 7
-            - 8
-            - 9
-          purpose: authored executable syntax; illustration only
-        - language: sql
           filename: models/revenue_display.sql
           content: |
             select order_id, revenue_cents,
@@ -385,15 +317,6 @@ walkthrough:
           highlight_lines:
             - 2
           purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: models/revenue_display_macro.sql
-          content: |
-            select order_id,
-                {{ cents_to_units_sql("revenue_cents") }} as revenue_units
-            from {{ ref("order_revenue") }}
-          highlight_lines:
-            - 2
-          purpose: Authored era-specific example; illustration only.
   evidence:
     status: illustration
     review_date: '2026-09-22'

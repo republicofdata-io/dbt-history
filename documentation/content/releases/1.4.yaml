@@ -91,10 +91,8 @@ walkthrough:
   steps:
     - id: copies
       title: Two copies of the same parent, one stale
-      explanation: >-
-        Highlighted lines 3 and 6 read the development and production copies of order_revenue. The panel shows
-        the query’s two totals: 12,500 cents in development and 14,400 in production. The saved production
-        manifest points to the two-day relation.
+      explanation: |-
+        compare_parent_relations.sql is a plain query for inspecting existing tables, not a model. Highlighted lines 3 and 6 read the development and production copies of order_revenue. The panel shows 12,500 cents in development and 14,400 in production. The saved production manifest points to the two-day relation.
       state:
         kind: comparison
         title: Parent totals before the development build
@@ -136,14 +134,8 @@ walkthrough:
         phase: dev.order_revenue uses base; prod.order_revenue uses second-day.
     - id: favor
       title: Build the child and tell dbt to prefer the production parent
-      explanation: >
-        The first file is the model to rebuild. Highlighted lines 3 to 5 sum payments, refunds and revenue
-        per
-        location. The second file is the command. It selects only this model. The defer and state flags ask
-        dbt to borrow any unselected parent from the saved production state in the state-prod folder. The
-        new
-        flag, favor-state, says to use the production copy even though a dev copy exists. The result panel
-        shows the resolution: the dev revenue-by-location model will read prod.order_revenue.
+      explanation: |-
+        Highlighted lines 3 to 5 of revenue_by_location sum payments, refunds and revenue per location. The command selects this model and uses saved production state for unselected inputs. Its --favor-state option prefers production even when a development copy exists. The panel shows the chosen input: prod.order_revenue feeds the development model.
       state:
         kind: comparison
         title: Child reads the production parent
@@ -191,10 +183,8 @@ walkthrough:
         - alignment-1-4-0
     - id: expected
       title: The result reflects both days
-      explanation: >
-        Same model, highlighted at lines 3 to 5. Because it read the production parent, its output includes
-        the second day of orders. The result panel shows revenue per location: Old Port 3,900, Mile End 5,700,
-        Riverside 4,800. Had it read the dev copy, Old Port would be 3,400 and Mile End 4,300.
+      explanation: |-
+        Highlighted lines 3 to 5 of revenue_by_location repeat the same sums after the input choice changed. Reading the production parent includes the second day. The panel shows Old Port at 3,900 cents, Mile End at 5,700 and Riverside at 4,800. Reading the stale development parent would instead leave the first two at 3,400 and 4,300.
       state:
         kind: comparison
         title: Revenue by location from the two-day parent
@@ -240,11 +230,8 @@ walkthrough:
           purpose: authored executable syntax; illustration only
     - id: predicate
       title: Limit the existing rows considered by a merge
-      explanation: Highlighted lines 3 and 4 add a condition on DBT_INTERNAL_DEST, dbt’s name for the
-        existing target in a merge. A merge matches incoming orders to stored orders before updating or
-        inserting. On Snowflake, the panel shows that date condition added to the order-id match. This
-        fixture’s target dates all satisfy it, so the same two new orders still bring 12,500 to 14,400
-        cents.
+      explanation: |-
+        Highlighted lines 3 and 4 of order_revenue add a condition on DBT_INTERNAL_DEST, dbt's name for the stored target during a merge. The command runs this model on Snowflake. The panel shows the date condition alongside the order-id match. All stored fixture dates satisfy it, so adding the two new orders still raises revenue from 12,500 to 14,400 cents.
       state:
         kind: comparison
         title: Prepared Snowflake merge condition
@@ -280,35 +267,6 @@ walkthrough:
           highlight_lines:
             - 3
             - 4
-          purpose: Authored era-specific example; illustration only.
-        - language: sql
-          filename: models/order_amounts.sql
-          content: |
-            with paid as (
-                select order_id, sum(amount_cents) as payment_cents
-                from raw.payments group by order_id
-            ), refunded as (
-                select order_id, sum(amount_cents) as refund_cents
-                from raw.refunds group by order_id
-            )
-            select o.*, coalesce(p.payment_cents, 0) as payment_cents,
-                coalesce(r.refund_cents, 0) as refund_cents
-            from raw.orders as o
-            left join paid as p on o.order_id = p.order_id
-            left join refunded as r on o.order_id = r.order_id
-          highlight_lines:
-            - 2
-            - 5
-            - 8
-            - 9
-          purpose: Authored era-specific example; illustration only.
-        - language: sql
-          filename: inspection/merged_total.sql
-          content: |
-            select sum(revenue_cents) as total_cents
-            from jaffle.order_revenue
-          highlight_lines:
-            - 1
           purpose: Authored era-specific example; illustration only.
         - language: shell
           filename: commands.sh

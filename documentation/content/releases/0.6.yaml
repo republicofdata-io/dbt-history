@@ -91,9 +91,8 @@ walkthrough:
   steps:
     - id: repeat
       title: The same subtraction in every report
-      explanation: |
-        This query looks at one order. Highlighted line 2 is the rule that keeps getting retyped: payments minus refunds. Highlighted line 4 narrows the query to order 1042. The result panel shows that the order paid 1,200 cents and refunded 200, so its net is 1,000 cents.
-         The second file highlights the same subtraction on line 2, copied into the customer report.
+      explanation: |-
+        order_1042.sql is an inspection query: a plain query under analyses that reads data without building a model. Highlighted line 2 subtracts refunds; line 4 selects order 1042. Highlighted line 2 of customer_revenue.sql repeats the subtraction in a report. The panel shows the worked answer: 1,200 cents paid minus 200 refunded equals 1,000 cents.
       state:
         kind: comparison
         title: Order 1042, worked by hand
@@ -144,12 +143,8 @@ walkthrough:
           purpose: Authored era-specific example; illustration only.
     - id: macro
       title: Give the expression a name
-      explanation: >
-        This file defines a macro. A macro is a small template: it takes inputs and produces text, here a
-        piece of SQL. Highlighted lines 1 to 3 name it net_cents, take two inputs, and produce the subtraction
-        in brackets. Nothing is stored in the database at this point. The result panel shows what goes in
-        and
-        what comes out.
+      explanation: |-
+        Highlighted lines 1 to 3 of the macro define net_cents, a small template that takes two inputs and writes their subtraction as SQL text. It doesn't create a table or store data. The panel shows the input expressions and the expression the macro produces.
       state:
         kind: comparison
         title: What the macro takes in and gives back
@@ -187,11 +182,8 @@ walkthrough:
         - alignment-0-6-0
     - id: use
       title: Call the macro from the revenue model
-      explanation: >-
-        Highlighted line 3 of order_revenue calls the macro; dbt replaces that call with the subtraction from
-        the macro file. Lines 1 and 2 retain the incremental filter. The inspection query reads order 1042
-        from the built table. Its panel contains exactly those four selected columns, with revenue of 1,000
-        cents.
+      explanation: |-
+        Highlighted line 3 of order_revenue replaces the written subtraction with a call to net_cents, the macro defined on the previous screen. Lines 1 and 2 retain the incremental filter. Highlighted lines 1 and 3 of the inspection query read the stored columns for order 1042. The panel shows the same 1,000-cent result through the shared rule.
       state:
         kind: table
         title: Order 1042 through the macro
@@ -224,17 +216,6 @@ walkthrough:
             - 2
             - 3
           purpose: Authored era-specific example; illustration only.
-        - language: jinja
-          filename: macros/net_cents.sql
-          content: |
-            {% macro net_cents(payment, refund) %}
-                ({{ payment }} - {{ refund }})
-            {% endmacro %}
-          highlight_lines:
-            - 1
-            - 2
-            - 3
-          purpose: Authored era-specific example; illustration only.
         - language: sql
           filename: analyses/order_1042.sql
           content: |
@@ -253,10 +234,8 @@ walkthrough:
         - alignment-0-6-0
     - id: refresh
       title: Recalculate stored rows after correcting a macro
-      explanation: 'The earlier table in this comparison used addition, shown in highlighted line 2 of the
-        before macro. The corrected macro subtracts refunds. Highlighted lines 1 and 2 of order_revenue ordinarily
-        admit only new ids, so old rows keep the wrong answer. The full-refresh command rebuilds the table:
-        order 1042 changes from 1,400 to 1,000 cents, and the total from 15,100 to 12,500.'
+      explanation: |-
+        Compare macros/net_cents.sql (before correction), whose highlighted line 2 adds refunds, with macros/net_cents.sql, whose highlighted lines 1 to 3 define the corrected subtraction. Highlighted lines 1 and 2 of order_revenue ordinarily admit only new ids, leaving old values stored. The command uses full refresh to rebuild all rows. The panel shows order 1042 falling from 1,400 to 1,000 cents and the total from 15,100 to 12,500.
       state:
         kind: comparison
         title: Rebuilt values after the macro correction
@@ -308,14 +287,6 @@ walkthrough:
             - 1
             - 2
             - 3
-          purpose: Authored era-specific example; illustration only.
-        - language: sql
-          filename: analyses/total.sql
-          content: |
-            select sum(revenue_cents) as revenue_cents
-            from {{ ref("order_revenue") }}
-          highlight_lines:
-            - 1
           purpose: Authored era-specific example; illustration only.
         - language: shell
           filename: commands.sh

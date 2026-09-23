@@ -86,8 +86,8 @@ walkthrough:
   steps:
     - id: tag
       title: Put a finance tag on the revenue model
-      explanation: |
-        The screen shows the order_revenue model. The highlighted line 1 is a config call that gives the model the tag finance. Lines 2 and 3 are the ordinary SQL: revenue is payments minus refunds. A tag is just a label. It does not change what the model computes. The result panel shows that revenue_by_location carries the same tag in this prepared project.
+      explanation: |-
+        Highlighted line 1 of order_revenue and line 1 of revenue_by_location give each model the finance tag. A tag is a label for grouping models; it doesn't change their calculations. The panel shows both models belonging to finance.
       state:
         kind: comparison
         title: Models carrying the finance tag
@@ -137,8 +137,8 @@ walkthrough:
         - src-4
     - id: select
       title: Run only the models tagged finance
-      explanation: |
-        Both revenue models are shown with tag line 1 highlighted. The command file runs dbt run with a selection: only models tagged finance. The result panel lists the two models dbt would build. The models they read from, such as order_amounts, are not rebuilt. This example assumes they already exist in the warehouse from an earlier run.
+      explanation: |-
+        Highlighted line 1 of order_revenue and revenue_by_location retains the finance tag. The command now uses that tag to select which models to run. The panel lists just those two models. Their inputs, such as order_amounts, aren't rebuilt; this example assumes those tables already exist from an earlier run.
       state:
         kind: comparison
         title: What the finance selection builds
@@ -193,10 +193,8 @@ walkthrough:
         - src-4
     - id: answer
       title: The revenue numbers do not change
-      explanation: >-
-        Highlighted line 1 in both model files retains the finance tag. Their SQL is identical to the previous
-        step: subtract refunds per order, then sum per location. The panel shows the same three rows and total
-        of 12,500 cents after rebuilding just those two tagged models.
+      explanation: |-
+        Highlighted line 1 of revenue_by_location still carries the finance tag. After the tag-selected run, this model sums the rebuilt order revenue into location totals. The panel shows 3,400, 4,300 and 4,800 cents, the same 12,500-cent answer as a full build. The selection changed, while the calculation stayed the same.
       state:
         kind: table
         title: Revenue by location after the finance-only run
@@ -234,15 +232,6 @@ walkthrough:
         - src-3
         - src-4
       code:
-        - language: sql
-          filename: models/order_revenue.sql
-          content: |
-            {{ config(tags=["finance"]) }}
-            select *, payment_cents - refund_cents as revenue_cents
-            from {{ ref("order_amounts") }}
-          highlight_lines:
-            - 1
-          purpose: Authored era-specific example; illustration only.
         - language: sql
           filename: models/revenue_by_location.sql
           content: |

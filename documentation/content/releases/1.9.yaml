@@ -148,11 +148,8 @@ walkthrough:
   steps:
     - id: days
       title: Two trading days, before the late order
-      explanation: >-
-        This microbatch example assumes Snowflake with its matching 1.9 adapter. Highlighted lines 3 to 5
-        of order_revenue.yml identify ordered_at as event time. Lines 1 to 4 of daily_revenue choose one batch
-        per day and a one-day lookback. The day-total query produces the panel: 12,500 cents on March 8 and
-        1,900 on March 9 before the late order.
+      explanation: |-
+        This example assumes Snowflake with its 1.9 adapter. Highlighted lines 3 to 5 of order_revenue.yml mark ordered_at as event time. Lines 1 to 4 of daily_revenue choose daily batches and a one-day lookback. revenue_by_day.sql is an inspection query, a plain query under analyses rather than a model. Its highlighted lines 1 and 2 group and total the stored rows. The panel shows 12,500 cents on March 8 and 1,900 on March 9.
       state:
         kind: comparison
         title: Revenue per day before the late order
@@ -227,10 +224,8 @@ walkthrough:
         phase: Existing daily_revenue before late order 1055 arrives.
     - id: late
       title: The late order belongs to March 8
-      explanation: >-
-        Highlighted lines 1 and 4 of the inspection query select order 1055 and its event day. The panel contrasts
-        that March 8 event with its declared March 9 arrival, worth 600 cents. The supporting microbatch settings
-        remain unchanged; the existing March 8 output has not yet included this order.
+      explanation: |-
+        Highlighted lines 1 and 4 of the inspection query select order 1055 and its event day. The panel compares its March 8 event with its declared March 9 arrival, worth 600 cents. The daily settings from the previous screen stay unchanged, and the existing March 8 result hasn't yet included this order.
       state:
         kind: comparison
         title: 'Order 1055: event day versus arrival day'
@@ -273,44 +268,13 @@ walkthrough:
             - 1
             - 4
           purpose: authored executable syntax; illustration only
-        - language: yaml
-          filename: models/order_revenue.yml
-          content: |
-            version: 2
-            models:
-              - name: order_revenue
-                config:
-                  event_time: ordered_at
-          highlight_lines:
-            - 3
-            - 4
-            - 5
-          purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: models/daily_revenue.sql
-          content: |
-            {{ config(materialized="incremental",
-                incremental_strategy="microbatch",
-                event_time="ordered_at", batch_size="day",
-                begin="2016-03-08", lookback=1) }}
-            select order_id, location_id, ordered_at, revenue_cents
-            from {{ ref("order_revenue") }}
-          highlight_lines:
-            - 1
-            - 2
-            - 3
-            - 4
-            - 6
-          purpose: authored executable syntax; illustration only
       data_context:
         dataset_variant: late-order
         phase: Upstream order_revenue has the late order; the batch target has not been repaired.
     - id: repair
       title: Rebuild only March 8
-      explanation: >-
-        Highlighted command line 2 refreshes the upstream order model. Lines 3 to 5 rebuild daily_revenue
-        from March 8 up to, but not including, March 9. The supporting day-total and all-days queries produce
-        the panel: March 8 rises to 13,100 cents, March 9 stays at 1,900, and the total reaches 15,000.
+      explanation: |-
+        Highlighted line 2 of the command refreshes the upstream order model; lines 3 to 5 rebuild March 8 up to, but not including, March 9. Highlighted lines 1 and 2 of revenue_by_day.sql read each day's total; line 1 of all_days.sql sums all days. These inspection queries produce the panel: March 8 rises to 13,100 cents, March 9 stays at 1,900, and the total reaches 15,000.
       state:
         kind: comparison
         title: Revenue per day after the repair
@@ -342,35 +306,6 @@ walkthrough:
         - alignment-1-9-0
         - alignment-event-filter
       code:
-        - language: yaml
-          filename: models/order_revenue.yml
-          content: |
-            version: 2
-            models:
-              - name: order_revenue
-                config:
-                  event_time: ordered_at
-          highlight_lines:
-            - 3
-            - 4
-            - 5
-          purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: models/daily_revenue.sql
-          content: |
-            {{ config(materialized="incremental",
-                incremental_strategy="microbatch",
-                event_time="ordered_at", batch_size="day",
-                begin="2016-03-08", lookback=1) }}
-            select order_id, location_id, ordered_at, revenue_cents
-            from {{ ref("order_revenue") }}
-          highlight_lines:
-            - 1
-            - 2
-            - 3
-            - 4
-            - 6
-          purpose: authored executable syntax; illustration only
         - language: sql
           filename: analyses/revenue_by_day.sql
           content: |
@@ -410,11 +345,8 @@ walkthrough:
         phase: After refreshing the input and rebuilding the March 8 batch.
     - id: yaml_snapshot
       title: Define customer history in YAML
-      explanation: Highlighted lines 2 and 4 define a snapshot directly in YAML and point it at
-        customers_current. Lines 7 to 9 identify the row and its update timestamp. The supporting setup
-        view supplies the declared customer-city-change timestamps. After observations before and after
-        the move, the panel shows the same two customer versions, now configured without a SQL snapshot
-        block.
+      explanation: |-
+        Highlighted lines 2 and 4 of the snapshot define history in YAML and name customers_current as its input. Lines 7 to 9 identify the row and update timestamp, supplied by the declared customer-city-change setup. The command refreshes that input and takes a snapshot before and after the move. The panel shows both dated customer versions without a SQL snapshot block.
       state:
         kind: table
         title: Prepared YAML snapshot history
@@ -457,41 +389,6 @@ walkthrough:
             - 7
             - 8
             - 9
-          purpose: Authored era-specific example; illustration only.
-        - language: sql
-          filename: models/customers_current.sql
-          content: |
-            select customer_id, name, city, updated_at
-            from archive_input.customers
-          highlight_lines:
-            - 1
-            - 2
-          purpose: Authored era-specific example; illustration only.
-        - language: sql
-          filename: setup/archive_input.sql
-          content: |
-            create view archive_input.customers as
-            select c.*, case
-                when customer_id = 1 and city = 'Québec'
-                  then cast('2016-03-09 09:00:00' as timestamp)
-                else cast('2016-03-08 07:00:00' as timestamp)
-            end as updated_at
-            from raw.customers as c;
-          highlight_lines:
-            - 3
-            - 4
-            - 5
-            - 6
-          purpose: Authored era-specific example; illustration only.
-        - language: sql
-          filename: inspection/customer_history.sql
-          content: |
-            select customer_id, city, dbt_valid_from, dbt_valid_to
-            from jaffle_snapshots.customers_history
-            where customer_id = 1 order by dbt_valid_from
-          highlight_lines:
-            - 1
-            - 3
           purpose: Authored era-specific example; illustration only.
         - language: shell
           filename: commands.sh

@@ -102,16 +102,20 @@ Continuous deploys from GitHub can be enabled with `netlify init` (it needs a on
 
 The first complete content set was authored on 22 September 2026, with history frozen at 21 September: 36 chapters (including origin), now 121 guided steps, one base fixture and seven variants, 43 catalogue identities, 105 events and 61 ecosystem placement intervals. Every walkthrough is an illustration; no historical dbt execution is claimed.
 
-Read [the content index](documentation/content/content-index.yaml) for rendering conventions and retained uncertainty, and [the validation report](documentation/content/validation-report.yaml) for coverage and arithmetic checks. All 64 app/content tests passed using the bundled current Node runtime; the shell’s older Node cannot start this Vite/Vitest toolchain.
+Read [the content index](documentation/content/content-index.yaml) for rendering conventions and retained uncertainty, and [the validation report](documentation/content/validation-report.yaml) for coverage and arithmetic checks. All 68 app/content tests passed using the bundled current Node runtime; the shell’s older Node cannot start this Vite/Vitest toolchain.
 
 Do not discard the content’s extra qualification fields when loading it: licence versus access, announced-but-unavailable products, private/public beta, bounded ownership/name changes and the explicit alpha maturity override affect what visitors should see. Ecosystem content is a list with external identities nested under `product_definition`. The completed merger uses `kind: acquisition_closed` plus `transaction_type: merger`, within the requested event enum.
 
 ### Walkthrough first screens and code
 
-All 36 walkthroughs now have an authored `intro` with version-specific capabilities and a self-contained scenario. All 121 steps include non-shell code, with 359 blocks of at most 17 lines. Commands follow the relevant model, test or configuration. The field contract is preserved; reviewed corrections align snippets, highlights and prepared results. Examples remain illustrations. See `demo_alignment` in the content validation report for the current checks and `walkthrough_enrichment` for the earlier pass.
+All 36 walkthroughs now have an authored `intro` with version-specific capabilities and a self-contained scenario. The 121 steps contain 214 code blocks: 116 steps show non-shell code, three focus on a command or inline SQL, and two show fixture-change results without code. Each retained file is named in its explanation. Blocks remain at most 17 lines; commands come last. The field contract is preserved; reviewed corrections align snippets, highlights and prepared results. Examples remain illustrations. See `step_file_focus` in the content validation report for current file coverage; `demo_alignment` and `walkthrough_enrichment` retain the earlier pass records.
 
 ### Demo alignment review
 
 The 22 September alignment pass addresses all 18 partial demos and resolves 60 review flags: 48 fixed and 12 retained with sourced explanations. All 82 historical observations also have dispositions. The [handoff](documentation/content/demo-alignment-handoff-2026-09-22.md) lists changes by chapter; the [resolution register](documentation/content/review-resolutions-2026-09-22.yaml) records every decision and its chapter-local sources. Retained limitations also appear in each chapter’s evidence. This content pass is local and has not been redeployed.
 
 Put the featured file first, supporting files next and the command last. Every step names its highlighted lines and explains the prepared result. Keep patch labels and adapter assumptions explicit, and reconcile every result with a named fixture phase. The shared base rows remain unchanged.
+
+### Step file focus (23 September 2026)
+
+The [file-focus handoff](documentation/content/file-focus-handoff-2026-09-23.md) lists the 138 file tabs removed in this pass, by chapter. The manually edited v0.4 reference is unchanged. Show only files the explanation names and walks through; upstream context can be a sentence. Pure result steps name what produced the result. The [review record](documentation/content/file-focus-review-2026-09-23.yaml) lists two duplicate-filename link issues and one missing repair-file note for follow-up. All 68 tests pass; this pass has not been deployed.

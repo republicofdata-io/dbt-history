@@ -75,12 +75,8 @@ walkthrough:
   steps:
     - id: routine
       title: 'The project is already complete: models, tests and docs'
-      explanation: >
-        Nothing new here yet. This is the shop's project as it stands at version 1.0. The first file is the
-        revenue model. Highlighted line 1 subtracts refunds from payments. The second file attaches a test.
-        Highlighted lines 8 to 10 say every payment must point at a real order. The third file documents the
-        location revenue model. Highlighted lines 4, 6 and 7 describe the model and its revenue column. The
-        result panel lists these three kinds of asset with the shop's example of each.
+      explanation: |-
+        The project already contains models, tests and documentation. Highlighted line 1 of order_revenue subtracts refunds. Highlighted lines 8 to 10 of schema.yml require payments to reference real orders. Highlighted lines 4, 6 and 7 of revenue.yml describe the location model and its revenue column. The panel names an example of each asset in the existing workflow.
       state:
         kind: comparison
         title: Three kinds of asset the project already has
@@ -195,16 +191,8 @@ walkthrough:
         - src-3
     - id: metrics
       title: A metric definition in the project, not a metrics service
-      explanation: >
-        The first file defines a metric. Highlighted line 2 opens the metrics section. Highlighted lines 5
-        to
-        7 say the metric is a sum of the revenue_cents column from the order_revenue model. The second file
-        is
-        that model. Highlighted line 1 is the column being summed. At 1.0 this definition is recorded in the
-        project's metadata and nothing more. There is no hosted service that answers metric questions. The
-        result panel separates the two: metric metadata exists at 1.0, the hosted Semantic Layer does not,
-        and
-        base revenue stays at 12,500 cents.
+      explanation: |-
+        Highlighted line 2 of metrics.yml opens the metrics section. Lines 5 to 7 define a sum of revenue_cents from order_revenue. At 1.0 this records a definition in project metadata; it doesn't create a hosted query service. The panel distinguishes that definition from the later hosted Semantic Layer, while base revenue remains 12,500 cents.
       state:
         kind: comparison
         title: Metric definition at 1.0 versus a hosted service
@@ -248,14 +236,6 @@ walkthrough:
             - 5
             - 6
             - 7
-          purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: models/order_revenue.sql
-          content: |
-            select *, payment_cents - refund_cents as revenue_cents
-            from {{ ref("order_amounts") }}
-          highlight_lines:
-            - 1
           purpose: authored executable syntax; illustration only
   evidence:
     status: illustration

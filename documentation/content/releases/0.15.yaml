@@ -115,10 +115,8 @@ walkthrough:
   steps:
     - id: project
       title: Edit only a description
-      explanation: >-
-        Highlighted lines 4, 6 and 7 of schema.yml are the edited descriptions. The supporting revenue SQL
-        has no changed lines. The panel identifies the change as documentation only; neither business SQL
-        nor input rows changed.
+      explanation: |-
+        Highlighted lines 4, 6 and 7 of schema.yml edit the model and column descriptions. Neither the business SQL nor the input rows change. The panel identifies this as a documentation-only edit.
       state:
         kind: comparison
         title: What changed in this edit
@@ -161,20 +159,6 @@ walkthrough:
             - 4
             - 6
             - 7
-          purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: models/revenue_by_location.sql
-          content: |
-            select
-                r.location_id, l.name as location,
-                sum(r.payment_cents) as payment_cents,
-                sum(r.refund_cents) as refund_cents,
-                sum(r.revenue_cents) as revenue_cents
-            from {{ ref("order_revenue") }} as r
-            join raw.locations as l on r.location_id = l.location_id
-            group by r.location_id, l.name
-            order by r.location_id
-          highlight_lines: []
           purpose: authored executable syntax; illustration only
     - id: parse
       title: Reuse the earlier read of the project
@@ -223,35 +207,6 @@ walkthrough:
           highlight_lines:
             - 2
           purpose: Authored era-specific example; illustration only.
-        - language: yaml
-          filename: models/schema.yml
-          content: |
-            version: 2
-            models:
-              - name: revenue_by_location
-                description: Payments minus refunds, in cents.
-                columns:
-                  - name: revenue_cents
-                    description: Net successful payments after refunds.
-          highlight_lines:
-            - 4
-            - 6
-            - 7
-          purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: models/revenue_by_location.sql
-          content: |
-            select
-                r.location_id, l.name as location,
-                sum(r.payment_cents) as payment_cents,
-                sum(r.refund_cents) as refund_cents,
-                sum(r.revenue_cents) as revenue_cents
-            from {{ ref("order_revenue") }} as r
-            join raw.locations as l on r.location_id = l.location_id
-            group by r.location_id, l.name
-            order by r.location_id
-          highlight_lines: []
-          purpose: authored executable syntax; illustration only
         - language: shell
           filename: commands.sh
           content: |
@@ -261,11 +216,8 @@ walkthrough:
           purpose: authored executable syntax; illustration only
     - id: events
       title: Print the run as machine-readable events
-      explanation: >-
-        Highlighted lines 2 to 4 of the JSON example separate the level, message and optional context into
-        fields. This is an authored format excerpt, not a terminal log or a claim about an emitted event.
-        The global --log-format json switch comes before run. The panel maps those fields to their meanings;
-        the supporting model still computes the revenue table.
+      explanation: |-
+        Highlighted lines 2 to 4 of json-format-example.json separate level, message and optional context into fields. This is an authored format excerpt, not a terminal log or a claim about an emitted event. The command puts --log-format json before run. The panel maps those fields to their meanings.
       state:
         kind: comparison
         title: Human text becomes readable fields (authored example)
@@ -307,20 +259,6 @@ walkthrough:
             - 3
             - 4
           purpose: Authored era-specific example; illustration only.
-        - language: sql
-          filename: models/revenue_by_location.sql
-          content: |
-            select
-                r.location_id, l.name as location,
-                sum(r.payment_cents) as payment_cents,
-                sum(r.refund_cents) as refund_cents,
-                sum(r.revenue_cents) as revenue_cents
-            from {{ ref("order_revenue") }} as r
-            join raw.locations as l on r.location_id = l.location_id
-            group by r.location_id, l.name
-            order by r.location_id
-          highlight_lines: []
-          purpose: authored executable syntax; illustration only
         - language: shell
           filename: commands.sh
           content: |

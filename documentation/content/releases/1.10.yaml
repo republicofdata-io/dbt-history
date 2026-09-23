@@ -131,11 +131,8 @@ walkthrough:
   steps:
     - id: sample
       title: Build only the March 8 event window
-      explanation: Highlighted line 5 of the input properties marks ordered_at as event time, the time
-        the order happened. Highlighted line 3 of daily_revenue reads that input. The --sample command
-        filters it from March 8 up to, but not including, March 9. The panel shows 12 included orders
-        worth 12,500 cents and two excluded orders worth 1,900. At 1.10.0 this initial feature’s flag is
-        hidden from command help.
+      explanation: |-
+        Highlighted line 5 of order_revenue.yml marks ordered_at as event time, when the order happened. Highlighted line 3 of daily_revenue reads that input. The command samples March 8 up to, but not including, March 9. The panel shows 12 included orders worth 12,500 cents and two excluded orders worth 1,900. At 1.10.0 this initial flag is hidden from command help.
       state:
         kind: comparison
         title: Prepared March 8 sampling window
@@ -181,14 +178,6 @@ walkthrough:
             - 1
             - 3
           purpose: Authored era-specific example; illustration only.
-        - language: sql
-          filename: inspection/sample_totals.sql
-          content: |
-            select count(*) as orders, sum(revenue_cents) as revenue_cents
-            from jaffle.daily_revenue;
-          highlight_lines:
-            - 1
-          purpose: Authored era-specific example; illustration only.
         - language: shell
           filename: commands.sh
           content: |
@@ -209,10 +198,8 @@ walkthrough:
         phase: Both days already exist in order_revenue; a separate sample output includes March 8 only.
     - id: duplicate
       title: Two descriptions for one model
-      explanation: >-
-        Highlighted lines 4 and 5 repeat the description key in one YAML mapping. The two sentences disagree
-        about refunds. The panel counts two occurrences of a key that should appear once; the next step exposes
-        the deprecation warning.
+      explanation: |-
+        Highlighted lines 4 and 5 of schema.yml repeat the description key. The two sentences disagree about refunds. The panel counts two occurrences of a key that should appear once; the next screen exposes the deprecation warning.
       state:
         kind: comparison
         title: The duplicated key
@@ -253,10 +240,8 @@ walkthrough:
         - alignment-1-10-0
     - id: warning
       title: dbt points out the ambiguity
-      explanation: >-
-        Highlighted lines 4 and 5 are still the duplicate description. A fresh parse surfaces DuplicateYAMLKeysDeprecation,
-        named in the panel. The second command shows the optional warning-category setting that promotes it
-        to an error. This panel summarizes the diagnostic; it is not copied terminal output.
+      explanation: |-
+        Highlighted lines 4 and 5 of schema.yml retain the duplicated description. Highlighted line 1 of the command performs a fresh parse, producing the DuplicateYAMLKeysDeprecation diagnostic summarized in the panel. Lines 2 and 3 show the optional setting that treats this warning category as an error. The panel isn't copied terminal output.
       state:
         kind: result
         title: Prepared duplicate-key diagnostic
@@ -308,11 +293,8 @@ walkthrough:
           purpose: Authored era-specific example; illustration only.
     - id: correct
       title: Keep the accounting definition
-      explanation: >-
-        Highlighted line 4 is now the only description and states the accounting rule correctly. The supporting
-        model and total query show the unchanged base calculation. The panel confirms one description and
-        12,500 cents. This screen returns to the base fixture; the earlier sample screen used the named second-day
-        variant.
+      explanation: |-
+        Highlighted line 4 of schema.yml now holds the only description and states the accounting rule correctly. total.sql is a plain query for inspecting an existing result, not a model. Its highlighted line 1 sums revenue. The panel confirms one description and 12,500 cents. This screen uses the base fixture; the sample screen used second-day.
       state:
         kind: comparison
         title: One definition, same total
@@ -339,22 +321,6 @@ walkthrough:
               - name: revenue_by_location
                 description: Payments minus refunds, in cents.
           highlight_lines:
-            - 4
-          purpose: Authored era-specific example; illustration only.
-        - language: sql
-          filename: models/revenue_by_location.sql
-          content: |
-            select r.location_id, l.name as location,
-                sum(r.payment_cents) as payment_cents,
-                sum(r.refund_cents) as refund_cents,
-                sum(r.revenue_cents) as revenue_cents
-            from {{ ref("order_revenue") }} as r
-            join raw.locations as l on r.location_id = l.location_id
-            group by r.location_id, l.name
-            order by r.location_id
-          highlight_lines:
-            - 2
-            - 3
             - 4
           purpose: Authored era-specific example; illustration only.
         - language: sql

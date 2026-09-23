@@ -61,4 +61,12 @@ Current delivery direction confirmed by Olivier on 22 September 2026. This super
 - Featured file first, supporting files next, command last. Each explanation names the highlighted lines and describes the visible result; each takeaway states what was demonstrated. Define technical terms in plain language.
 - Demonstrate promised capabilities in 3–5 steps. Use a separate step for a distinct feature; a command flag alone is insufficient. Label patch-only features in the step title and name adapter assumptions.
 - Keep retained historical limits in chapter evidence with source references. Do not modernize old configuration keys or promote source/fixture verification to a runtime capture.
-- Current content has 36 illustrative walkthroughs, 121 steps and 359 code blocks. Update the index and validation report when these change.
+- Current content has 36 illustrative walkthroughs, 121 steps and 214 code blocks. Update the index and validation report when these change.
+
+## Step file focus (23 September 2026)
+
+- Show a file only when its explanation names that file/model or a supported file-role phrase. Keep the featured file first and commands last. Avoid carrying upstream or downstream models solely for context.
+- Name and explain highlighted lines in retained files. Repeated files need an explained comparison or setting; configuration belongs in the step that explains it.
+- Introduce the first inspection query in each chapter as a plain query for reading a result, not a model. Files under analyses can use the linked phrase "the inspection query".
+- Result-only steps may have an empty code list when the explanation names the input or action that produced the result. Command-focused steps can retain only their command; avoid adding unrelated model tabs to satisfy a file count.
+- Read `documentation/content/file-focus-review-2026-09-23.yaml` for the current removal inventory and follow-up flags. Every retained file is named; duplicate filenames remain a link-resolution issue for the app.

@@ -67,13 +67,8 @@ walkthrough:
   steps:
     - id: input
       title: The SQL model that the Python model will read
-      explanation: >
-        Three SQL files. The first sums payments and refunds per order (highlighted lines 2 and 5) and
-        attaches them to each order (highlighted lines 8 and 9). The second subtracts refunds to get net
-        revenue per order (highlighted line 1). The third is a check on one order. Highlighted line 2 does
-        the
-        subtraction and line 4 picks order 1042. The result panel shows that order: 1,200 cents paid, 200
-        refunded, 1,000 net. This is the data the Python model will receive.
+      explanation: |-
+        Highlighted line 1 of order_revenue subtracts refunds from payments supplied by order_amounts. order_1042.sql is an inspection query: a plain query under analyses that reads data without building a model. Its highlighted lines 2 and 4 work through order 1042. The panel shows 1,200 cents paid, 200 refunded and 1,000 net, the value the Python model will receive.
       state:
         kind: table
         title: 'Order 1042 before the Python model'
@@ -99,27 +94,6 @@ walkthrough:
         - src-2
       code:
         - language: sql
-          filename: models/order_amounts.sql
-          content: |
-            with paid as (
-                select order_id, sum(amount_cents) as payment_cents
-                from raw.payments group by order_id
-            ), refunded as (
-                select order_id, sum(amount_cents) as refund_cents
-                from raw.refunds group by order_id
-            )
-            select o.*, coalesce(p.payment_cents, 0) as payment_cents,
-                coalesce(r.refund_cents, 0) as refund_cents
-            from raw.orders as o
-            left join paid as p on o.order_id = p.order_id
-            left join refunded as r on o.order_id = r.order_id
-          highlight_lines:
-            - 2
-            - 5
-            - 8
-            - 9
-          purpose: authored executable syntax; illustration only
-        - language: sql
           filename: models/order_revenue.sql
           content: |
             select *, payment_cents - refund_cents as revenue_cents
@@ -140,13 +114,8 @@ walkthrough:
           purpose: authored executable syntax; illustration only
     - id: python
       title: A four-line Python model
-      explanation: >
-        This is the whole Python model. Highlighted line 1 defines a function named model, which dbt calls.
-        Line 2 says to save the output as a table. Line 3 reads the order_revenue SQL model using dbt.ref,
-        the
-        same reference SQL models use, so dbt knows this model depends on it. Line 4 keeps two columns,
-        order_id and revenue_cents, and returns them. The result panel shows those two columns and where they
-        came from.
+      explanation: |-
+        Highlighted line 1 of python_order_revenue.py defines the model function that dbt calls. Line 2 stores its output as a table; line 3 reads order_revenue using dbt.ref, recording the dependency. Line 4 returns order_id and revenue_cents. The panel shows those two columns and the SQL model they came from.
       state:
         kind: comparison
         title: Two columns kept, read from order_revenue
@@ -182,13 +151,8 @@ walkthrough:
         - src-2
     - id: scope
       title: Same numbers, and a note on which warehouses can run it
-      explanation: >
-        The Python file is unchanged, highlighted at lines 1 to 4. The second file checks its output.
-        Highlighted line 1 sums revenue across every row, and line 4 picks order 1042 again. The result panel
-        shows the expected values: order 1042 is still 1,000 cents, and all 12 orders total 12,500 cents.
-        The
-        panel also names the platform this example is shaped for: Snowflake, using its Snowpark Python engine.
-        A warehouse without Python support cannot run this model, however simple it is.
+      explanation: |-
+        python_totals.sql checks the output of the Python model from the previous screen. Highlighted line 1 sums revenue, and line 4 selects order 1042. The panel shows 1,000 cents for that order and 12,500 across all 12 orders. This example assumes Snowflake's Snowpark Python engine; a warehouse without Python support can't run the model.
       state:
         kind: comparison
         title: Values unchanged; runs on Snowflake with Snowpark
@@ -212,19 +176,6 @@ walkthrough:
         - src-1
         - src-2
       code:
-        - language: python
-          filename: models/python_order_revenue.py
-          content: |
-            def model(dbt, session):
-                dbt.config(materialized="table")
-                orders = dbt.ref("order_revenue")
-                return orders.select("order_id", "revenue_cents")
-          highlight_lines:
-            - 1
-            - 2
-            - 3
-            - 4
-          purpose: Authored era-specific example; illustration only.
         - language: sql
           filename: inspection/python_totals.sql
           content: |

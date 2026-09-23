@@ -72,8 +72,8 @@ walkthrough:
   steps:
     - id: csv
       title: Keep the location names in a CSV file inside the project
-      explanation: |
-        The panel opens on a CSV file with four lines. Highlighted lines 1 to 4 are the whole file: a header, then one row per location with its id and name. dbt calls a file like this a seed: a small, hand-maintained table that lives with the project code. The result panel shows the same three rows as a table.
+      explanation: |-
+        Highlighted lines 1 to 4 of the CSV contain a header and one row per location, with its id and name. dbt calls this a seed: a small, hand-maintained table that lives with project code. The result panel shows the same three rows as a table.
       state:
         kind: table
         title: The three locations as a table
@@ -114,8 +114,8 @@ walkthrough:
         - alignment-0-10-0
     - id: seed
       title: Load the CSV and refer to it from a model
-      explanation: |
-        Two files are shown. The command file runs dbt seed, which loads every CSV seed into the warehouse as a table. The model file, highlighted on lines 1 and 2, selects from the loaded table using ref, the same function used to point at other models. That tells dbt the seed is an input to this model. The result panel confirms the loaded table has the three rows.
+      explanation: |-
+        The command runs dbt seed to load the CSV into a warehouse table. Highlighted lines 1 and 2 of location_names select that table with ref(), the same function used to point at other models. That tells dbt the seed is an input. The panel shows the three loaded location rows.
       state:
         kind: table
         title: Loaded seed table and its row count
@@ -154,10 +154,8 @@ walkthrough:
         - alignment-0-10-0
     - id: package
       title: Declare a local package in its own file
-      explanation: Highlighted line 2 of packages.yml points to a second dbt project on disk. dbt deps
-        installs that dependency. The panel compares the older repositories entry with the new packages
-        file. The folder must exist and contain a dbt project; it is an authored example, not a
-        published package.
+      explanation: |-
+        Highlighted line 2 of packages.yml points to a second dbt project on disk. The command runs dbt deps to install it. The panel compares the older repositories entry with the new package file. The folder must exist and contain a dbt project; this is an authored example, not a published package.
       state:
         kind: comparison
         title: Where the dependency is declared
@@ -187,15 +185,6 @@ walkthrough:
           highlight_lines:
             - 2
           purpose: Authored era-specific example; illustration only.
-        - language: yaml
-          filename: ../jaffle_utils/dbt_project.yml
-          content: |
-            name: jaffle_utils
-            version: "1.0"
-            macro-paths: [macros]
-          highlight_lines:
-            - 1
-          purpose: Authored era-specific example; illustration only.
         - language: shell
           filename: commands.sh
           content: |
@@ -209,10 +198,8 @@ walkthrough:
         - alignment-0-10-0
     - id: labels
       title: Join the names to the revenue numbers
-      explanation: >-
-        Highlighted line 5 reads the order-level revenue model; highlighted line 6 joins its location_id to
-        the locations seed. Lines 2 to 4 sum payments, refunds and revenue. The result panel contains the
-        three named locations and 12,500 cents in total. Names are joined once, directly from the seed.
+      explanation: |-
+        Highlighted line 5 of revenue_by_location_labeled reads the existing order-level revenue; line 6 joins its location_id to the locations seed. The query totals payments, refunds and revenue for each named location. The result panel contains the three names and 12,500 cents in total. Names are joined once, directly from the seed.
       state:
         kind: table
         title: Revenue by location with names from the seed
@@ -264,14 +251,6 @@ walkthrough:
           highlight_lines:
             - 5
             - 6
-          purpose: Authored era-specific example; illustration only.
-        - language: sql
-          filename: models/order_revenue.sql
-          content: |
-            select *, payment_cents - refund_cents as revenue_cents
-            from {{ ref("order_amounts") }}
-          highlight_lines:
-            - 1
           purpose: Authored era-specific example; illustration only.
   evidence:
     status: illustration

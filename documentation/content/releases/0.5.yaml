@@ -123,10 +123,8 @@ walkthrough:
   steps:
     - id: variable
       title: Read one conversion setting
-      explanation: >-
-        Highlighted lines 5 and 6 of dbt_project.yml set cents_per_unit to 100. Highlighted line 2 of the
-        display model reads it with var(), giving decimal division by 100.0. The panel places 3,400 cents
-        beside 34.00, 4,300 beside 43.00 and 4,800 beside 48.00.
+      explanation: |-
+        Highlighted lines 5 and 6 of dbt_project.yml set cents_per_unit to 100. Highlighted line 2 of revenue_display reads it with var(), giving decimal division by 100.0. The panel places 3,400 cents beside 34.00, 4,300 beside 43.00 and 4,800 beside 48.00.
       state:
         kind: table
         title: Cents and display units
@@ -173,22 +171,6 @@ walkthrough:
           highlight_lines:
             - 2
           purpose: Authored era-specific example; illustration only.
-        - language: sql
-          filename: models/revenue_by_location.sql
-          content: |
-            select r.location_id, l.name as location,
-                sum(r.payment_cents) as payment_cents,
-                sum(r.refund_cents) as refund_cents,
-                sum(r.revenue_cents) as revenue_cents
-            from {{ ref("order_revenue") }} as r
-            join raw.locations as l on r.location_id = l.location_id
-            group by r.location_id, l.name
-            order by r.location_id
-          highlight_lines:
-            - 2
-            - 3
-            - 4
-          purpose: Authored era-specific example; illustration only.
       evidence:
         - src-1
         - src-2
@@ -199,10 +181,8 @@ walkthrough:
         - alignment-0-5-4
     - id: archive
       title: '0.5.1: keep customer history with an archive'
-      explanation: 'Highlighted lines 5 to 8 of the project file identify the customer feed, destination and
-        change timestamp. The setup view adds timestamps declared by the customer-city-change variant. After
-        an archive run before and after Ada moves, the inspection query returns two rows: Montréal closes
-        at 09:00 on March 9, and Québec stays open.'
+      explanation: |-
+        Highlighted lines 5 to 8 of the project file identify the customer feed, destination and change timestamp. The feed uses timestamps declared by the customer-city-change variant. The command runs the archive before and after Ada moves. customer_archive.sql is a plain query for reading saved results, not a model; highlighted line 1 selects the history columns. The panel shows Montréal closing at 09:00 on March 9 and Québec staying open.
       state:
         kind: table
         title: Archive after the second observation
@@ -244,22 +224,6 @@ walkthrough:
             - 8
           purpose: Authored era-specific example; illustration only.
         - language: sql
-          filename: setup/archive_input.sql
-          content: |
-            create view archive_input.customers as
-            select c.*, case
-                when customer_id = 1 and city = 'Québec'
-                  then cast('2016-03-09 09:00:00' as timestamp)
-                else cast('2016-03-08 07:00:00' as timestamp)
-            end as updated_at
-            from raw.customers as c;
-          highlight_lines:
-            - 3
-            - 4
-            - 5
-            - 6
-          purpose: Authored era-specific example; illustration only.
-        - language: sql
           filename: inspection/customer_archive.sql
           content: |
             select customer_id, city, valid_from, valid_to
@@ -293,9 +257,8 @@ walkthrough:
           metadata.
     - id: reconcile
       title: '0.5.4: test the revenue reconciliation'
-      explanation: 'Highlighted lines 2 and 4 total revenue at location and order level. Highlighted line
-        8 returns a row only if those totals disagree. dbt test counts those failing rows. The panel shows
-        a pass with zero failures: both sums are 12,500 cents.'
+      explanation: |-
+        Highlighted lines 2 and 4 of the test total revenue at location and order level. Highlighted line 8 returns a row only if those totals disagree. The command runs dbt test, which counts the failing rows. The panel shows a pass with zero failures: both sums are 12,500 cents.
       state:
         kind: result
         title: Custom data test passes
@@ -330,30 +293,6 @@ walkthrough:
             - 2
             - 4
             - 8
-          purpose: Authored era-specific example; illustration only.
-        - language: sql
-          filename: models/order_revenue.sql
-          content: |
-            select *, payment_cents - refund_cents as revenue_cents
-            from {{ ref("order_amounts") }}
-          highlight_lines:
-            - 1
-          purpose: Authored era-specific example; illustration only.
-        - language: sql
-          filename: models/revenue_by_location.sql
-          content: |
-            select r.location_id, l.name as location,
-                sum(r.payment_cents) as payment_cents,
-                sum(r.refund_cents) as refund_cents,
-                sum(r.revenue_cents) as revenue_cents
-            from {{ ref("order_revenue") }} as r
-            join raw.locations as l on r.location_id = l.location_id
-            group by r.location_id, l.name
-            order by r.location_id
-          highlight_lines:
-            - 2
-            - 3
-            - 4
           purpose: Authored era-specific example; illustration only.
         - language: shell
           filename: commands.sh

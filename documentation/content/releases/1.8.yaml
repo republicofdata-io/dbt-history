@@ -111,10 +111,8 @@ walkthrough:
   steps:
     - id: refund
       title: What the right answer looks like
-      explanation: >-
-        Highlighted lines 3, 4 and 6 of order_amounts join orders to the two aggregate models. The inspection
-        query highlights the subtraction and the filter for order 1042. Its panel shows 1,200 cents paid,
-        200 refunded and the correct 1,000-cent answer.
+      explanation: |-
+        order_1042.sql is an inspection query: a plain query under analyses that reads data without building a model. Highlighted line 2 subtracts refunds from payments; line 4 selects order 1042. The panel shows 1,200 cents paid, 200 refunded and the correct 1,000-cent answer. That's the rule the unit test will protect.
       state:
         kind: table
         title: Order 1042 with its partial refund
@@ -144,41 +142,6 @@ walkthrough:
         - alignment-empty
       code:
         - language: sql
-          filename: models/order_amounts.sql
-          content: |
-            select o.*, coalesce(p.payment_cents, 0) as payment_cents,
-                coalesce(r.refund_cents, 0) as refund_cents
-            from {{ ref("orders") }} as o
-            left join {{ ref("payments_by_order") }} as p
-              on o.order_id = p.order_id
-            left join {{ ref("refunds_by_order") }} as r
-              on o.order_id = r.order_id
-          highlight_lines:
-            - 3
-            - 4
-            - 6
-          purpose: Authored era-specific example; illustration only.
-        - language: sql
-          filename: models/payments_by_order.sql
-          content: |
-            select order_id, sum(amount_cents) as payment_cents
-            from {{ ref("payments") }}
-            group by order_id
-          highlight_lines:
-            - 1
-            - 2
-          purpose: Authored era-specific example; illustration only.
-        - language: sql
-          filename: models/refunds_by_order.sql
-          content: |
-            select order_id, sum(amount_cents) as refund_cents
-            from {{ ref("refunds") }}
-            group by order_id
-          highlight_lines:
-            - 1
-            - 2
-          purpose: Authored era-specific example; illustration only.
-        - language: sql
           filename: analyses/order_1042.sql
           content: |
             select order_id, payment_cents, refund_cents,
@@ -191,11 +154,8 @@ walkthrough:
           purpose: authored executable syntax; illustration only
     - id: bug
       title: A plus sign creeps in
-      explanation: >-
-        Highlighted line 3 adds refunds by mistake. Lines 8 and 11 of the unit-test YAML provide one input
-        and its expected 1,000-cent output. The first command builds zero-row upstream relations so dbt can
-        inspect their column types; the second runs the unit test using the supplied row. The panel shows
-        the wrong 1,400-cent result and a failed test.
+      explanation: |-
+        Highlighted line 3 of order_revenue.sql adds refunds by mistake. Highlighted lines 8 and 11 of order_revenue.yml supply one test input and its expected 1,000-cent output. The command first builds zero-row upstream relations so dbt can inspect column types, then runs the unit test. The panel shows the incorrect 1,400-cent result and a failure.
       state:
         kind: result
         title: Test result on the buggy model
@@ -260,11 +220,8 @@ walkthrough:
         - alignment-empty
     - id: fixture
       title: How the test describes the case
-      explanation: >-
-        Highlighted lines 8 and 11 give the unit test one input row and one expected output row. dbt substitutes
-        those inputs when evaluating the model. The panel shows 1,200 paid, 200 refunded, 1,000 expected and
-        1,400 returned by the buggy SQL. A warehouse connection and upstream relation schemas are still required;
-        the previous --empty build supplies the latter without loading business rows.
+      explanation: |-
+        Highlighted lines 8 and 11 of order_revenue.yml define one input row and one expected output. dbt substitutes that input when evaluating the model. The panel compares 1,000 cents expected with the 1,400 returned by the buggy SQL on the previous screen. A warehouse connection and upstream schemas are still required; the earlier --empty build supplies the schemas without business rows.
       state:
         kind: result
         title: Input row, expected row, buggy result
@@ -305,16 +262,6 @@ walkthrough:
             - 8
             - 11
           purpose: Authored era-specific example; illustration only.
-        - language: sql
-          filename: models/order_revenue.sql
-          content: |
-            select
-                order_id,
-                payment_cents + refund_cents as revenue_cents
-            from {{ ref('order_amounts') }}
-          highlight_lines:
-            - 3
-          purpose: Authored era-specific example; illustration only.
       evidence:
         - src-1
         - src-2
@@ -324,8 +271,8 @@ walkthrough:
         - alignment-empty
     - id: fixed
       title: Restore the minus sign and the test passes
-      explanation: |
-        Highlighted line 3 in order_revenue subtracts the refund again. The unit test is unchanged. The result panel shows the test now passing: expected 1,000 cents, actual 1,000 cents.
+      explanation: |-
+        Highlighted line 3 of order_revenue.sql restores subtraction. The command reruns the unchanged unit test from the previous screen. The panel now shows a pass: expected 1,000 cents, actual 1,000 cents.
       state:
         kind: result
         title: Test result on the corrected model
@@ -355,24 +302,6 @@ walkthrough:
             from {{ ref('order_amounts') }}
           highlight_lines:
             - 3
-          purpose: Authored era-specific example; illustration only.
-        - language: yaml
-          filename: models/order_revenue.yml
-          content: |
-            version: 2
-            unit_tests:
-              - name: subtract_partial_refund
-                model: order_revenue
-                given:
-                  - input: ref('order_amounts')
-                    rows:
-                      - {order_id: 1042, payment_cents: 1200, refund_cents: 200}
-                expect:
-                  rows:
-                    - {order_id: 1042, revenue_cents: 1000}
-          highlight_lines:
-            - 8
-            - 11
           purpose: Authored era-specific example; illustration only.
         - language: shell
           filename: commands.sh

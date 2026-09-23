@@ -103,11 +103,8 @@ walkthrough:
   steps:
     - id: rule
       title: The rule that must not change
-      explanation: >
-        Start with the business rule. Highlighted lines 2 and 5 of order_amounts total payments and refunds
-        per order, and lines 8 and 9 attach them to each order. The second file checks one order: highlighted
-        line 2 subtracts refunds from payments, and line 4 picks order 1042. The result panel shows 1,200
-        paid, 200 refunded, 1,000 net. Nothing here mentions a warehouse.
+      explanation: |-
+        order_1042.sql is an inspection query: a plain query under analyses that reads existing data without building a model. Highlighted line 2 subtracts refunds from payments, and line 4 selects order 1042. The panel shows 1,200 cents paid, 200 refunded and 1,000 net. This business rule contains no warehouse-specific setting.
       state:
         kind: comparison
         title: Order 1042, the same on any warehouse
@@ -136,27 +133,6 @@ walkthrough:
         - alignment-0-7-1
       code:
         - language: sql
-          filename: models/order_amounts.sql
-          content: |
-            with paid as (
-                select order_id, sum(amount_cents) as payment_cents
-                from raw.payments group by order_id
-            ), refunded as (
-                select order_id, sum(amount_cents) as refund_cents
-                from raw.refunds group by order_id
-            )
-            select o.*, coalesce(p.payment_cents, 0) as payment_cents,
-                coalesce(r.refund_cents, 0) as refund_cents
-            from raw.orders as o
-            left join paid as p on o.order_id = p.order_id
-            left join refunded as r on o.order_id = r.order_id
-          highlight_lines:
-            - 2
-            - 5
-            - 8
-            - 9
-          purpose: authored executable syntax; illustration only
-        - language: sql
           filename: analyses/order_1042.sql
           content: |
             select order_id, payment_cents, refund_cents,
@@ -169,13 +145,8 @@ walkthrough:
           purpose: authored executable syntax; illustration only
     - id: target
       title: Swap the connection to Snowflake
-      explanation: >
-        The profiles file holds connection settings. Highlighted line 5 sets the type to snowflake, which
-        tells dbt to use its Snowflake adapter, the part that knows how to talk to that warehouse. Line 6
-        names the account. Lines 9 to 11 name the database, the schema and the Snowflake compute warehouse.
-        Highlighted line 3 of the project file links the project to this profile by name. Highlighted line
-        1
-        of order_revenue is unchanged. The result panel lists the three warehouses dbt can target at 0.7.0.
+      explanation: |-
+        Highlighted line 5 of the profile selects snowflake, telling dbt which warehouse adapter to use. Line 6 names the account; lines 9 to 11 name the database, schema and compute warehouse. Highlighted line 3 of the project file links this project to that profile. The result panel lists the three warehouses dbt can target at 0.7.0. The revenue calculation stays unchanged.
       state:
         kind: comparison
         title: Warehouses dbt can target at 0.7.0
@@ -225,14 +196,6 @@ walkthrough:
             - 10
             - 11
           purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: models/order_revenue.sql
-          content: |
-            select *, payment_cents - refund_cents as revenue_cents
-            from {{ ref("order_amounts") }}
-          highlight_lines:
-            - 1
-          purpose: authored executable syntax; illustration only
         - language: yaml
           filename: dbt_project.yml (excerpt)
           content: |
@@ -245,11 +208,8 @@ walkthrough:
           purpose: Authored era-specific example; illustration only.
     - id: check
       title: '0.7.1: choose a Snowflake role'
-      explanation: >-
-        Highlighted line 13 adds role: TRANSFORMER, supported from 0.7.1. The role is a set of Snowflake permissions
-        used for the connection. Highlighted lines 3 to 5 of the unchanged location model still total payments,
-        refunds and revenue. The panel shows the expected 12,500 cents with this connection; it is an illustration,
-        not a captured Snowflake run.
+      explanation: |-
+        Highlighted line 13 of the profile adds role: TRANSFORMER, supported from 0.7.1. The role is a set of Snowflake permissions used for the connection. The unchanged revenue calculation produces the expected values in the panel: 3,400, 4,300 and 4,800 cents, totalling 12,500. These are prepared results, not a captured Snowflake run.
       state:
         kind: table
         title: Expected revenue by location on Snowflake
@@ -307,23 +267,6 @@ walkthrough:
                   role: TRANSFORMER
           highlight_lines:
             - 13
-          purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: models/revenue_by_location.sql
-          content: |
-            select
-                r.location_id, l.name as location,
-                sum(r.payment_cents) as payment_cents,
-                sum(r.refund_cents) as refund_cents,
-                sum(r.revenue_cents) as revenue_cents
-            from {{ ref("order_revenue") }} as r
-            join raw.locations as l on r.location_id = l.location_id
-            group by r.location_id, l.name
-            order by r.location_id
-          highlight_lines:
-            - 3
-            - 4
-            - 5
           purpose: authored executable syntax; illustration only
   evidence:
     status: illustration

@@ -132,12 +132,8 @@ walkthrough:
   steps:
     - id: distributions
       title: Two ways to install one engine
-      explanation: >-
-        Highlighted line 1 in each requirements file names an alternative distribution at the 2.0.2 checkpoint:
-        full dbt or dbt-oss. They belong in separate environments. This chapter assumes DuckDB; PostgreSQL
-        support is not implied. The project file retains its familiar structure. The panel distinguishes the
-        licences and full dbt’s SQL-comprehension feature, which checks SQL before execution under its documented
-        login and metadata conditions.
+      explanation: |-
+        Highlighted line 1 of requirements-full.txt pins full dbt, while line 1 of requirements-oss.txt pins dbt-oss, both at 2.0.2. They belong in separate environments. This chapter assumes DuckDB, not PostgreSQL support. The panel distinguishes their licences and full dbt's SQL checks, which operate before execution under the documented login and metadata conditions.
       state:
         kind: comparison
         title: Full dbt versus dbt OSS
@@ -182,25 +178,10 @@ walkthrough:
           highlight_lines:
             - 1
           purpose: authored executable syntax; illustration only
-        - language: yaml
-          filename: dbt_project.yml
-          content: |
-            name: jaffle_shop
-            version: "1.0"
-            config-version: 2
-            model-paths: [models]
-          highlight_lines:
-            - 1
-            - 3
-            - 4
-          purpose: authored executable syntax; illustration only
     - id: typo
       title: Ask for a column that does not exist
-      explanation: >-
-        Highlighted line 1 requests revenue_amount_cents, while the supporting order_revenue SQL defines revenue_cents.
-        In the full dbt distribution, compilation with strict SQL analysis can reject that unresolved column
-        before the model query is executed in DuckDB. The prepared panel names the requested and available
-        columns. Metadata lookup may still contact the database; no exact engine error text is fabricated.
+      explanation: |-
+        Highlighted line 1 of revenue_by_location requests revenue_amount_cents, while highlighted line 1 of order_revenue defines revenue_cents. The command compiles with full dbt's strict SQL analysis. It can reject the unresolved column before executing the model query in DuckDB. The panel compares requested and available names. Metadata lookup may still contact the database; no exact engine error text is fabricated.
       state:
         kind: result
         title: Missing column caught
@@ -236,27 +217,6 @@ walkthrough:
           highlight_lines:
             - 1
           purpose: Authored era-specific example; illustration only.
-        - language: sql
-          filename: models/order_amounts.sql
-          content: |
-            with paid as (
-                select order_id, sum(amount_cents) as payment_cents
-                from raw.payments group by order_id
-            ), refunded as (
-                select order_id, sum(amount_cents) as refund_cents
-                from raw.refunds group by order_id
-            )
-            select o.*, coalesce(p.payment_cents, 0) as payment_cents,
-                coalesce(r.refund_cents, 0) as refund_cents
-            from raw.orders as o
-            left join paid as p on o.order_id = p.order_id
-            left join refunded as r on o.order_id = r.order_id
-          highlight_lines:
-            - 2
-            - 5
-            - 8
-            - 9
-          purpose: Authored era-specific example; illustration only.
         - language: shell
           filename: commands.sh
           content: dbt compile --select revenue_by_location --static-analysis strict
@@ -274,8 +234,8 @@ walkthrough:
         - alignment-static
     - id: correction
       title: Use the real column name
-      explanation: |
-        Highlighted line 1 now sums revenue_cents. The result panel shows the base figures again: 3,400, 4,300 and 4,800 cents, 12,500 in total. Earlier feedback changed how quickly the mistake was found, not what revenue means.
+      explanation: |-
+        Highlighted line 1 of revenue_by_location now sums the real revenue_cents column. The panel shows 3,400, 4,300 and 4,800 cents, totalling 12,500. Earlier feedback changed how quickly the mistake was found, not what revenue means.
       state:
         kind: table
         title: Corrected query output
@@ -316,11 +276,8 @@ walkthrough:
         - alignment-static
     - id: boundary
       title: Not everything announced is finished
-      explanation: >-
-        Highlighted lines 3 to 7 of the reference file record the September 16 announcement. The panel shows
-        dbt v2 and dbt State as generally available, Lake Compute and the Fivetran Context Layer in private
-        beta, and dbt Charts in public beta. Generally available describes release maturity; it does not mean
-        every feature is free or accessible without conditions.
+      explanation: |-
+        Highlighted lines 3 to 7 of summit-availability.yml record the September 16 announcement. The panel shows dbt v2 and dbt State as generally available, Lake Compute and the Fivetran Context Layer in private beta, and dbt Charts in public beta. Generally available describes release maturity; it doesn't mean every feature is free or accessible without conditions.
       state:
         kind: comparison
         title: Product status at the September 16 Summit

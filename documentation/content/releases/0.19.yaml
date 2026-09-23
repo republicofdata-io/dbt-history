@@ -85,10 +85,8 @@ walkthrough:
   steps:
     - id: current
       title: 'Before the deletion: the customer is still in the feed'
-      explanation: >-
-        Highlighted lines 2 and 3 define the customer snapshot and turn on invalidate_hard_deletes. That setting
-        closes a saved row when it disappears from the current feed. Highlighted line 2 of the query selects
-        customer 6. The panel shows Finn in Montréal before deletion.
+      explanation: |-
+        Highlighted lines 2 and 3 of the snapshot enable invalidate_hard_deletes, which closes a saved row when it disappears from the feed. customer_before_delete.sql is an inspection query: a plain query under analyses that reads a result without building a model. Its highlighted line 2 selects customer 6. The panel shows Finn in Montréal before deletion.
       state:
         kind: comparison
         title: Customer 6 as seen before the deletion
@@ -137,10 +135,8 @@ walkthrough:
         phase: Before the declared customer deletion.
     - id: missing
       title: The source row disappears, but the orders stay
-      explanation: >-
-        Highlighted lines 2 and 3 keep the same snapshot settings. The customer-removed variant removes only
-        Finn’s current customer row. The panel shows that the feed no longer contains customer 6, while orders
-        1046 and 1052 remain.
+      explanation: |-
+        The customer-removed variant deletes Finn's current customer row. This result-only panel shows that declared fixture change: customer 6 disappears from the feed while orders 1046 and 1052 remain. The snapshot settings from the previous screen haven't changed.
       state:
         kind: comparison
         title: Customer 6 is gone from the feed, orders 1046 and 1052 remain
@@ -158,19 +154,7 @@ walkthrough:
           captured dbt run.
       takeaway: |
         Deleting a customer from the source feed is not the same as removing or refunding their orders.
-      code:
-        - language: sql
-          filename: snapshots/customers_history.sql
-          content: |
-            {% snapshot customers_history %}
-            {{ config(target_schema="snapshots", unique_key="customer_id",
-                strategy="check", check_cols=["city"], invalidate_hard_deletes=True) }}
-            select * from raw.customers
-            {% endsnapshot %}
-          highlight_lines:
-            - 2
-            - 3
-          purpose: Authored era-specific example; illustration only.
+      code: []
       evidence:
         - src-1
         - src-2
@@ -178,11 +162,8 @@ walkthrough:
         - src-3
     - id: close
       title: 'Run the snapshot: the history row gets an end date'
-      explanation: >-
-        Highlighted lines 2 and 3 of the unchanged snapshot enable the deletion check. The inspection query
-        reads the saved customer dates, while the added total query checks revenue separately. After the second
-        snapshot observation, the panel shows Finn’s history closed at March 9, 09:00 and revenue still 12,500
-        cents.
+      explanation: |-
+        The command runs the snapshot after deletion. Highlighted lines 1 and 3 of closed_customer.sql inspect customer 6's saved validity dates. Highlighted line 1 of revenue_total.sql separately sums revenue. The panel shows Finn's history closed at March 9, 09:00, while the orders still contribute to the unchanged 12,500-cent total.
       state:
         kind: comparison
         title: Customer 6 history closed, revenue unchanged
@@ -207,18 +188,6 @@ walkthrough:
         - src-4
         - src-3
       code:
-        - language: sql
-          filename: snapshots/customers_history.sql
-          content: |
-            {% snapshot customers_history %}
-            {{ config(target_schema="snapshots", unique_key="customer_id",
-                strategy="check", check_cols=["city"], invalidate_hard_deletes=True) }}
-            select * from raw.customers
-            {% endsnapshot %}
-          highlight_lines:
-            - 2
-            - 3
-          purpose: Authored era-specific example; illustration only.
         - language: sql
           filename: analyses/closed_customer.sql
           content: |

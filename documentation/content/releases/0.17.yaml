@@ -72,13 +72,8 @@ walkthrough:
   steps:
     - id: failure
       title: A refund model with a typo
-      explanation: >
-        Three model files are shown. The first is the refund model, highlighted on line 1. It sums a column
-        called refund_amount_cents, which does not exist in the refunds table. The real column is
-        amount_cents. That model will fail. The order_amounts model, highlighted on lines 3, 4 and 6, joins
-        orders to payments and to this broken refund model. The order_revenue model then subtracts refunds
-        from payments. The result panel shows the outcome: the refund model errors, and revenue cannot be
-        built. The data itself is unchanged. Only the SQL is wrong.
+      explanation: |-
+        Highlighted line 1 of refunds_by_order sums refund_amount_cents, which doesn't exist. The real column is amount_cents. This model feeds the revenue calculation through order_amounts, so the panel shows the refund error blocking revenue. The data hasn't changed; the mistake is in the SQL.
       state:
         kind: comparison
         title: The broken model and what it blocks
@@ -110,29 +105,6 @@ walkthrough:
           highlight_lines:
             - 1
           purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: models/order_revenue.sql
-          content: |
-            select *, payment_cents - refund_cents as revenue_cents
-            from {{ ref("order_amounts") }}
-          highlight_lines:
-            - 1
-          purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: models/order_amounts.sql
-          content: |
-            select o.*, coalesce(p.payment_cents, 0) as payment_cents,
-                coalesce(r.refund_cents, 0) as refund_cents
-            from {{ ref("orders") }} as o
-            left join {{ ref("payments_by_order") }} as p
-              on o.order_id = p.order_id
-            left join {{ ref("refunds_by_order") }} as r
-              on o.order_id = r.order_id
-          highlight_lines:
-            - 3
-            - 4
-            - 6
-          purpose: Authored era-specific example; illustration only.
     - id: policy
       title: Choose to stop the run early
       explanation: >-
@@ -172,29 +144,6 @@ walkthrough:
           highlight_lines:
             - 1
           purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: models/order_revenue.sql
-          content: |
-            select *, payment_cents - refund_cents as revenue_cents
-            from {{ ref("order_amounts") }}
-          highlight_lines:
-            - 1
-          purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: models/order_amounts.sql
-          content: |
-            select o.*, coalesce(p.payment_cents, 0) as payment_cents,
-                coalesce(r.refund_cents, 0) as refund_cents
-            from {{ ref("orders") }} as o
-            left join {{ ref("payments_by_order") }} as p
-              on o.order_id = p.order_id
-            left join {{ ref("refunds_by_order") }} as r
-              on o.order_id = r.order_id
-          highlight_lines:
-            - 3
-            - 4
-            - 6
-          purpose: Authored era-specific example; illustration only.
         - language: shell
           filename: commands.sh
           content: |
@@ -208,10 +157,8 @@ walkthrough:
         - src-3
     - id: repair
       title: Fix the model, then run again
-      explanation: >-
-        Highlighted line 1 fixes only the column name to amount_cents; line 2 keeps the same ref to refunds.
-        The command selects the model by its file path, and the trailing + includes its descendants. The panel
-        shows the repaired revenue branch: 3,400, 4,300 and 4,800 cents, totalling 12,500.
+      explanation: |-
+        Highlighted line 1 of refunds_by_order corrects the column to amount_cents; line 2 keeps the same input. The command selects this file by path, with a trailing + to include its descendants. The panel shows the repaired branch's revenue: 3,400, 4,300 and 4,800 cents, totalling 12,500.
       state:
         kind: table
         title: 'Revenue after the repaired path is rebuilt'
@@ -257,46 +204,6 @@ walkthrough:
           highlight_lines:
             - 1
             - 2
-          purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: models/order_amounts.sql
-          content: |
-            select o.*, coalesce(p.payment_cents, 0) as payment_cents,
-                coalesce(r.refund_cents, 0) as refund_cents
-            from {{ ref("orders") }} as o
-            left join {{ ref("payments_by_order") }} as p
-              on o.order_id = p.order_id
-            left join {{ ref("refunds_by_order") }} as r
-              on o.order_id = r.order_id
-          highlight_lines:
-            - 3
-            - 4
-            - 6
-          purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: models/order_revenue.sql
-          content: |
-            select *, payment_cents - refund_cents as revenue_cents
-            from {{ ref("order_amounts") }}
-          highlight_lines:
-            - 1
-          purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: models/revenue_by_location.sql
-          content: |
-            select
-                r.location_id, l.name as location,
-                sum(r.payment_cents) as payment_cents,
-                sum(r.refund_cents) as refund_cents,
-                sum(r.revenue_cents) as revenue_cents
-            from {{ ref("order_revenue") }} as r
-            join raw.locations as l on r.location_id = l.location_id
-            group by r.location_id, l.name
-            order by r.location_id
-          highlight_lines:
-            - 3
-            - 4
-            - 5
           purpose: authored executable syntax; illustration only
         - language: shell
           filename: commands.sh

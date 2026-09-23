@@ -81,8 +81,8 @@ walkthrough:
   steps:
   - id: question
     title: The question and the raw tables
-    explanation: |
-      How much did each location earn? Three raw tables hold the answer: orders say where an order was placed, payments say what was paid, refunds say what was given back.
+    explanation: |-
+      How much did each location earn? Highlighted lines 1 to 3 of look_around.sql read the raw orders, payments and refunds. Orders identify the location, payments record money received, and refunds record money returned. The panel summarizes these feeds: 12 orders, 13 payments worth 13,800 cents and three refunds worth 1,300 cents.
     code:
     - language: sql
       filename: raw/look_around.sql
@@ -124,8 +124,8 @@ walkthrough:
     - src-2
   - id: answer
     title: The handwritten answer
-    explanation: |
-      The analyst writes one query. It adds up payments and refunds per order first, then joins them to orders to find the location. The highlighted lines hold the business rule, payments minus refunds. The numbers are right.
+    explanation: |-
+      The analyst writes revenue_by_location.sql. It totals payments and refunds per order before joining them to orders to find each location. Highlighted lines 10 and 11 subtract refunds from payments. The result panel shows the three location totals, adding up to 12,500 cents.
     code:
     - language: sql
       filename: analyst/revenue_by_location.sql
@@ -178,8 +178,8 @@ walkthrough:
     - src-2
   - id: problem
     title: Two copies, two answers
-    explanation: |
-      The query gets copied into the dashboard tool. That copy is missing the refund subtraction, so it reports 13,800 cents. Nobody knows which copy the dashboard is using, or which one is right.
+    explanation: |-
+      The query gets copied into the dashboard tool. Highlighted lines 3 and 4 of analyst/revenue_by_location.sql subtract refunds. Highlighted line 3 of dashboard/revenue_copy.sql only sums payments. The panel compares the answers: 12,500 cents from the analyst's query and 13,800 from the dashboard copy. The copied rule has lost the refund subtraction.
     code:
     - language: sql
       filename: analyst/revenue_by_location.sql

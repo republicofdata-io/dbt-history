@@ -105,10 +105,8 @@ walkthrough:
   steps:
     - id: copies
       title: Two reports, one rule
-      explanation: >-
-        Highlighted line 2 of each report types out payments minus refunds. These are two separate copies
-        of the rule. The panel lists the two reports and the repeated calculation; the next step moves it
-        into a shared package.
+      explanation: |-
+        Highlighted line 2 of daily_revenue and line 2 of customer_revenue each type out payments minus refunds. These are separate copies of the rule. The panel names the two reports and their repeated calculation; the next step brings shared behavior into a package.
       state:
         kind: comparison
         title: One rule shared by two reports
@@ -155,16 +153,8 @@ walkthrough:
           purpose: Authored era-specific example; illustration only.
     - id: dependency
       title: Pull the shared behaviour in as a dependency
-      explanation: >
-        Highlighted lines 4 and 5 of the shop's project file list the shared project as a repository. This
-        is
-        the older way to declare a dependency, before packages.yml existed. Highlighted lines 1 and 3 of the
-        shared project name it and say where its macros live. The shared project also carries a test:
-        highlighted lines 1 to 3 of test_non_negative count rows where a column is below zero. Highlighted
-        lines 2 to 4 of the shop's schema file apply that test to revenue_cents. The command dbt deps
-        downloads the package. The result panel sorts out what lives where: the macro and tests in the shared
-        package, the shop's own source mappings at home. The shared package is made up for this example; it
-        was never published.
+      explanation: |-
+        Highlighted lines 4 and 5 of the project file list the shared repository, the dependency format before packages.yml. Highlighted lines 1 to 3 of test_non_negative count rows below zero; lines 2 to 4 of the schema file apply that shared test to revenue_cents. The command downloads the package. The panel places reusable macros and tests in the package and source mappings in the shop. This example package was never published.
       state:
         kind: comparison
         title: What lives in the package and what stays local
@@ -205,34 +195,6 @@ walkthrough:
             - 5
           purpose: authored executable syntax; illustration only
         - language: jinja
-          filename: shared_shop/macros/net_cents.sql
-          content: |
-            {% macro net_cents(payment, refund) %}
-              ({{ payment }} - {{ refund }})
-            {% endmacro %}
-          highlight_lines:
-            - 2
-          purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: models/daily_revenue.sql
-          content: |
-            select order_id,
-                {{ shared_shop.net_cents("payment_cents", "refund_cents") }} as revenue_cents
-            from {{ ref("order_amounts") }}
-          highlight_lines:
-            - 2
-          purpose: authored executable syntax; illustration only
-        - language: yaml
-          filename: shared_shop/dbt_project.yml
-          content: |
-            name: shared_shop
-            version: "1.0"
-            macro-paths: [macros]
-          highlight_lines:
-            - 1
-            - 3
-          purpose: authored executable syntax; illustration only
-        - language: jinja
           filename: shared_shop/macros/test_non_negative.sql
           content: |
             {% macro test_non_negative(model, column_name) %}
@@ -265,11 +227,8 @@ walkthrough:
           purpose: authored executable syntax; illustration only
     - id: schema
       title: Give the reports their own schema
-      explanation: >
-        A schema is a named area inside the database. Highlighted line 5 of the profile sets the base schema,
-        jaffle. Highlighted line 1 of the location model asks for a custom schema, analytics. dbt joins the
-        two with an underscore, so the table lands in jaffle_analytics. The result panel shows where each
-        report ends up. The names are illustrative.
+      explanation: |-
+        A schema is a named area inside the database. Highlighted line 5 of the profile sets the base schema, jaffle. Highlighted line 1 of revenue_by_location asks for analytics. dbt joins those names with an underscore. The panel shows revenue_by_location in jaffle_analytics and the unconfigured order_revenue in jaffle. The names are illustrative.
       state:
         kind: comparison
         title: Where each model lands

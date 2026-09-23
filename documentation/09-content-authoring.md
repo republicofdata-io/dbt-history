@@ -80,7 +80,7 @@ walkthrough: { ... }               # or null while in preparation
 
 Every walkthrough opens on a first screen before step 1: what this version lets you do, and what the scenario is about. Author it in `intro`; without it the app derives the screen from `what_changed` and `context`.
 
-Every step that shows a command, a result or a test must also show the code that produced it: the model SQL, the schema or test YAML, the macro, the configuration. A shell command alone is not enough. Use the syntax of that exact version.
+Show the code the step explains: its model, test, macro, configuration or command. Name every displayed file in the explanation, using its filename, model name or a supported file-role phrase. Drop files included only as background context. A command-focused step can show just its command; a pure result step can have no files if its explanation says what produced the result. Use the syntax of the exact version.
 
 ```yaml
 walkthrough:
@@ -139,6 +139,14 @@ Rules: 3–5 steps; each step's state is complete on its own; era-appropriate sy
 - Table columns and rows must match the displayed query. Use named fixture variants and explicit phases; never change shared base rows to fit an example.
 - Preserve the field contract when correcting snippets or results. A retained historical limit belongs in the chapter’s `evidence.limitations`, with a source reference and a disposition in the review register.
 - `review-resolutions-2026-09-22.yaml` records all review decisions. `demo_alignment` in the index and validation report describes the current pass; `walkthrough_enrichment` is the earlier pass record.
+
+## File selection and references
+
+The hand-edited v0.4 walkthrough is the reference for focused file tabs. Keep the file the step is about first, retain other files only when the text walks through them, and put the command last. Name changed lines and connect them to the result panel. Mention upstream inputs in a clause instead of repeating their code. Re-show unchanged code only for an explained comparison or setting.
+
+The app links filenames, model names and these role phrases when they identify one file: "the inspection query", "the command", "the schema file", "the project file", "the profile", "the package file", "the test", "the macro", "the snapshot" and "the CSV". Prefer a filename when a role could refer to more than one file. The first inspection query in a chapter must explain that it reads data without building a model; the inspection-query role resolves files under analyses. Use the filename for a direct warehouse query stored elsewhere.
+
+For a file-removal pass, retained code blocks, filenames, highlight lines and order stay unchanged. Result panels, evidence, historical claims and fixtures also stay unchanged. Record any needed missing file or unresolved link ambiguity as a follow-up flag. See `content/file-focus-review-2026-09-23.yaml` for this pass's decisions; `step_file_focus` in the index and validation report holds current counts.
 
 ## Product catalogue
 

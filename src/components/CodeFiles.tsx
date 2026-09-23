@@ -45,15 +45,26 @@ export default function CodeFiles({ blocks, index, onSelect }: { blocks: CodeBlo
   );
 }
 
-/** The names a file can be referred to by in prose: full path, basename, and stem. */
-export function fileAliases(block: CodeBlockT): string[] {
+/**
+ * The names a file can be referred to by in prose. The full displayed name
+ * (suffix included, e.g. "macros/net_cents.sql (before correction)") always
+ * counts. The suffix-free path, basename and stem count only when no other
+ * file in the step shares them, so a before/after pair links to the right one.
+ */
+export function fileAliases(block: CodeBlockT, siblings: CodeBlockT[] = []): string[] {
   const name = block.filename;
   if (!name) return [];
-  const clean = name.replace(/\s*\(.*\)\s*$/, ""); // drop "(excerpt)"-style suffixes
-  const base = clean.split("/").pop() ?? clean;
-  const stem = base.replace(/\.[a-z]+$/i, "");
-  const out = new Set<string>([clean, base]);
-  if (stem.length >= 4 && !/^(commands|schema|models|profiles)$/i.test(stem)) out.add(stem);
+  const strip = (n: string) => n.replace(/\s*\(.*\)\s*$/, ""); // drop "(excerpt)"-style suffixes
+  const clean = strip(name);
+  const shared = siblings.some((b) => b !== block && b.filename && strip(b.filename) === clean);
+  const out = new Set<string>([name]);
+  if (!shared) {
+    const base = clean.split("/").pop() ?? clean;
+    const stem = base.replace(/\.[a-z]+$/i, "");
+    out.add(clean);
+    out.add(base);
+    if (stem.length >= 4 && !/^(commands|schema|models|profiles)$/i.test(stem)) out.add(stem);
+  }
   return [...out];
 }
 
@@ -83,7 +94,7 @@ const ROLE_ALIASES: { phrases: string[]; matches: (filename: string) => boolean 
  */
 export function LinkedText({ text, blocks, onSelect, className }: { text: string; blocks: CodeBlockT[]; onSelect: (i: number) => void; className?: string }) {
   const aliases: { alias: string; index: number }[] = [];
-  blocks.forEach((b, i) => fileAliases(b).forEach((alias) => aliases.push({ alias, index: i })));
+  blocks.forEach((b, i) => fileAliases(b, blocks).forEach((alias) => aliases.push({ alias, index: i })));
   for (const role of ROLE_ALIASES) {
     const hits = blocks.map((b, i) => (b.filename && role.matches(b.filename) ? i : -1)).filter((i) => i >= 0);
     if (hits.length === 1) for (const phrase of role.phrases) aliases.push({ alias: phrase, index: hits[0] });

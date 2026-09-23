@@ -73,10 +73,8 @@ walkthrough:
   steps:
     - id: promise
       title: The model promises two columns
-      explanation: >-
-        Highlighted lines 5 and 6 enforce the contract, the promised output shape. Lines 8 to 11 promise location_id
-        as integer and revenue_cents as bigint. The supporting SQL casts both columns to those types. The
-        panel lists exactly those two columns.
+      explanation: |-
+        Highlighted lines 5 and 6 of schema.yml enforce a contract, the model's promised output shape. Lines 8 to 11 declare location_id as integer and revenue_cents as bigint. The panel lists those two names and types, which the model must produce.
       state:
         kind: comparison
         title: The two promised columns and their types
@@ -117,27 +115,14 @@ walkthrough:
             - 10
             - 11
           purpose: Authored era-specific example; illustration only.
-        - language: sql
-          filename: models/revenue_by_location.sql
-          content: |
-            select cast(location_id as integer) as location_id,
-                cast(sum(revenue_cents) as bigint) as revenue_cents
-            from {{ ref("order_revenue") }}
-            group by location_id
-          highlight_lines:
-            - 2
-          purpose: authored executable syntax; illustration only
       evidence:
         - src-1
         - src-2
         - alignment-1-5-0
     - id: mismatch
       title: An edit renames the column and the contract rejects it
-      explanation: >-
-        Highlighted lines 5, 6 and 8 to 11 keep the same enforced contract. Highlighted line 2 of the proposed
-        SQL renames revenue_cents to net_cents. The prepared panel shows the name mismatch that stops the
-        build during SQL compilation, before table creation. This is an interface check, not a database constraint
-        violation.
+      explanation: |-
+        Highlighted lines 5, 6 and 8 to 11 of schema.yml retain the enforced contract. Highlighted line 2 of revenue_by_location.sql renames revenue_cents to net_cents. The command attempts to build the model. The panel shows the name mismatch stopping compilation before table creation. This checks the promised output, not a database constraint.
       state:
         kind: result
         title: 'Contract mismatch: revenue_cents expected, net_cents found'
@@ -201,10 +186,8 @@ walkthrough:
           purpose: Authored era-specific example; illustration only.
     - id: repair
       title: Restore the column name and the build passes
-      explanation: >-
-        The contract still highlights enforcement and the two promised column types. Highlighted line 2 of
-        SQL restores revenue_cents. The panel now contains exactly the two query columns and three location
-        rows, with 3,400, 4,300 and 4,800 cents.
+      explanation: |-
+        Highlighted line 2 of revenue_by_location restores revenue_cents, the name promised by the unchanged contract. The panel now shows exactly the two query columns and three location rows, with revenue of 3,400, 4,300 and 4,800 cents. Restoring the name lets the existing interface pass.
       state:
         kind: table
         title: Corrected contract output
@@ -230,28 +213,6 @@ walkthrough:
         - src-2
         - alignment-1-5-0
       code:
-        - language: yaml
-          filename: models/schema.yml
-          content: |
-            version: 2
-            models:
-              - name: revenue_by_location
-                config:
-                  contract:
-                    enforced: true
-                columns:
-                  - name: location_id
-                    data_type: integer
-                  - name: revenue_cents
-                    data_type: bigint
-          highlight_lines:
-            - 5
-            - 6
-            - 8
-            - 9
-            - 10
-            - 11
-          purpose: Authored era-specific example; illustration only.
         - language: sql
           filename: models/revenue_by_location.sql
           content: |
@@ -264,10 +225,8 @@ walkthrough:
           purpose: authored executable syntax; illustration only
     - id: versions
       title: Ship the rename as version 2
-      explanation: 'Highlighted line 4 keeps version 1 as the default. Lines 10 to 16 keep its existing SQL
-        file and declare version 2 with net_cents instead of revenue_cents. The v2 SQL supplies the renamed
-        column; the dashboard’s unversioned ref still resolves to v1. dbt show previews v2 in the panel: the
-        same 3,400, 4,300 and 4,800 cents under net_cents.'
+      explanation: |-
+        Highlighted line 4 of schema.yml keeps v1 as the default; lines 10 to 16 add v2 with net_cents. Highlighted line 2 of revenue_by_location_v2.sql supplies that renamed column. Highlighted line 2 of dashboard_input keeps an unversioned ref(), which still selects v1. The command previews v2. The panel shows the same three revenue amounts under net_cents, while the dashboard retains its existing interface.
       state:
         kind: table
         title: Prepared dbt show preview of v2
@@ -325,16 +284,6 @@ walkthrough:
           highlight_lines:
             - 2
           purpose: Authored era-specific example; illustration only.
-        - language: sql
-          filename: models/revenue_by_location.sql
-          content: |
-            select cast(location_id as integer) as location_id,
-                cast(sum(revenue_cents) as bigint) as revenue_cents
-            from {{ ref("order_revenue") }}
-            group by location_id
-          highlight_lines:
-            - 2
-          purpose: authored executable syntax; illustration only
         - language: sql
           filename: models/dashboard_input.sql
           content: |

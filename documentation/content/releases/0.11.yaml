@@ -63,10 +63,8 @@ walkthrough:
   steps:
     - id: meaning
       title: Write down what the revenue column means
-      explanation: >-
-        Highlighted lines 6 and 7 of schema.yml name revenue_cents and describe it as successful payments
-        minus refunds, in cents. The supporting inspection query selects order 1042 and joins its location
-        name. The panel shows that definition in numbers: 1,200 paid minus 200 refunded equals 1,000 cents.
+      explanation: |-
+        Highlighted lines 6 and 7 of schema.yml name revenue_cents and define it as successful payments minus refunds, in cents. order_1042.sql is a plain query for inspecting an existing result, not a model. Its highlighted lines 2 and 5 select the amounts for order 1042. The panel makes the definition concrete: 1,200 minus 200 equals 1,000 cents.
       state:
         kind: table
         title: One order that shows the refund rule
@@ -122,10 +120,8 @@ walkthrough:
         - src-2
     - id: lineage
       title: Follow the inputs behind the number
-      explanation: >-
-        Highlighted lines 5 to 7 of order_revenue link orders to the payment and refund totals. The supporting
-        aggregate models each total one feed. Every ref call is a dependency, meaning this model waits for
-        that input. The diagram uses the same full model names and shows all three inputs feeding order_revenue.
+      explanation: |-
+        Highlighted lines 5 to 7 of order_revenue link orders to the payment and refund totals. Each ref() records a dependency, meaning this model waits for that input. The diagram uses the same model names to show all three inputs feeding order_revenue. Their SQL doesn't need to be repeated to see those links.
       state:
         kind: diagram
         title: 'Lineage graph: what feeds order_revenue'
@@ -174,36 +170,10 @@ walkthrough:
             - 6
             - 7
           purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: models/payments_by_order.sql
-          content: |
-            select order_id, sum(amount_cents) as payment_cents
-            from {{ ref("payments") }}
-            group by order_id
-          highlight_lines:
-            - 1
-            - 2
-          purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: models/refunds_by_order.sql
-          content: |
-            select order_id, sum(amount_cents) as refund_cents
-            from {{ ref("refunds") }}
-            group by order_id
-          highlight_lines:
-            - 1
-            - 2
-          purpose: authored executable syntax; illustration only
     - id: publish
       title: Generate the documentation website
-      explanation: >
-        Three files are shown. The YAML file, highlighted on lines 4, 6 and 7, describes the
-        revenue-by-location model and its revenue column. The SQL file, highlighted on lines 3 to 5, sums
-        payments, refunds and revenue per location. The command file runs dbt docs generate, which builds
-        the
-        documentation site, and dbt docs serve, which opens it in a browser. The result panel lists what a
-        reader finds there: a page per model with its description and columns, and a lineage graph. The
-        commands are shown as historical examples. The app does not run them.
+      explanation: |-
+        Highlighted lines 4, 6 and 7 of the schema file describe the revenue model and its revenue column. The command generates the documentation and opens it in a browser. The panel lists what that site contains: model descriptions, columns and a dependency graph from the project's ref() calls. The commands are historical examples; this app doesn't run them.
       state:
         kind: comparison
         title: What the generated documentation shows
@@ -238,23 +208,6 @@ walkthrough:
             - 4
             - 6
             - 7
-          purpose: authored executable syntax; illustration only
-        - language: sql
-          filename: models/revenue_by_location.sql
-          content: |
-            select
-                r.location_id, l.name as location,
-                sum(r.payment_cents) as payment_cents,
-                sum(r.refund_cents) as refund_cents,
-                sum(r.revenue_cents) as revenue_cents
-            from {{ ref("order_revenue") }} as r
-            join raw.locations as l on r.location_id = l.location_id
-            group by r.location_id, l.name
-            order by r.location_id
-          highlight_lines:
-            - 3
-            - 4
-            - 5
           purpose: authored executable syntax; illustration only
         - language: shell
           filename: commands.sh

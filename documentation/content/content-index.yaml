@@ -4,7 +4,7 @@ authored_on: '2026-09-22'
 research_cutoff: '2026-09-21'
 status: authored-and-content-validated
 summary: |
-  Reviewed content set: one immutable Jaffle Shop base fixture, seven named variants, 36 chapters, 121 guided steps and 359 code blocks, 43 catalogue identities, 105 normalized events and 61 ecosystem placement intervals. All walkthroughs are illustrations.
+  Reviewed content set: one immutable Jaffle Shop base fixture, seven named variants, 36 chapters, 121 guided steps and 214 code blocks, 43 catalogue identities, 105 normalized events and 61 ecosystem placement intervals. All walkthroughs are illustrations.
 files:
   dataset: jaffle-shop/dataset.yaml
   chapters:
@@ -50,6 +50,8 @@ files:
   validation: validation-report.yaml
   review_resolutions: review-resolutions-2026-09-22.yaml
   alignment_handoff: demo-alignment-handoff-2026-09-22.md
+  file_focus_review: file-focus-review-2026-09-23.yaml
+  file_focus_handoff: file-focus-handoff-2026-09-23.md
 rendering_contract:
 - id: version-order
   instruction: Use the chapters array, not lexical file sorting. Origin precedes 0.1; 0.9 precedes 0.10.
@@ -137,7 +139,7 @@ authoring_corrections:
     retrieved: '2026-09-21'
     rechecked: '2026-09-22'
 publication_gate: |
-  All 64 app tests and independent content/fixture checks pass. This alignment pass is local and has not been deployed. Before publication, review the changed steps at recording size and retain every historical, adapter, access and illustration qualification. No execution backend is required.
+  All 68 app tests pass. This local file-focus pass preserves code, highlights, result panels, evidence and fixture data. Review the two duplicate-filename link flags and the missing repair-file note in file-focus-review-2026-09-23.yaml. Every retained file is named; the two result-only screens explain their fixture inputs. This pass has not been deployed.
 walkthrough_enrichment:
   reviewed_on: '2026-09-22'
   intro_count: 36
@@ -190,3 +192,37 @@ demo_alignment:
   handoff: demo-alignment-handoff-2026-09-22.md
   all_results_remain_illustrations: true
   base_fixture_unchanged: true
+  scope: Historical record of the 22 September alignment pass; step_file_focus gives current file coverage.
+reviewed_on: '2026-09-23'
+step_file_focus:
+  reviewed_on: '2026-09-23'
+  research_cutoff: '2026-09-21'
+  status: pass
+  chapter_count: 36
+  walkthrough_step_count: 121
+  input_code_blocks: 352
+  code_blocks_removed: 138
+  code_blocks: 214
+  steps_with_code: 119
+  steps_with_non_shell_code: 116
+  maximum_files_per_step: 4
+  pure_result_steps:
+  - 0.14/change
+  - 0.19/missing
+  command_only_steps:
+  - 1.12/inspect
+  - 1.12/compare
+  - 1.6/repair
+  unnamed_retained_file_exceptions: []
+  code_content_highlights_order_unchanged: true
+  result_panels_evidence_claim_fields_unchanged: true
+  base_fixture_and_variants_unchanged: true
+  reference_0_4_unchanged: true
+  review_report: file-focus-review-2026-09-23.yaml
+  handoff: file-focus-handoff-2026-09-23.md
+  follow_up_flags:
+  - file-focus-0.6-refresh-links
+  - file-focus-0.18-change-links
+  - file-focus-0.3-fixed-code
+  baseline_note: The working tree began with 352 blocks. The hand-edited 0.4 reference had already removed seven
+    from the earlier 359-block pass; this pass removed another 138.
