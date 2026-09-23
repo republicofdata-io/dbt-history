@@ -987,18 +987,23 @@
     distinct engine.
 - product: hex
   layer: bi
-  from: '2023-10-17'
+  from: '2021-10-20'
   relationship: integration
-  rationale: |
-    Named as a Semantic Layer integration at Coalesce 2023.
+  rationale: >
+    Hex's collaborative analytics notebooks were on the market by its October 2021 Series A announcement; its
+    dbt Semantic Layer integration was announced at Coalesce in October 2023.
   sources:
+    - title: Hex raises $16M Series A (20 October 2021)
+      url: >-
+        https://www.businesswire.com/news/home/20211020005706/en/Hex-Technologies-Raises-$16-Million-Series-A-to-Help-Data-Teams-Do-More-Together
+      retrieved: '2026-09-23'
     - title: dbt Labs announces major enhancements to dbt Cloud
       url: >-
         https://www.getdbt.com/blog/dbt-labs-announces-major-enhancements-to-dbt-cloud-to-enable-collaboration-at-scale
       retrieved: '2026-09-21'
   from_precision: day
   to: null
-  date_basis: earliest supported chart inclusion; not necessarily original launch
+  date_basis: Series A announcement describing the shipped product; the company was founded in 2019
   editorial_selection: >-
     Representative example, not market ranking. Ending an interval for chart readability does not imply
     retirement.
@@ -1007,9 +1012,9 @@
     type: product
     names:
       - name: Hex
-        from: '2023-10-17'
-        to: null
+        from: '2021-10-20'
         from_precision: day
+        to: null
     parent: null
     roles:
       - bi
