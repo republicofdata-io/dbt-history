@@ -229,13 +229,14 @@ walkthrough:
         dataset_variant: second-day
         phase: Target after the incremental append.
     - id: ephemeral
-      title: 'Also new: a helper model that never becomes a table'
+      title: 'Also new: a helper model folded into order_revenue'
       explanation: >
         One more thing this version adds. The revenue calculation lives in a small helper model,
         order_revenue_input, so it can be reused. Highlighted line 1 marks it ephemeral: dbt does not create a
-        table for it. Instead, when it builds order_revenue (highlighted line 3 refers to the helper), it
-        pastes the helper's SQL into that statement as a named sub-query. The diagram shows the helper sitting
-        inside the stored model. The warehouse ends up with one table, not two.
+        table for it. The second file is order_revenue, the stored model that uses the helper: its highlighted
+        line 3 selects from it. At build time dbt pastes the helper's SQL into that statement as a named
+        sub-query. The diagram shows the helper sitting inside the stored model. The warehouse ends up with
+        one table, not two.
       state:
         kind: diagram
         title: Helper folded into the stored model
@@ -279,8 +280,6 @@ walkthrough:
                 sql_where="order_id > (select max(order_id) from {{ this }})") }}
             select * from {{ ref("order_revenue_input") }}
           highlight_lines:
-            - 1
-            - 2
             - 3
           purpose: Authored era-specific example; illustration only.
       evidence:
