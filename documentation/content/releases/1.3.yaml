@@ -2,8 +2,8 @@ id: '1.3'
 label: v1.3
 title: Python models
 lead: >
-  Python models join SQL models on supported platforms. Both can participate in the project’s dependency
-  graph.
+  Python models join SQL models on supported platforms, and metric definitions are reworked for the Semantic
+  Layer, which enters public preview the same month.
 problem_then: >
   Some transformations are more natural in a dataframe API, but separate notebooks can lose the project’s
   dependency context.
@@ -22,9 +22,22 @@ what_changed:
     evidence:
       - src-1
     confidence: high
+  - id: metrics-for-semantic-layer
+    summary: >-
+      Metric definitions are reworked for the Semantic Layer: type becomes calculation_method, sql becomes
+      expression, and a window property is added.
+    introduced_in: 1.3.0
+    adapter_constraints: >-
+      Defining a metric needs no special adapter; querying it in 2022 needed the dbt_metrics package or the
+      hosted Semantic Layer preview.
+    evidence:
+      - src-sl-1
+      - src-sl-2
+    confidence: high
 in_practice: >
   On supported platforms a model could be written in Python, read other models with dbt.ref, and take its
-  place in the same dependency graph.
+  place in the same dependency graph. Metrics defined in the project gained the shape the new Semantic Layer
+  would serve: a calculation, an expression, a time grain and dimensions.
 technical_detail: >
   Python model support depends on the adapter; initial supported platforms include Snowflake, BigQuery and
   Databricks. This Snowpark-shaped example is not a PostgreSQL or universal Python example. No Python runtime
@@ -37,6 +50,14 @@ milestones:
     title: First published package
     evidence:
       - src-2
+  - id: product-2022-10-semantic-layer
+    kind: product_event
+    date: 2022-10
+    precision: month
+    title: dbt Semantic Layer public preview
+    evidence:
+      - src-sl-3
+    note: A hosted service in dbt Cloud, dated to the month; it serves the metric definitions v1.3 reworked.
 sources:
   - id: src-1
     title: dbt 1.3 release evidence
@@ -51,9 +72,29 @@ sources:
       Package existence and upload timestamp. Implementation claims refer to the original source archive
       linked from the package.
     rechecked: '2026-09-22'
+  - id: src-sl-1
+    title: dbt-core v1.3.0 release notes (metrics attribute renames, window, semantic layer compile change)
+    url: https://github.com/dbt-labs/dbt-core/releases/tag/v1.3.0
+    retrieved: '2026-09-23'
+    supports: >-
+      Renamed metric spec attributes, the window parameter, and a compile-time change made for the semantic
+      layer, all in 1.3.0.
+  - id: src-sl-2
+    title: 'Upgrading to dbt Core v1.3 (metrics: type to calculation_method, sql to expression)'
+    url: https://docs.getdbt.com/docs/dbt-versions/core-upgrade/upgrading-to-v1.3
+    retrieved: '2026-09-23'
+    supports: The metric property renames and their backward compatibility until v1.4.
+  - id: src-sl-3
+    title: 'dbt Semantic Layer: what''s next (public preview in October 2022)'
+    url: https://www.getdbt.com/blog/dbt-semantic-layer-whats-next
+    retrieved: '2026-09-23'
+    supports: The original Semantic Layer launched in public preview in October 2022.
 narrative_evidence:
   - src-1
   - src-2
+  - src-sl-1
+  - src-sl-2
+  - src-sl-3
 walkthrough:
   id: wt-1.3
   learning_objective: >
@@ -198,12 +239,74 @@ walkthrough:
             - 1
             - 4
           purpose: authored executable syntax; illustration only
+    - id: metric
+      title: 'Also new: define revenue as a metric'
+      explanation: >
+        Highlighted lines 5 to 8 of metrics.yml declare a metric named revenue on the order_revenue model: a
+        sum (the calculation_method), of revenue_cents (the expression), by day or month over ordered_at,
+        sliceable by location. In v1.3 these property names replaced the earlier type and sql. The panel shows
+        what the definition promises for the base day: 12,500 cents in total, 3,400, 4,300 and 4,800 by
+        location. Querying it in 2022 needed the dbt_metrics package or the hosted Semantic Layer, which
+        entered public preview that October.
+      code:
+        - language: yaml
+          filename: models/metrics.yml
+          content: |
+            version: 2
+            metrics:
+              - name: revenue
+                label: Revenue
+                model: ref('order_revenue')
+                calculation_method: sum
+                expression: revenue_cents
+                timestamp: ordered_at
+                time_grains: [day, month]
+                dimensions: [location_id]
+          highlight_lines:
+            - 5
+            - 6
+            - 7
+            - 8
+          purpose: authored 1.3-era metric definition; illustration only
+      state:
+        kind: comparison
+        title: What the revenue metric would report for the base day
+        columns:
+          - grain
+          - location
+          - revenue_cents
+        rows:
+          - - day 2016-03-08
+            - all
+            - 12500
+          - - day 2016-03-08
+            - Old Port
+            - 3400
+          - - day 2016-03-08
+            - Mile End
+            - 4300
+          - - day 2016-03-08
+            - Riverside
+            - 4800
+        result_status: null
+        diagram: null
+        provenance: authored illustration; fixture-derived values, not a Semantic Layer query result
+      takeaway: >
+        The revenue rule now exists as a named metric the project can serve to other tools, the first shape of
+        the Semantic Layer.
+      evidence:
+        - src-sl-1
+        - src-sl-2
+        - src-sl-3
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
       - src-1
       - src-2
+      - src-sl-1
+      - src-sl-2
+      - src-sl-3
     limitations: >
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
       reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
@@ -220,7 +323,8 @@ walkthrough:
       illustration, not a captured Python run. Evidence: src-1, src-2.
 
       historical-1.3-02: Retain the Snowpark string-column select recipe and its explicit Snowflake
-      restriction. Evidence: src-1, src-2.
+      restriction. Evidence: src-1, src-2. The metric step shows a definition in the v1.3 property names; no
+      metric query was executed, and the values are the fixture's base-day totals.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
@@ -229,6 +333,9 @@ walkthrough:
     can_now:
       - Write a model in Python instead of SQL, on warehouses that can run Python, such as Snowflake.
       - Have that Python model read from a SQL model and be read by others, exactly like any other model.
+      - >-
+        Define revenue as a metric in YAML, with its calculation, time grain and dimensions, in the shape the
+        Semantic Layer serves.
     scenario: >
       The shop has its net revenue per order in a SQL model. It adds a small Python model that reads that
       result, keeps two columns, and returns them unchanged. The values must stay the same. The point is to
@@ -236,8 +343,9 @@ walkthrough:
       supports Python.
     outcome: >
       The walkthrough shows the SQL input, the Python model, and a check that order 1042 and the 12,500-cent
-      total come through untouched.
+      total come through untouched. Then see the revenue rule written once more, this time as a metric
+      definition rather than a model.
   title: |
-    Demo: a Python model reads a SQL model and gives the same totals
+    Demo: a Python model reads a SQL model and gives the same totals, and revenue is defined once as a metric
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.
