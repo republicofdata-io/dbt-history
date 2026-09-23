@@ -77,10 +77,11 @@ walkthrough:
     - id: existing
       title: 'Day one: twelve orders already stored'
       explanation: >
-        The revenue table was built on day one. Highlighted lines 1 and 2 of the inspection query count its
-        rows and total its revenue: 12 orders, highest order id 1052, 12,500 cents. The model that builds it,
-        order_revenue, is marked incremental on its highlighted lines 1 and 2; that is the setting this demo
-        is about.
+        The revenue table was built on day one. To look at it we use an inspection query, a plain query kept
+        under analyses that reads a result without building anything. Highlighted lines 1 and 2 of
+        existing_target.sql count the rows and total the revenue: 12 orders, highest order id 1052, 12,500
+        cents. The model that builds the table, order_revenue, is marked incremental on its highlighted lines
+        1 and 2; that is the setting this demo is about.
       state:
         kind: comparison
         title: What the table holds after day one
@@ -225,8 +226,8 @@ walkthrough:
       title: Add the two rows and read the new totals
       explanation: >
         dbt adds those two rows to the existing table instead of rebuilding it. Highlighted lines 1 and 2 of
-        the inspection query read the location totals afterwards: 3,900, 5,700 and 4,800 cents, 14,400 in all,
-        up 1,900 from day one.
+        the inspection query location_totals.sql read the location totals afterwards: 3,900, 5,700 and 4,800
+        cents, 14,400 in all, up 1,900 from day one.
       state:
         kind: comparison
         title: Revenue by location after day two
