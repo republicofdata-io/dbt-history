@@ -234,9 +234,9 @@ walkthrough:
         One more thing this version adds. The revenue calculation lives in a small helper model,
         order_revenue_input, so it can be reused. Highlighted line 1 marks it ephemeral: dbt does not create a
         table for it. The second file is order_revenue, the stored model that uses the helper: its highlighted
-        line 3 selects from it. At build time dbt pastes the helper's SQL into that statement as a named
-        sub-query. The diagram shows the helper sitting inside the stored model. The warehouse ends up with
-        one table, not two.
+        line 3 selects from it. The third file shows what dbt compiles that into: highlighted lines 1 to 4 are
+        the helper's SQL pasted in as a named sub-query, and the last line is the model's own select reading
+        from it. The warehouse ends up with one table, not two.
       state:
         kind: diagram
         title: Helper folded into the stored model
@@ -261,8 +261,9 @@ walkthrough:
         provenance: >-
           Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
           run.
-      takeaway: |
-        Ephemeral lets you split SQL into reusable pieces without leaving extra tables in the warehouse.
+      takeaway: >
+        Ephemeral lets you split SQL into reusable pieces without leaving extra tables in the warehouse; the
+        compiled statement shows the pieces joined back together.
       code:
         - language: sql
           filename: models/order_revenue_input.sql
@@ -282,6 +283,22 @@ walkthrough:
           highlight_lines:
             - 3
           purpose: Authored era-specific example; illustration only.
+        - language: sql
+          filename: target/compiled/order_revenue.sql (illustration)
+          content: |
+            with order_revenue_input as (
+                select *, payment_cents - refund_cents as revenue_cents
+                from analytics.order_amounts
+            )
+            select * from order_revenue_input
+          highlight_lines:
+            - 1
+            - 2
+            - 3
+            - 4
+          purpose: >-
+            prepared illustration of the compiled statement, not captured dbt output; the name dbt gave the
+            inlined sub-query in 0.4 is not verified, so a plain name is used
       evidence:
         - src-1
         - src-2
