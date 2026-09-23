@@ -1,5 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import EvidenceDrawer, { SourceList } from "@/components/EvidenceDrawer";
+import AdoptionChart from "@/components/AdoptionChart";
+import { metrics } from "@/content/load";
 import { formatDate } from "@/content/dates";
 import type { HistoryState } from "./state";
 
@@ -30,7 +32,7 @@ export default function ReleaseTab({ state }: { state: HistoryState }) {
   const sourcesById = new Map(r.sources.map((s) => [s.id, s]));
   const kind = r.id === "origin" ? "Origins" : r.id.startsWith("2.") ? "dbt v2" : "dbt Core";
   return (
-    <div className="flex h-full min-h-0 flex-col">
+    <div className="flex min-h-full flex-col">
       <div className="mb-3 flex items-center gap-2.5 text-xs text-muted-foreground">
         <span>{formatDate(m.date, m.precision)}</span>
         <span className="rounded-full border border-border px-2 py-0.5 text-[11px]">{kind}</span>
@@ -44,7 +46,13 @@ export default function ReleaseTab({ state }: { state: HistoryState }) {
         </div>
       </div>
 
-      <div className="grid min-h-0 flex-1 grid-cols-1 gap-x-12 gap-y-6 overflow-y-auto lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+      <div className="mb-4 grid gap-3 sm:grid-cols-2" aria-label="Published adoption figures at this date">
+        {metrics.series.map((series) => (
+          <AdoptionChart key={series.id} series={series} date={state.anchor.date} />
+        ))}
+      </div>
+
+      <div className="grid min-h-[180px] flex-1 grid-cols-1 gap-x-12 gap-y-6 overflow-y-auto lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
         <div className="flex min-h-0 flex-col">
           <h3 className="mb-2.5 text-sm font-semibold">What changed</h3>
           {r.what_changed.length ? (

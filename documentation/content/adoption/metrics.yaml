@@ -1,0 +1,108 @@
+# Published adoption figures, as dbt Labs (earlier Fishtown Analytics) stated them.
+# Each point is a dated public statement, not a measurement the app made. The two
+# series are the ones the company repeated at funding rounds and conferences.
+# "basis" records how the figure was worded; the wording shifted over the years.
+researched_on: "2026-09-23"
+series:
+  - id: weekly-active
+    title: Companies using dbt every week
+    short: Weekly active companies
+    unit: companies
+    note: |
+      From 2018 to 2023 the company counted "companies using dbt every week". In October 2024 the
+      wording became "teams using dbt every week". No figure was published at the 2026 Summit.
+    points:
+      - date: "2018-03-08"
+        value: 150
+        basis: used in production by roughly 150 companies that we know of
+        source: { title: On two years of dbt, url: "https://www.getdbt.com/blog/on-two-years-of-dbt", retrieved: "2026-09-23" }
+      - date: "2019-12"
+        precision: month
+        value: 1000
+        basis: dbt hit 1,000 users, described as a thousand companies, by late 2019 (a later retrospective)
+        confidence: qualified
+        source: { title: "First Round Review: How dbt Labs built a $4.2B software business", url: "https://review.firstround.com/dbt-labs-path-to-product-market-fit/", retrieved: "2026-09-23" }
+      - date: "2020-04-22"
+        value: 1700
+        basis: 1,700 companies using dbt
+        source: { title: Fishtown Analytics raises $12.9M Series A, url: "https://www.prnewswire.com/news-releases/fishtown-analytics-raises-12-9m-to-accelerate-open-source-analytics-engineering-software-dbt-301045082.html", retrieved: "2026-09-23" }
+      - date: "2020-07-02"
+        value: 2100
+        basis: more than 2,100 companies actively using dbt in the prior week
+        source: { title: "Four Years In: From Misfits to Mainstream", url: "https://www.getdbt.com/blog/four-years-in-from-misfits-to-mainstream", retrieved: "2026-09-23" }
+      - date: "2020-11-11"
+        value: 3000
+        basis: 3,000 companies using dbt every week
+        source: { title: Fishtown Analytics raises $29.5M Series B, url: "https://www.prnewswire.com/news-releases/fishtown-analytics-raises-29-5m-to-build-the-future-of-analytics-engineering-with-its-open-source-product-dbt-301170569.html", retrieved: "2026-09-23" }
+      - date: "2021-06-30"
+        value: 5500
+        basis: 5,500 companies using dbt every week
+        source: { title: Fishtown Analytics rebrands as dbt Labs and closes $150M, url: "https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software", retrieved: "2026-09-23" }
+      - date: "2022-02-24"
+        value: 9000
+        basis: 9,000 companies using dbt every week
+        source: { title: dbt Labs raises $222M Series D, url: "https://www.getdbt.com/blog/dbt-labs-raises-222m-in-series-d-funding-at-4-2b-valuation-led-by-altimeter-with-participation-from-databricks-and-snowflake", retrieved: "2026-09-23" }
+      - date: "2023-10-17"
+        value: 30000
+        basis: 30,000 companies using dbt every week
+        source: { title: dbt Labs announces major enhancements to dbt Cloud (Coalesce 2023), url: "https://www.getdbt.com/blog/dbt-labs-announces-major-enhancements-to-dbt-cloud-to-enable-collaboration-at-scale", retrieved: "2026-09-23" }
+      - date: "2024-10-08"
+        value: 50000
+        basis: 50,000 teams using dbt every week (wording changes from companies to teams)
+        source: { title: dbt Labs unveils AI innovations (Coalesce 2024), url: "https://www.getdbt.com/blog/dbt-labs-unveils-ai-innovations-and-new-features-to-improve-collaboration-and-multi-platform", retrieved: "2026-09-23" }
+  - id: slack-members
+    title: dbt Community Slack members
+    short: Community Slack members
+    unit: members
+    note: |
+      Slack membership as stated by the company. From October 2023 the figure is worded as "dbt Community
+      members", a broader count; the December 2025 community chronicle refers to a 70,000-member Slack
+      workspace, so the later points are not directly comparable with the earlier ones.
+    points:
+      - date: "2016-09"
+        precision: month
+        value: 100
+        basis: after six months there were 100 people (a later retrospective)
+        confidence: qualified
+        source: { title: "Community Growth at dbt Labs (community.inc)", url: "https://community.inc/deep-dives/community-growth-dbt-labs", retrieved: "2026-09-23" }
+      - date: "2018-03-08"
+        value: 350
+        basis: our Slack community is 350 members strong as of this writing
+        source: { title: On two years of dbt, url: "https://www.getdbt.com/blog/on-two-years-of-dbt", retrieved: "2026-09-23" }
+      - date: "2019-07"
+        precision: month
+        value: 2000
+        basis: roughly 2,000 a year before the July 2020 post
+        confidence: qualified
+        source: { title: "Four Years In: From Misfits to Mainstream", url: "https://www.getdbt.com/blog/four-years-in-from-misfits-to-mainstream", retrieved: "2026-09-23" }
+      - date: "2020-04-22"
+        value: 5000
+        basis: 5,000 members of the dbt Slack community
+        source: { title: Fishtown Analytics raises $12.9M Series A, url: "https://www.prnewswire.com/news-releases/fishtown-analytics-raises-12-9m-to-accelerate-open-source-analytics-engineering-software-dbt-301045082.html", retrieved: "2026-09-23" }
+      - date: "2020-07-02"
+        value: 6000
+        basis: roughly 6,000 humans around the world
+        source: { title: "Four Years In: From Misfits to Mainstream", url: "https://www.getdbt.com/blog/four-years-in-from-misfits-to-mainstream", retrieved: "2026-09-23" }
+      - date: "2020-11-11"
+        value: 8000
+        basis: 8,000 folks in the dbt Slack community
+        source: { title: Fishtown Analytics raises $29.5M Series B, url: "https://www.prnewswire.com/news-releases/fishtown-analytics-raises-29-5m-to-build-the-future-of-analytics-engineering-with-its-open-source-product-dbt-301170569.html", retrieved: "2026-09-23" }
+      - date: "2021-06-30"
+        value: 15000
+        basis: 15,000 data professionals in the dbt Community Slack
+        source: { title: Fishtown Analytics rebrands as dbt Labs and closes $150M, url: "https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software", retrieved: "2026-09-23" }
+      - date: "2022-02-24"
+        value: 25000
+        basis: 25,000 practitioners in the dbt Community Slack
+        source: { title: dbt Labs raises $222M Series D, url: "https://www.getdbt.com/blog/dbt-labs-raises-222m-in-series-d-funding-at-4-2b-valuation-led-by-altimeter-with-participation-from-databricks-and-snowflake", retrieved: "2026-09-23" }
+      - date: "2023-10-17"
+        value: 90000
+        basis: 90,000 dbt Community members (broader wording than Slack members)
+        confidence: qualified
+        source: { title: dbt Labs announces major enhancements to dbt Cloud (Coalesce 2023), url: "https://www.getdbt.com/blog/dbt-labs-announces-major-enhancements-to-dbt-cloud-to-enable-collaboration-at-scale", retrieved: "2026-09-23" }
+      - date: "2025-12"
+        precision: month
+        value: 70000
+        basis: the 70,000+ member Slack workspace
+        confidence: qualified
+        source: { title: "The dbt community chronicle: December 2025", url: "https://www.getdbt.com/blog/the-dbt-community-chronicle-december-2025", retrieved: "2026-09-23" }
