@@ -4,7 +4,7 @@
 
 ## Outcome
 
-Turn the approved visual concept into a browsable, sourced history of dbt from 2016 through v2. Olivier will use it while recording a 20-minute YouTube video. The app will be published on Olivier's website. Viewers explore each release and its guided Waffle Shop example entirely within the app, both during the video and independently afterward.
+Turn the approved visual concept into a browsable, sourced history of dbt from 2016 through v2. Olivier will use it while recording a 20-minute YouTube video. The app will be published on Olivier's website. Viewers explore each release and its guided Jaffle Shop example entirely within the app, both during the video and independently afterward.
 
 Keep the existing visual direction: prominent version navigation, restrained purple accents, readable release cards, light/dark themes, and presentation mode. `visual-reference.html` is the design reference, not the historical source of truth.
 
@@ -12,7 +12,7 @@ Keep the existing visual direction: prominent version navigation, restrained pur
 
 The selected version remains visible above three tabs:
 
-1. **The release:** the problem practitioners faced, what changed, its practical effect, and the Waffle Shop demonstration.
+1. **The release:** the problem practitioners faced, what changed, its practical effect, and the Jaffle Shop demonstration.
 2. **The catalogue:** products and capabilities offered by the company at that moment, under their contemporary names and maturity.
 3. **The wider ecosystem:** a recognizable data-stack diagram showing dbt's footprint and representative surrounding players.
 
@@ -34,7 +34,7 @@ Do not invent exact dates for month-only evidence. Store a precision and uncerta
 
 ## Release contents
 
-Each chapter has a short plain-language lead, sourced feature changes, expandable technical detail and an embedded Waffle Shop walkthrough. Show the exact feature-introduction patch when known.
+Each chapter has a short plain-language lead, sourced feature changes, expandable technical detail and an embedded Jaffle Shop walkthrough. Show the exact feature-introduction patch when known.
 
 Visitors advance through prepared steps with Next, Previous and Restart. Read-only code highlights, small tables, diagrams and explained results show the problem, the relevant change and its consequence. They don't edit SQL, change data or execute commands. A typical unit-test example shows the refund problem, faulty SQL, the fixture, failure and corrected result.
 
@@ -100,7 +100,7 @@ All 35 chapters stay in the app. A suggested 20-minute route allocates roughly 1
 - A patch demo cannot masquerade as a feature present in the initial minor artifact.
 - Every factual feature/product claim has a source; uncertainty remains visible.
 - The v2 endpoint distinguishes mature products from previews and external dependencies.
-- Every release has a guided Waffle Shop walkthrough with working Next/Previous/Restart controls, read-only code and accurate prepared results.
+- Every release has a guided Jaffle Shop walkthrough with working Next/Previous/Restart controls, read-only code and accurate prepared results.
 - Step progress, direct links and tab/release navigation work consistently; illustrative and captured outputs are distinguishable.
 - The public examples require no visitor account, code editing, database or local tools.
 - Presentation mode, keyboard access, readable contrast, responsive layouts and deep links are visually checked in a browser.

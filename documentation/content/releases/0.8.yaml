@@ -94,7 +94,7 @@ walkthrough:
     Connect parallel builds with per-model transactions, and see why the combining step still waits for both
     inputs.
   context: >
-    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
+    Jaffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
     Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
   dataset_variant: base
   steps:
@@ -158,7 +158,7 @@ walkthrough:
         - language: yaml
           filename: profiles.yml (target excerpt)
           content: |
-            waffle_shop:
+            jaffle_shop:
               target: dev
               outputs:
                 dev:
@@ -225,7 +225,7 @@ walkthrough:
         - language: yaml
           filename: profiles.yml (target excerpt)
           content: |
-            waffle_shop:
+            jaffle_shop:
               target: dev
               outputs:
                 dev:
@@ -377,14 +377,14 @@ walkthrough:
         - language: yaml
           filename: profiles.yml (BigQuery excerpt)
           content: |
-            waffle_shop:
+            jaffle_shop:
               target: dev
               outputs:
                 dev:
                   type: bigquery
                   method: oauth
-                  project: waffle-demo
-                  schema: waffle
+                  project: jaffle-demo
+                  schema: jaffle
                   threads: 2
           highlight_lines:
             - 5

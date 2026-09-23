@@ -8,7 +8,7 @@
 
 **Working title:** *Ten years of dbt, through one evolving data project.*
 
-**Format:** One public web app with guided Waffle Shop examples, supporting a 20-minute YouTube video recorded by Olivier and subsequent browsing on his website.
+**Format:** One public web app with guided Jaffle Shop examples, supporting a 20-minute YouTube video recorded by Olivier and subsequent browsing on his website.
 
 **Audience:** Both newcomers and experienced data practitioners.
 
@@ -39,7 +39,7 @@ A browsable history that Olivier can navigate while recording, with enough depth
 
 | View | What visitors explore |
 | --- | --- |
-| The release | Details of the selected version, its practical changes, and its Waffle Shop demonstration. |
+| The release | Details of the selected version, its practical changes, and its Jaffle Shop demonstration. |
 | The catalogue | The products offered by Fishtown Analytics / dbt Labs at that release date, using their names and availability at the time. The combined Fivetran offering appears only after the merger. |
 | The wider ecosystem | A diagram of the data stack at that release date, showing the layers present then, dbt’s products within them, and the significant surrounding players. |
 
@@ -52,14 +52,14 @@ Selecting a version opens a consistent chapter:
 - **The problem then:** what practitioners struggled with.
 - **What shipped:** the feature, release, and supporting evidence.
 - **What changed in practice:** the effect on a real workflow.
-- **See it happen:** an embedded, step-by-step Waffle Shop example with prepared code and results.
+- **See it happen:** an embedded, step-by-step Jaffle Shop example with prepared code and results.
 - **Availability:** open source, proprietary/free, paid, preview, or retired.
 
 Separate original release dates from announcement dates, preview dates, GA dates, and later edits to documentation. Preserve historical product names alongside their current names.
 
 Olivier’s recording notes do not appear in the app. His personal commentary remains part of the video.
 
-### Guided Waffle Shop examples
+### Guided Jaffle Shop examples
 
 Every release includes a short walkthrough within The release tab. Visitors use Next, Previous and Restart to move through prepared steps: the situation, relevant code or configuration, result and practical takeaway. Code is read-only; tables, highlights and diagrams change as the visitor advances.
 
@@ -73,15 +73,15 @@ Chapters are named for versions: **v0.1, v0.2, …, v1.0, v1.1, …, v2.0**. Pop
 
 Cover every published release series in that sequence, including pre-1.0 and 1.x minor releases. Individual patches can sit within their series when historically significant. The earlier proposal for 8–10 thematic chapters is superseded by this version-by-version structure.
 
-Each chapter should capture the release date, what changed since the preceding version, the corresponding guided Waffle Shop steps, and the relevant product or market events. If a release mainly improves compatibility or developer experience, show that honestly without inventing a business feature.
+Each chapter should capture the release date, what changed since the preceding version, the corresponding guided Jaffle Shop steps, and the relevant product or market events. If a release mainly improves compatibility or developer experience, show that honestly without inventing a business feature.
 
 The timeline begins with dbt’s origins in 2016. It should explain what existed before Olivier adopted it, then introduce his 2018 article as a personal milestone. Avoid attributing later first-hand experience to the earlier period.
 
 The exact release inventory and feature-to-version mapping remain research work. Product launches have their own dates and should appear alongside the relevant versions without implying that they shipped as part of Core.
 
-## Waffle Shop
+## Jaffle Shop
 
-**Confirmed scenario:** Waffle Shop, with customers, orders, payments, refunds, and multiple locations.
+**Confirmed scenario:** Jaffle Shop, with customers, orders, payments, refunds, and multiple locations.
 
 Proposed recurring business question:
 
@@ -93,7 +93,7 @@ Keep the underlying business question stable. Add controlled complications when 
 
 ## The 20-minute YouTube recording
 
-Olivier will record a 20-minute video using the web app and Waffle Shop project. The release sequence provides the structure. The personal and strategic themes below are commentary woven into that sequence, with opening and closing context.
+Olivier will record a 20-minute video using the web app and Jaffle Shop project. The release sequence provides the structure. The personal and strategic themes below are commentary woven into that sequence, with opening and closing context.
 
 The duration requires uneven pacing: some versions may receive a brief explanation, while others justify a visible demonstration. Preserve every release chapter and its complete guided example in the app for viewers to browse afterward. The detailed timing remains to be shaped after the release inventory is known.
 
@@ -111,7 +111,7 @@ Olivier will supply his experiences while recording. Keep relevant sources in th
 
 ## Preparing historically accurate examples
 
-Author each example against the release research, preserving period-appropriate syntax, feature-introduction patches and relevant adapter limitations. Keep the Waffle Shop data and business rules consistent and independently check each small result table.
+Author each example against the release research, preserving period-appropriate syntax, feature-introduction patches and relevant adapter limitations. Keep the Jaffle Shop data and business rules consistent and independently check each small result table.
 
 Prepared results may be illustrative. Label them accordingly and distinguish genuine captured dbt outputs with their actual version and capture details. Don't fabricate terminal transcripts or claim a historical environment was run when it wasn't.
 
@@ -182,9 +182,9 @@ This is a suggested boundary for a future build, not an approved implementation 
 
 - A sourced historical inventory from 2016 through v2.
 - Three views anchored to the same release: release details, the contemporary product catalogue, and a contemporary ecosystem diagram.
-- Waffle Shop as the single evolving business scenario.
+- Jaffle Shop as the single evolving business scenario.
 - A chapter for every published release series from the earliest versions through v2.
-- An embedded guided Waffle Shop example for every version, using prepared steps and read-only code.
+- An embedded guided Jaffle Shop example for every version, using prepared steps and read-only code.
 - Source-reviewed illustrative results, with genuine captured artifacts where useful and clearly identified.
 - Publication on Olivier's website for independent browsing after the video.
 - A 20-minute YouTube walkthrough for newcomers and experienced practitioners.
@@ -195,7 +195,7 @@ The shaping stage does not require choosing a web framework, building a public e
 
 ## Confirmed editorial decisions
 
-1. **Scenario:** Waffle Shop.
+1. **Scenario:** Jaffle Shop.
 2. **Audience:** both newcomers and experienced practitioners.
 3. **Presentation:** Olivier will record a 20-minute YouTube video entirely within the app.
 4. **Chapters:** version by version, beginning with v0.1, v0.2, and continuing through the published sequence to v2. Thematic chapters are superseded.
@@ -247,8 +247,12 @@ Add decisions, corrections, sources, and possible demonstrations here as the con
 
 ## Research handoff · 21 September 2026
 
-Olivier requested the research and a coding-agent brief while signing off. The completed [research package](README.md) contains the 35-version release inventory, product/ownership history, ecosystem evidence, and separate app and local Waffle Shop coding briefs. Research verified source and package metadata. The runtime build plan was superseded by the guided-example decision on 22 September; its research remains reference material.
+Olivier requested the research and a coding-agent brief while signing off. The completed [research package](README.md) contains the 35-version release inventory, product/ownership history, ecosystem evidence, and separate app and local Jaffle Shop coding briefs. Research verified source and package metadata. The runtime build plan was superseded by the guided-example decision on 22 September; its research remains reference material.
+
+## Scenario renamed · 23 September 2026
+
+**Confirmed by Olivier:** the recurring business is the **Jaffle Shop**, loosely based on dbt Labs' classic Jaffle Shop demo project (customers, orders, payments), extended with locations and refunds. All content and app copy were renamed from the earlier "Jaffle Shop" working name.
 
 ## Guided examples decision · 22 September 2026
 
-**Confirmed by Olivier:** keep the whole experience inside the app. Each release has a guided Waffle Shop example with prepared steps and read-only code/results; visitors don't edit or execute code. Publish the app on his website. The [updated handoff](README.md) now prioritizes the app and guided examples briefs, retaining the local environment plan only as an archive.
+**Confirmed by Olivier:** keep the whole experience inside the app. Each release has a guided Jaffle Shop example with prepared steps and read-only code/results; visitors don't edit or execute code. Publish the app on his website. The [updated handoff](README.md) now prioritizes the app and guided examples briefs, retaining the local environment plan only as an archive.

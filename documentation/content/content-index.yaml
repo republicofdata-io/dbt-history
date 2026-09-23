@@ -4,9 +4,9 @@ authored_on: '2026-09-22'
 research_cutoff: '2026-09-21'
 status: authored-and-content-validated
 summary: |
-  Reviewed content set: one immutable Waffle Shop base fixture, seven named variants, 36 chapters, 121 guided steps and 359 code blocks, 43 catalogue identities, 105 normalized events and 61 ecosystem placement intervals. All walkthroughs are illustrations.
+  Reviewed content set: one immutable Jaffle Shop base fixture, seven named variants, 36 chapters, 121 guided steps and 359 code blocks, 43 catalogue identities, 105 normalized events and 61 ecosystem placement intervals. All walkthroughs are illustrations.
 files:
-  dataset: waffle-shop/dataset.yaml
+  dataset: jaffle-shop/dataset.yaml
   chapters:
   - releases/origin.yaml
   - releases/0.1.yaml

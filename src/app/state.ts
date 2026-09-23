@@ -4,10 +4,10 @@ import { getRelease, releaseIndex, releases } from "@/content/load";
 import { resolveAnchor, type Anchor } from "@/content/derive";
 import type { Release } from "@/content/schema";
 
-export type Tab = "release" | "waffle" | "catalogue" | "ecosystem";
+export type Tab = "release" | "jaffle" | "catalogue" | "ecosystem";
 export const TABS: { id: Tab; label: string }[] = [
   { id: "release", label: "The release" },
-  { id: "waffle", label: "Waffle Shop" },
+  { id: "jaffle", label: "Jaffle Shop" },
   { id: "catalogue", label: "The catalogue" },
   { id: "ecosystem", label: "The wider ecosystem" },
 ];
@@ -51,12 +51,12 @@ export interface HistoryState {
 }
 
 function isTab(x: string | undefined): x is Tab {
-  return x === "release" || x === "waffle" || x === "catalogue" || x === "ecosystem";
+  return x === "release" || x === "jaffle" || x === "catalogue" || x === "ecosystem";
 }
 
 /**
  * The whole app state lives in the URL: /:releaseId/:tab?m=<milestone>&s=<step>.
- * Tabs: release | waffle (the guided example) | catalogue | ecosystem.
+ * Tabs: release | jaffle (the guided example) | catalogue | ecosystem.
  * Deep links and browser history therefore restore version, tab, milestone and step.
  */
 export function useHistoryState(): HistoryState | null {

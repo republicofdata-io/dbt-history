@@ -79,7 +79,7 @@ walkthrough:
   learning_objective: |
     See how a snapshot records that a customer disappeared from the source, without erasing their past.
   context: >
-    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
+    Jaffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
     Riverside 4,800. The selected fixture is customer-removed. Each state below is an authored illustration.
   dataset_variant: customer-removed
   steps:
@@ -234,7 +234,7 @@ walkthrough:
           filename: inspection/revenue_total.sql
           content: |
             select sum(revenue_cents) as revenue_cents
-            from waffle.order_revenue
+            from jaffle.order_revenue
           highlight_lines:
             - 1
           purpose: Authored era-specific example; illustration only.

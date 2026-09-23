@@ -14,29 +14,29 @@ Modern endpoint: v1.12.0 package and GitHub release are July 16, 2026; its GA bl
 
 ## Version chapters
 
-| Series | Initial package UTC date | Focus | Proposed Waffle Shop demonstration | Primary evidence |
+| Series | Initial package UTC date | Focus | Proposed Jaffle Shop demonstration | Primary evidence |
 |---|---|---|---|---|
-| v0.1 | 2016-04-03 (0.1.1) | Earliest SQL build workflow | Compile Waffle Shop staging and revenue models; compare the generated CREATE statements. Use 0.1.14 for a ref() demo. | [Release/package](https://pypi.org/project/dbt/0.1.1/) |
-| v0.2 | 2016-06-22 (0.2.0) | Tests and a project workflow | Break a payment relationship, see a schema test fail; at patch 0.2.3.0 seed the waffle menu. | [Release/package](https://pypi.org/project/dbt/0.2.0/) |
+| v0.1 | 2016-04-03 (0.1.1) | Earliest SQL build workflow | Compile Jaffle Shop staging and revenue models; compare the generated CREATE statements. Use 0.1.14 for a ref() demo. | [Release/package](https://pypi.org/project/dbt/0.1.1/) |
+| v0.2 | 2016-06-22 (0.2.0) | Tests and a project workflow | Break a payment relationship, see a schema test fail; at patch 0.2.3.0 seed the jaffle menu. | [Release/package](https://pypi.org/project/dbt/0.2.0/) |
 | v0.3 | 2016-08-03 (0.3.0) | Concurrent model builds | Build orders and payments branches together, then inject a failure into only one branch. | [Release/package](https://github.com/dbt-labs/dbt/releases/tag/0.3.0) |
 | v0.4 | 2016-08-16 (0.4.0) | Materialization choices | Append a second trading day incrementally and inline a reusable staging model as a CTE. | [Release/package](https://github.com/dbt-labs/dbt/releases/tag/v0.4.0) |
 | v0.5 | 2016-09-28 (0.5.0) | Configuration, history and custom tests | Parameterize the excluded test customer; at 0.5.1 preserve a changed customer city; at 0.5.4 test revenue reconciliation. | [Release/package](https://github.com/dbt-labs/dbt/releases/tag/v0.5.0) |
 | v0.6 | 2016-12-22 (0.6.0) | Reusable macros | Use a reusable money conversion macro and rebuild the incremental revenue table after a logic change. | [Release/package](https://github.com/dbt-labs/dbt/releases/tag/v0.6.0) |
-| v0.7 | 2017-02-09 (0.7.0) | Snowflake joins the targets | Keep the local Postgres Waffle Shop baseline; show the historical Snowflake profile and adapter reach. | [Release/package](https://github.com/dbt-labs/dbt/releases/tag/v0.7.0) |
-| v0.8 | 2017-04-17 (0.8.0) | Concurrency and adapter growth | Run two independent Waffle Shop branches and inspect their execution order; show BigQuery as a dated patch event. | [Release/package](https://github.com/dbt-labs/dbt/releases/tag/v0.8.0) |
-| v0.9 | 2017-10-26 (0.9.0) | Extensible projects | Put finance models in a dedicated schema and install a pinned local Waffle Shop package containing a custom test. | [Release/package](https://github.com/dbt-labs/dbt/releases/tag/v0.9.0) |
+| v0.7 | 2017-02-09 (0.7.0) | Snowflake joins the targets | Keep the local Postgres Jaffle Shop baseline; show the historical Snowflake profile and adapter reach. | [Release/package](https://github.com/dbt-labs/dbt/releases/tag/v0.7.0) |
+| v0.8 | 2017-04-17 (0.8.0) | Concurrency and adapter growth | Run two independent Jaffle Shop branches and inspect their execution order; show BigQuery as a dated patch event. | [Release/package](https://github.com/dbt-labs/dbt/releases/tag/v0.8.0) |
+| v0.9 | 2017-10-26 (0.9.0) | Extensible projects | Put finance models in a dedicated schema and install a pinned local Jaffle Shop package containing a custom test. | [Release/package](https://github.com/dbt-labs/dbt/releases/tag/v0.9.0) |
 | v0.10 | 2018-03-08 (0.10.0) | Reusable packages and portable seeds | Seed the menu and location lookup, ref them in order models, and reuse a local package. | [Release/package](https://github.com/dbt-labs/dbt/releases/tag/v0.10.0) |
-| v0.11 | 2018-09-06 (0.11.0) | Generated documentation | Generate and browse Waffle Shop docs, tracing daily revenue back through orders and payments. | [Release/package](https://github.com/dbt-labs/dbt/releases/tag/v0.11.0) |
+| v0.11 | 2018-09-06 (0.11.0) | Generated documentation | Generate and browse Jaffle Shop docs, tracing daily revenue back through orders and payments. | [Release/package](https://github.com/dbt-labs/dbt/releases/tag/v0.11.0) |
 | v0.12 | 2018-11-12 (0.12.0) | Faster and more selective runs | Tag finance models and run only that slice; compare query/log evidence for caching. | [Release/package](https://github.com/dbt-labs/dbt/releases/tag/v0.12.0) |
 | v0.13 | 2019-03-21 (0.13.0) | Sources and adapter plugins | Declare raw orders and payments as sources, then demonstrate a stale payment feed. | [Release/package](https://github.com/dbt-labs/dbt/releases/tag/v0.13.0) |
 | v0.14 | 2019-07-10 (0.14.0) | Snapshots replace archives | Change a customer city and inspect snapshot history; issue a warning for a soft business-rule violation. | [Release/package](https://github.com/dbt-labs/dbt/releases/tag/v0.14.0) |
-| v0.15 | 2019-11-25 (0.15.0) | Partial parsing and structured operations | Edit one Waffle Shop model and show partial parsing; inspect a structured run log. | [Release/package](https://github.com/dbt-labs/dbt/releases/tag/v0.15.0) |
+| v0.15 | 2019-11-25 (0.15.0) | Partial parsing and structured operations | Edit one Jaffle Shop model and show partial parsing; inspect a structured run log. | [Release/package](https://github.com/dbt-labs/dbt/releases/tag/v0.15.0) |
 | v0.16 | 2020-03-23 (0.16.0) | Richer metadata | Add owner and business context to the revenue model; inspect documented macro arguments and menu seeds. | [Release/package](https://github.com/dbt-labs/dbt/releases/tag/v0.16.0) |
 | v0.17 | 2020-06-08 (0.17.0) | Safer execution and configurable sources | Run with fail-fast after an intentional bad model, then persist revenue descriptions into Postgres comments. | [Release/package](https://github.com/dbt-labs/dbt/releases/tag/v0.17.0) |
-| v0.18 | 2020-09-03 (0.18.0) | State-aware selection and downstream context | Change refund logic and rebuild its affected slice against prior state; at 0.18.1 add a Waffle Shop dashboard exposure. | [Release/package](https://github.com/dbt-labs/dbt/releases/tag/v0.18.0) |
+| v0.18 | 2020-09-03 (0.18.0) | State-aware selection and downstream context | Change refund logic and rebuild its affected slice against prior state; at 0.18.1 add a Jaffle Shop dashboard exposure. | [Release/package](https://github.com/dbt-labs/dbt/releases/tag/v0.18.0) |
 | v0.19 | 2021-01-27 (0.19.0) | More complete history and artifacts | Delete a customer from the raw feed and show the snapshot record being invalidated. | [Release/package](https://github.com/dbt-labs/dbt/releases/tag/v0.19.0) |
 | v0.20 | 2021-07-12 (0.20.0) | Actionable data-test failures | Persist failed payment rows and distinguish warning thresholds from errors. | [Release/package](https://github.com/dbt-labs/dbt/releases/tag/v0.20.0) |
-| v0.21 | 2021-10-04 (0.21.0) | Build in dependency order | Run the whole Waffle Shop workflow with one build and show how a failed test prevents downstream work. | [Release/package](https://github.com/dbt-labs/dbt/releases/tag/v0.21.0) |
+| v0.21 | 2021-10-04 (0.21.0) | Build in dependency order | Run the whole Jaffle Shop workflow with one build and show how a failed test prevents downstream work. | [Release/package](https://github.com/dbt-labs/dbt/releases/tag/v0.21.0) |
 | v1.0 | 2021-12-03 (1.0.0) | The stable framework | Run the established shop project, fail a model, and select prior failures for a targeted rerun. | [Release/package](https://github.com/dbt-labs/dbt/releases/tag/v1.0.0) |
 | v1.1 | 2022-04-28 (1.1.0) | Work only from fresher sources | Load new orders only and build descendants of the fresher source. | [Release/package](https://github.com/dbt-labs/dbt/releases/tag/v1.1.0) |
 | v1.2 | 2022-07-26 (1.2.0) | Grants as project configuration | Grant a reporting role access to revenue through model configuration. | [Release/package](https://github.com/dbt-labs/dbt/releases/tag/v1.2.0) |
@@ -71,7 +71,7 @@ For 0.5.1, 0.5.4 and 0.8.3, the [tagged historical changelog](https://github.com
 
 - Jinja-templated SQL compiled to tables/views; materialized configuration was Boolean.
 - By 0.1.14: ref-based dependencies and dependency installation.
-- Demo: Compile Waffle Shop staging and revenue models; compare the generated CREATE statements. Use 0.1.14 for a ref() demo.
+- Demo: Compile Jaffle Shop staging and revenue models; compare the generated CREATE statements. Use 0.1.14 for a ref() demo.
 - Constraint: Early Redshift-only code; local Postgres execution must be proven and disclosed as compatibility work. No dbt test command.
 - Sources: [source 1](https://pypi.org/project/dbt/0.1.1/), [source 2](https://pypi.org/pypi/dbt/json)
 
@@ -79,7 +79,7 @@ For 0.5.1, 0.5.4 and 0.8.3, the [tagged historical changelog](https://github.com
 
 - 0.2.0 includes init, deps, test and ref().
 - 0.2.3.0 adds CSV seeds, accepted-values tests and compilation of analytical queries.
-- Demo: Break a payment relationship, see a schema test fail; at patch 0.2.3.0 seed the waffle menu.
+- Demo: Break a payment relationship, see a schema test fail; at patch 0.2.3.0 seed the jaffle menu.
 - Constraint: Four-component 0.2.3.0 is a real historical version. Seed is not present in 0.2.0.
 - Sources: [source 1](https://pypi.org/project/dbt/0.2.0/), [source 2](https://pypi.org/pypi/dbt/json)
 
@@ -119,7 +119,7 @@ For 0.5.1, 0.5.4 and 0.8.3, the [tagged historical changelog](https://github.com
 
 - Snowflake support joins Redshift and Postgres.
 - Snowflake role configuration arrives in 0.7.1.
-- Demo: Keep the local Postgres Waffle Shop baseline; show the historical Snowflake profile and adapter reach.
+- Demo: Keep the local Postgres Jaffle Shop baseline; show the historical Snowflake profile and adapter reach.
 - Constraint: Actual Snowflake execution is an optional external-service demo; local Postgres cannot demonstrate Snowflake behavior.
 - Sources: [source 1](https://github.com/dbt-labs/dbt/releases/tag/v0.7.0), [source 2](https://github.com/dbt-labs/dbt-core/blob/v0.13.0/CHANGELOG.md)
 
@@ -127,7 +127,7 @@ For 0.5.1, 0.5.4 and 0.8.3, the [tagged historical changelog](https://github.com
 
 - Unique per-model transactions fix true concurrency; materializations rewritten as macros.
 - BigQuery support appears in 0.8.3.
-- Demo: Run two independent Waffle Shop branches and inspect their execution order; show BigQuery as a dated patch event.
+- Demo: Run two independent Jaffle Shop branches and inspect their execution order; show BigQuery as a dated patch event.
 - Constraint: BigQuery support must not be shown at the initial April 0.8.0 anchor.
 - Sources: [source 1](https://github.com/dbt-labs/dbt/releases/tag/v0.8.0), [source 2](https://github.com/dbt-labs/dbt-core/blob/v0.13.0/CHANGELOG.md)
 
@@ -135,7 +135,7 @@ For 0.5.1, 0.5.4 and 0.8.3, the [tagged historical changelog](https://github.com
 
 - Macros can use adapter, ref and var; packages can supply custom tests/materializations.
 - Custom schemas; improved BigQuery table support.
-- Demo: Put finance models in a dedicated schema and install a pinned local Waffle Shop package containing a custom test.
+- Demo: Put finance models in a dedicated schema and install a pinned local Jaffle Shop package containing a custom test.
 - Constraint: Package management syntax still predates packages.yml.
 - Sources: [source 1](https://github.com/dbt-labs/dbt/releases/tag/v0.9.0)
 
@@ -151,7 +151,7 @@ For 0.5.1, 0.5.4 and 0.8.3, the [tagged historical changelog](https://github.com
 
 - Auto-generated project documentation and lineage.
 - Schema YAML version 2 adds model/column descriptions.
-- Demo: Generate and browse Waffle Shop docs, tracing daily revenue back through orders and payments.
+- Demo: Generate and browse Jaffle Shop docs, tracing daily revenue back through orders and payments.
 - Constraint: Schema YAML version 2 is unrelated to dbt engine v2.
 - Sources: [source 1](https://github.com/dbt-labs/dbt/releases/tag/v0.11.0)
 
@@ -183,7 +183,7 @@ For 0.5.1, 0.5.4 and 0.8.3, the [tagged historical changelog](https://github.com
 
 - Opt-in partial parsing; structured/JSON logging.
 - Python 2 support dropped; improved snapshot/docs/RPC behavior.
-- Demo: Edit one Waffle Shop model and show partial parsing; inspect a structured run log.
+- Demo: Edit one Jaffle Shop model and show partial parsing; inspect a structured run log.
 - Constraint: Record exact Python runtime and partial-parsing configuration for the checkpoint.
 - Sources: [source 1](https://github.com/dbt-labs/dbt/releases/tag/v0.15.0)
 
@@ -207,7 +207,7 @@ For 0.5.1, 0.5.4 and 0.8.3, the [tagged historical changelog](https://github.com
 
 - state:modified/new, --state, --defer and YAML selectors.
 - 0.18.1 adds exposures representing dashboards and other downstream uses.
-- Demo: Change refund logic and rebuild its affected slice against prior state; at 0.18.1 add a Waffle Shop dashboard exposure.
+- Demo: Change refund logic and rebuild its affected slice against prior state; at 0.18.1 add a Jaffle Shop dashboard exposure.
 - Constraint: File-based state selection is distinct from the 2026 commercial dbt State product.
 - Sources: [source 1](https://github.com/dbt-labs/dbt/releases/tag/v0.18.0), [source 2](https://github.com/dbt-labs/dbt-core/releases/tag/v0.18.1)
 
@@ -231,7 +231,7 @@ For 0.5.1, 0.5.4 and 0.8.3, the [tagged historical changelog](https://github.com
 
 - dbt build runs seeds, snapshots, models and tests in DAG order.
 - on_schema_change for incremental models; state detects macro changes.
-- Demo: Run the whole Waffle Shop workflow with one build and show how a failed test prevents downstream work.
+- Demo: Run the whole Jaffle Shop workflow with one build and show how a failed test prevents downstream work.
 - Constraint: 0.21 is the last 0.x minor series; no 0.22–0.99 chapters.
 - Sources: [source 1](https://github.com/dbt-labs/dbt/releases/tag/v0.21.0)
 

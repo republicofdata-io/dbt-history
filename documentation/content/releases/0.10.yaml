@@ -66,7 +66,7 @@ walkthrough:
     See how a small CSV file kept in the project (a seed) is loaded into the warehouse and joined to the
     revenue numbers.
   context: >
-    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
+    Jaffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
     Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
   dataset_variant: base
   steps:
@@ -171,7 +171,7 @@ walkthrough:
               - 'repositories: [git URL]'
           -   - '0.10'
               - packages.yml
-              - 'local: ../waffle_utils'
+              - 'local: ../jaffle_utils'
         result_status:
         diagram:
         provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
@@ -183,14 +183,14 @@ walkthrough:
           filename: packages.yml
           content: |
             packages:
-              - local: ../waffle_utils
+              - local: ../jaffle_utils
           highlight_lines:
             - 2
           purpose: Authored era-specific example; illustration only.
         - language: yaml
-          filename: ../waffle_utils/dbt_project.yml
+          filename: ../jaffle_utils/dbt_project.yml
           content: |
-            name: waffle_utils
+            name: jaffle_utils
             version: "1.0"
             macro-paths: [macros]
           highlight_lines:
@@ -300,7 +300,7 @@ walkthrough:
         in a local folder.
     scenario: >
       Every revenue report needs to show the location names Old Port, Mile End and Riverside. Until now,
-      someone typed those names into each report by hand. Waffle Shop puts the three names in one CSV file
+      someone typed those names into each report by hand. Jaffle Shop puts the three names in one CSV file
       inside the project, loads it as a table, and joins it to the revenue numbers.
     outcome: |-
       See the CSV become a ref-addressable table, a local package declared in packages.yml, and names joined once to the revenue result.

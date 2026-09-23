@@ -46,7 +46,7 @@ function StepView({ step, fixture }: { step: Step; fixture: string }) {
 }
 
 /**
- * The Waffle Shop card from the concept, holding the guided example. Visitors
+ * The Jaffle Shop card from the concept, holding the guided example. Visitors
  * only move through prepared steps with Next, Previous and Restart. Each step
  * renders its complete authored state, so a deep link to step 4 shows step 4.
  * The card fills the remaining screen height; its body scrolls only if a
@@ -81,12 +81,12 @@ export default function WalkthroughPlayer({ release, walkthrough, step, onStep, 
   const sources = release.sources.filter((s) => sourceIds.has(s.id));
 
   return (
-    <section aria-label="Waffle Shop walkthrough" className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[11px] border border-border bg-card">
+    <section aria-label="Jaffle Shop walkthrough" className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[11px] border border-border bg-card">
       <header className="flex items-center gap-2.5 border-b border-border px-4 py-3">
-        <div className="waffle-mark" aria-hidden="true" />
+        <div className="jaffle-mark" aria-hidden="true" />
         <div className="min-w-0 flex-1">
           <h3 className="text-sm font-semibold">
-            Waffle Shop <span className="font-normal text-muted-foreground">· {release.label}</span>
+            Jaffle Shop <span className="font-normal text-muted-foreground">· {release.label}</span>
           </h3>
           <small className="block text-[11px] leading-snug text-muted-foreground">{walkthrough.title ?? walkthrough.learning_objective.trim()}</small>
         </div>

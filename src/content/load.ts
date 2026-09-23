@@ -10,7 +10,7 @@ import { Dataset, Ecosystem, Metrics, Product, ProductEvent, Release, type Relea
 type Modules = Record<string, { default: unknown }>;
 
 const releaseModules = import.meta.glob("../../documentation/content/releases/*.yaml", { eager: true }) as Modules;
-const datasetModules = import.meta.glob("../../documentation/content/waffle-shop/dataset.yaml", { eager: true }) as Modules;
+const datasetModules = import.meta.glob("../../documentation/content/jaffle-shop/dataset.yaml", { eager: true }) as Modules;
 const productModules = import.meta.glob("../../documentation/content/catalogue/products.yaml", { eager: true }) as Modules;
 const eventModules = import.meta.glob("../../documentation/content/catalogue/events.yaml", { eager: true }) as Modules;
 const ecosystemModules = import.meta.glob("../../documentation/content/ecosystem/placements.yaml", { eager: true }) as Modules;

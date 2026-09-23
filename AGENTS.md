@@ -6,10 +6,10 @@ Current delivery direction confirmed by Olivier on 22 September 2026. This super
 
 - Build one public app for Olivier's website, supporting both a 20-minute video and independent visitor browsing.
 - History begins in 2016, with 35 version chapters: 0.1–0.21, 1.0–1.12, 2.0. Keep version chapters, with significant patches inside them.
-- Waffle Shop is the recurring scenario. Each release contains a guided walkthrough for new and experienced practitioners.
+- Jaffle Shop is the recurring scenario. Each release contains a guided walkthrough for new and experienced practitioners.
 - Visitors advance through prepared steps using Next, Previous and Restart. Show read-only code, highlighted changes, tables, diagrams and explained results. No visitor code editing, fixture changes, live execution or separate terminal workflow.
-- Selected release/date anchors the release, Waffle Shop, catalogue and wider ecosystem tabs. Preserve active tab and walkthrough progress when navigating appropriately.
-- **Decision of 22 September 2026:** the Waffle Shop walkthrough is its own tab, alongside the release, catalogue and ecosystem. This supersedes the guided-examples brief's line that the example lives inside The release tab.
+- Selected release/date anchors the release, Jaffle Shop, catalogue and wider ecosystem tabs. Preserve active tab and walkthrough progress when navigating appropriately.
+- **Decision of 22 September 2026:** the Jaffle Shop walkthrough is its own tab, alongside the release, catalogue and ecosystem. This supersedes the guided-examples brief's line that the example lives inside The release tab.
 - Read `documentation/01-app-brief.md` and `documentation/02-guided-examples-brief.md` as the implementation briefs. The separate local lab is outside scope; runtime research is reference material, not a prerequisite.
 - Keep Olivier's personal recording notes out of the app.
 - Source historical claims and preserve exact introduction patches, contemporary product names, maturity and ownership.
@@ -21,7 +21,7 @@ Current delivery direction confirmed by Olivier on 22 September 2026. This super
 ## Technical decisions (22 September 2026)
 
 - **Own repo, own site.** This repo (`republicofdata-io/dbt-history`) is a standalone Vite + React 19 + TypeScript app deployed as its own Netlify site and proxied under `republicofdata.io/labs/dbt-history` by the website repo. Do not move the app into the website repo.
-- **Concept look, not the website's.** Olivier preferred the researcher's HTML concept (`documentation/visual-reference.html`) over the website's dark Signal look once he saw a build of it. Style from the concept's stylesheet: light-dark paper/plum/gold palette, DM Sans and Space Grotesk, sidebar release index, big plum version number, Waffle Shop card with the gold waffle mark. The website is only the deployment host.
+- **Concept look, not the website's.** Olivier preferred the researcher's HTML concept (`documentation/visual-reference.html`) over the website's dark Signal look once he saw a build of it. Style from the concept's stylesheet: light-dark paper/plum/gold palette, DM Sans and Space Grotesk, sidebar release index, big plum version number, Jaffle Shop card with the gold jaffle mark. The website is only the deployment host.
 - **One screen per chapter.** Everything must fit the viewport without page scrolling, so the video recording is smooth. Put detail behind drawers, keep rows compact, and let a panel scroll internally only as a fallback.
 - **Not about Olivier.** App copy and content never refer to Olivier, "you" or "your story". His articles may be cited as neutral sources ("a July 2018 practitioner article").
 - **Content is YAML, separate from UI.** Everything visitors read is under `documentation/content/` and validated by `src/content/schema.ts`. Field names are a contract with the content author (`documentation/09-content-authoring.md`). Change a field only together with that document and the content files.

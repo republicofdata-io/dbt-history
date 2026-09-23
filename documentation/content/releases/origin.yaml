@@ -2,7 +2,7 @@ id: origin
 label: Origins
 title: Before the project had a name
 lead: |
-  The story begins in 2016. Waffle Shop starts with a question, some raw tables and a manually maintained revenue query.
+  The story begins in 2016. Jaffle Shop starts with a question, some raw tables and a manually maintained revenue query.
 problem_then: |
   The shop can calculate revenue, but someone must remember which scripts to run and which copy contains the latest refund rule.
 what_changed:
@@ -67,7 +67,7 @@ walkthrough:
   learning_objective: |
     See why a correct SQL query is not the same thing as a trustworthy answer.
   context: |
-    Waffle Shop has three locations. Twelve orders, 13,800 cents of payments and 1,300 cents of refunds make 12,500 cents of revenue.
+    Jaffle Shop has three locations. Twelve orders, 13,800 cents of payments and 1,300 cents of refunds make 12,500 cents of revenue.
   intro:
     can_now:
     - Write the revenue query by hand in SQL and run it against the warehouse.

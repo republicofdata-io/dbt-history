@@ -56,7 +56,7 @@ describe("release chapters", () => {
   });
 });
 
-describe("waffle shop dataset", () => {
+describe("jaffle shop dataset", () => {
   const table = (name: string) => dataset.tables.find((t) => t.name === name)!;
   const col = (name: string, c: string) => table(name).columns.findIndex((x) => x.name === c);
 

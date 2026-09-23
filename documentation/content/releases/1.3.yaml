@@ -61,7 +61,7 @@ walkthrough:
     the
     same numbers.
   context: >
-    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
+    Jaffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
     Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
   dataset_variant: base
   steps:

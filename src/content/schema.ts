@@ -46,7 +46,7 @@ export const WalkthroughEvidence = z.object({
   source_refs: z.array(z.string()).optional(), // alias used by authored content
 });
 
-// ---------- Waffle Shop dataset ----------
+// ---------- Jaffle Shop dataset ----------
 
 export const Cell = z.union([z.string(), z.number(), z.boolean(), z.null()]);
 export type Cell = z.infer<typeof Cell>;
@@ -165,7 +165,7 @@ export type Step = z.infer<typeof Step>;
 /** Authored first screen: what this version lets you do and what the scenario is about. */
 export const WalkthroughIntro = z.object({
   can_now: z.array(z.string()).default([]), // plain-language capabilities unlocked by this version
-  scenario: z.string(), // what the Waffle Shop scenario is about
+  scenario: z.string(), // what the Jaffle Shop scenario is about
   outcome: z.string().nullable().optional(), // what the visitor will have seen by the last step
 });
 

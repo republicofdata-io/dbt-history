@@ -72,7 +72,7 @@
         "Jinja-templated SQL compiled to tables/views; materialized configuration was Boolean.",
         "By 0.1.14: ref-based dependencies and dependency installation."
       ],
-      "proposed_waffle_shop_demo": "Compile Waffle Shop staging and revenue models; compare the generated CREATE statements. Use 0.1.14 for a ref() demo.",
+      "proposed_jaffle_shop_demo": "Compile Jaffle Shop staging and revenue models; compare the generated CREATE statements. Use 0.1.14 for a ref() demo.",
       "caveats": [
         "Early Redshift-only code; local Postgres execution must be proven and disclosed as compatibility work. No dbt test command."
       ],
@@ -129,7 +129,7 @@
         "0.2.0 includes init, deps, test and ref().",
         "0.2.3.0 adds CSV seeds, accepted-values tests and compilation of analytical queries."
       ],
-      "proposed_waffle_shop_demo": "Break a payment relationship, see a schema test fail; at patch 0.2.3.0 seed the waffle menu.",
+      "proposed_jaffle_shop_demo": "Break a payment relationship, see a schema test fail; at patch 0.2.3.0 seed the jaffle menu.",
       "caveats": [
         "Four-component 0.2.3.0 is a real historical version. Seed is not present in 0.2.0."
       ],
@@ -201,7 +201,7 @@
         "Parallel model creation with up to eight threads.",
         "Failures skip descendants while independent branches continue; temporary relations reduce unavailable time."
       ],
-      "proposed_waffle_shop_demo": "Build orders and payments branches together, then inject a failure into only one branch.",
+      "proposed_jaffle_shop_demo": "Build orders and payments branches together, then inject a failure into only one branch.",
       "caveats": [
         "First release uses tag 0.3.0 without v prefix; runtime still needs early-database feasibility validation."
       ],
@@ -237,7 +237,7 @@
         "Incremental and ephemeral models introduced in 0.4.0.",
         "In-model config and this variable; enum materializations replace Boolean configuration."
       ],
-      "proposed_waffle_shop_demo": "Append a second trading day incrementally and inline a reusable staging model as a CTE.",
+      "proposed_jaffle_shop_demo": "Append a second trading day incrementally and inline a reusable staging model as a CTE.",
       "caveats": [
         "Use period-correct sql_where configuration, not today's incremental recipe."
       ],
@@ -318,7 +318,7 @@
         "0.5.0 adds vars and more reliable incremental writes.",
         "0.5.1 adds archives and first-class Postgres; 0.5.4 adds custom SQL data tests."
       ],
-      "proposed_waffle_shop_demo": "Parameterize the excluded test customer; at 0.5.1 preserve a changed customer city; at 0.5.4 test revenue reconciliation.",
+      "proposed_jaffle_shop_demo": "Parameterize the excluded test customer; at 0.5.1 preserve a changed customer city; at 0.5.4 test revenue reconciliation.",
       "caveats": [
         "Archives predate snapshots. Features listed span distinct patches, not the initial 0.5.0 release."
       ],
@@ -375,7 +375,7 @@
         "Macros, full-refresh control for incrementals and target context.",
         "Run-level hooks and additional runtime materialization controls."
       ],
-      "proposed_waffle_shop_demo": "Use a reusable money conversion macro and rebuild the incremental revenue table after a logic change.",
+      "proposed_jaffle_shop_demo": "Use a reusable money conversion macro and rebuild the incremental revenue table after a logic change.",
       "caveats": [
         "Historical macro context is more limited than in 0.9 and later."
       ],
@@ -422,7 +422,7 @@
         "Snowflake support joins Redshift and Postgres.",
         "Snowflake role configuration arrives in 0.7.1."
       ],
-      "proposed_waffle_shop_demo": "Keep the local Postgres Waffle Shop baseline; show the historical Snowflake profile and adapter reach.",
+      "proposed_jaffle_shop_demo": "Keep the local Postgres Jaffle Shop baseline; show the historical Snowflake profile and adapter reach.",
       "caveats": [
         "Actual Snowflake execution is an optional external-service demo; local Postgres cannot demonstrate Snowflake behavior."
       ],
@@ -464,7 +464,7 @@
         "Unique per-model transactions fix true concurrency; materializations rewritten as macros.",
         "BigQuery support appears in 0.8.3."
       ],
-      "proposed_waffle_shop_demo": "Run two independent Waffle Shop branches and inspect their execution order; show BigQuery as a dated patch event.",
+      "proposed_jaffle_shop_demo": "Run two independent Jaffle Shop branches and inspect their execution order; show BigQuery as a dated patch event.",
       "caveats": [
         "BigQuery support must not be shown at the initial April 0.8.0 anchor."
       ],
@@ -516,7 +516,7 @@
         "Macros can use adapter, ref and var; packages can supply custom tests/materializations.",
         "Custom schemas; improved BigQuery table support."
       ],
-      "proposed_waffle_shop_demo": "Put finance models in a dedicated schema and install a pinned local Waffle Shop package containing a custom test.",
+      "proposed_jaffle_shop_demo": "Put finance models in a dedicated schema and install a pinned local Jaffle Shop package containing a custom test.",
       "caveats": [
         "Package management syntax still predates packages.yml."
       ],
@@ -557,7 +557,7 @@
         "packages.yml and local package paths replace repository declarations.",
         "Seed overhaul: all adapters, ref-able CSVs and configuration."
       ],
-      "proposed_waffle_shop_demo": "Seed the menu and location lookup, ref them in order models, and reuse a local package.",
+      "proposed_jaffle_shop_demo": "Seed the menu and location lookup, ref them in order models, and reuse a local package.",
       "caveats": [
         "Seeds were introduced in 0.2.3.0; this chapter is their overhaul."
       ],
@@ -603,7 +603,7 @@
         "Auto-generated project documentation and lineage.",
         "Schema YAML version 2 adds model/column descriptions."
       ],
-      "proposed_waffle_shop_demo": "Generate and browse Waffle Shop docs, tracing daily revenue back through orders and payments.",
+      "proposed_jaffle_shop_demo": "Generate and browse Jaffle Shop docs, tracing daily revenue back through orders and payments.",
       "caveats": [
         "Schema YAML version 2 is unrelated to dbt engine v2."
       ],
@@ -644,7 +644,7 @@
         "Relation caching speeds introspection.",
         "Model tags and selection by tag."
       ],
-      "proposed_waffle_shop_demo": "Tag finance models and run only that slice; compare query/log evidence for caching.",
+      "proposed_jaffle_shop_demo": "Tag finance models and run only that slice; compare query/log evidence for caching.",
       "caveats": [
         "Small fixtures may not show a meaningful speed difference; do not fabricate a benchmark."
       ],
@@ -690,7 +690,7 @@
         "Sources with freshness checks.",
         "Stable adapter API and separate adapter plugins; Presto adapter."
       ],
-      "proposed_waffle_shop_demo": "Declare raw orders and payments as sources, then demonstrate a stale payment feed.",
+      "proposed_jaffle_shop_demo": "Declare raw orders and payments as sources, then demonstrate a stale payment feed.",
       "caveats": [
         "Historical freshness command syntax differs from modern dbt source freshness."
       ],
@@ -731,7 +731,7 @@
         "Snapshots replace archives.",
         "run-operation, ls and RPC server; configurable test severity."
       ],
-      "proposed_waffle_shop_demo": "Change a customer city and inspect snapshot history; issue a warning for a soft business-rule violation.",
+      "proposed_jaffle_shop_demo": "Change a customer city and inspect snapshot history; issue a warning for a soft business-rule violation.",
       "caveats": [
         "Archives are deprecated/replaced, not a brand-new historical-data capability.",
         "Source conflict: 0.14 notes announce run-operation, but the inspected 0.13.0 package CLI includes it. Do not claim its exact first introduction until reconciled."
@@ -788,7 +788,7 @@
         "Opt-in partial parsing; structured/JSON logging.",
         "Python 2 support dropped; improved snapshot/docs/RPC behavior."
       ],
-      "proposed_waffle_shop_demo": "Edit one Waffle Shop model and show partial parsing; inspect a structured run log.",
+      "proposed_jaffle_shop_demo": "Edit one Jaffle Shop model and show partial parsing; inspect a structured run log.",
       "caveats": [
         "Record exact Python runtime and partial-parsing configuration for the checkpoint."
       ],
@@ -839,7 +839,7 @@
         "meta and richer resource documentation.",
         "Documentation for macros, analyses, snapshots and seeds; source/column tags."
       ],
-      "proposed_waffle_shop_demo": "Add owner and business context to the revenue model; inspect documented macro arguments and menu seeds.",
+      "proposed_jaffle_shop_demo": "Add owner and business context to the revenue model; inspect documented macro arguments and menu seeds.",
       "caveats": [
         "These are Core project metadata features, not a separately hosted catalogue product."
       ],
@@ -880,7 +880,7 @@
         "fail-fast and path-based selection.",
         "Source overrides/enablement; persist_docs support expands across warehouses."
       ],
-      "proposed_waffle_shop_demo": "Run with fail-fast after an intentional bad model, then persist revenue descriptions into Postgres comments.",
+      "proposed_jaffle_shop_demo": "Run with fail-fast after an intentional bad model, then persist revenue descriptions into Postgres comments.",
       "caveats": [
         "Show concrete output rather than promise large speedups."
       ],
@@ -926,7 +926,7 @@
         "state:modified/new, --state, --defer and YAML selectors.",
         "0.18.1 adds exposures representing dashboards and other downstream uses."
       ],
-      "proposed_waffle_shop_demo": "Change refund logic and rebuild its affected slice against prior state; at 0.18.1 add a Waffle Shop dashboard exposure.",
+      "proposed_jaffle_shop_demo": "Change refund logic and rebuild its affected slice against prior state; at 0.18.1 add a Jaffle Shop dashboard exposure.",
       "caveats": [
         "File-based state selection is distinct from the 2026 commercial dbt State product."
       ],
@@ -973,7 +973,7 @@
         "Snapshot hard-delete invalidation and revival.",
         "Deferral extends to tests; versioned artifact schemas and project config migrations."
       ],
-      "proposed_waffle_shop_demo": "Delete a customer from the raw feed and show the snapshot record being invalidated.",
+      "proposed_jaffle_shop_demo": "Delete a customer from the raw feed and show the snapshot record being invalidated.",
       "caveats": [
         "Exposures already existed in 0.18.1; do not attribute them here."
       ],
@@ -1019,7 +1019,7 @@
         "Store test failures in the database.",
         "Test where/limit/warn_if/error_if/fail_calc configuration; experimental parser."
       ],
-      "proposed_waffle_shop_demo": "Persist failed payment rows and distinguish warning thresholds from errors.",
+      "proposed_jaffle_shop_demo": "Persist failed payment rows and distinguish warning thresholds from errors.",
       "caveats": [
         "Do not use native unit-test YAML here; that arrives in 1.8."
       ],
@@ -1065,7 +1065,7 @@
         "dbt build runs seeds, snapshots, models and tests in DAG order.",
         "on_schema_change for incremental models; state detects macro changes."
       ],
-      "proposed_waffle_shop_demo": "Run the whole Waffle Shop workflow with one build and show how a failed test prevents downstream work.",
+      "proposed_jaffle_shop_demo": "Run the whole Jaffle Shop workflow with one build and show how a failed test prevents downstream work.",
       "caveats": [
         "0.21 is the last 0.x minor series; no 0.22–0.99 chapters."
       ],
@@ -1106,7 +1106,7 @@
         "Default partial/static parsing, result selectors and interactive init.",
         "Metrics nodes enter the manifest; package/adapter installation conventions evolve."
       ],
-      "proposed_waffle_shop_demo": "Run the established shop project, fail a model, and select prior failures for a targeted rerun.",
+      "proposed_jaffle_shop_demo": "Run the established shop project, fail a model, and select prior failures for a targeted rerun.",
       "caveats": [
         "Metrics metadata in Core does not mean a hosted Semantic Layer query service existed at 1.0."
       ],
@@ -1187,7 +1187,7 @@
         "source_status:fresher+ selection.",
         "Composite unique_key lists and custom generic-test names."
       ],
-      "proposed_waffle_shop_demo": "Load new orders only and build descendants of the fresher source.",
+      "proposed_jaffle_shop_demo": "Load new orders only and build descendants of the fresher source.",
       "caveats": [
         "This is explicitly user-driven freshness/state selection, not automatic 2026 dbt State."
       ],
@@ -1253,7 +1253,7 @@
         "Grants managed through model configs.",
         "Cross-database macros move into Core; ratio metrics supported."
       ],
-      "proposed_waffle_shop_demo": "Grant a reporting role access to revenue through model configuration.",
+      "proposed_jaffle_shop_demo": "Grant a reporting role access to revenue through model configuration.",
       "caveats": [
         "Local role verification works only on an adapter with grants support, such as Postgres."
       ],
@@ -1324,7 +1324,7 @@
         "Python models, including incremental support on supported platforms.",
         "More portable macros and .dbtignore."
       ],
-      "proposed_waffle_shop_demo": "Add an optional Python customer segmentation model while keeping SQL revenue as the shared baseline.",
+      "proposed_jaffle_shop_demo": "Add an optional Python customer segmentation model while keeping SQL revenue as the shared baseline.",
       "caveats": [
         "Python-model execution is adapter-specific and cannot be assumed on local Postgres; may require another adapter or evidence-only experience."
       ],
@@ -1400,7 +1400,7 @@
         "Incremental predicates and favor-state deferral.",
         "Buildable indirect test selection; richer structured logs and warning controls."
       ],
-      "proposed_waffle_shop_demo": "Constrain the scanned history for an incremental revenue model; show favor-state using a known reference manifest.",
+      "proposed_jaffle_shop_demo": "Constrain the scanned history for an incremental revenue model; show favor-state using a known reference manifest.",
       "caveats": [
         "Adapter support and generated SQL must be validated for the chosen target."
       ],
@@ -1486,7 +1486,7 @@
         "Contracts, model versions, groups and access.",
         "dbt show and programmatic dbtRunner."
       ],
-      "proposed_waffle_shop_demo": "Break a revenue contract, then provide v1/v2 revenue model interfaces and preview a result.",
+      "proposed_jaffle_shop_demo": "Break a revenue contract, then provide v1/v2 revenue model interfaces and preview a result.",
       "caveats": [
         "Database-enforced constraints differ by adapter; do not conflate contract validation with all database constraints."
       ],
@@ -1582,7 +1582,7 @@
         "retry, clone and materialized views.",
         "Semantic-model parsing and cross-project dependency foundations."
       ],
-      "proposed_waffle_shop_demo": "Retry a failed shop build; inspect a local materialized view; offer clone only where its semantics are supported.",
+      "proposed_jaffle_shop_demo": "Retry a failed shop build; inspect a local materialized view; offer clone only where its semantics are supported.",
       "caveats": [
         "Postgres clone fallback is not zero-copy storage cloning; hosted Mesh and Semantic Layer availability must be dated independently."
       ],
@@ -1713,7 +1713,7 @@
         "Package dependency locking and static documentation.",
         "Saved-query semantic metadata; configurable seed delimiters."
       ],
-      "proposed_waffle_shop_demo": "Install locked shop packages and open a self-contained documentation page.",
+      "proposed_jaffle_shop_demo": "Install locked shop packages and open a self-contained documentation page.",
       "caveats": [
         "Semantic query execution needs separate MetricFlow/service setup; parsing alone is not the whole product."
       ],
@@ -1849,7 +1849,7 @@
         "Native SQL unit tests with controlled fixtures.",
         "Schema-only --empty builds; Core/adapter internals decoupled."
       ],
-      "proposed_waffle_shop_demo": "Test refund edge cases before materializing full data; display expected versus actual results.",
+      "proposed_jaffle_shop_demo": "Test refund edge cases before materializing full data; display expected versus actual results.",
       "caveats": [
         "Unit tests still use a warehouse to execute SQL; --empty also connects and executes, and is not an offline SQL validator."
       ],
@@ -1935,7 +1935,7 @@
         "Microbatch incremental strategy and batch retry.",
         "YAML snapshots and new snapshot configuration."
       ],
-      "proposed_waffle_shop_demo": "Backfill daily order batches and repair a late-arriving order; express customer history in YAML.",
+      "proposed_jaffle_shop_demo": "Backfill daily order batches and repair a late-arriving order; express customer history in YAML.",
       "caveats": [
         "Execution and parallelism depend on adapter support. Keep event timestamps deterministic."
       ],
@@ -2026,7 +2026,7 @@
         "Time-window sample mode and custom source freshness queries.",
         "Macro argument validation and clearer configuration deprecations."
       ],
-      "proposed_waffle_shop_demo": "Build a small trading window, then show actionable warnings from a deliberately outdated configuration.",
+      "proposed_jaffle_shop_demo": "Build a small trading window, then show actionable warnings from a deliberately outdated configuration.",
       "caveats": [
         "Some configuration exists for platform features; its presence in Core is not proof the hosted feature is locally available."
       ],
@@ -2177,7 +2177,7 @@
         "User-defined functions represented as first-class DAG resources.",
         "Stricter config validation and DBT_ENGINE_ environment-variable namespace."
       ],
-      "proposed_waffle_shop_demo": "Create a revenue-normalization function and reference it from a shop model, on a supported adapter.",
+      "proposed_jaffle_shop_demo": "Create a revenue-normalization function and reference it from a shop model, on a supported adapter.",
       "caveats": [
         "Language and adapter support must be checked; do not assume Postgres supports every new UDF feature."
       ],
@@ -2288,7 +2288,7 @@
         "Opt-in v2 Rust parser; vars.yml and ad hoc run-operation --sql.",
         "Expanded UDFs, semantic definitions and catalogue integration; on_error configuration."
       ],
-      "proposed_waffle_shop_demo": "Compare parsers on the same shop project and validate equivalent model selection; move stable vars into vars.yml.",
+      "proposed_jaffle_shop_demo": "Compare parsers on the same shop project and validate equivalent model selection; move stable vars into vars.yml.",
       "caveats": [
         "GitHub/PyPI July 16 differs from blog edited Aug 17. Optional parser is an extra binary. Catalogue integrations/UDFs have adapter-specific requirements."
       ],
@@ -2351,7 +2351,7 @@
         "Rust engine becomes dbt v2; full dbt and Apache-licensed dbt OSS distributions.",
         "Full distribution adds proprietary SQL comprehension, including earlier SQL feedback."
       ],
-      "proposed_waffle_shop_demo": "Run the shop locally with DuckDB, introduce an invalid column, and compare feedback to a v1 checkpoint.",
+      "proposed_jaffle_shop_demo": "Run the shop locally with DuckDB, introduce an invalid column, and compare feedback to a v1 checkpoint.",
       "caveats": [
         "Do not attribute proprietary SQL comprehension to dbt OSS. Postgres is coming soon at GA; v1 remains maintained, so v2 does not mean v1 vanished."
       ],

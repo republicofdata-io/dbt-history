@@ -88,7 +88,7 @@ walkthrough:
     See how the first dbt turned a SQL file into a rebuilt table, and how a later 0.1 patch let one model
     refer to another.
   context: >
-    Waffle Shop still earns 12,500 cents. The example compares how the same rule is represented in 0.1.1 and
+    Jaffle Shop still earns 12,500 cents. The example compares how the same rule is represented in 0.1.1 and
     in the later 0.1.14 patch.
   dataset_variant: base
   steps:
@@ -299,7 +299,7 @@ walkthrough:
         By patch 0.1.14, point one model at another by name and let dbt work out the build order. Which patch
         first added this is still unconfirmed.
     scenario: >
-      Waffle Shop wants its revenue by location recalculated every day. Instead of pasting a query into a
+      Jaffle Shop wants its revenue by location recalculated every day. Instead of pasting a query into a
       database console, the query lives in a file and dbt rebuilds the table from it. The walkthrough starts
       at the first release, 0.1.1, then jumps to patch 0.1.14 to show one model referring to another.
     outcome: >

@@ -80,7 +80,7 @@ walkthrough:
   learning_objective: |
     Label two revenue models with a tag, then run just those models with one command.
   context: >
-    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
+    Jaffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
     Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
   dataset_variant: base
   steps:
@@ -279,13 +279,13 @@ walkthrough:
       - Put a label, called a tag, on a model, such as finance.
       - Run only the models that carry a given tag, instead of the whole project.
     scenario: >
-      A change touches only the finance numbers. Waffle Shop wants to rebuild the two revenue models and
+      A change touches only the finance numbers. Jaffle Shop wants to rebuild the two revenue models and
       nothing else. It tags both models finance and runs that slice, leaving the upstream models already in
       the warehouse untouched.
     outcome: |
       See the tag in the model, the command that selects by tag, and the revenue result that stays the same.
   title: |
-    Demo: a tag lets Waffle Shop build only its finance models
+    Demo: a tag lets Jaffle Shop build only its finance models
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.
 default_milestone: 0.12.0

@@ -1,4 +1,4 @@
-# Waffle Shop demo alignment handoff
+# Jaffle Shop demo alignment handoff
 
 Completed locally in `republicofdata-io/dbt-history` on 22 September 2026. Historical cutoff remains 21 September 2026.
 
@@ -82,7 +82,7 @@ Replaced repetitive conversion screens with variables, a 0.5.1 archive, and a 0.
 
 **Recorded as limitations or confirmed historical behavior:**
 
-- `historical-0.5-01`: Kept the confirmed models.waffle_shop.vars layout from 0.5.0.
+- `historical-0.5-01`: Kept the confirmed models.jaffle_shop.vars layout from 0.5.0.
 - `historical-0.5-02`: Kept the .0 suffix; the rendered expression divides by decimal 100.0, verified arithmetically.
 - `historical-0.5-03`: Safer incremental writes and adapter introduction are release context; the demo shows variables, archives and custom SQL tests.
 
@@ -122,7 +122,7 @@ Replaced the transaction label with a visible prepared schedule and added a 0.8.
 
 ### 0.9
 
-Showed hand-written duplicated SQL before package use and kept the unconfigured order model in schema waffle.
+Showed hand-written duplicated SQL before package use and kept the unconfigured order model in schema jaffle.
 
 **Fixed:** review-0.9-01, review-0.9-02, historical-0.9-01.
 
@@ -231,7 +231,7 @@ Recorded the audit-schema assumption and narrowed the intro to the stored-failur
 
 **Recorded as limitations or confirmed historical behavior:**
 
-- `historical-0.20-01`: Keep waffle_dbt_test__audit with target.schema=waffle; the naming assumption is recorded.
+- `historical-0.20-01`: Keep jaffle_dbt_test__audit with target.schema=jaffle; the naming assumption is recorded.
 - `historical-0.20-02`: Retain the count wrapper as an inspection query, not a second test; recorded explicitly.
 
 ### 0.21

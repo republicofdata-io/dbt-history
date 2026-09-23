@@ -126,7 +126,7 @@ walkthrough:
     See the two ways to install dbt v2, and how the full version reads SQL closely enough to catch a missing
     column early.
   context: >
-    The prepared order_revenue relation contains revenue_cents, not revenue_amount_cents. Waffle Shop base
+    The prepared order_revenue relation contains revenue_cents, not revenue_amount_cents. Jaffle Shop base
     revenue remains 12,500 cents.
   dataset_variant: base
   steps:
@@ -185,7 +185,7 @@ walkthrough:
         - language: yaml
           filename: dbt_project.yml
           content: |
-            name: waffle_shop
+            name: jaffle_shop
             version: "1.0"
             config-version: 2
             model-paths: [models]

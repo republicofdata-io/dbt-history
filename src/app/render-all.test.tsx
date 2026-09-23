@@ -23,12 +23,12 @@ describe("every chapter renders", () => {
   for (const release of releases) {
     it(`${release.label} renders all tabs, steps and milestones`, () => {
       const steps = release.walkthrough?.steps ?? [];
-      renderAt(`/${release.id}/waffle`);
+      renderAt(`/${release.id}/jaffle`);
       expect(screen.getByText("What you can now do")).toBeInTheDocument();
       expect(screen.getByText(`Overview · ${steps.length} steps`)).toBeInTheDocument();
       cleanup();
       for (let i = 1; i <= steps.length; i++) {
-        renderAt(`/${release.id}/waffle?s=${i}`);
+        renderAt(`/${release.id}/jaffle?s=${i}`);
         expect(screen.getAllByText(steps[i - 1].title).length).toBeGreaterThan(0);
         expect(screen.getByText(`Step ${i} of ${steps.length}`)).toBeInTheDocument();
         cleanup();

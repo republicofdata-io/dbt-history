@@ -33,7 +33,7 @@ Wording was rewritten by an editorial pass; these items need a content or histor
 
 ## 0.9
 - Step 1 is framed as the problem (copies), but both models already call shared_shop.net_cents. The before state with copied SQL is never shown. Consider showing the hand-typed subtraction in step 1 and the macro call in step 2.
-- Step 3 result lists order_revenue in waffle_analytics, but only revenue_by_location is shown with the schema config.
+- Step 3 result lists order_revenue in jaffle_analytics, but only revenue_by_location is shown with the schema config.
 
 ## 0.10
 - packages.yml is listed in can_now but no step shows it. Either add a small step or accept that only seeds are demonstrated.
@@ -77,7 +77,7 @@ Wording was rewritten by an editorial pass; these items need a content or histor
 
 ## 0.21
 - Step 1's result panel lists order_revenue as depending directly on staged payments, but the code shows two models in between (payments_by_order and order_amounts). Consider naming the chain or simplifying the panel.
-- Step 3 queries waffle.revenue_by_location, which is not one of the models shown in step 1, while the step 2 panel calls the skipped model 'dependent revenue model'. Consider aligning the names so the viewer can see it is the same thing.
+- Step 3 queries jaffle.revenue_by_location, which is not one of the models shown in step 1, while the step 2 panel calls the skipped model 'dependent revenue model'. Consider aligning the names so the viewer can see it is the same thing.
 
 ## 1.0
 - Step 1 shows two files both named models/schema.yml with different content (one has the payments test, the other documents revenue_by_location). Consider giving one a different filename or merging them.

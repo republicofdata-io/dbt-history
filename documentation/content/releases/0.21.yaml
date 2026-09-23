@@ -66,7 +66,7 @@ walkthrough:
   learning_objective: |
     See one command run models and tests in order, and refuse to build revenue on top of a failed check.
   context: >
-    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
+    Jaffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
     Riverside 4,800. The selected fixture is orphan-payment. Each state below is an authored illustration.
   dataset_variant: orphan-payment
   steps:
@@ -340,7 +340,7 @@ walkthrough:
           content: |
             -- Read the relation retained from the last successful build.
             select sum(revenue_cents) as existing_total_cents
-            from waffle.revenue_by_location;
+            from jaffle.revenue_by_location;
           highlight_lines:
             - 2
             - 3
@@ -373,7 +373,7 @@ walkthrough:
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
       The concrete relationships test references both payments and orders; both are ancestors of order_revenue in the shown graph. It is therefore eligible to block that dependent branch. This clarifies the earlier simplified single-parent description without removing it.
-      on_schema_change remains release context only (src-1). The existing waffle.revenue_by_location table in the last step is explicitly the previous successful base build, not a fresh result of this failed build.
+      on_schema_change remains release context only (src-1). The existing jaffle.revenue_by_location table in the last step is explicitly the previous successful base build, not a fresh result of this failed build.
       historical-0.21-02: Keep failed-test blocking behavior; the test has both orders and payments as ancestors of the dependent revenue branch. Evidence: src-1, src-2, src-3.
     code_review:
       reviewed_on: '2026-09-22'

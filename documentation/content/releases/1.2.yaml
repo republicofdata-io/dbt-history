@@ -59,7 +59,7 @@ walkthrough:
   learning_objective: |
     See a model declare who may read it, and see that this does not change the numbers.
   context: >
-    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
+    Jaffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
     Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
   dataset_variant: base
   steps:
@@ -110,7 +110,7 @@ walkthrough:
           content: |
             set role finance_reader;
             select location_id, location, payment_cents, refund_cents, revenue_cents
-            from waffle.revenue_by_location
+            from jaffle.revenue_by_location
             order by location_id;
           highlight_lines:
             - 1
@@ -129,7 +129,7 @@ walkthrough:
         columns:
           - statement
         rows:
-          -   - grant select on table waffle.revenue_by_location to finance_reader;
+          -   - grant select on table jaffle.revenue_by_location to finance_reader;
         result_status: pass
         diagram:
         provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
@@ -208,7 +208,7 @@ walkthrough:
           content: |
             set role finance_reader;
             select location_id, location, payment_cents, refund_cents, revenue_cents
-            from waffle.revenue_by_location
+            from jaffle.revenue_by_location
             order by location_id;
           highlight_lines:
             - 1
@@ -250,7 +250,7 @@ walkthrough:
         Declare a role’s SELECT permission in model config.
       - Have dbt apply that permission after rebuilding the model.
     scenario: >-
-      The finance_reader role can connect but cannot read the revenue table. Waffle Shop adds the missing
+      The finance_reader role can connect but cannot read the revenue table. Jaffle Shop adds the missing
       grant to the model and repeats the same query as that role.
     outcome: |-
       See permission denied, the applied grant statement, and the successful 12,500-cent result.

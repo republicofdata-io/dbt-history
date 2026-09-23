@@ -1,18 +1,18 @@
-# Coding brief: guided Waffle Shop examples
+# Coding brief: guided Jaffle Shop examples
 
 **Current direction, confirmed by Olivier on 22 September 2026.** This brief replaces the local environment deliverable. The public app contains the complete experience, including the examples used in the 20-minute YouTube recording.
 
 ## Experience
 
-Each release includes a short Waffle Shop walkthrough. Visitors advance through prepared steps with **Next**, **Previous** and **Restart**. The app shows read-only code, highlighted changes, small tables, diagrams and explained results. Visitors don't edit code, change fixtures, configure dbt or execute commands. A command may appear as part of the explanation, without being a runnable terminal control.
+Each release includes a short Jaffle Shop walkthrough. Visitors advance through prepared steps with **Next**, **Previous** and **Restart**. The app shows read-only code, highlighted changes, small tables, diagrams and explained results. Visitors don't edit code, change fixtures, configure dbt or execute commands. A command may appear as part of the explanation, without being a runnable terminal control.
 
-**Updated 22 September 2026:** the example is a fourth tab, **Waffle Shop**, beside The release, The catalogue and The wider ecosystem. It is not a separate application. All 35 version chapters remain, with the same release/date anchor controlling the catalogue and ecosystem views. The app will be published on Olivier's website so viewers can explore at their own pace afterward.
+**Updated 22 September 2026:** the example is a fourth tab, **Jaffle Shop**, beside The release, The catalogue and The wider ecosystem. It is not a separate application. All 35 version chapters remain, with the same release/date anchor controlling the catalogue and ecosystem views. The app will be published on Olivier's website so viewers can explore at their own pace afterward.
 
 ## Suggested walkthrough structure
 
 Use the smallest number of steps that explains the contribution clearly. Three to five is a useful starting point, not a requirement that every release fit the same template.
 
-1. **The situation:** the Waffle Shop problem or workflow before the feature.
+1. **The situation:** the Jaffle Shop problem or workflow before the feature.
 2. **The change:** the relevant SQL, YAML, command or configuration, with the important lines highlighted.
 3. **What happens:** the prepared table, test result, lineage change or other visible consequence.
 4. **Why it matters:** the practical difference from the previous workflow.
@@ -72,7 +72,7 @@ For the video, Olivier can use the same walkthroughs and move quickly through sh
 
 ## Acceptance criteria
 
-- Every one of the 35 release chapters has a suitable guided Waffle Shop example.
+- Every one of the 35 release chapters has a suitable guided Jaffle Shop example.
 - Every example is accessible within the release view; the whole recording can stay in the app.
 - Next, Previous, Restart, step count, direct entry and tab/release navigation behave consistently.
 - Code is read-only. There are no visitor fixture controls, live SQL execution buttons or simulated setup requirements.

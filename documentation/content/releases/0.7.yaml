@@ -97,7 +97,7 @@ walkthrough:
   learning_objective: |
     Separate the business rule, which stays the same, from the warehouse connection, which changes.
   context: >
-    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
+    Jaffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
     Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
   dataset_variant: base
   steps:
@@ -206,7 +206,7 @@ walkthrough:
         - language: yaml
           filename: profiles.yml (connection excerpt)
           content: |
-            waffle_shop:
+            jaffle_shop:
               target: dev
               outputs:
                 dev:
@@ -215,7 +215,7 @@ walkthrough:
                   user: "<username>"
                   password: "<password>"
                   database: ANALYTICS
-                  schema: WAFFLE
+                  schema: JAFFLE
                   warehouse: TRANSFORMING
                   threads: 2
           highlight_lines:
@@ -236,9 +236,9 @@ walkthrough:
         - language: yaml
           filename: dbt_project.yml (excerpt)
           content: |
-            name: waffle_shop
+            name: jaffle_shop
             version: "1.0"
-            profile: waffle_shop
+            profile: jaffle_shop
             source-paths: [models]
           highlight_lines:
             - 3
@@ -292,7 +292,7 @@ walkthrough:
         - language: yaml
           filename: profiles.yml (connection excerpt)
           content: |
-            waffle_shop:
+            jaffle_shop:
               target: dev
               outputs:
                 dev:
@@ -301,7 +301,7 @@ walkthrough:
                   user: "<username>"
                   password: "<password>"
                   database: ANALYTICS
-                  schema: WAFFLE
+                  schema: JAFFLE
                   warehouse: TRANSFORMING
                   threads: 2
                   role: TRANSFORMER
@@ -358,6 +358,6 @@ walkthrough:
       See the Snowflake connection settings next to the unchanged models, and the same 12,500-cent
       expectation.
   title: |
-    Demo: the same Waffle Shop models run on Snowflake by changing only the connection
+    Demo: the same Jaffle Shop models run on Snowflake by changing only the connection
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

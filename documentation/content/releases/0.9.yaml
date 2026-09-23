@@ -99,7 +99,7 @@ walkthrough:
   learning_objective: |
     Tell the shop's own models apart from behaviour it borrows from a shared package.
   context: >
-    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
+    Jaffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
     Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
   dataset_variant: base
   steps:
@@ -177,7 +177,7 @@ walkthrough:
           -   - shared integrity tests
               - shared dependency
           -   - shop-specific source mappings
-              - Waffle Shop project
+              - Jaffle Shop project
         result_status:
         diagram:
         provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
@@ -195,9 +195,9 @@ walkthrough:
         - language: yaml
           filename: dbt_project.yml (excerpt)
           content: |
-            name: waffle_shop
+            name: jaffle_shop
             version: "1.0"
-            profile: waffle_shop
+            profile: jaffle_shop
             repositories:
               - "file:///tmp/shared_shop"
           highlight_lines:
@@ -267,8 +267,8 @@ walkthrough:
       title: Give the reports their own schema
       explanation: >
         A schema is a named area inside the database. Highlighted line 5 of the profile sets the base schema,
-        waffle. Highlighted line 1 of the location model asks for a custom schema, analytics. dbt joins the
-        two with an underscore, so the table lands in waffle_analytics. The result panel shows where each
+        jaffle. Highlighted line 1 of the location model asks for a custom schema, analytics. dbt joins the
+        two with an underscore, so the table lands in jaffle_analytics. The result panel shows where each
         report ends up. The names are illustrative.
       state:
         kind: comparison
@@ -278,9 +278,9 @@ walkthrough:
           - illustrative schema
         rows:
           -   - order_revenue
-              - waffle
+              - jaffle
           -   - revenue_by_location
-              - waffle_analytics
+              - jaffle_analytics
         result_status:
         diagram:
         provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
@@ -308,11 +308,11 @@ walkthrough:
         - language: yaml
           filename: profiles.yml (target excerpt)
           content: |
-            waffle_shop:
+            jaffle_shop:
               target: dev
               outputs:
                 dev:
-                  schema: waffle
+                  schema: jaffle
           highlight_lines:
             - 5
           purpose: authored executable syntax; illustration only
@@ -328,7 +328,7 @@ walkthrough:
       - alignment-0-9-0
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
-      The dependency is an authored local Git repository at /tmp/shared_shop, not a claimed historical published package; it must exist and contain the shown macro/project files. The old repositories key is used, not packages.yml. With target schema waffle and custom schema analytics, the default schema macro produces waffle_analytics.
+      The dependency is an authored local Git repository at /tmp/shared_shop, not a claimed historical published package; it must exist and contain the shown macro/project files. The old repositories key is used, not packages.yml. With target schema jaffle and custom schema analytics, the default schema macro produces jaffle_analytics.
       The shared 0.9 test uses a test_ macro returning a count, invoked through the v1 constraints mapping and package namespace; it is not a modern data-test block.
       historical-0.9-02: Confirmed package-prefixed v1 constraints in 0.9 parser.py, resolving a namespaced test_ macro. Evidence: src-1, src-2, src-3, src-4, src-5, alignment-0-9-0.
       historical-0.9-03: Confirmed repositories is handed to Git clone, which accepts file URLs. The example is an authored existing local Git repository, not a historical public package. Evidence: src-1, src-2, src-3, src-4, src-5, alignment-0-9-0.

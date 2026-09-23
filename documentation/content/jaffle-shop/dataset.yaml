@@ -1,10 +1,18 @@
-id: waffle-shop
-title: One day at Waffle Shop
+id: jaffle-shop
+title: One day at Jaffle Shop
 provenance:
   kind: authored-fiction
   authored_on: '2026-09-22'
   historical_claim: false
   note: Names, transactions and dates are invented teaching fixtures. Their arithmetic is checked independently.
+  based_on: |
+    Loosely based on dbt Labs' classic Jaffle Shop demo project (customers, orders, payments), extended with
+    locations and refunds so one revenue question can run through every chapter. The classic project is a
+    fictional store used to teach dbt; it is not a historical data source.
+  based_on_source:
+    title: dbt-labs/jaffle-shop-classic
+    url: https://github.com/dbt-labs/jaffle-shop-classic
+    retrieved: '2026-09-23'
 recurring_question: How much revenue did each location earn, and can we trust the answer?
 business_rules:
 - id: revenue-definition

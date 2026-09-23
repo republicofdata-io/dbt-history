@@ -2,7 +2,7 @@ id: '0.4'
 label: v0.4
 title: Materialization choices
 lead: >
-  Models can now be incremental or ephemeral. Waffle Shop can process new orders without rebuilding its entire
+  Models can now be incremental or ephemeral. Jaffle Shop can process new orders without rebuilding its entire
   order history.
 problem_then: |
   A full rebuild repeats old work. Reusable intermediate SQL also need not always become a warehouse table.
@@ -67,7 +67,7 @@ walkthrough:
     Follow one incremental run: what is already stored, which rows are new, and what the table holds
     afterwards.
   context: |
-    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is second-day. Each state below is an authored illustration.
+    Jaffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is second-day. Each state below is an authored illustration.
      The illustrative order_revenue_input relation is a full recalculation of order_revenue over the selected raw fixture; it is the input to the incremental target.
   dataset_variant: second-day
   steps:

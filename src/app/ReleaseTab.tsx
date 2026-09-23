@@ -24,7 +24,7 @@ function Prose({ text, className }: { text?: string | null; className?: string }
 /**
  * The release panel from the concept: context row, big version number with
  * title and lead, then "What changed" beside the problem, the practical
- * effect and the practitioner detail. The Waffle Shop example has its own tab.
+ * effect and the practitioner detail. The Jaffle Shop example has its own tab.
  */
 export default function ReleaseTab({ state }: { state: HistoryState }) {
   const r = state.release;
@@ -109,8 +109,8 @@ export default function ReleaseTab({ state }: { state: HistoryState }) {
                 )}
               </div>
             </EvidenceDrawer>
-            <button type="button" onClick={() => state.goTab("waffle")} className="text-accent underline-offset-2 hover:underline">
-              See it happen in the Waffle Shop ›
+            <button type="button" onClick={() => state.goTab("jaffle")} className="text-accent underline-offset-2 hover:underline">
+              See it happen in the Jaffle Shop ›
             </button>
           </div>
         </div>

@@ -108,8 +108,8 @@
   color: var(--color-muted-foreground);
 }
 
-/* The waffle mark from the concept: a gold grid on a warm wash. */
-@utility waffle-mark {
+/* The jaffle mark from the concept: a gold grid on a warm wash. */
+@utility jaffle-mark {
   width: 30px;
   height: 30px;
   border-radius: 7px;

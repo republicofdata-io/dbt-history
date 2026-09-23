@@ -117,7 +117,7 @@ walkthrough:
   learning_objective: |
     Use a project variable to change how revenue is shown while leaving the revenue rule alone.
   context: >
-    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
+    Jaffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
     Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
   dataset_variant: base
   steps:
@@ -154,10 +154,10 @@ walkthrough:
         - language: yaml
           filename: dbt_project.yml (excerpt)
           content: |
-            name: waffle_shop
+            name: jaffle_shop
             version: "1.0"
             models:
-              waffle_shop:
+              jaffle_shop:
                 vars:
                   cents_per_unit: 100
           highlight_lines:
@@ -384,7 +384,7 @@ walkthrough:
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
       Archive timestamps come from declared variant metadata through a setup view; they are fixture dates, not 2016 runtime captures. Safer incremental writes and PostgreSQL support remain release context rather than separate demonstrations (src-1 and the 0.5.1 source).
-      historical-0.5-01: Kept the confirmed models.waffle_shop.vars layout from 0.5.0. Evidence: src-1, src-2, src-3, src-4, src-5, alignment-0-5-1, alignment-0-5-4.
+      historical-0.5-01: Kept the confirmed models.jaffle_shop.vars layout from 0.5.0. Evidence: src-1, src-2, src-3, src-4, src-5, alignment-0-5-1, alignment-0-5-4.
       historical-0.5-02: Kept the .0 suffix; the rendered expression divides by decimal 100.0, verified arithmetically. Evidence: src-1, src-2, src-3, src-4, src-5, alignment-0-5-1, alignment-0-5-4.
       historical-0.5-03: Safer incremental writes and adapter introduction are release context; the demo shows variables, archives and custom SQL tests. Evidence: src-1, src-2, src-3, src-4, src-5, alignment-0-5-1, alignment-0-5-4.
     code_review:
@@ -398,7 +398,7 @@ walkthrough:
         From 0.5.1, preserve earlier customer values with an archive.
       - 'From 0.5.4, write a SQL query whose returned rows are test failures.'
     scenario: >-
-      Waffle Shop needs readable amounts, a record of a customer move, and a check that the reports reconcile.
+      Jaffle Shop needs readable amounts, a record of a customer move, and a check that the reports reconcile.
       Three small changes show how the 0.5 series brings each into the project.
     outcome: |-
       See 34.00 displayed from 3,400 cents, two archived customer rows, and a passing revenue reconciliation.

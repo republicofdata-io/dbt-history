@@ -142,7 +142,7 @@ walkthrough:
     See how a model split into daily batches can rebuild one past day when a late order arrives, without
     touching the other days.
   context: >
-    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
+    Jaffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
     Riverside 4,800. The selected fixture is late-order. Each state below is an authored illustration.
   dataset_variant: late-order
   steps:
@@ -487,7 +487,7 @@ walkthrough:
           filename: inspection/customer_history.sql
           content: |
             select customer_id, city, dbt_valid_from, dbt_valid_to
-            from waffle_snapshots.customers_history
+            from jaffle_snapshots.customers_history
             where customer_id = 1 order by dbt_valid_from
           highlight_lines:
             - 1
@@ -521,7 +521,7 @@ walkthrough:
       data_context:
         dataset_variant: customer-city-change
         phase: 'Separate snapshot example: observe the base customer before and after the declared city update;
-          target schema waffle.'
+          target schema jaffle.'
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -538,7 +538,7 @@ walkthrough:
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
       The added recipe targets Snowflake with a matching 1.9 adapter that implements microbatch. order_revenue must be refreshed from the selected fixture before the bounded repair; event_time is declared on that immediate input so automatic filtering applies. The March 8 repair ends at the exclusive March 9 boundary and leaves the existing March 9 batch intact.
-      The end date is exclusive: the adapter event-time wrapper renders field >= start and field < end. With a March 9 clock and lookback=1, March 8 is already eligible; explicit bounds demonstrate control, not necessity. The snapshot step switches to the named customer-city-change variant and uses target.schema=waffle, yielding waffle_snapshots. Batch retry and later snapshot options are not demonstrated (alignment-1-9-0).
+      The end date is exclusive: the adapter event-time wrapper renders field >= start and field < end. With a March 9 clock and lookback=1, March 8 is already eligible; explicit bounds demonstrate control, not necessity. The snapshot step switches to the named customer-city-change variant and uses target.schema=jaffle, yielding jaffle_snapshots. Batch retry and later snapshot options are not demonstrated (alignment-1-9-0).
       review-1.9-02: Exclusive end verified: adapter relation wrapper uses >= start and < end. Keep March 9 as the exclusive boundary and cite the source. Evidence: src-1, src-2, src-3, src-4, src-5, src-6, src-7, alignment-1-9-0, alignment-event-filter.
     code_review:
       reviewed_on: '2026-09-22'

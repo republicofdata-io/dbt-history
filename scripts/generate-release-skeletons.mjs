@@ -98,7 +98,7 @@ function skeleton(ch) {
     sources,
     walkthrough: null,
     authoring_notes: {
-      proposed_waffle_shop_demo: ch.proposed_waffle_shop_demo,
+      proposed_jaffle_shop_demo: ch.proposed_jaffle_shop_demo,
       latest_stable_patch_observed: ch.latest_stable_patch_observed,
       research_confidence: ch.confidence,
     },

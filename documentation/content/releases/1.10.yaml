@@ -125,7 +125,7 @@ walkthrough:
   learning_objective: |
     See how a repeated key in a YAML file makes a model's meaning ambiguous, and how dbt now points it out.
   context: >
-    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
+    Jaffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
     Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
   dataset_variant: base
   steps:
@@ -185,7 +185,7 @@ walkthrough:
           filename: inspection/sample_totals.sql
           content: |
             select count(*) as orders, sum(revenue_cents) as revenue_cents
-            from waffle.daily_revenue;
+            from jaffle.daily_revenue;
           highlight_lines:
             - 1
           purpose: Authored era-specific example; illustration only.
@@ -361,7 +361,7 @@ walkthrough:
           filename: inspection/total.sql
           content: |
             select sum(revenue_cents) as total_cents
-            from waffle.revenue_by_location
+            from jaffle.revenue_by_location
           highlight_lines:
             - 1
           purpose: Authored era-specific example; illustration only.
@@ -401,7 +401,7 @@ walkthrough:
       - See a deprecation warning for duplicated YAML keys.
       - Choose to promote that warning category to an error.
     scenario: >-
-      Waffle Shop first checks a single trading day from a two-day input. It then cleans up conflicting model
+      Jaffle Shop first checks a single trading day from a two-day input. It then cleans up conflicting model
       descriptions before stricter configuration checks make them harder to ignore.
     outcome: |-
       See March 8 included and March 9 excluded, then the duplicate-key warning and its corrected definition.

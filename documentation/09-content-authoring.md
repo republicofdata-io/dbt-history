@@ -6,7 +6,7 @@ Run `make test` after adding or editing content. It validates every file and che
 
 ## Files and delivery order
 
-1. `waffle-shop/dataset.yaml`
+1. `jaffle-shop/dataset.yaml`
 2. `releases/<id>.yaml` for `origin`, `0.1` … `0.21`, `1.0` … `1.12`, `2.0`
 3. `catalogue/products.yaml` and `catalogue/events.yaml`
 4. `ecosystem/placements.yaml`
@@ -15,10 +15,10 @@ Run `make test` after adding or editing content. It validates every file and che
 
 `"YYYY-MM-DD"`, `"YYYY-MM"` or `"YYYY"`, with `precision: day | month | year`. Where only a bound is known, add `uncertainty: { earliest, latest }`. Never invent a day for month-only evidence.
 
-## Waffle Shop dataset
+## Jaffle Shop dataset
 
 ```yaml
-id: waffle-shop
+id: jaffle-shop
 recurring_question: How much revenue did each location earn, and can we trust the answer?
 provenance: { kind: authored-fiction, authored_on: "2026-09-22", historical_claim: false }
 business_rules: [{ id: revenue-definition, statement: ... }]
@@ -91,7 +91,7 @@ walkthrough:
   intro:
     can_now:                       # 2–4 plain-language capabilities this version unlocks
       - Write a unit test with a small fixture next to the model.
-    scenario: |                    # what the Waffle Shop scenario is about, 2–3 sentences
+    scenario: |                    # what the Jaffle Shop scenario is about, 2–3 sentences
     outcome: |                     # optional: what the visitor will have seen by the last step
   dataset_variant: base
   steps:

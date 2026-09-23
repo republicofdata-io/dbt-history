@@ -12,7 +12,7 @@ Artifacts beside this report preserve complete PyPI JSON for `dbt`, `dbt-core`, 
 
 ## Main conclusions
 
-1. Build one immutable runner environment per chosen exact release, with one matching Waffle Shop checkpoint. Changing only the dbt executable cannot recreate the old experience.
+1. Build one immutable runner environment per chosen exact release, with one matching Jaffle Shop checkpoint. Changing only the dbt executable cannot recreate the old experience.
 2. Use Linux/amd64 container runners for archaeology. Native arm64 may be used for modern runners once their full wheel set is verified. Python 2 and old drivers should remain in isolated containers. Docker Desktop supports emulation; its performance cost makes historic-versus-current speed comparisons misleading. [Docker multi-platform documentation](https://docs.docker.com/build/building/multi-platform/)
 3. `dbt` was the monolithic PyPI package through 0.12. The 0.13 source/package split created `dbt-core` and adapter packages. Install just the Postgres adapter and its exact Core version for the later legacy environments; avoid the meta-package that pulls unrelated warehouse drivers. [Core 0.13 metadata](https://pypi.org/pypi/dbt-core/0.13.0/json), [Postgres 0.13 metadata](https://pypi.org/pypi/dbt-postgres/0.13.0/json)
 4. Before 0.5.1 the code recognizes Redshift, not a native Postgres target. A limited local PostgreSQL surrogate may work through the Redshift profile, but this is an experiment that requires honest labeling and tests, not evidence of historical PostgreSQL support.
@@ -70,7 +70,7 @@ Corrections for exact historical fidelity:
 
 ## PostgreSQL viability and the earliest releases
 
-The downloaded 0.1.1 `dbt/task/run.py` recognizes only `type: redshift` and constructs a `RedshiftTarget`. It connects through psycopg2, inspects `pg_tables` and `pg_views`, creates schemas, and executes fairly ordinary CREATE TABLE/VIEW statements. Its compilation code does not use the modern `ref()` graph: it reads dependencies from compiled SQL. Consequently, a small Waffle Shop example using plain SQL could plausibly execute unchanged against local PostgreSQL while using a Redshift profile. **This has not been tested.** It is a PostgreSQL surrogate for a Redshift-targeting engine, not a full Redshift emulator.
+The downloaded 0.1.1 `dbt/task/run.py` recognizes only `type: redshift` and constructs a `RedshiftTarget`. It connects through psycopg2, inspects `pg_tables` and `pg_views`, creates schemas, and executes fairly ordinary CREATE TABLE/VIEW statements. Its compilation code does not use the modern `ref()` graph: it reads dependencies from compiled SQL. Consequently, a small Jaffle Shop example using plain SQL could plausibly execute unchanged against local PostgreSQL while using a Redshift profile. **This has not been tested.** It is a PostgreSQL surrogate for a Redshift-targeting engine, not a full Redshift emulator.
 
 0.2–0.5.0 retain Redshift-only target selection; materialization paths also generate Redshift distribution/sort syntax when configured. Avoiding those settings may permit a subset to run on PostgreSQL. Do not silently rewrite generated SQL, monkeypatch the engine, or call those releases “Postgres supported.” If a compatibility patch becomes necessary, retain the original artifact and record the patch checksum, rationale, exact effect, and a conspicuous “compatibility adaptation” status. Authentic Redshift is a separate optional cloud lane, not a local prerequisite.
 
@@ -131,7 +131,7 @@ Source inspection files for these command claims are preserved in the original w
 ## Unresolved issues for implementation
 
 - Full solvable dependency constraints for every exact historical engine. None has been derived by installation here.
-- Pre-0.5.1 PostgreSQL surrogate behavior and exact earliest Waffle Shop SQL/profile syntax.
+- Pre-0.5.1 PostgreSQL surrogate behavior and exact earliest Jaffle Shop SQL/profile syntax.
 - Availability/digests of historical Python/base images and old OS package repositories.
 - Postgres server version that passes all historical adapter metadata queries and the exact necessary legacy authentication choice.
 - dbt-extractor and1.12 experimental parser wheel coverage for chosen Linux architecture.

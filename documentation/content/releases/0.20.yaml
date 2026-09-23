@@ -66,7 +66,7 @@ walkthrough:
   learning_objective: |
     Go from a test that says one row failed to the actual row, kept in a table you can query.
   context: |
-    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is orphan-payment. Each state below is an authored illustration.
+    Jaffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and Riverside 4,800. The selected fixture is orphan-payment. Each state below is an authored illustration.
      In this snippet, ref("payments") and ref("orders") mean pass-through staging models with exactly the corresponding raw fixture rows.
   dataset_variant: orphan-payment
   steps:
@@ -217,9 +217,9 @@ walkthrough:
         - language: sql
           filename: inspection/stored_failures.sql
           content: |
-            -- Default audit schema with target.schema = waffle.
+            -- Default audit schema with target.schema = jaffle.
             select payment_id, order_id, amount_cents
-            from waffle_dbt_test__audit.payments_have_orders;
+            from jaffle_dbt_test__audit.payments_have_orders;
           highlight_lines:
             - 2
             - 3
@@ -240,9 +240,9 @@ walkthrough:
       - src-3
     limitations: |
       Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
-      The stored-failure inspection assumes the default audit schema and target.schema=waffle; permissions must allow its creation. A custom schema macro would change the physical name.
-      The default audit schema suffix dbt_test__audit is retained with target.schema=waffle (src-1, 0.20 default test materialization). The count wrapper in step 1 is a separate inspection query, not a second test. where/limit and warning thresholds remain release context rather than intro promises.
-      historical-0.20-01: Keep waffle_dbt_test__audit with target.schema=waffle; the naming assumption is recorded. Evidence: src-1, src-2, src-3.
+      The stored-failure inspection assumes the default audit schema and target.schema=jaffle; permissions must allow its creation. A custom schema macro would change the physical name.
+      The default audit schema suffix dbt_test__audit is retained with target.schema=jaffle (src-1, 0.20 default test materialization). The count wrapper in step 1 is a separate inspection query, not a second test. where/limit and warning thresholds remain release context rather than intro promises.
+      historical-0.20-01: Keep jaffle_dbt_test__audit with target.schema=jaffle; the naming assumption is recorded. Evidence: src-1, src-2, src-3.
       historical-0.20-02: Retain the count wrapper as an inspection query, not a second test; recorded explicitly. Evidence: src-1, src-2, src-3.
     code_review:
       reviewed_on: '2026-09-22'

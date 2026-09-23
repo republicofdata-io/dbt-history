@@ -1,15 +1,15 @@
 # dbt history
 
-A public history of dbt from its first release in 2016 through v2 in 2026, told through one evolving Waffle Shop project. It supports a 20-minute recorded walkthrough and independent browsing afterwards.
+A public history of dbt from its first release in 2016 through v2 in 2026, told through one evolving Jaffle Shop project. It supports a 20-minute recorded walkthrough and independent browsing afterwards.
 
 Published at `republicofdata.io/labs/dbt-history` (see [Publishing](#publishing)).
 
 ## What the app does
 
 - **35 version chapters plus an origin prologue**: v0.1–v0.21, v1.0–v1.12, v2.0. Nothing is invented and nothing is skipped.
-- **One date, four views.** The selected release and its dated milestone anchor four tabs: the release, the Waffle Shop walkthrough, the product catalogue at that date, and the wider data-stack diagram at that date. Changing tab keeps the release; changing release keeps the tab.
+- **One date, four views.** The selected release and its dated milestone anchor four tabs: the release, the Jaffle Shop walkthrough, the product catalogue at that date, and the wider data-stack diagram at that date. Changing tab keeps the release; changing release keeps the tab.
 - **Selectable milestones** inside a chapter (patches, announcements, product events) move the date for all four tabs.
-- **A guided Waffle Shop walkthrough** in each chapter, on its own tab. It opens on a first screen (what this version lets you do, the scenario, the steps ahead), then prepared steps with read-only code, highlighted lines, small tables, diagrams and explained results. Visitors use Next, Previous and Restart only. Nothing executes.
+- **A guided Jaffle Shop walkthrough** in each chapter, on its own tab. It opens on a first screen (what this version lets you do, the scenario, the steps ahead), then prepared steps with read-only code, highlighted lines, small tables, diagrams and explained results. Visitors use Next, Previous and Restart only. Nothing executes.
 - **State in the URL**: `/<release>/<tab>?m=<milestone>&s=<step>`. Deep links and browser history restore everything. Step progress per release is remembered for the browsing session.
 - **Presentation mode** (button or `P`) hides the index and enlarges type for recording. `[` and `]` change release; `←` and `→` change step.
 
@@ -17,7 +17,7 @@ Published at `republicofdata.io/labs/dbt-history` (see [Publishing](#publishing)
 
 Vite 8, React 19, TypeScript, Tailwind 4 and shadcn-style components on Radix, react-router 7, zod for content validation, vitest for tests.
 
-**Look and feel** follow the approved concept in `documentation/visual-reference.html`: paper, plum and gold palette as light-dark pairs (system preference, with a toggle), DM Sans and Space Grotesk, a sidebar release index, a large plum version number and a Waffle Shop card with the gold waffle mark. Tokens live in `src/index.css`.
+**Look and feel** follow the approved concept in `documentation/visual-reference.html`: paper, plum and gold palette as light-dark pairs (system preference, with a toggle), DM Sans and Space Grotesk, a sidebar release index, a large plum version number and a Jaffle Shop card with the gold jaffle mark. Tokens live in `src/index.css`.
 
 **Fits one screen.** The page is a fixed-height shell (masthead, sidebar plus main, footer) so a chapter never needs page scrolling during a recording. Details open in side drawers instead of expanding the page. A panel or code block scrolls internally only as a fallback when a screen is smaller than about 1280×800.
 
@@ -48,7 +48,7 @@ Content lives under `documentation/content/` and is validated against `src/conte
 
 | File | Holds |
 |---|---|
-| `waffle-shop/dataset.yaml` | The one shop: tables, business rules, expected revenue with its arithmetic, named variants. |
+| `jaffle-shop/dataset.yaml` | The one shop: tables, business rules, expected revenue with its arithmetic, named variants. |
 | `releases/<id>.yaml` | One chapter: lead, problem, feature claims with their exact introducing patch, milestones, sources, walkthrough. |
 | `catalogue/products.yaml` | Stable product identities with dated names and owners (Sinter → dbt Cloud → dbt, Explorer → Catalog…). |
 | `catalogue/events.yaml` | Dated product events. The catalogue at any date is computed from these; nothing is copied per chapter. |
@@ -97,7 +97,7 @@ Deploy from this folder with the Netlify CLI (`npm install -g netlify-cli`, `net
 netlify deploy --prod --build
 ```
 
-Continuous deploys from GitHub can be enabled with `netlify init` (it needs a one-time GitHub authorization in the browser). After any deploy, check `https://republicofdata.io/labs/dbt-history/1.8/waffle?s=2` loads directly.
+Continuous deploys from GitHub can be enabled with `netlify init` (it needs a one-time GitHub authorization in the browser). After any deploy, check `https://republicofdata.io/labs/dbt-history/1.8/jaffle?s=2` loads directly.
 
 ## Status
 

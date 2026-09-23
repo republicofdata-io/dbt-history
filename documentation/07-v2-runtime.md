@@ -1,4 +1,4 @@
-# dbt v2 runtime research for Waffle Shop
+# dbt v2 runtime research for Jaffle Shop
 
 > **Scope update · 22 September 2026:** this report preserves the original research. The current deliverable is the app with [guided, read-only examples](02-guided-examples-brief.md). Runtime build instructions and execution acceptance checks below are reference material only; full runtime reproduction is outside the current scope.
 
@@ -6,7 +6,7 @@ Research cutoff: 2026-09-21. This is source and metadata verification. No dbt ru
 
 ## Recommended local endpoint
 
-Use a separately isolated, pinned full dbt v2 environment against a file-backed DuckDB database for the v2 chapter. Add a separate dbt OSS environment only if showing the distribution distinction adds value to the video. Keep historical Python dbt environments separate. The shared object is the Waffle Shop dataset and business question, not one executable, adapter or project configuration.
+Use a separately isolated, pinned full dbt v2 environment against a file-backed DuckDB database for the v2 chapter. Add a separate dbt OSS environment only if showing the distribution distinction adds value to the video. Keep historical Python dbt environments separate. The shared object is the Jaffle Shop dataset and business question, not one executable, adapter or project configuration.
 
 The first gate should prove the baseline v2 build, unit test, microbatch and docs operations on the actual Mac arm64 host. A separate authenticated test should prove strict SQL analysis. No installation or successful run is claimed by this report.
 
@@ -95,7 +95,7 @@ Keep era-specific command recipes with checkpoints. Don't run one modern script 
 ## Required proof before the coding agent declares the environment ready
 
 1. Install pinned full v2 in a project-scoped environment; verify package, executable version, architecture, binary checksum and driver identity.
-2. Reset Waffle Shop from deterministic fixtures; seed, run, test and generate docs.
+2. Reset Jaffle Shop from deterministic fixtures; seed, run, test and generate docs.
 3. Verify successful SQL unit tests and a deliberately failing refund-edge-case fixture.
 4. Verify microbatch initial load, late order and bounded backfill against independently calculated totals.
 5. Prove strict SQL analysis catches a missing column after login; prove that authentication absence is reported rather than silently presented as an equivalent demo.

@@ -179,10 +179,10 @@ review_flags:
   - alignment-0-9-0
 - id: review-0.9-02
   chapter: '0.9'
-  flag: Step 3 result lists order_revenue in waffle_analytics, but only revenue_by_location is shown with the schema
+  flag: Step 3 result lists order_revenue in jaffle_analytics, but only revenue_by_location is shown with the schema
     config.
   status: fixed
-  resolution: order_revenue stays in waffle; only configured revenue_by_location goes to waffle_analytics.
+  resolution: order_revenue stays in jaffle; only configured revenue_by_location goes to jaffle_analytics.
   source_refs:
   - src-1
   - src-2
@@ -427,7 +427,7 @@ review_flags:
   - src-3
 - id: review-0.21-02
   chapter: '0.21'
-  flag: Step 3 queries waffle.revenue_by_location, which is not one of the models shown in step 1, while the step
+  flag: Step 3 queries jaffle.revenue_by_location, which is not one of the models shown in step 1, while the step
     2 panel calls the skipped model 'dependent revenue model'. Consider aligning the names so the viewer can see
     it is the same thing.
   status: fixed
@@ -895,9 +895,9 @@ historical_doubts:
   - alignment-0-4-0
 - id: historical-0.5-01
   chapter: '0.5'
-  flag: 'Placing vars under models: waffle_shop: vars: matches the 0.5.0 layout; no doubt there.'
+  flag: 'Placing vars under models: jaffle_shop: vars: matches the 0.5.0 layout; no doubt there.'
   status: documented-limitation
-  resolution: Kept the confirmed models.waffle_shop.vars layout from 0.5.0.
+  resolution: Kept the confirmed models.jaffle_shop.vars layout from 0.5.0.
   source_refs:
   - src-1
   - src-2
@@ -1036,10 +1036,10 @@ historical_doubts:
   - alignment-0-8-3
 - id: historical-0.9-01
   chapter: '0.9'
-  flag: Step 3 result says order_revenue lands in waffle_analytics, but only revenue_by_location has the schema
-    config. order_revenue should land in waffle. The result contradicts the code.
+  flag: Step 3 result says order_revenue lands in jaffle_analytics, but only revenue_by_location has the schema
+    config. order_revenue should land in jaffle. The result contradicts the code.
   status: fixed
-  resolution: order_revenue stays in waffle; only configured revenue_by_location goes to waffle_analytics.
+  resolution: order_revenue stays in jaffle; only configured revenue_by_location goes to jaffle_analytics.
   source_refs:
   - src-1
   - src-2
@@ -1277,10 +1277,10 @@ historical_doubts:
   - src-4
 - id: historical-0.20-01
   chapter: '0.20'
-  flag: The audit schema name waffle_dbt_test__audit assumes target.schema is waffle. The comment on line 1 of the
+  flag: The audit schema name jaffle_dbt_test__audit assumes target.schema is jaffle. The comment on line 1 of the
     inspection file says so; keep it, since the suffix dbt_test__audit is the 0.20 default.
   status: documented-limitation
-  resolution: Keep waffle_dbt_test__audit with target.schema=waffle; the naming assumption is recorded.
+  resolution: Keep jaffle_dbt_test__audit with target.schema=jaffle; the naming assumption is recorded.
   source_refs:
   - src-1
   - src-2
@@ -1783,7 +1783,7 @@ chapter_changes:
   - Replaced the transaction label with a visible prepared schedule and added a 0.8.3 BigQuery profile using the
     historical schema key.
   '0.9':
-  - Showed hand-written duplicated SQL before package use and kept the unconfigured order model in schema waffle.
+  - Showed hand-written duplicated SQL before package use and kept the unconfigured order model in schema jaffle.
   '0.10':
   - Added packages.yml/local dependency step and joined seed names directly to order-level revenue.
   '0.11':

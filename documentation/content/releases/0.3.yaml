@@ -79,7 +79,7 @@ walkthrough:
     See how dbt runs independent models at the same time, and why a failed model only holds back the models
     that depend on it.
   context: >
-    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
+    Jaffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
     Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
   dataset_variant: base
   steps:
@@ -149,7 +149,7 @@ walkthrough:
         - language: yaml
           filename: dbt_project.yml (excerpt)
           content: |
-            name: waffle_shop
+            name: jaffle_shop
             version: "1.0"
             model-defaults:
               materialized: true
@@ -251,7 +251,7 @@ walkthrough:
         - language: yaml
           filename: dbt_project.yml (excerpt)
           content: |
-            name: waffle_shop
+            name: jaffle_shop
             version: "1.0"
             model-defaults:
               materialized: true
@@ -362,7 +362,7 @@ walkthrough:
         - language: yaml
           filename: dbt_project.yml (excerpt)
           content: |
-            name: waffle_shop
+            name: jaffle_shop
             version: "1.0"
             model-defaults:
               materialized: true

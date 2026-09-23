@@ -139,7 +139,7 @@ walkthrough:
     See how a function that lives in the database can be defined in the project, deployed by dbt and tracked
     as a dependency of the models that call it.
   context: >
-    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
+    Jaffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
     Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
   dataset_variant: base
   steps:

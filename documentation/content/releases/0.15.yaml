@@ -109,7 +109,7 @@ walkthrough:
     See that dbt reads the project before it runs SQL, that it can reuse the earlier read, and that run output
     can be requested as structured JSON.
   context: >
-    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
+    Jaffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
     Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
   dataset_variant: base
   steps:
@@ -355,7 +355,7 @@ walkthrough:
         again from scratch.
       - Ask dbt to print each run event as a line of JSON, so another program can read the log.
     scenario: >
-      Someone edits the description of the revenue model. The SQL and the numbers do not change. Waffle Shop
+      Someone edits the description of the revenue model. The SQL and the numbers do not change. Jaffle Shop
       uses this small edit to show two things: dbt can skip re-reading unchanged files, and it can report
       what
       it did in a form that tools can parse.

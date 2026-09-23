@@ -57,7 +57,7 @@ walkthrough:
     Read a model description written next to the code, then follow the lineage graph to see which tables feed
     the revenue number.
   context: >
-    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
+    Jaffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
     Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
   dataset_variant: base
   steps:
@@ -110,7 +110,7 @@ walkthrough:
           content: |
             select r.order_id, l.name as location,
                 r.payment_cents, r.refund_cents, r.revenue_cents
-            from waffle.order_revenue as r
+            from jaffle.order_revenue as r
             join raw.locations as l on r.location_id = l.location_id
             where r.order_id = 1042
           highlight_lines:
@@ -289,7 +289,7 @@ walkthrough:
       - 'See a lineage graph in that website: a picture of which models feed which.'
     scenario: >
       The revenue number is right, but a second analyst asks two questions: what exactly does revenue_cents
-      mean, and which tables does it come from? Waffle Shop writes the refund rule as a description next to
+      mean, and which tables does it come from? Jaffle Shop writes the refund rule as a description next to
       the column and generates documentation that shows the answer and the lineage.
     outcome: >
       Read the description, follow the SQL references that make up the lineage, and see what the generated

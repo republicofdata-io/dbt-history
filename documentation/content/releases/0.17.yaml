@@ -66,7 +66,7 @@ walkthrough:
     Compare a normal run, where other models keep going after a failure, with a fail-fast run that stops right
     away.
   context: >
-    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
+    Jaffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
     Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
   dataset_variant: base
   steps:
@@ -325,7 +325,7 @@ walkthrough:
       - Select models by the folder they live in.
     scenario: >
       The refund model has a typo and fails. Every model that depends on it, including revenue, cannot be
-      trusted until it is fixed. Waffle Shop decides whether the rest of the run should keep going or stop
+      trusted until it is fixed. Jaffle Shop decides whether the rest of the run should keep going or stop
       right away.
     outcome: |-
       See the typo stop the invocation, then a path-selected rebuild restore 12,500 cents.

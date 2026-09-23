@@ -7,7 +7,7 @@ import { useTheme } from "./theme";
 import ReleaseIndex from "./ReleaseIndex";
 import AnchorBar from "./AnchorBar";
 import ReleaseTab from "./ReleaseTab";
-import WaffleTab from "./WaffleTab";
+import JaffleTab from "./JaffleTab";
 import CatalogueTab from "./CatalogueTab";
 import EcosystemTab from "./EcosystemTab";
 import NotFound from "./NotFound";
@@ -66,8 +66,8 @@ export default function HistoryPage() {
             <TabsContent value="release" className="min-h-0 flex-1">
               <ReleaseTab state={state} />
             </TabsContent>
-            <TabsContent value="waffle" className="min-h-0 flex-1">
-              <WaffleTab state={state} active={state.tab === "waffle"} />
+            <TabsContent value="jaffle" className="min-h-0 flex-1">
+              <JaffleTab state={state} active={state.tab === "jaffle"} />
             </TabsContent>
             <TabsContent value="catalogue" className="min-h-0 flex-1">
               <CatalogueTab state={state} />

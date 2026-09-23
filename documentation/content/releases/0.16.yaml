@@ -65,7 +65,7 @@ walkthrough:
     Attach an owner to a model as descriptive information, and understand that this does not control who can
     query it.
   context: >
-    Waffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
+    Jaffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
     Riverside 4,800. The selected fixture is base. Each state below is an authored illustration.
   dataset_variant: base
   steps:
@@ -181,7 +181,7 @@ walkthrough:
           - description
         rows:
           -   - 'seed locations'
-              - The three Waffle Shop locations.
+              - The three Jaffle Shop locations.
           -   - locations.name
               - Name shown on revenue reports.
         result_status:
@@ -201,7 +201,7 @@ walkthrough:
             version: 2
             seeds:
               - name: locations
-                description: The three Waffle Shop locations.
+                description: The three Jaffle Shop locations.
                 columns:
                   - name: name
                     description: Name shown on revenue reports.
@@ -250,7 +250,7 @@ walkthrough:
       - Attach custom facts such as owner and unit to a model.
       - Add descriptions to seed resources and their columns.
     scenario: >-
-      The revenue SQL gives the right number but no owner. Waffle Shop records who maintains it and adds documentation
+      The revenue SQL gives the right number but no owner. Jaffle Shop records who maintains it and adds documentation
       for the location CSV used by reports.
     outcome: >-
       See the ownership gap filled and the seed description appear in a prepared documentation view.
