@@ -6,32 +6,34 @@
   rationale: |
     Same retrospective; later overlaps with semantics.
   sources:
-  - title: Merger announcement (founder account)
-    url: https://www.getdbt.com/blog/dbt-labs-and-fivetran-merge-announcement
-    retrieved: '2026-09-21'
+    - title: Merger announcement (founder account)
+      url: https://www.getdbt.com/blog/dbt-labs-and-fivetran-merge-announcement
+      retrieved: '2026-09-21'
   to: null
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
   uncertainty_display: Render the supplied month or year; do not show a fabricated first day.
   product_definition:
     id: looker
     type: product
     names:
-    - name: Looker
-      from: '2016'
-      from_precision: year
-      to: null
+      - name: Looker
+        from: '2016'
+        from_precision: year
+        to: null
     owners: []
     parent: null
     roles:
-    - bi
+      - bi
     sources:
-    - title: Merger announcement (founder account)
-      url: https://www.getdbt.com/blog/dbt-labs-and-fivetran-merge-announcement
-      retrieved: '2026-09-21'
-    ownership_note: Ownership chronology not established for this representative external node unless an explicit
-      owner interval is supplied.
+      - title: Merger announcement (founder account)
+        url: https://www.getdbt.com/blog/dbt-labs-and-fivetran-merge-announcement
+        retrieved: '2026-09-21'
+    ownership_note: >-
+      Ownership chronology not established for this representative external node unless an explicit owner
+      interval is supplied.
 - product: mode
   layer: bi
   from: '2016'
@@ -41,31 +43,33 @@
   rationale: |
     Same retrospective. Rotated out of the representative set when Hex enters, to keep the layer readable.
   sources:
-  - title: Merger announcement (founder account)
-    url: https://www.getdbt.com/blog/dbt-labs-and-fivetran-merge-announcement
-    retrieved: '2026-09-21'
+    - title: Merger announcement (founder account)
+      url: https://www.getdbt.com/blog/dbt-labs-and-fivetran-merge-announcement
+      retrieved: '2026-09-21'
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
   uncertainty_display: Render the supplied month or year; do not show a fabricated first day.
   product_definition:
     id: mode
     type: product
     names:
-    - name: Mode
-      from: '2016'
-      from_precision: year
-      to: null
+      - name: Mode
+        from: '2016'
+        from_precision: year
+        to: null
     parent: null
     roles:
-    - bi
+      - bi
     sources:
-    - title: Merger announcement (founder account)
-      url: https://www.getdbt.com/blog/dbt-labs-and-fivetran-merge-announcement
-      retrieved: '2026-09-21'
+      - title: Merger announcement (founder account)
+        url: https://www.getdbt.com/blog/dbt-labs-and-fivetran-merge-announcement
+        retrieved: '2026-09-21'
     owners: []
-    ownership_note: Ownership chronology not established for this representative external node unless an explicit
-      owner interval is supplied.
+    ownership_note: >-
+      Ownership chronology not established for this representative external node unless an explicit owner
+      interval is supplied.
 - product: fivetran
   layer: ingestion
   from: '2016'
@@ -74,13 +78,14 @@
   rationale: |
     Named in the same 2016–2019 retrospective as a contemporary ingestion tool.
   sources:
-  - title: Merger announcement (founder account)
-    url: https://www.getdbt.com/blog/dbt-labs-and-fivetran-merge-announcement
-    retrieved: '2026-09-21'
+    - title: Merger announcement (founder account)
+      url: https://www.getdbt.com/blog/dbt-labs-and-fivetran-merge-announcement
+      retrieved: '2026-09-21'
   to: '2026-06-01'
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
   uncertainty_display: Render the supplied month or year; do not show a fabricated first day.
 - product: stitch
   layer: ingestion
@@ -90,106 +95,114 @@
   rationale: |
     Same retrospective.
   sources:
-  - title: Merger announcement (founder account)
-    url: https://www.getdbt.com/blog/dbt-labs-and-fivetran-merge-announcement
-    retrieved: '2026-09-21'
+    - title: Merger announcement (founder account)
+      url: https://www.getdbt.com/blog/dbt-labs-and-fivetran-merge-announcement
+      retrieved: '2026-09-21'
   to: null
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
   uncertainty_display: Render the supplied month or year; do not show a fabricated first day.
   product_definition:
     id: stitch
     type: product
     names:
-    - name: Stitch
-      from: '2016'
-      from_precision: year
-      to: null
+      - name: Stitch
+        from: '2016'
+        from_precision: year
+        to: null
     parent: null
     roles:
-    - ingestion
+      - ingestion
     sources:
-    - title: Merger announcement (founder account)
-      url: https://www.getdbt.com/blog/dbt-labs-and-fivetran-merge-announcement
-      retrieved: '2026-09-21'
+      - title: Merger announcement (founder account)
+        url: https://www.getdbt.com/blog/dbt-labs-and-fivetran-merge-announcement
+        retrieved: '2026-09-21'
     owners: []
-    ownership_note: Ownership chronology not established for this representative external node unless an explicit
-      owner interval is supplied.
+    ownership_note: >-
+      Ownership chronology not established for this representative external node unless an explicit owner
+      interval is supplied.
 - product: operational-databases
   layer: sources
   from: '2016'
   from_precision: year
   to: null
   relationship: infrastructure
-  rationale: |
-    The upstream operational systems remain external to the analytical transformation project. Category is an editorial illustration.
+  rationale: >
+    The upstream operational systems remain external to the analytical transformation project. Category is an
+    editorial illustration.
   sources:
-  - title: Founder account of the surrounding stack
-    url: https://www.getdbt.com/blog/dbt-labs-and-fivetran-merge-announcement
-    retrieved: '2026-09-21'
+    - title: Founder account of the surrounding stack
+      url: https://www.getdbt.com/blog/dbt-labs-and-fivetran-merge-announcement
+      retrieved: '2026-09-21'
   historical_claim: false
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
   uncertainty_display: Render the supplied month or year; do not show a fabricated first day.
   product_definition:
     id: operational-databases
     type: product
     parent: null
     names:
-    - name: Operational databases
-      from: '2016'
-      from_precision: year
-      to: null
+      - name: Operational databases
+        from: '2016'
+        from_precision: year
+        to: null
     owners: []
     roles:
-    - sources
+      - sources
     editorial_kind: category
     description: Illustrative category of external systems; not a claim about a particular vendor or launch date.
     sources:
-    - title: Founder account of the surrounding stack
-      url: https://www.getdbt.com/blog/dbt-labs-and-fivetran-merge-announcement
-      retrieved: '2026-09-21'
-    ownership_note: Ownership chronology not established for this representative external node unless an explicit
-      owner interval is supplied.
+      - title: Founder account of the surrounding stack
+        url: https://www.getdbt.com/blog/dbt-labs-and-fivetran-merge-announcement
+        retrieved: '2026-09-21'
+    ownership_note: >-
+      Ownership chronology not established for this representative external node unless an explicit owner
+      interval is supplied.
 - product: saas-applications
   layer: sources
   from: '2016'
   from_precision: year
   to: null
   relationship: infrastructure
-  rationale: |
-    The upstream operational systems remain external to the analytical transformation project. Category is an editorial illustration.
+  rationale: >
+    The upstream operational systems remain external to the analytical transformation project. Category is an
+    editorial illustration.
   sources:
-  - title: Founder account of the surrounding stack
-    url: https://www.getdbt.com/blog/dbt-labs-and-fivetran-merge-announcement
-    retrieved: '2026-09-21'
+    - title: Founder account of the surrounding stack
+      url: https://www.getdbt.com/blog/dbt-labs-and-fivetran-merge-announcement
+      retrieved: '2026-09-21'
   historical_claim: false
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
   uncertainty_display: Render the supplied month or year; do not show a fabricated first day.
   product_definition:
     id: saas-applications
     type: product
     parent: null
     names:
-    - name: Business applications
-      from: '2016'
-      from_precision: year
-      to: null
+      - name: Business applications
+        from: '2016'
+        from_precision: year
+        to: null
     owners: []
     roles:
-    - sources
+      - sources
     editorial_kind: category
     description: Illustrative category of external systems; not a claim about a particular vendor or launch date.
     sources:
-    - title: Founder account of the surrounding stack
-      url: https://www.getdbt.com/blog/dbt-labs-and-fivetran-merge-announcement
-      retrieved: '2026-09-21'
-    ownership_note: Ownership chronology not established for this representative external node unless an explicit
-      owner interval is supplied.
+      - title: Founder account of the surrounding stack
+        url: https://www.getdbt.com/blog/dbt-labs-and-fivetran-merge-announcement
+        retrieved: '2026-09-21'
+    ownership_note: >-
+      Ownership chronology not established for this representative external node unless an explicit owner
+      interval is supplied.
 - product: redshift
   layer: warehouse
   from: '2016'
@@ -198,36 +211,38 @@
   rationale: |
     Early target warehouse; the founder's retrospective places Redshift in 2016–2019 client stacks.
   sources:
-  - title: Merger announcement (founder account)
-    url: https://www.getdbt.com/blog/dbt-labs-and-fivetran-merge-announcement
-    retrieved: '2026-09-21'
+    - title: Merger announcement (founder account)
+      url: https://www.getdbt.com/blog/dbt-labs-and-fivetran-merge-announcement
+      retrieved: '2026-09-21'
   to: null
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
   uncertainty_display: Render the supplied month or year; do not show a fabricated first day.
   product_definition:
     id: redshift
     type: product
     names:
-    - name: Amazon Redshift
-      from: '2016'
-      from_precision: year
-      to: null
+      - name: Amazon Redshift
+        from: '2016'
+        from_precision: year
+        to: null
     owners:
-    - owner: Amazon Web Services
-      from: '2016'
-      from_precision: year
-      to: null
+      - owner: Amazon Web Services
+        from: '2016'
+        from_precision: year
+        to: null
     parent: null
     roles:
-    - warehouse
+      - warehouse
     sources:
-    - title: Merger announcement (founder account)
-      url: https://www.getdbt.com/blog/dbt-labs-and-fivetran-merge-announcement
-      retrieved: '2026-09-21'
-    ownership_note: Ownership chronology not established for this representative external node unless an explicit
-      owner interval is supplied.
+      - title: Merger announcement (founder account)
+        url: https://www.getdbt.com/blog/dbt-labs-and-fivetran-merge-announcement
+        retrieved: '2026-09-21'
+    ownership_note: >-
+      Ownership chronology not established for this representative external node unless an explicit owner
+      interval is supplied.
 - product: airflow
   layer: orchestration
   from: 2016-03
@@ -236,32 +251,34 @@
   rationale: |
     Apache incubator March 2016; general orchestration overlaps with dbt scheduling.
   sources:
-  - title: Airflow project history
-    url: https://airflow.apache.org/docs/apache-airflow/2.10.3/project.html
-    retrieved: '2026-09-21'
+    - title: Airflow project history
+      url: https://airflow.apache.org/docs/apache-airflow/2.10.3/project.html
+      retrieved: '2026-09-21'
   to: null
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
   uncertainty_display: Render the supplied month or year; do not show a fabricated first day.
   product_definition:
     id: airflow
     type: product
     names:
-    - name: Apache Airflow
-      from: 2016-03
-      from_precision: month
-      to: null
+      - name: Apache Airflow
+        from: 2016-03
+        from_precision: month
+        to: null
     parent: null
     roles:
-    - orchestration
+      - orchestration
     sources:
-    - title: Airflow project history
-      url: https://airflow.apache.org/docs/apache-airflow/2.10.3/project.html
-      retrieved: '2026-09-21'
+      - title: Airflow project history
+        url: https://airflow.apache.org/docs/apache-airflow/2.10.3/project.html
+        retrieved: '2026-09-21'
     owners: []
-    ownership_note: Ownership chronology not established for this representative external node unless an explicit
-      owner interval is supplied.
+    ownership_note: >-
+      Ownership chronology not established for this representative external node unless an explicit owner
+      interval is supplied.
 - product: dbt-core
   layer: transformation
   from: '2016-03-23'
@@ -269,29 +286,32 @@
   rationale: |
     dbt supplies SQL transformation definitions; execution happens in the warehouse.
   sources:
-  - title: PyPI package 0.0.1
-    url: https://pypi.org/project/dbt/0.0.1/
-    retrieved: '2026-09-21'
+    - title: PyPI package 0.0.1
+      url: https://pypi.org/project/dbt/0.0.1/
+      retrieved: '2026-09-21'
   from_precision: day
   to: '2026-06-01'
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
 - product: dbt-core
   layer: quality
   from: '2016-06-22'
   from_precision: day
   to: '2026-06-01'
   relationship: dbt-owned
-  rationale: |
-    The 0.2.0 test command adds assertions about transformed data. This is not a complete enterprise observability suite.
+  rationale: >
+    The 0.2.0 test command adds assertions about transformed data. This is not a complete enterprise
+    observability suite.
   sources:
-  - title: dbt 0.2.0 source archive
-    url: https://pypi.org/project/dbt/0.2.0/
-    retrieved: '2026-09-21'
+    - title: dbt 0.2.0 source archive
+      url: https://pypi.org/project/dbt/0.2.0/
+      retrieved: '2026-09-21'
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
 - product: dbt-cloud
   layer: orchestration
   from: 2017-01
@@ -300,13 +320,14 @@
   rationale: |
     Sinter scheduled and monitored dbt runs.
   sources:
-  - title: What's in a name?
-    url: https://www.getdbt.com/blog/whats-in-a-name
-    retrieved: '2026-09-21'
+    - title: What's in a name?
+      url: https://www.getdbt.com/blog/whats-in-a-name
+      retrieved: '2026-09-21'
   to: '2026-06-01'
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
   uncertainty_display: Render the supplied month or year; do not show a fabricated first day.
 - product: snowflake
   layer: warehouse
@@ -315,32 +336,34 @@
   rationale: |
     dbt 0.7 adds Snowflake support.
   sources:
-  - title: dbt 0.7.0 release
-    url: https://github.com/dbt-labs/dbt/releases/tag/v0.7.0
-    retrieved: '2026-09-21'
+    - title: dbt 0.7.0 release
+      url: https://github.com/dbt-labs/dbt/releases/tag/v0.7.0
+      retrieved: '2026-09-21'
   from_precision: day
   to: null
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
   product_definition:
     id: snowflake
     type: product
     names:
-    - name: Snowflake
-      from: '2017-02-09'
-      to: null
-      from_precision: day
+      - name: Snowflake
+        from: '2017-02-09'
+        to: null
+        from_precision: day
     parent: null
     roles:
-    - warehouse
+      - warehouse
     sources:
-    - title: dbt 0.7.0 release
-      url: https://github.com/dbt-labs/dbt/releases/tag/v0.7.0
-      retrieved: '2026-09-21'
+      - title: dbt 0.7.0 release
+        url: https://github.com/dbt-labs/dbt/releases/tag/v0.7.0
+        retrieved: '2026-09-21'
     owners: []
-    ownership_note: Ownership chronology not established for this representative external node unless an explicit
-      owner interval is supplied.
+    ownership_note: >-
+      Ownership chronology not established for this representative external node unless an explicit owner
+      interval is supplied.
 - product: bigquery
   layer: warehouse
   from: '2017-07-14'
@@ -348,70 +371,77 @@
   rationale: |
     dbt 0.8.3 adds BigQuery support; a dbt integration date, not BigQuery's creation.
   sources:
-  - title: Historical changelog
-    url: https://github.com/dbt-labs/dbt-core/blob/v0.13.0/CHANGELOG.md
-    retrieved: '2026-09-21'
+    - title: Historical changelog
+      url: https://github.com/dbt-labs/dbt-core/blob/v0.13.0/CHANGELOG.md
+      retrieved: '2026-09-21'
   from_precision: day
   to: null
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
   product_definition:
     id: bigquery
     type: product
     names:
-    - name: Google BigQuery
-      from: '2017-07-14'
-      to: null
-      from_precision: day
+      - name: Google BigQuery
+        from: '2017-07-14'
+        to: null
+        from_precision: day
     parent: null
     roles:
-    - warehouse
+      - warehouse
     sources:
-    - title: Historical changelog
-      url: https://github.com/dbt-labs/dbt-core/blob/v0.13.0/CHANGELOG.md
-      retrieved: '2026-09-21'
+      - title: Historical changelog
+        url: https://github.com/dbt-labs/dbt-core/blob/v0.13.0/CHANGELOG.md
+        retrieved: '2026-09-21'
     owners:
-    - owner: Google Cloud
-      from: '2017-07-14'
-      from_precision: day
-      to: null
-    ownership_note: Ownership chronology not established for this representative external node unless an explicit
-      owner interval is supplied.
+      - owner: Google Cloud
+        from: '2017-07-14'
+        from_precision: day
+        to: null
+    ownership_note: >-
+      Ownership chronology not established for this representative external node unless an explicit owner
+      interval is supplied.
 - product: tableau
   layer: bi
   from: 2018-07
   from_precision: month
   to: '2025-05-28'
   relationship: complement
-  rationale: |
-    A July 2018 practitioner account describes Tableau downstream of dbt; practitioner evidence, not first availability. Rotated out of the representative set when dbt Insights enters, to keep the layer readable.
+  rationale: >
+    A July 2018 practitioner account describes Tableau downstream of dbt; practitioner evidence, not first
+    availability. Rotated out of the representative set when dbt Insights enters, to keep the layer readable.
   sources:
-  - title: Practitioner article, July 2018
-    url: https://odupuis.medium.com/my-journey-introducing-the-data-build-tool-dbt-in-projects-analytical-stacks-69971faed2c2
-    retrieved: '2026-09-21'
+    - title: Practitioner article, July 2018
+      url: >-
+        https://odupuis.medium.com/my-journey-introducing-the-data-build-tool-dbt-in-projects-analytical-stacks-69971faed2c2
+      retrieved: '2026-09-21'
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
   uncertainty_display: Render the supplied month or year; do not show a fabricated first day.
   product_definition:
     id: tableau
     type: product
     names:
-    - name: Tableau
-      from: 2018-07
-      from_precision: month
-      to: null
+      - name: Tableau
+        from: 2018-07
+        from_precision: month
+        to: null
     parent: null
     roles:
-    - bi
+      - bi
     sources:
-    - title: Practitioner article, July 2018
-      url: https://odupuis.medium.com/my-journey-introducing-the-data-build-tool-dbt-in-projects-analytical-stacks-69971faed2c2
-      retrieved: '2026-09-21'
+      - title: Practitioner article, July 2018
+        url: >-
+          https://odupuis.medium.com/my-journey-introducing-the-data-build-tool-dbt-in-projects-analytical-stacks-69971faed2c2
+        retrieved: '2026-09-21'
     owners: []
-    ownership_note: Ownership chronology not established for this representative external node unless an explicit
-      owner interval is supplied.
+    ownership_note: >-
+      Ownership chronology not established for this representative external node unless an explicit owner
+      interval is supplied.
 - product: dbt-core
   layer: metadata
   from: '2018-09-06'
@@ -419,14 +449,15 @@
   rationale: |
     dbt 0.11 generates documentation and lineage.
   sources:
-  - title: dbt 0.11.0 release
-    url: https://github.com/dbt-labs/dbt/releases/tag/v0.11.0
-    retrieved: '2026-09-21'
+    - title: dbt 0.11.0 release
+      url: https://github.com/dbt-labs/dbt/releases/tag/v0.11.0
+      retrieved: '2026-09-21'
   from_precision: day
   to: '2026-06-01'
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
 - product: prefect
   layer: orchestration
   from: 2019-01
@@ -435,35 +466,38 @@
   rationale: |
     January 2019 founder update describes preview partners; labelled preview at that observation.
   sources:
-  - title: Prefect golden spike
-    url: https://www.prefect.io/blog/golden-spike
-    retrieved: '2026-09-21'
+    - title: Prefect golden spike
+      url: https://www.prefect.io/blog/golden-spike
+      retrieved: '2026-09-21'
   to: null
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
   initial_maturity: preview
-  maturity_note: Preview describes the January 2019 observation only; this placement does not claim it remains in
-    preview forever.
+  maturity_note: >-
+    Preview describes the January 2019 observation only; this placement does not claim it remains in preview
+    forever.
   uncertainty_display: Render the supplied month or year; do not show a fabricated first day.
   product_definition:
     id: prefect
     type: product
     names:
-    - name: Prefect
-      from: 2019-01
-      from_precision: month
-      to: null
+      - name: Prefect
+        from: 2019-01
+        from_precision: month
+        to: null
     parent: null
     roles:
-    - orchestration
+      - orchestration
     sources:
-    - title: Prefect golden spike
-      url: https://www.prefect.io/blog/golden-spike
-      retrieved: '2026-09-21'
+      - title: Prefect golden spike
+        url: https://www.prefect.io/blog/golden-spike
+        retrieved: '2026-09-21'
     owners: []
-    ownership_note: Ownership chronology not established for this representative external node unless an explicit
-      owner interval is supplied.
+    ownership_note: >-
+      Ownership chronology not established for this representative external node unless an explicit owner
+      interval is supplied.
 - product: dagster
   layer: orchestration
   from: 2019-07
@@ -472,32 +506,34 @@
   rationale: |
     First release July 2019; 1.0 in August 2022.
   sources:
-  - title: Dagster open-core retrospective
-    url: https://dagster.io/blog/open-core-business-model-dagster
-    retrieved: '2026-09-21'
+    - title: Dagster open-core retrospective
+      url: https://dagster.io/blog/open-core-business-model-dagster
+      retrieved: '2026-09-21'
   to: null
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
   uncertainty_display: Render the supplied month or year; do not show a fabricated first day.
   product_definition:
     id: dagster
     type: product
     names:
-    - name: Dagster
-      from: 2019-07
-      from_precision: month
-      to: null
+      - name: Dagster
+        from: 2019-07
+        from_precision: month
+        to: null
     parent: null
     roles:
-    - orchestration
+      - orchestration
     sources:
-    - title: Dagster open-core retrospective
-      url: https://dagster.io/blog/open-core-business-model-dagster
-      retrieved: '2026-09-21'
+      - title: Dagster open-core retrospective
+        url: https://dagster.io/blog/open-core-business-model-dagster
+        retrieved: '2026-09-21'
     owners: []
-    ownership_note: Ownership chronology not established for this representative external node unless an explicit
-      owner interval is supplied.
+    ownership_note: >-
+      Ownership chronology not established for this representative external node unless an explicit owner
+      interval is supplied.
 - product: datahub
   layer: metadata
   from: 2020-02
@@ -506,32 +542,34 @@
   rationale: |
     Open-sourced February 2020; overlaps with dbt docs and later Catalog.
   sources:
-  - title: LinkedIn DataHub engineering account
-    url: https://www.linkedin.com/blog/engineering/archive/data-hub
-    retrieved: '2026-09-21'
+    - title: LinkedIn DataHub engineering account
+      url: https://www.linkedin.com/blog/engineering/archive/data-hub
+      retrieved: '2026-09-21'
   to: null
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
   uncertainty_display: Render the supplied month or year; do not show a fabricated first day.
   product_definition:
     id: datahub
     type: product
     names:
-    - name: DataHub
-      from: 2020-02
-      from_precision: month
-      to: null
+      - name: DataHub
+        from: 2020-02
+        from_precision: month
+        to: null
     parent: null
     roles:
-    - metadata
+      - metadata
     sources:
-    - title: LinkedIn DataHub engineering account
-      url: https://www.linkedin.com/blog/engineering/archive/data-hub
-      retrieved: '2026-09-21'
+      - title: LinkedIn DataHub engineering account
+        url: https://www.linkedin.com/blog/engineering/archive/data-hub
+        retrieved: '2026-09-21'
     owners: []
-    ownership_note: Ownership chronology not established for this representative external node unless an explicit
-      owner interval is supplied.
+    ownership_note: >-
+      Ownership chronology not established for this representative external node unless an explicit owner
+      interval is supplied.
 - product: airbyte
   layer: ingestion
   from: '2020-09-24'
@@ -539,69 +577,74 @@
   rationale: |
     Soft MVP launch 24 September 2020.
   sources:
-  - title: Airbyte is turning 1
-    url: https://airbyte.com/blog/airbyte-is-turning-1
-    retrieved: '2026-09-21'
+    - title: Airbyte is turning 1
+      url: https://airbyte.com/blog/airbyte-is-turning-1
+      retrieved: '2026-09-21'
   from_precision: day
   to: null
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
   product_definition:
     id: airbyte
     type: product
     names:
-    - name: Airbyte
-      from: '2020-09-24'
-      to: null
-      from_precision: day
+      - name: Airbyte
+        from: '2020-09-24'
+        to: null
+        from_precision: day
     parent: null
     roles:
-    - ingestion
+      - ingestion
     sources:
-    - title: Airbyte is turning 1
-      url: https://airbyte.com/blog/airbyte-is-turning-1
-      retrieved: '2026-09-21'
+      - title: Airbyte is turning 1
+        url: https://airbyte.com/blog/airbyte-is-turning-1
+        retrieved: '2026-09-21'
     owners: []
-    ownership_note: Ownership chronology not established for this representative external node unless an explicit
-      owner interval is supplied.
+    ownership_note: >-
+      Ownership chronology not established for this representative external node unless an explicit owner
+      interval is supplied.
 - product: dataform
   layer: transformation
   from: '2020-12-08'
   to: '2025-05-28'
   relationship: partial-substitute
-  rationale: |
-    Google acquisition is a conservative dated inclusion point; the product existed earlier. Rotated out of the representative set when the Fusion engine enters, to keep the layer readable.
+  rationale: >
+    Google acquisition is a conservative dated inclusion point; the product existed earlier. Rotated out of
+    the representative set when the Fusion engine enters, to keep the layer readable.
   sources:
-  - title: Welcoming Dataform to BigQuery
-    url: https://cloud.google.com/blog/products/data-analytics/welcoming-dataform-to-bigquery
-    retrieved: '2026-09-21'
+    - title: Welcoming Dataform to BigQuery
+      url: https://cloud.google.com/blog/products/data-analytics/welcoming-dataform-to-bigquery
+      retrieved: '2026-09-21'
   from_precision: day
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
   product_definition:
     id: dataform
     type: product
     names:
-    - name: Dataform
-      from: '2020-12-08'
-      to: null
-      from_precision: day
+      - name: Dataform
+        from: '2020-12-08'
+        to: null
+        from_precision: day
     owners:
-    - owner: Google Cloud
-      from: '2020-12-08'
-      from_precision: day
-      to: null
+      - owner: Google Cloud
+        from: '2020-12-08'
+        from_precision: day
+        to: null
     parent: null
     roles:
-    - transformation
+      - transformation
     sources:
-    - title: Welcoming Dataform to BigQuery
-      url: https://cloud.google.com/blog/products/data-analytics/welcoming-dataform-to-bigquery
-      retrieved: '2026-09-21'
-    ownership_note: Ownership chronology not established for this representative external node unless an explicit
-      owner interval is supplied.
+      - title: Welcoming Dataform to BigQuery
+        url: https://cloud.google.com/blog/products/data-analytics/welcoming-dataform-to-bigquery
+        retrieved: '2026-09-21'
+    ownership_note: >-
+      Ownership chronology not established for this representative external node unless an explicit owner
+      interval is supplied.
 - product: hightouch
   layer: reverse-etl
   from: 2021-03
@@ -610,32 +653,34 @@
   rationale: |
     Hightouch describes the reverse ETL category in March 2021.
   sources:
-  - title: Reverse ETL is not for data engineers to write
-    url: https://hightouch.com/blog/reverse-etl-is-not-for-data-engineers-to-write
-    retrieved: '2026-09-21'
+    - title: Reverse ETL is not for data engineers to write
+      url: https://hightouch.com/blog/reverse-etl-is-not-for-data-engineers-to-write
+      retrieved: '2026-09-21'
   to: null
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
   uncertainty_display: Render the supplied month or year; do not show a fabricated first day.
   product_definition:
     id: hightouch
     type: product
     names:
-    - name: Hightouch
-      from: 2021-03
-      from_precision: month
-      to: null
+      - name: Hightouch
+        from: 2021-03
+        from_precision: month
+        to: null
     parent: null
     roles:
-    - reverse-etl
+      - reverse-etl
     sources:
-    - title: Reverse ETL is not for data engineers to write
-      url: https://hightouch.com/blog/reverse-etl-is-not-for-data-engineers-to-write
-      retrieved: '2026-09-21'
+      - title: Reverse ETL is not for data engineers to write
+        url: https://hightouch.com/blog/reverse-etl-is-not-for-data-engineers-to-write
+        retrieved: '2026-09-21'
     owners: []
-    ownership_note: Ownership chronology not established for this representative external node unless an explicit
-      owner interval is supplied.
+    ownership_note: >-
+      Ownership chronology not established for this representative external node unless an explicit owner
+      interval is supplied.
 - product: census
   layer: reverse-etl
   from: '2021-06-30'
@@ -643,14 +688,16 @@
   rationale: |
     Named in dbt's June 2021 ecosystem announcement.
   sources:
-  - title: Fishtown Analytics rebrands as dbt Labs
-    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
-    retrieved: '2026-09-21'
+    - title: Fishtown Analytics rebrands as dbt Labs
+      url: >-
+        https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+      retrieved: '2026-09-21'
   from_precision: day
   to: '2026-06-01'
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
 - product: databricks
   layer: warehouse
   from: '2021-06-30'
@@ -658,47 +705,53 @@
   rationale: |
     Named among dbt's platform ecosystem in June 2021; later overlaps in transformation and AI analysis.
   sources:
-  - title: Fishtown Analytics rebrands as dbt Labs
-    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
-    retrieved: '2026-09-21'
+    - title: Fishtown Analytics rebrands as dbt Labs
+      url: >-
+        https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+      retrieved: '2026-09-21'
   from_precision: day
   to: null
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
   product_definition:
     id: databricks
     type: product
     names:
-    - name: Databricks
-      from: '2021-06-30'
-      to: null
-      from_precision: day
+      - name: Databricks
+        from: '2021-06-30'
+        to: null
+        from_precision: day
     parent: null
     roles:
-    - warehouse
+      - warehouse
     sources:
-    - title: Fishtown Analytics rebrands as dbt Labs
-      url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
-      retrieved: '2026-09-21'
+      - title: Fishtown Analytics rebrands as dbt Labs
+        url: >-
+          https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+        retrieved: '2026-09-21'
     owners: []
-    ownership_note: Ownership chronology not established for this representative external node unless an explicit
-      owner interval is supplied.
+    ownership_note: >-
+      Ownership chronology not established for this representative external node unless an explicit owner
+      interval is supplied.
 - product: hvr
   layer: ingestion
   from: '2021-10-01'
   from_precision: day
   to: '2026-06-01'
   relationship: complement
-  rationale: |
-    HVR adds replication and CDC to Fivetran after acquisition. Fivetran remains external to dbt until the 2026 merger.
+  rationale: >
+    HVR adds replication and CDC to Fivetran after acquisition. Fivetran remains external to dbt until the
+    2026 merger.
   sources:
-  - title: HVR acquisition completion
-    url: https://www.fivetran.com/press/fivetran-completes-acquisition-of-hvr
-    retrieved: '2026-09-21'
+    - title: HVR acquisition completion
+      url: https://www.fivetran.com/press/fivetran-completes-acquisition-of-hvr
+      retrieved: '2026-09-21'
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
 - product: coalesce-io
   layer: transformation
   from: 2022-01
@@ -707,32 +760,34 @@
   rationale: |
     Company reports launch January 2022. Distinct from dbt's conference of the same name.
   sources:
-  - title: Coalesce Series A announcement
-    url: https://coalesce.io/company-news/coalesce-secures-26-million-series-a-funding/
-    retrieved: '2026-09-21'
+    - title: Coalesce Series A announcement
+      url: https://coalesce.io/company-news/coalesce-secures-26-million-series-a-funding/
+      retrieved: '2026-09-21'
   to: null
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
   uncertainty_display: Render the supplied month or year; do not show a fabricated first day.
   product_definition:
     id: coalesce-io
     type: product
     names:
-    - name: Coalesce
-      from: 2022-01
-      from_precision: month
-      to: null
+      - name: Coalesce
+        from: 2022-01
+        from_precision: month
+        to: null
     parent: null
     roles:
-    - transformation
+      - transformation
     sources:
-    - title: Coalesce Series A announcement
-      url: https://coalesce.io/company-news/coalesce-secures-26-million-series-a-funding/
-      retrieved: '2026-09-21'
+      - title: Coalesce Series A announcement
+        url: https://coalesce.io/company-news/coalesce-secures-26-million-series-a-funding/
+        retrieved: '2026-09-21'
     owners: []
-    ownership_note: Ownership chronology not established for this representative external node unless an explicit
-      owner interval is supplied.
+    ownership_note: >-
+      Ownership chronology not established for this representative external node unless an explicit owner
+      interval is supplied.
 - product: atlan
   layer: metadata
   from: 2022-07
@@ -741,110 +796,155 @@
   rationale: |
     July 2022 active-metadata release is the clear inclusion point; earlier history is qualified.
   sources:
-  - title: Atlan active metadata
-    url: https://humansofdata.atlan.com/2022/07/atlan-pioneering-active-metadata/
-    retrieved: '2026-09-21'
+    - title: Atlan active metadata
+      url: https://humansofdata.atlan.com/2022/07/atlan-pioneering-active-metadata/
+      retrieved: '2026-09-21'
   to: null
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
   uncertainty_display: Render the supplied month or year; do not show a fabricated first day.
   product_definition:
     id: atlan
     type: product
     names:
-    - name: Atlan
-      from: 2022-07
-      from_precision: month
-      to: null
+      - name: Atlan
+        from: 2022-07
+        from_precision: month
+        to: null
     parent: null
     roles:
-    - metadata
+      - metadata
     sources:
-    - title: Atlan active metadata
-      url: https://humansofdata.atlan.com/2022/07/atlan-pioneering-active-metadata/
-      retrieved: '2026-09-21'
+      - title: Atlan active metadata
+        url: https://humansofdata.atlan.com/2022/07/atlan-pioneering-active-metadata/
+        retrieved: '2026-09-21'
     owners: []
-    ownership_note: Ownership chronology not established for this representative external node unless an explicit
-      owner interval is supplied.
+    ownership_note: >-
+      Ownership chronology not established for this representative external node unless an explicit owner
+      interval is supplied.
 - product: lightdash
   layer: bi
   from: 2022-10
   from_precision: month
   to: '2026-09-16'
   relationship: integration
-  rationale: |
-    BI built on dbt metadata; October 2022 seed announcement documents an existing product. Rotated out of the representative set when dbt Charts enters, to keep the layer readable. Rotated out when Charts is added; no retirement implied.
+  rationale: >
+    BI built on dbt metadata; October 2022 seed announcement documents an existing product. Rotated out of the
+    representative set when dbt Charts enters, to keep the layer readable. Rotated out when Charts is added;
+    no retirement implied.
   sources:
-  - title: Lightdash raises seed round
-    url: https://www.lightdash.com/blogpost/lightdash-raises-seed-round
-    retrieved: '2026-09-21'
+    - title: Lightdash raises seed round
+      url: https://www.lightdash.com/blogpost/lightdash-raises-seed-round
+      retrieved: '2026-09-21'
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
   uncertainty_display: Render the supplied month or year; do not show a fabricated first day.
   product_definition:
     id: lightdash
     type: product
     names:
-    - name: Lightdash
-      from: 2022-10
-      from_precision: month
-      to: null
+      - name: Lightdash
+        from: 2022-10
+        from_precision: month
+        to: null
     parent: null
     roles:
-    - bi
+      - bi
     sources:
-    - title: Lightdash raises seed round
-      url: https://www.lightdash.com/blogpost/lightdash-raises-seed-round
-      retrieved: '2026-09-21'
+      - title: Lightdash raises seed round
+        url: https://www.lightdash.com/blogpost/lightdash-raises-seed-round
+        retrieved: '2026-09-21'
     owners: []
-    ownership_note: Ownership chronology not established for this representative external node unless an explicit
-      owner interval is supplied.
+    ownership_note: >-
+      Ownership chronology not established for this representative external node unless an explicit owner
+      interval is supplied.
 - product: cube
   layer: semantics
-  from: 2022-10
-  from_precision: month
+  from: '2019'
+  from_precision: year
   relationship: partial-substitute
-  rationale: |
-    An October 2022 practitioner article documents Cube in use; the founder retrospective places the open-source framework in 2019.
+  rationale: >
+    Cube's founder retrospective places the open-source Cube.js analytics framework in 2019, renamed Cube in
+    2022; an October 2022 practitioner article documents it in use alongside dbt.
   sources:
-  - title: Cube.js is now Cube
-    url: https://cube.dev/blog/cube-js-is-now-cube
-    retrieved: '2026-09-21'
-  - title: Practitioner article on dbt as a platform standard, October 2022
-    url: https://odupuis.medium.com/dbt-inside-setting-the-data-platform-standard-419aa3d9e11c
-    retrieved: '2026-09-21'
-  to: null
-  date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
-  uncertainty_display: Render the supplied month or year; do not show a fabricated first day.
-  product_definition:
-    id: cube
-    type: product
-    names:
-    - name: Cube.js
-      from: '2019'
-      from_precision: year
-      to: '2022'
-    - name: Cube
-      from: '2022'
-      from_precision: year
-      to: null
-    parent: null
-    roles:
-    - semantics
-    sources:
     - title: Cube.js is now Cube
       url: https://cube.dev/blog/cube-js-is-now-cube
       retrieved: '2026-09-21'
     - title: Practitioner article on dbt as a platform standard, October 2022
       url: https://odupuis.medium.com/dbt-inside-setting-the-data-platform-standard-419aa3d9e11c
       retrieved: '2026-09-21'
+  to: null
+  date_basis: founder retrospective, year precision; not an exact launch day
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
+  uncertainty_display: Render the supplied month or year; do not show a fabricated first day.
+  product_definition:
+    id: cube
+    type: product
+    names:
+      - name: Cube.js
+        from: '2019'
+        from_precision: year
+        to: '2022'
+      - name: Cube
+        from: '2022'
+        from_precision: year
+        to: null
+    parent: null
+    roles:
+      - semantics
+    sources:
+      - title: Cube.js is now Cube
+        url: https://cube.dev/blog/cube-js-is-now-cube
+        retrieved: '2026-09-21'
+      - title: Practitioner article on dbt as a platform standard, October 2022
+        url: https://odupuis.medium.com/dbt-inside-setting-the-data-platform-standard-419aa3d9e11c
+        retrieved: '2026-09-21'
     owners: []
-    ownership_note: Ownership chronology not established for this representative external node unless an explicit
-      owner interval is supplied.
+    ownership_note: >-
+      Ownership chronology not established for this representative external node unless an explicit owner
+      interval is supplied.
+- product: dbt-core
+  layer: semantics
+  from: '2021-12-03'
+  from_precision: day
+  to: '2026-06-01'
+  relationship: dbt-owned
+  rationale: >
+    From v1.0 a project can define metrics as project resources: a first, experimental step toward a semantic
+    layer, kept as metadata in the manifest. The hosted dbt Semantic Layer service that serves those
+    definitions previews in October 2022.
+  sources:
+    - title: dbt Core v1.0.0 release
+      url: https://github.com/dbt-labs/dbt/releases/tag/v1.0.0
+      retrieved: '2026-09-21'
+  date_basis: first published package of v1.0
+  editorial_selection: Representative example, not market ranking.
+- product: dbt-core
+  layer: semantics
+  from: '2026-06-01'
+  from_precision: day
+  to: null
+  relationship: combined-family
+  rationale: >
+    From v1.0 a project can define metrics as project resources: a first, experimental step toward a semantic
+    layer, kept as metadata in the manifest. The hosted dbt Semantic Layer service that serves those
+    definitions previews in October 2022. Within the combined family after the completed merger.
+  sources:
+    - title: dbt Core v1.0.0 release
+      url: https://github.com/dbt-labs/dbt/releases/tag/v1.0.0
+      retrieved: '2026-09-21'
+    - title: Fivetran and dbt Labs complete their merger
+      url: >-
+        https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+      retrieved: '2026-09-21'
+  date_basis: merger completion
+  editorial_selection: Representative example, not market ranking.
 - product: semantic-layer
   layer: semantics
   from: 2022-10
@@ -853,13 +953,14 @@
   rationale: |
     Original Semantic Layer public preview.
   sources:
-  - title: The dbt Semantic Layer
-    url: https://www.getdbt.com/blog/dbt-semantic-layer
-    retrieved: '2026-09-21'
+    - title: The dbt Semantic Layer
+      url: https://www.getdbt.com/blog/dbt-semantic-layer
+      retrieved: '2026-09-21'
   to: '2026-06-01'
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
   uncertainty_display: Render the supplied month or year; do not show a fabricated first day.
 - product: sqlmesh
   layer: transformation
@@ -868,19 +969,22 @@
   rationale: |
     Launch article 8 March 2023; independent until the Fivetran acquisition.
   sources:
-  - title: The future of DataOps
-    url: https://www.tobikodata.com/blog/the-future-of-dataops
-    retrieved: '2026-09-21'
-  - title: Fivetran acquisition of Tobiko
-    url: https://www.fivetran.com/press/fivetran-acquires-tobiko-data-to-power-the-next-generation-of-advanced-ai-ready-data-transformation
-    retrieved: '2026-09-21'
+    - title: The future of DataOps
+      url: https://www.tobikodata.com/blog/the-future-of-dataops
+      retrieved: '2026-09-21'
+    - title: Fivetran acquisition of Tobiko
+      url: >-
+        https://www.fivetran.com/press/fivetran-acquires-tobiko-data-to-power-the-next-generation-of-advanced-ai-ready-data-transformation
+      retrieved: '2026-09-21'
   from_precision: day
   to: '2026-06-01'
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
-  ownership_note: Tobiko before September 3, 2025; Fivetran afterward; combined family from June 1, 2026. Product
-    remains a distinct engine.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
+  ownership_note: >-
+    Tobiko before September 3, 2025; Fivetran afterward; combined family from June 1, 2026. Product remains a
+    distinct engine.
 - product: hex
   layer: bi
   from: '2023-10-17'
@@ -888,32 +992,36 @@
   rationale: |
     Named as a Semantic Layer integration at Coalesce 2023.
   sources:
-  - title: dbt Labs announces major enhancements to dbt Cloud
-    url: https://www.getdbt.com/blog/dbt-labs-announces-major-enhancements-to-dbt-cloud-to-enable-collaboration-at-scale
-    retrieved: '2026-09-21'
+    - title: dbt Labs announces major enhancements to dbt Cloud
+      url: >-
+        https://www.getdbt.com/blog/dbt-labs-announces-major-enhancements-to-dbt-cloud-to-enable-collaboration-at-scale
+      retrieved: '2026-09-21'
   from_precision: day
   to: null
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
   product_definition:
     id: hex
     type: product
     names:
-    - name: Hex
-      from: '2023-10-17'
-      to: null
-      from_precision: day
+      - name: Hex
+        from: '2023-10-17'
+        to: null
+        from_precision: day
     parent: null
     roles:
-    - bi
+      - bi
     sources:
-    - title: dbt Labs announces major enhancements to dbt Cloud
-      url: https://www.getdbt.com/blog/dbt-labs-announces-major-enhancements-to-dbt-cloud-to-enable-collaboration-at-scale
-      retrieved: '2026-09-21'
+      - title: dbt Labs announces major enhancements to dbt Cloud
+        url: >-
+          https://www.getdbt.com/blog/dbt-labs-announces-major-enhancements-to-dbt-cloud-to-enable-collaboration-at-scale
+        retrieved: '2026-09-21'
     owners: []
-    ownership_note: Ownership chronology not established for this representative external node unless an explicit
-      owner interval is supplied.
+    ownership_note: >-
+      Ownership chronology not established for this representative external node unless an explicit owner
+      interval is supplied.
 - product: explorer
   layer: metadata
   from: '2023-10-17'
@@ -921,14 +1029,15 @@
   rationale: |
     Explorer enters public preview.
   sources:
-  - title: New dbt Cloud features announced at Coalesce 2023
-    url: https://www.getdbt.com/blog/new-dbt-cloud-features-announced-at-coalesce-2023
-    retrieved: '2026-09-21'
+    - title: New dbt Cloud features announced at Coalesce 2023
+      url: https://www.getdbt.com/blog/new-dbt-cloud-features-announced-at-coalesce-2023
+      retrieved: '2026-09-21'
   from_precision: day
   to: '2026-06-01'
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
 - product: microsoft-fabric
   layer: bi
   from: '2023-11-15'
@@ -936,52 +1045,59 @@
   rationale: |
     Fabric GA brings Power BI, Synapse and Data Factory into one suite; a cross-layer competitor.
   sources:
-  - title: Microsoft Fabric GA
-    url: https://www.microsoft.com/en-us/microsoft-fabric/blog/2023/11/15/prepare-your-data-for-ai-innovation-with-microsoft-fabric-now-generally-available/
-    retrieved: '2026-09-21'
+    - title: Microsoft Fabric GA
+      url: >-
+        https://www.microsoft.com/en-us/microsoft-fabric/blog/2023/11/15/prepare-your-data-for-ai-innovation-with-microsoft-fabric-now-generally-available/
+      retrieved: '2026-09-21'
   from_precision: day
   to: null
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
   product_definition:
     id: microsoft-fabric
     type: product
     names:
-    - name: Microsoft Fabric
-      from: '2023-11-15'
-      to: null
-      from_precision: day
+      - name: Microsoft Fabric
+        from: '2023-11-15'
+        to: null
+        from_precision: day
     owners:
-    - owner: Microsoft
-      from: '2023-11-15'
-      from_precision: day
-      to: null
+      - owner: Microsoft
+        from: '2023-11-15'
+        from_precision: day
+        to: null
     parent: null
     roles:
-    - bi
-    - warehouse
+      - bi
+      - warehouse
     sources:
-    - title: Fabric GA
-      url: https://www.microsoft.com/en-us/microsoft-fabric/blog/2023/11/15/prepare-your-data-for-ai-innovation-with-microsoft-fabric-now-generally-available/
-      retrieved: '2026-09-21'
-    ownership_note: Ownership chronology not established for this representative external node unless an explicit
-      owner interval is supplied.
+      - title: Fabric GA
+        url: >-
+          https://www.microsoft.com/en-us/microsoft-fabric/blog/2023/11/15/prepare-your-data-for-ai-innovation-with-microsoft-fabric-now-generally-available/
+        retrieved: '2026-09-21'
+    ownership_note: >-
+      Ownership chronology not established for this representative external node unless an explicit owner
+      interval is supplied.
 - product: microsoft-fabric
   layer: warehouse
   from: '2023-11-15'
   from_precision: day
   to: null
   relationship: partial-substitute
-  rationale: |
-    Fabric combines compute, data movement and BI responsibilities. This placement represents the suite, not an assertion of a dbt adapter launch.
+  rationale: >
+    Fabric combines compute, data movement and BI responsibilities. This placement represents the suite, not
+    an assertion of a dbt adapter launch.
   sources:
-  - title: Fabric GA
-    url: https://www.microsoft.com/en-us/microsoft-fabric/blog/2023/11/15/prepare-your-data-for-ai-innovation-with-microsoft-fabric-now-generally-available/
-    retrieved: '2026-09-21'
+    - title: Fabric GA
+      url: >-
+        https://www.microsoft.com/en-us/microsoft-fabric/blog/2023/11/15/prepare-your-data-for-ai-innovation-with-microsoft-fabric-now-generally-available/
+      retrieved: '2026-09-21'
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
 - product: metaplane
   layer: quality
   from: '2025-04-23'
@@ -989,36 +1105,40 @@
   rationale: |
     Datadog acquisition establishes ownership; earlier emergence not dated in this pass.
   sources:
-  - title: Datadog acquires Metaplane
-    url: https://investors.datadoghq.com/news-releases/news-release-details/datadog-brings-observability-data-teams-acquiring-metaplane
-    retrieved: '2026-09-21'
+    - title: Datadog acquires Metaplane
+      url: >-
+        https://investors.datadoghq.com/news-releases/news-release-details/datadog-brings-observability-data-teams-acquiring-metaplane
+      retrieved: '2026-09-21'
   from_precision: day
   to: null
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
   product_definition:
     id: metaplane
     type: product
     names:
-    - name: Metaplane
-      from: '2025-04-23'
-      to: null
-      from_precision: day
+      - name: Metaplane
+        from: '2025-04-23'
+        to: null
+        from_precision: day
     owners:
-    - owner: Datadog
-      from: '2025-04-23'
-      from_precision: day
-      to: null
+      - owner: Datadog
+        from: '2025-04-23'
+        from_precision: day
+        to: null
     parent: null
     roles:
-    - quality
+      - quality
     sources:
-    - title: Datadog acquires Metaplane
-      url: https://investors.datadoghq.com/news-releases/news-release-details/datadog-brings-observability-data-teams-acquiring-metaplane
-      retrieved: '2026-09-21'
-    ownership_note: Ownership chronology not established for this representative external node unless an explicit
-      owner interval is supplied.
+      - title: Datadog acquires Metaplane
+        url: >-
+          https://investors.datadoghq.com/news-releases/news-release-details/datadog-brings-observability-data-teams-acquiring-metaplane
+        retrieved: '2026-09-21'
+    ownership_note: >-
+      Ownership chronology not established for this representative external node unless an explicit owner
+      interval is supplied.
 - product: mcp-server
   layer: ai-context
   from: '2025-05-28'
@@ -1026,14 +1146,15 @@
   rationale: |
     Local MCP server beta.
   sources:
-  - title: dbt Launch Showcase 2025 recap
-    url: https://www.getdbt.com/blog/dbt-launch-showcase-2025-recap
-    retrieved: '2026-09-21'
+    - title: dbt Launch Showcase 2025 recap
+      url: https://www.getdbt.com/blog/dbt-launch-showcase-2025-recap
+      retrieved: '2026-09-21'
   from_precision: day
   to: '2025-10-14'
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
 - product: insights
   layer: bi
   from: '2025-05-28'
@@ -1041,137 +1162,155 @@
   rationale: |
     Insights analysis surface.
   sources:
-  - title: dbt Labs launches AI-powered features
-    url: https://www.getdbt.com/blog/dbt-labs-launches-ai-powered-features-to-onboard-data-analysts-into-dbt
-    retrieved: '2026-09-21'
+    - title: dbt Labs launches AI-powered features
+      url: https://www.getdbt.com/blog/dbt-labs-launches-ai-powered-features-to-onboard-data-analysts-into-dbt
+      retrieved: '2026-09-21'
   from_precision: day
   to: '2026-06-01'
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
 - product: fusion
   layer: transformation
   from: '2025-05-28'
   relationship: dbt-owned
-  rationale: |
-    Rust engine lineage: Fusion beta in 2025, dbt v2 at the 2026 endpoint. Full and OSS distributions are separate catalogue records.
+  rationale: >
+    Rust engine lineage: Fusion beta in 2025, dbt v2 at the 2026 endpoint. Full and OSS distributions are
+    separate catalogue records.
   sources:
-  - title: dbt Labs redefines dbt with the Fusion engine
-    url: https://www.getdbt.com/blog/dbt-labs-redefines-dbt-with-new-fusion-engine
-    retrieved: '2026-09-21'
+    - title: dbt Labs redefines dbt with the Fusion engine
+      url: https://www.getdbt.com/blog/dbt-labs-redefines-dbt-with-new-fusion-engine
+      retrieved: '2026-09-21'
   from_precision: day
   to: '2026-06-01'
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
 - product: mcp-remote
   layer: ai-context
   from: '2025-10-14'
   from_precision: day
   to: '2026-06-01'
   relationship: dbt-owned
-  rationale: |
-    The hosted MCP surface reaches GA. It replaces the local-server representative node here to keep the chart readable; the local server is not asserted retired.
+  rationale: >
+    The hosted MCP surface reaches GA. It replaces the local-server representative node here to keep the chart
+    readable; the local server is not asserted retired.
   sources:
-  - title: Coalesce 2025 product announcement
-    url: https://www.getdbt.com/blog/dbt-labs-cost-optimization-agentic-ai-product-announcements
-    retrieved: '2026-09-21'
+    - title: Coalesce 2025 product announcement
+      url: https://www.getdbt.com/blog/dbt-labs-cost-optimization-agentic-ai-product-announcements
+      retrieved: '2026-09-21'
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
 - product: snowflake-dbt-projects
   layer: transformation
   from: '2025-11-10'
   from_precision: day
   relationship: partial-substitute
-  rationale: |
-    Snowflake announces GA of native dbt Projects on November 10, 2025. This is distinct from dbt Labs’ retiring Native App.
+  rationale: >
+    Snowflake announces GA of native dbt Projects on November 10, 2025. This is distinct from dbt Labs’
+    retiring Native App.
   sources:
-  - title: dbt Projects on Snowflake GA
-    url: https://www.snowflake.com/en/blog/dbt-projects-generally-available/
-    retrieved: '2026-09-21'
-    rechecked: '2026-09-22'
-  to: null
-  date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
-  product_definition:
-    id: snowflake-dbt-projects
-    type: product
-    names:
-    - name: Snowflake dbt Projects
-      from: '2025-11-10'
-      from_precision: day
-      to: null
-    owners:
-    - owner: Snowflake
-      from: '2025-11-10'
-      from_precision: day
-      to: null
-    parent: null
-    roles:
-    - transformation
-    sources:
     - title: dbt Projects on Snowflake GA
       url: https://www.snowflake.com/en/blog/dbt-projects-generally-available/
       retrieved: '2026-09-21'
       rechecked: '2026-09-22'
-    ownership_note: Ownership chronology not established for this representative external node unless an explicit
-      owner interval is supplied.
+  to: null
+  date_basis: earliest supported chart inclusion; not necessarily original launch
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
+  product_definition:
+    id: snowflake-dbt-projects
+    type: product
+    names:
+      - name: Snowflake dbt Projects
+        from: '2025-11-10'
+        from_precision: day
+        to: null
+    owners:
+      - owner: Snowflake
+        from: '2025-11-10'
+        from_precision: day
+        to: null
+    parent: null
+    roles:
+      - transformation
+    sources:
+      - title: dbt Projects on Snowflake GA
+        url: https://www.snowflake.com/en/blog/dbt-projects-generally-available/
+        retrieved: '2026-09-21'
+        rechecked: '2026-09-22'
+    ownership_note: >-
+      Ownership chronology not established for this representative external node unless an explicit owner
+      interval is supplied.
 - product: mcp-remote
   layer: ai-context
   from: '2026-06-01'
   from_precision: day
   to: null
   relationship: combined-family
-  rationale: |
-    The hosted MCP surface reaches GA. It replaces the local-server representative node here to keep the chart readable; the local server is not asserted retired. Within the combined family after the completed merger; common ownership does not mean identical engines or complete integration.
+  rationale: >
+    The hosted MCP surface reaches GA. It replaces the local-server representative node here to keep the chart
+    readable; the local server is not asserted retired. Within the combined family after the completed merger;
+    common ownership does not mean identical engines or complete integration.
   sources:
-  - title: Coalesce 2025 product announcement
-    url: https://www.getdbt.com/blog/dbt-labs-cost-optimization-agentic-ai-product-announcements
-    retrieved: '2026-09-21'
-  - title: Merger completion
-    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
-    retrieved: '2026-09-21'
+    - title: Coalesce 2025 product announcement
+      url: https://www.getdbt.com/blog/dbt-labs-cost-optimization-agentic-ai-product-announcements
+      retrieved: '2026-09-21'
+    - title: Merger completion
+      url: >-
+        https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+      retrieved: '2026-09-21'
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
 - product: insights
   layer: bi
   from: '2026-06-01'
   relationship: combined-family
-  rationale: |
-    Insights analysis surface. Within the combined family after the completed merger; common ownership does not mean identical engines or complete integration.
+  rationale: >
+    Insights analysis surface. Within the combined family after the completed merger; common ownership does
+    not mean identical engines or complete integration.
   sources:
-  - title: dbt Labs launches AI-powered features
-    url: https://www.getdbt.com/blog/dbt-labs-launches-ai-powered-features-to-onboard-data-analysts-into-dbt
-    retrieved: '2026-09-21'
-  - title: Merger completion
-    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
-    retrieved: '2026-09-21'
+    - title: dbt Labs launches AI-powered features
+      url: https://www.getdbt.com/blog/dbt-labs-launches-ai-powered-features-to-onboard-data-analysts-into-dbt
+      retrieved: '2026-09-21'
+    - title: Merger completion
+      url: >-
+        https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+      retrieved: '2026-09-21'
   from_precision: day
   to: null
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
 - product: fivetran
   layer: ingestion
   from: '2026-06-01'
   from_precision: day
   relationship: combined-family
-  rationale: |
-    Named in the same 2016–2019 retrospective as a contemporary ingestion tool. Within the combined family after the completed merger; common ownership does not mean identical engines or complete integration.
+  rationale: >
+    Named in the same 2016–2019 retrospective as a contemporary ingestion tool. Within the combined family
+    after the completed merger; common ownership does not mean identical engines or complete integration.
   sources:
-  - title: Merger announcement (founder account)
-    url: https://www.getdbt.com/blog/dbt-labs-and-fivetran-merge-announcement
-    retrieved: '2026-09-21'
-  - title: Merger completion
-    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
-    retrieved: '2026-09-21'
+    - title: Merger announcement (founder account)
+      url: https://www.getdbt.com/blog/dbt-labs-and-fivetran-merge-announcement
+      retrieved: '2026-09-21'
+    - title: Merger completion
+      url: >-
+        https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+      retrieved: '2026-09-21'
   to: null
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
   uncertainty_display: Render the supplied month or year; do not show a fabricated first day.
 - product: hvr
   layer: ingestion
@@ -1179,316 +1318,371 @@
   from_precision: day
   to: null
   relationship: combined-family
-  rationale: |
-    HVR adds replication and CDC to Fivetran after acquisition. Fivetran remains external to dbt until the 2026 merger. Within the combined family after the completed merger; common ownership does not mean identical engines or complete integration.
+  rationale: >
+    HVR adds replication and CDC to Fivetran after acquisition. Fivetran remains external to dbt until the
+    2026 merger. Within the combined family after the completed merger; common ownership does not mean
+    identical engines or complete integration.
   sources:
-  - title: HVR acquisition completion
-    url: https://www.fivetran.com/press/fivetran-completes-acquisition-of-hvr
-    retrieved: '2026-09-21'
-  - title: Merger completion
-    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
-    retrieved: '2026-09-21'
+    - title: HVR acquisition completion
+      url: https://www.fivetran.com/press/fivetran-completes-acquisition-of-hvr
+      retrieved: '2026-09-21'
+    - title: Merger completion
+      url: >-
+        https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+      retrieved: '2026-09-21'
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
 - product: dbt-core
   layer: metadata
   from: '2026-06-01'
   relationship: combined-family
-  rationale: |
-    dbt 0.11 generates documentation and lineage. Within the combined family after the completed merger; common ownership does not mean identical engines or complete integration.
+  rationale: >
+    dbt 0.11 generates documentation and lineage. Within the combined family after the completed merger;
+    common ownership does not mean identical engines or complete integration.
   sources:
-  - title: dbt 0.11.0 release
-    url: https://github.com/dbt-labs/dbt/releases/tag/v0.11.0
-    retrieved: '2026-09-21'
-  - title: Merger completion
-    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
-    retrieved: '2026-09-21'
+    - title: dbt 0.11.0 release
+      url: https://github.com/dbt-labs/dbt/releases/tag/v0.11.0
+      retrieved: '2026-09-21'
+    - title: Merger completion
+      url: >-
+        https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+      retrieved: '2026-09-21'
   from_precision: day
   to: null
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
 - product: explorer
   layer: metadata
   from: '2026-06-01'
   relationship: combined-family
-  rationale: |
-    Explorer enters public preview. Within the combined family after the completed merger; common ownership does not mean identical engines or complete integration.
+  rationale: >
+    Explorer enters public preview. Within the combined family after the completed merger; common ownership
+    does not mean identical engines or complete integration.
   sources:
-  - title: New dbt Cloud features announced at Coalesce 2023
-    url: https://www.getdbt.com/blog/new-dbt-cloud-features-announced-at-coalesce-2023
-    retrieved: '2026-09-21'
-  - title: Merger completion
-    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
-    retrieved: '2026-09-21'
+    - title: New dbt Cloud features announced at Coalesce 2023
+      url: https://www.getdbt.com/blog/new-dbt-cloud-features-announced-at-coalesce-2023
+      retrieved: '2026-09-21'
+    - title: Merger completion
+      url: >-
+        https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+      retrieved: '2026-09-21'
   from_precision: day
   to: null
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
 - product: dbt-cloud
   layer: orchestration
   from: '2026-06-01'
   from_precision: day
   relationship: combined-family
-  rationale: |
-    Sinter scheduled and monitored dbt runs. Within the combined family after the completed merger; common ownership does not mean identical engines or complete integration.
+  rationale: >
+    Sinter scheduled and monitored dbt runs. Within the combined family after the completed merger; common
+    ownership does not mean identical engines or complete integration.
   sources:
-  - title: What's in a name?
-    url: https://www.getdbt.com/blog/whats-in-a-name
-    retrieved: '2026-09-21'
-  - title: Merger completion
-    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
-    retrieved: '2026-09-21'
+    - title: What's in a name?
+      url: https://www.getdbt.com/blog/whats-in-a-name
+      retrieved: '2026-09-21'
+    - title: Merger completion
+      url: >-
+        https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+      retrieved: '2026-09-21'
   to: null
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
   uncertainty_display: Render the supplied month or year; do not show a fabricated first day.
 - product: dbt-state
   layer: orchestration
   from: '2026-06-01'
   relationship: combined-family
-  rationale: |
-    Hosted state service. Within the combined family after the completed merger; common ownership does not mean identical engines or complete integration.
+  rationale: >
+    Hosted state service. Within the combined family after the completed merger; common ownership does not
+    mean identical engines or complete integration.
   sources:
-  - title: What we announced at Snowflake Summit
-    url: https://www.getdbt.com/blog/what-we-announced-at-snowflake-summit-and-why-it-matters
-    retrieved: '2026-09-21'
-  - title: Merger completion
-    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
-    retrieved: '2026-09-21'
+    - title: What we announced at Snowflake Summit
+      url: https://www.getdbt.com/blog/what-we-announced-at-snowflake-summit-and-why-it-matters
+      retrieved: '2026-09-21'
+    - title: Merger completion
+      url: >-
+        https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+      retrieved: '2026-09-21'
   from_precision: day
   to: null
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
 - product: dbt-core
   layer: quality
   from: '2026-06-01'
   from_precision: day
   to: null
   relationship: combined-family
-  rationale: |
-    The 0.2.0 test command adds assertions about transformed data. This is not a complete enterprise observability suite. Within the combined family after the completed merger; common ownership does not mean identical engines or complete integration.
+  rationale: >
+    The 0.2.0 test command adds assertions about transformed data. This is not a complete enterprise
+    observability suite. Within the combined family after the completed merger; common ownership does not mean
+    identical engines or complete integration.
   sources:
-  - title: dbt 0.2.0 source archive
-    url: https://pypi.org/project/dbt/0.2.0/
-    retrieved: '2026-09-21'
-  - title: Merger completion
-    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
-    retrieved: '2026-09-21'
+    - title: dbt 0.2.0 source archive
+      url: https://pypi.org/project/dbt/0.2.0/
+      retrieved: '2026-09-21'
+    - title: Merger completion
+      url: >-
+        https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+      retrieved: '2026-09-21'
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
 - product: census
   layer: reverse-etl
   from: '2026-06-01'
   relationship: combined-family
-  rationale: |
-    Named in dbt's June 2021 ecosystem announcement. Within the combined family after the completed merger; common ownership does not mean identical engines or complete integration.
+  rationale: >
+    Named in dbt's June 2021 ecosystem announcement. Within the combined family after the completed merger;
+    common ownership does not mean identical engines or complete integration.
   sources:
-  - title: Fishtown Analytics rebrands as dbt Labs
-    url: https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
-    retrieved: '2026-09-21'
-  - title: Merger completion
-    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
-    retrieved: '2026-09-21'
+    - title: Fishtown Analytics rebrands as dbt Labs
+      url: >-
+        https://www.getdbt.com/blog/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-source-analytics-engineering-software
+      retrieved: '2026-09-21'
+    - title: Merger completion
+      url: >-
+        https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+      retrieved: '2026-09-21'
   from_precision: day
   to: null
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
 - product: semantic-layer
   layer: semantics
   from: '2026-06-01'
   from_precision: day
   relationship: combined-family
-  rationale: |
-    Original Semantic Layer public preview. Within the combined family after the completed merger; common ownership does not mean identical engines or complete integration.
+  rationale: >
+    Original Semantic Layer public preview. Within the combined family after the completed merger; common
+    ownership does not mean identical engines or complete integration.
   sources:
-  - title: The dbt Semantic Layer
-    url: https://www.getdbt.com/blog/dbt-semantic-layer
-    retrieved: '2026-09-21'
-  - title: Merger completion
-    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
-    retrieved: '2026-09-21'
+    - title: The dbt Semantic Layer
+      url: https://www.getdbt.com/blog/dbt-semantic-layer
+      retrieved: '2026-09-21'
+    - title: Merger completion
+      url: >-
+        https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+      retrieved: '2026-09-21'
   to: null
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
   uncertainty_display: Render the supplied month or year; do not show a fabricated first day.
 - product: dbt-core
   layer: transformation
   from: '2026-06-01'
   relationship: combined-family
-  rationale: |
-    dbt supplies SQL transformation definitions; execution happens in the warehouse. Within the combined family after the completed merger; common ownership does not mean identical engines or complete integration.
+  rationale: >
+    dbt supplies SQL transformation definitions; execution happens in the warehouse. Within the combined
+    family after the completed merger; common ownership does not mean identical engines or complete
+    integration.
   sources:
-  - title: PyPI package 0.0.1
-    url: https://pypi.org/project/dbt/0.0.1/
-    retrieved: '2026-09-21'
-  - title: Merger completion
-    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
-    retrieved: '2026-09-21'
+    - title: PyPI package 0.0.1
+      url: https://pypi.org/project/dbt/0.0.1/
+      retrieved: '2026-09-21'
+    - title: Merger completion
+      url: >-
+        https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+      retrieved: '2026-09-21'
   from_precision: day
   to: null
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
 - product: fusion
   layer: transformation
   from: '2026-06-01'
   relationship: combined-family
-  rationale: |
-    Rust engine lineage: Fusion beta in 2025, dbt v2 at the 2026 endpoint. Full and OSS distributions are separate catalogue records. Within the combined family after the completed merger; common ownership does not mean identical engines or complete integration.
+  rationale: >
+    Rust engine lineage: Fusion beta in 2025, dbt v2 at the 2026 endpoint. Full and OSS distributions are
+    separate catalogue records. Within the combined family after the completed merger; common ownership does
+    not mean identical engines or complete integration.
   sources:
-  - title: dbt Labs redefines dbt with the Fusion engine
-    url: https://www.getdbt.com/blog/dbt-labs-redefines-dbt-with-new-fusion-engine
-    retrieved: '2026-09-21'
-  - title: Merger completion
-    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
-    retrieved: '2026-09-21'
+    - title: dbt Labs redefines dbt with the Fusion engine
+      url: https://www.getdbt.com/blog/dbt-labs-redefines-dbt-with-new-fusion-engine
+      retrieved: '2026-09-21'
+    - title: Merger completion
+      url: >-
+        https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+      retrieved: '2026-09-21'
   from_precision: day
   to: null
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
 - product: sqlmesh
   layer: transformation
   from: '2026-06-01'
   relationship: combined-family
-  rationale: |
-    Launch article 8 March 2023; independent until the Fivetran acquisition. Within the combined family after the completed merger; common ownership does not mean identical engines or complete integration.
+  rationale: >
+    Launch article 8 March 2023; independent until the Fivetran acquisition. Within the combined family after
+    the completed merger; common ownership does not mean identical engines or complete integration.
   sources:
-  - title: The future of DataOps
-    url: https://www.tobikodata.com/blog/the-future-of-dataops
-    retrieved: '2026-09-21'
-  - title: Fivetran acquisition of Tobiko
-    url: https://www.fivetran.com/press/fivetran-acquires-tobiko-data-to-power-the-next-generation-of-advanced-ai-ready-data-transformation
-    retrieved: '2026-09-21'
-  - title: Merger completion
-    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
-    retrieved: '2026-09-21'
+    - title: The future of DataOps
+      url: https://www.tobikodata.com/blog/the-future-of-dataops
+      retrieved: '2026-09-21'
+    - title: Fivetran acquisition of Tobiko
+      url: >-
+        https://www.fivetran.com/press/fivetran-acquires-tobiko-data-to-power-the-next-generation-of-advanced-ai-ready-data-transformation
+      retrieved: '2026-09-21'
+    - title: Merger completion
+      url: >-
+        https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+      retrieved: '2026-09-21'
   from_precision: day
   to: null
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
-  ownership_note: Tobiko before September 3, 2025; Fivetran afterward; combined family from June 1, 2026. Product
-    remains a distinct engine.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
+  ownership_note: >-
+    Tobiko before September 3, 2025; Fivetran afterward; combined family from June 1, 2026. Product remains a
+    distinct engine.
 - product: context-layer
   layer: ai-context
   from: '2026-09-16'
   relationship: combined-family
   maturity: beta
-  rationale: |
-    Fivetran Context Layer private beta. Within the combined family after the completed merger; common ownership does not mean identical engines or complete integration.
+  rationale: >
+    Fivetran Context Layer private beta. Within the combined family after the completed merger; common
+    ownership does not mean identical engines or complete integration.
   sources:
-  - title: dbt Summit 2026 product announcements
-    url: https://www.getdbt.com/blog/dbt-summit-2026-product-announcements
-    retrieved: '2026-09-21'
-  - title: Merger completion
-    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
-    retrieved: '2026-09-21'
+    - title: dbt Summit 2026 product announcements
+      url: https://www.getdbt.com/blog/dbt-summit-2026-product-announcements
+      retrieved: '2026-09-21'
+    - title: Merger completion
+      url: >-
+        https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+      retrieved: '2026-09-21'
   from_precision: day
   to: null
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
 - product: wizard
   layer: ai-context
   from: '2026-09-16'
   relationship: combined-family
   maturity: preview
-  rationale: |
-    Agentic exploration surface in public preview. Within the combined family after the completed merger; common ownership does not mean identical engines or complete integration.
+  rationale: >
+    Agentic exploration surface in public preview. Within the combined family after the completed merger;
+    common ownership does not mean identical engines or complete integration.
   sources:
-  - title: dbt Summit 2026 product announcements
-    url: https://www.getdbt.com/blog/dbt-summit-2026-product-announcements
-    retrieved: '2026-09-21'
-  - title: Merger completion
-    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
-    retrieved: '2026-09-21'
+    - title: dbt Summit 2026 product announcements
+      url: https://www.getdbt.com/blog/dbt-summit-2026-product-announcements
+      retrieved: '2026-09-21'
+    - title: Merger completion
+      url: >-
+        https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+      retrieved: '2026-09-21'
   from_precision: day
   to: null
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
 - product: charts
   layer: bi
   from: '2026-09-16'
   relationship: combined-family
   maturity: beta
-  rationale: |
-    Dashboard-as-code public beta. Within the combined family after the completed merger; common ownership does not mean identical engines or complete integration.
+  rationale: >
+    Dashboard-as-code public beta. Within the combined family after the completed merger; common ownership
+    does not mean identical engines or complete integration.
   sources:
-  - title: dbt Summit 2026 product announcements
-    url: https://www.getdbt.com/blog/dbt-summit-2026-product-announcements
-    retrieved: '2026-09-21'
-  - title: Merger completion
-    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
-    retrieved: '2026-09-21'
+    - title: dbt Summit 2026 product announcements
+      url: https://www.getdbt.com/blog/dbt-summit-2026-product-announcements
+      retrieved: '2026-09-21'
+    - title: Merger completion
+      url: >-
+        https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+      retrieved: '2026-09-21'
   from_precision: day
   to: null
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
 - product: iceberg-tables
   layer: open-table-compute
   from: '2026-09-16'
   from_precision: day
   to: null
   relationship: infrastructure
-  rationale: |
-    Lake Compute operates against Iceberg tables; an open format and external storage remain distinct from the dbt compute service.
+  rationale: >
+    Lake Compute operates against Iceberg tables; an open format and external storage remain distinct from the
+    dbt compute service.
   sources:
-  - title: Summit 2026 product announcements
-    url: https://www.getdbt.com/blog/dbt-summit-2026-product-announcements
-    retrieved: '2026-09-21'
+    - title: Summit 2026 product announcements
+      url: https://www.getdbt.com/blog/dbt-summit-2026-product-announcements
+      retrieved: '2026-09-21'
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
   product_definition:
     id: iceberg-tables
     type: product
     parent: null
     names:
-    - name: Apache Iceberg tables
-      from: '2026-09-16'
-      to: null
-      from_precision: day
+      - name: Apache Iceberg tables
+        from: '2026-09-16'
+        to: null
+        from_precision: day
     owners: []
     roles:
-    - open-table-compute
+      - open-table-compute
     editorial_kind: open-format-infrastructure
     description: External open-table storage format represented at the endpoint; this is not its creation date.
     sources:
-    - title: Summit 2026 product announcements
-      url: https://www.getdbt.com/blog/dbt-summit-2026-product-announcements
-      retrieved: '2026-09-21'
-    ownership_note: Ownership chronology not established for this representative external node unless an explicit
-      owner interval is supplied.
+      - title: Summit 2026 product announcements
+        url: https://www.getdbt.com/blog/dbt-summit-2026-product-announcements
+        retrieved: '2026-09-21'
+    ownership_note: >-
+      Ownership chronology not established for this representative external node unless an explicit owner
+      interval is supplied.
 - product: lake-compute
   layer: open-table-compute
   from: '2026-09-16'
   relationship: combined-family
   maturity: beta
-  rationale: |
-    Limited compute offering, private beta. Within the combined family after the completed merger; common ownership does not mean identical engines or complete integration.
+  rationale: >
+    Limited compute offering, private beta. Within the combined family after the completed merger; common
+    ownership does not mean identical engines or complete integration.
   sources:
-  - title: dbt Summit 2026 product announcements
-    url: https://www.getdbt.com/blog/dbt-summit-2026-product-announcements
-    retrieved: '2026-09-21'
-  - title: Merger completion
-    url: https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
-    retrieved: '2026-09-21'
+    - title: dbt Summit 2026 product announcements
+      url: https://www.getdbt.com/blog/dbt-summit-2026-product-announcements
+      retrieved: '2026-09-21'
+    - title: Merger completion
+      url: >-
+        https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
+      retrieved: '2026-09-21'
   from_precision: day
   to: null
   date_basis: earliest supported chart inclusion; not necessarily original launch
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
 - product: databricks-genie
   layer: ai-context
   from: '2026-09-21'
@@ -1497,35 +1691,37 @@
   rationale: |
     September 2026 release notes supply contemporary names.
   sources:
-  - title: Databricks AI/BI release notes 2026
-    url: https://docs.databricks.com/aws/en/ai-bi/release-notes/2026
-    retrieved: '2026-09-21'
+    - title: Databricks AI/BI release notes 2026
+      url: https://docs.databricks.com/aws/en/ai-bi/release-notes/2026
+      retrieved: '2026-09-21'
   to: null
   date_basis: endpoint observation of September 2026 names; not a launch date
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
   product_definition:
     id: databricks-genie
     type: product
     names:
-    - name: Genie One / Genie Agents / Genie Code
-      from: '2026-09-21'
-      from_precision: day
-      to: null
+      - name: Genie One / Genie Agents / Genie Code
+        from: '2026-09-21'
+        from_precision: day
+        to: null
     owners:
-    - owner: Databricks
-      from: '2026-09-21'
-      from_precision: day
-      to: null
+      - owner: Databricks
+        from: '2026-09-21'
+        from_precision: day
+        to: null
     parent: null
     roles:
-    - ai-context
+      - ai-context
     sources:
-    - title: Databricks AI/BI release notes 2026
-      url: https://docs.databricks.com/aws/en/ai-bi/release-notes/2026
-      retrieved: '2026-09-21'
-    ownership_note: Ownership chronology not established for this representative external node unless an explicit
-      owner interval is supplied.
+      - title: Databricks AI/BI release notes 2026
+        url: https://docs.databricks.com/aws/en/ai-bi/release-notes/2026
+        retrieved: '2026-09-21'
+    ownership_note: >-
+      Ownership chronology not established for this representative external node unless an explicit owner
+      interval is supplied.
     editorial_kind: product-family
 - product: snowflake-cortex
   layer: ai-context
@@ -1535,32 +1731,34 @@
   rationale: |
     Semantic and AI consumption at the endpoint; consult dated milestones before adding to older snapshots.
   sources:
-  - title: Cortex Analyst docs
-    url: https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-analyst
-    retrieved: '2026-09-21'
+    - title: Cortex Analyst docs
+      url: https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-analyst
+      retrieved: '2026-09-21'
   to: null
   date_basis: endpoint observation only; not a launch date
-  editorial_selection: Representative example, not market ranking. Ending an interval for chart readability does
-    not imply retirement.
+  editorial_selection: >-
+    Representative example, not market ranking. Ending an interval for chart readability does not imply
+    retirement.
   product_definition:
     id: snowflake-cortex
     type: product
     names:
-    - name: Snowflake Cortex Analyst and agents
-      from: '2026-09-21'
-      from_precision: day
-      to: null
+      - name: Snowflake Cortex Analyst and agents
+        from: '2026-09-21'
+        from_precision: day
+        to: null
     owners:
-    - owner: Snowflake
-      from: '2026-09-21'
-      from_precision: day
-      to: null
+      - owner: Snowflake
+        from: '2026-09-21'
+        from_precision: day
+        to: null
     parent: null
     roles:
-    - ai-context
+      - ai-context
     sources:
-    - title: Cortex Analyst docs
-      url: https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-analyst
-      retrieved: '2026-09-21'
-    ownership_note: Ownership chronology not established for this representative external node unless an explicit
-      owner interval is supplied.
+      - title: Cortex Analyst docs
+        url: https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-analyst
+        retrieved: '2026-09-21'
+    ownership_note: >-
+      Ownership chronology not established for this representative external node unless an explicit owner
+      interval is supplied.
