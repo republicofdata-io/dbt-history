@@ -6,14 +6,14 @@ export default function CodeBlock({ block }: { block: CodeBlockT }) {
   const lines = block.content.replace(/\n$/, "").split("\n");
   const highlighted = new Set(block.highlight_lines);
   return (
-    <figure className="flex min-h-0 flex-col overflow-hidden rounded-md bg-muted">
+    <figure className="flex flex-col overflow-hidden rounded-md bg-muted">
       {block.filename && (
         <figcaption className="flex items-center justify-between border-b border-border px-3 py-1">
           <span className="provenance text-foreground/80">{block.filename}</span>
           <span className="provenance">{block.language}</span>
         </figcaption>
       )}
-      <pre className="min-h-0 overflow-auto py-1 font-mono text-[11px] leading-[1.6]" tabIndex={0} aria-label={block.filename ?? `${block.language} code`}>
+      <pre className="overflow-x-auto py-1 font-mono text-[11px] leading-[1.6]" tabIndex={0} aria-label={block.filename ?? `${block.language} code`}>
         <code>
           {lines.map((line, i) => {
             const n = i + 1;

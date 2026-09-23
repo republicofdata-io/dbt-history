@@ -13,18 +13,18 @@ function StepView({ step, fixture }: { step: Step; fixture: string }) {
   const [fileIndex, setFileIndex] = useState(0);
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto px-5 py-4">
-      <div>
+      <div className="shrink-0">
         <h3 className="font-display text-xl font-medium tracking-[-0.3px]">{step.title}</h3>
         <LinkedText text={step.explanation.trim()} blocks={step.code} onSelect={setFileIndex} className="mt-1 max-w-[70ch] text-[13px] leading-relaxed text-muted-foreground" />
       </div>
-      <div className={cn("grid min-h-0 gap-4", step.code.length && step.state ? "lg:grid-cols-2" : "")}>
+      <div className={cn("grid shrink-0 items-start gap-4", step.code.length && step.state ? "lg:grid-cols-2" : "")}>
         {step.code.length > 0 && (
-          <div className="flex min-h-0 flex-col gap-2">
+          <div className="flex flex-col gap-2">
             <CodeFiles blocks={step.code} index={fileIndex} onSelect={setFileIndex} />
           </div>
         )}
         {step.state && (
-          <div className="flex min-h-0 flex-col gap-2">
+          <div className="flex flex-col gap-2">
             {step.data_context && (
               <p className="provenance">
                 Data: {step.data_context.dataset_variant ?? fixture}
@@ -36,7 +36,7 @@ function StepView({ step, fixture }: { step: Step; fixture: string }) {
         )}
       </div>
       {step.takeaway && (
-        <p className="border-l-[3px] border-accent bg-highlight-wash px-3 py-2 text-[13px]">
+        <p className="shrink-0 border-l-[3px] border-accent bg-highlight-wash px-3 py-2 text-[13px]">
           <span className="mr-1.5 font-semibold">Takeaway.</span>
           {step.takeaway.trim()}
         </p>

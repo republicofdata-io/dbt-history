@@ -13,7 +13,7 @@ export default function CodeFiles({ blocks, index, onSelect }: { blocks: CodeBlo
   if (blocks.length === 1) return <CodeBlock block={blocks[0]} />;
   const current = blocks[Math.min(index, blocks.length - 1)];
   return (
-    <div className="flex min-h-0 flex-col gap-1.5">
+    <div className="flex flex-col gap-1.5">
       <div role="tablist" aria-label="Files in this step" className="flex flex-wrap gap-1">
         {blocks.map((b, i) => {
           const active = i === index;
