@@ -1,3 +1,4 @@
+import { ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import EvidenceDrawer, { SourceList } from "@/components/EvidenceDrawer";
 import { formatDate } from "@/content/dates";
@@ -29,12 +30,19 @@ export default function ReleaseTab({ state }: { state: HistoryState }) {
   const m = state.anchor.milestone;
   const sourcesById = new Map(r.sources.map((s) => [s.id, s]));
   const kind = r.id === "origin" ? "Origins" : r.id.startsWith("2.") ? "dbt v2" : "dbt Core";
+  // The GitHub release page for this version, when the chapter cites one.
+  const releaseNotes = r.sources.find((src) => /github\.com\/[^\s]+\/releases\/tag\//.test(src.url)) ?? null;
   return (
     <div className="flex min-h-full flex-col">
-      <div className="mb-3 flex items-center gap-2.5 text-xs text-muted-foreground">
+      <div className="mb-3 flex flex-wrap items-center gap-2.5 text-xs text-muted-foreground">
         <span>{formatDate(m.date, m.precision)}</span>
         <span className="rounded-full border border-border px-2 py-0.5 text-[11px]">{kind}</span>
         {m.kind === "patch" && <span className="rounded-full border border-border px-2 py-0.5 text-[11px]">patch {m.version}</span>}
+        {releaseNotes && (
+          <a href={releaseNotes.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-accent underline-offset-2 hover:underline">
+            Release notes on GitHub <ExternalLink className="h-3 w-3" aria-hidden="true" />
+          </a>
+        )}
       </div>
       <div className="mb-4 flex items-center gap-5">
         <div className="whitespace-nowrap font-display text-[64px] font-medium leading-none tracking-[-4px] text-accent xl:text-[72px]">{r.id === "origin" ? "2016" : r.label}</div>
