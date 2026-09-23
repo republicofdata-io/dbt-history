@@ -28,9 +28,7 @@ Disambiguate the full displayed filename with its saved-production suffix in the
 
 ### file-focus-0.3-fixed-code
 
-The supplied step has no corrected refunds_by_order.sql block. It now explicitly presents the result after repair, using the existing revenue_by_location.sql block. No corrected file was invented.
-
-If this step should show the repair itself, add a source-checked corrected refunds_by_order.sql excerpt in a separately scoped authoring pass. The present pass only permits removals.
+Resolved on 23 September 2026 during integration: the repair step now shows `models/refunds_by_order.sql (corrected)`, which is the working model from step 1 restored (no new SQL was authored), before the revenue file that reads the result.
 
 ## Files removed by chapter
 

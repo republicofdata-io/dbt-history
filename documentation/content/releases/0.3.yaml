@@ -11,7 +11,7 @@ what_changed:
   - id: change-1
     summary: Parallel model creation with up to eight threads.
     introduced_in: 0.3.0
-    adapter_constraints:
+    adapter_constraints: null
     evidence:
       - src-1
     confidence: high
@@ -20,7 +20,7 @@ what_changed:
       Failures skip descendants while independent branches continue; temporary relations reduce unavailable
       time.
     introduced_in: 0.3.0
-    adapter_constraints:
+    adapter_constraints: null
     evidence:
       - src-1
     confidence: high
@@ -62,7 +62,7 @@ sources:
     sha256: ed9f278bd18dc3a71d11d18338c6a368c3040d8e6d397e2f888f195599849be7
   - id: alignment-0-3-0
     title: 'dbt 0.3.0 original source: dbt/project.py:14,74-75; dbt/targets.py'
-    url:
+    url: >-
       https://files.pythonhosted.org/packages/6e/7d/b3a8ed350b535130cd7954827b253d5b269ba94860790876ec43bc8274d3/dbt-0.3.0.tar.gz
     retrieved: '2026-09-22'
     source_path: dbt/project.py:14,74-75; dbt/targets.py
@@ -85,14 +85,17 @@ walkthrough:
   steps:
     - id: branches
       title: Two branches that do not need each other
-      explanation: |-
-        Highlighted lines 1 and 2 of payments_by_order and refunds_by_order total their separate feeds. Highlighted line 6 of profiles.yml allows two workers. Neither model needs the other's result. The diagram shows both branches meeting at order_amounts, which supplies order_revenue, so the revenue calculation waits for both totals.
+      explanation: >-
+        Highlighted lines 1 and 2 of payments_by_order and refunds_by_order total their separate feeds.
+        Highlighted line 6 of profiles.yml allows two workers. Neither model needs the other's result. The
+        diagram shows both branches meeting at order_amounts, which supplies order_revenue, so the revenue
+        calculation waits for both totals.
       state:
         kind: diagram
         title: Two independent branches meet at order_amounts
         columns: []
         rows: []
-        result_status:
+        result_status: null
         diagram:
           nodes:
             - id: payments_by_order
@@ -112,8 +115,9 @@ walkthrough:
               to: order_revenue
           highlight:
             - order_amounts
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: |
         Payments and refunds can build at the same time, but revenue has to wait for both.
       evidence:
@@ -158,8 +162,11 @@ walkthrough:
           purpose: authored executable syntax; illustration only
     - id: failure
       title: Break the refund branch on purpose
-      explanation: |-
-        Highlighted line 1 of refunds_by_order now sums refund_amount_cents, a column that doesn't exist. The database rejects the query; the input rows haven't changed. The panel shows the consequence: this model fails, dependent revenue is skipped, and the independent payments branch may finish. The dependency chain is the one shown on the previous screen.
+      explanation: >-
+        Highlighted line 1 of refunds_by_order now sums refund_amount_cents, a column that doesn't exist. The
+        database rejects the query; the input rows haven't changed. The panel shows the consequence: this
+        model fails, dependent revenue is skipped, and the independent payments branch may finish. The
+        dependency chain is the one shown on the previous screen.
       state:
         kind: comparison
         title: What happens when one branch fails
@@ -167,16 +174,17 @@ walkthrough:
           - model
           - prepared scheduling outcome
         rows:
-          -   - refunds_by_order
-              - failed
-          -   - order_revenue
-              - 'skipped: depends on refunds'
-          -   - payments_by_order
-              - independent work may finish
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - refunds_by_order
+            - failed
+          - - order_revenue
+            - 'skipped: depends on refunds'
+          - - payments_by_order
+            - independent work may finish
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: |
         A failure stops only the models downstream of it; unrelated work still completes.
       evidence:
@@ -196,8 +204,11 @@ walkthrough:
           purpose: authored executable syntax; illustration only
     - id: fixed
       title: Fix the refund model and read the totals
-      explanation: |-
-        After the refund column name is corrected and the branches are rebuilt, revenue_by_location totals the results. Its highlighted lines 3 to 5 sum payments, refunds and revenue per location. The panel shows the recovered answer: 3,400, 4,300 and 4,800 cents, totalling 12,500. This screen reads the repaired result; the correction itself isn't shown here.
+      explanation: >
+        Highlighted line 1 of models/refunds_by_order.sql (corrected) sums amount_cents again, the column that
+        exists; that is the whole repair. With the branches rebuilt, revenue_by_location totals the results:
+        its highlighted lines 3 to 5 sum payments, refunds and revenue per location. The panel shows the
+        recovered answer: 3,400, 4,300 and 4,800 cents, totalling 12,500.
       state:
         kind: table
         title: Revenue by location after the repair
@@ -208,25 +219,26 @@ walkthrough:
           - refund_cents
           - revenue_cents
         rows:
-          -   - 1
-              - Old Port
-              - 4400
-              - 1000
-              - 3400
-          -   - 2
-              - Mile End
-              - 4600
-              - 300
-              - 4300
-          -   - 3
-              - Riverside
-              - 4800
-              - 0
-              - 4800
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - 1
+            - Old Port
+            - 4400
+            - 1000
+            - 3400
+          - - 2
+            - Mile End
+            - 4600
+            - 300
+            - 4300
+          - - 3
+            - Riverside
+            - 4800
+            - 0
+            - 4800
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: |
         Building in parallel changes how fast the work runs, not the answer it produces.
       evidence:
@@ -235,6 +247,15 @@ walkthrough:
         - src-3
         - alignment-0-3-0
       code:
+        - language: sql
+          filename: models/refunds_by_order.sql (corrected)
+          content: |
+            select order_id, sum(amount_cents) as refund_cents
+            from {{ ref("refunds") }}
+            group by order_id
+          highlight_lines:
+            - 1
+          purpose: the working model from step 1, restored; illustration only
         - language: sql
           filename: models/revenue_by_location.sql
           content: |
@@ -260,14 +281,30 @@ walkthrough:
       - src-2
       - src-3
       - alignment-0-3-0
-    limitations: |
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
-      Profiles are excerpts: warehouse credentials and database/schema are omitted. The deliberately invalid refund_amount_cents column is absent from the fixture; no original error log or timing is claimed. Boolean materialized is retained before 0.4.
-      The 0.3.0 loader merges the default user profile and selects outputs using run-target, not the later target key. This early profile shape was checked directly in project.py and targets.py.
-      Keep user.run-target at 0.3.0. Later named-profile target keys are a historical change, not an inconsistency. Temporary relation swapping is not demonstrated; the release evidence src-1 describes it.
-      historical-0.3-01: Temporary relation swapping remains release context, documented as outside this walkthrough. Evidence: src-1, src-2, src-3, alignment-0-3-0.
-      historical-0.3-02: Retained the prepared-scheduling label; this is not a measured schedule or native log. Evidence: src-1, src-2, src-3, alignment-0-3-0.
-      historical-0.3-03: Keep named profile target in 0.7.0. Original loader/connection source verifies the change from 0.3 user.run-target; these versions should not be made artificially identical. Evidence: src-1, src-2, src-3, alignment-0-3-0.
+    limitations: >
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
+      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
+      performance claims.
+
+      Profiles are excerpts: warehouse credentials and database/schema are omitted. The deliberately invalid
+      refund_amount_cents column is absent from the fixture; no original error log or timing is claimed.
+      Boolean materialized is retained before 0.4.
+
+      The 0.3.0 loader merges the default user profile and selects outputs using run-target, not the later
+      target key. This early profile shape was checked directly in project.py and targets.py.
+
+      Keep user.run-target at 0.3.0. Later named-profile target keys are a historical change, not an
+      inconsistency. Temporary relation swapping is not demonstrated; the release evidence src-1 describes it.
+
+      historical-0.3-01: Temporary relation swapping remains release context, documented as outside this
+      walkthrough. Evidence: src-1, src-2, src-3, alignment-0-3-0.
+
+      historical-0.3-02: Retained the prepared-scheduling label; this is not a measured schedule or native
+      log. Evidence: src-1, src-2, src-3, alignment-0-3-0.
+
+      historical-0.3-03: Keep named profile target in 0.7.0. Original loader/connection source verifies the
+      change from 0.3 user.run-target; these versions should not be made artificially identical. Evidence:
+      src-1, src-2, src-3, alignment-0-3-0.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
