@@ -10,25 +10,24 @@ what_changed:
   - id: change-1
     summary: Snapshots replace archives.
     introduced_in: 0.14.0
-    adapter_constraints:
+    adapter_constraints: null
     evidence:
       - src-1
     confidence: high
   - id: change-2
     summary: Resource listing, RPC server and configurable test severity.
     introduced_in: 0.14.0
-    adapter_constraints:
+    adapter_constraints: null
     evidence:
       - src-1
     confidence: high
-in_practice: |
-  Capture change history instead of overwriting the only available record.
+in_practice: >
+  Snapshots recorded how a customer record changed over time, with validity dates, instead of overwriting the
+  only copy.
 technical_detail: >
   Snapshots replace archives. This check-strategy example watches city. Validity timestamps are conceptual
-  observation boundaries; actual snapshot identifiers and run timestamps are not fabricated. run-operation
-  has
-  conflicting introduction evidence across 0.13 source and 0.14 notes, so no exact first-shipped claim is
-  made
+  observation boundaries; actual snapshot identifiers and run timestamps are not fabricated. run-operation has
+  conflicting introduction evidence across 0.13 source and 0.14 notes, so no exact first-shipped claim is made
   here.
 milestones:
   - id: 0.14.0
@@ -60,14 +59,17 @@ sources:
       execution.
     rechecked: '2026-09-22'
   - id: alignment-0-14-0
-    title: 'dbt 0.14.0 original source: dbt/parser/source_config.py; dbt/parser/schemas.py:86-177; dbt/ui/printer.py:155-163'
-    url:
+    title: >-
+      dbt 0.14.0 original source: dbt/parser/source_config.py; dbt/parser/schemas.py:86-177;
+      dbt/ui/printer.py:155-163
+    url: >-
       https://files.pythonhosted.org/packages/62/ee/63b4b36a486487bf4713415736092a63f3654d023540d8cf31745debe75b/dbt-core-0.14.0.tar.gz
     retrieved: '2026-09-22'
     source_path: dbt/parser/source_config.py; dbt/parser/schemas.py:86-177; dbt/ui/printer.py:155-163
     sha256: 2c48227d120f7aeab2913467c4614eb058cccff8d7a56bc9ad3e82e3b0314ac9
-    supports: Test severity configuration supports WARN; old generic test arguments put severity
-      directly beside arguments, not in modern config nesting.
+    supports: >-
+      Test severity configuration supports WARN; old generic test arguments put severity directly beside
+      arguments, not in modern config nesting.
 narrative_evidence:
   - src-1
   - src-2
@@ -85,8 +87,11 @@ walkthrough:
   steps:
     - id: before
       title: Ada's record before the change
-      explanation: |-
-        Highlighted lines 2 and 3 of the snapshot identify customers by customer_id and watch city for changes. A snapshot saves earlier row versions. current_customer.sql is an inspection query: a plain query under analyses that reads a result without building a model. Its highlighted line 2 selects customer 1. The panel shows Ada in Montréal before the change.
+      explanation: >-
+        Highlighted lines 2 and 3 of the snapshot identify customers by customer_id and watch city for
+        changes. A snapshot saves earlier row versions. current_customer.sql is an inspection query: a plain
+        query under analyses that reads a result without building a model. Its highlighted line 2 selects
+        customer 1. The panel shows Ada in Montréal before the change.
       state:
         kind: comparison
         title: Ada's record before the change
@@ -95,13 +100,14 @@ walkthrough:
           - name
           - city
         rows:
-          -   - 1
-              - Ada
-              - Montréal
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - 1
+            - Ada
+            - Montréal
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: >
         Before the change, the source table holds one value for Ada's city, and the snapshot is set to watch
         that column.
@@ -136,8 +142,10 @@ walkthrough:
         phase: Before the declared customer-city change.
     - id: change
       title: The source table is updated
-      explanation: |-
-        The named customer-city-change variant updates Ada's city to Québec at 09:00 on March 9. This result-only panel compares the fixture's declared before and after values. The current source now contains only Québec; the snapshot definition was shown on the previous screen.
+      explanation: >-
+        The named customer-city-change variant updates Ada's city to Québec at 09:00 on March 9. This
+        result-only panel compares the fixture's declared before and after values. The current source now
+        contains only Québec; the snapshot definition was shown on the previous screen.
       state:
         kind: comparison
         title: Ada's city before and after the update
@@ -147,14 +155,15 @@ walkthrough:
           - after
           - observed_utc
         rows:
-          -   - 1
-              - Montréal
-              - Québec
-              - 2016-03-09 09:00
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - 1
+            - Montréal
+            - Québec
+            - 2016-03-09 09:00
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: |
         After the update, the source table shows only Québec. Without a snapshot, Montréal would be lost.
       code: []
@@ -165,8 +174,10 @@ walkthrough:
         - alignment-0-14-0
     - id: history
       title: The snapshot keeps both versions
-      explanation: |-
-        The command runs the same snapshot after the city change. Highlighted lines 1 and 4 of the inspection query read and order the saved validity dates, the times each version began and ended. The panel expresses those intervals in words: Montréal until March 9 at 09:00, then Québec onward.
+      explanation: >-
+        The command runs the same snapshot after the city change. Highlighted lines 1 and 4 of the inspection
+        query read and order the saved validity dates, the times each version began and ended. The panel
+        expresses those intervals in words: Montréal until March 9 at 09:00, then Québec onward.
       state:
         kind: comparison
         title: Ada's two dated rows in the snapshot
@@ -175,18 +186,18 @@ walkthrough:
           - city
           - interval
         rows:
-          -   - 1
-              - Montréal
-              - first observation until March 9 09:00
-          -   - 1
-              - Québec
-              - March 9 09:00 onward
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
-      takeaway: >-
-        The snapshot now retains both cities and their validity intervals.
+          - - 1
+            - Montréal
+            - first observation until March 9 09:00
+          - - 1
+            - Québec
+            - March 9 09:00 onward
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
+      takeaway: The snapshot now retains both cities and their validity intervals.
       evidence:
         - src-1
         - src-2
@@ -216,8 +227,10 @@ walkthrough:
         phase: After the second snapshot observation.
     - id: warning
       title: Warn about a large refund without failing the run
-      explanation: |-
-        Highlighted line 1 of the test sets severity to warn. Highlighted line 4 returns orders with refunds above 500 cents, a review rule that needn't stop the run. The command runs dbt test. The panel shows the one matching order, 1044, with an 800-cent refund, as a warning rather than an error.
+      explanation: >-
+        Highlighted line 1 of the test sets severity to warn. Highlighted line 4 returns orders with refunds
+        above 500 cents, a review rule that needn't stop the run. The command runs dbt test. The panel shows
+        the one matching order, 1044, with an 800-cent refund, as a warning rather than an error.
       state:
         kind: result
         title: Refund review warning
@@ -226,13 +239,14 @@ walkthrough:
           - refund_cents
           - review_above_cents
         rows:
-          -   - 1044
-              - 800
-              - 500
+          - - 1044
+            - 800
+            - 500
         result_status: warn
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: The large refund is visible as a warning instead of an error.
       code:
         - language: sql
@@ -266,9 +280,14 @@ walkthrough:
       - src-2
       - src-3
       - alignment-0-14-0
-    limitations: |
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
-      The warning is a custom SQL data test with config(severity="warn"), verified in 0.14.0; no later generic-test config layout is backported. Snapshot dates are declared observation phases, not captured timestamps. No claim is made that this snapshot alone changes order attribution.
+    limitations: >
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
+      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
+      performance claims.
+
+      The warning is a custom SQL data test with config(severity="warn"), verified in 0.14.0; no later
+      generic-test config layout is backported. Snapshot dates are declared observation phases, not captured
+      timestamps. No claim is made that this snapshot alone changes order attribution.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
@@ -280,11 +299,9 @@ walkthrough:
         archive feature.
       - Decide per test whether a failure should stop the run as an error or just show a warning.
     scenario: >-
-      Ada’s current customer row changes from Montréal to Québec. A snapshot preserves both versions, while
-      a separate soft rule flags an unusually large refund for review.
-    outcome: |-
-      See two dated customer versions and one 800-cent refund reported as a warning.
-  title: |-
-    Demo: remember a customer move and warn about a large refund
+      Ada’s current customer row changes from Montréal to Québec. A snapshot preserves both versions, while a
+      separate soft rule flags an unusually large refund for review.
+    outcome: See two dated customer versions and one 800-cent refund reported as a warning.
+  title: 'Demo: remember a customer move and warn about a large refund'
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

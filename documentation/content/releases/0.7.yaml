@@ -21,8 +21,9 @@ what_changed:
     evidence:
       - src-2
     confidence: high
-in_practice: |
-  Keep the business models recognizable while reviewing connection settings and target-specific behavior.
+in_practice: >
+  A project written against Redshift could target Snowflake by changing its connection profile, with the
+  adapter handling the warehouse-specific SQL.
 technical_detail: >
   Snowflake support ships in 0.7.0; role configuration follows in 0.7.1. This is a portability illustration,
   not a cross-warehouse execution certification.
@@ -71,7 +72,7 @@ sources:
     sha256: f52b87724b551be90b873870e0acc9865c1ae16786b769d09de570f3280efeb5
   - id: alignment-0-7-0
     title: 'dbt 0.7.0 original source: dbt/project.py; dbt/contracts/connection.py'
-    url:
+    url: >-
       https://files.pythonhosted.org/packages/10/24/6a06082afbaf7171387a1dc37b067c2d15bd946981a77c731209db0d4112/dbt-0.7.0.tar.gz
     retrieved: '2026-09-22'
     source_path: dbt/project.py; dbt/contracts/connection.py
@@ -79,7 +80,7 @@ sources:
     supports: Named profile, target key, Snowflake connection fields.
   - id: alignment-0-7-1
     title: 'dbt 0.7.1 original source: dbt/contracts/connection.py; dbt/adapters/snowflake.py'
-    url:
+    url: >-
       https://files.pythonhosted.org/packages/1e/a0/d75ae9f42939e40442422592847f10339e68cfcf83fa2566142c5eb2183b/dbt-0.7.1.tar.gz
     retrieved: '2026-09-22'
     source_path: dbt/contracts/connection.py; dbt/adapters/snowflake.py
@@ -103,8 +104,11 @@ walkthrough:
   steps:
     - id: rule
       title: The rule that must not change
-      explanation: |-
-        order_1042.sql is an inspection query: a plain query under analyses that reads existing data without building a model. Highlighted line 2 subtracts refunds from payments, and line 4 selects order 1042. The panel shows 1,200 cents paid, 200 refunded and 1,000 net. This business rule contains no warehouse-specific setting.
+      explanation: >-
+        order_1042.sql is an inspection query: a plain query under analyses that reads existing data without
+        building a model. Highlighted line 2 subtracts refunds from payments, and line 4 selects order 1042.
+        The panel shows 1,200 cents paid, 200 refunded and 1,000 net. This business rule contains no
+        warehouse-specific setting.
       state:
         kind: comparison
         title: Order 1042, the same on any warehouse
@@ -114,14 +118,15 @@ walkthrough:
           - refunds
           - revenue
         rows:
-          -   - 1042
-              - 1200
-              - 200
-              - 1000
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - 1042
+            - 1200
+            - 200
+            - 1000
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: |
         Payments minus refunds is plain SQL that does not care which warehouse runs it.
       evidence:
@@ -145,8 +150,11 @@ walkthrough:
           purpose: authored executable syntax; illustration only
     - id: target
       title: Swap the connection to Snowflake
-      explanation: |-
-        Highlighted line 5 of the profile selects snowflake, telling dbt which warehouse adapter to use. Line 6 names the account; lines 9 to 11 name the database, schema and compute warehouse. Highlighted line 3 of the project file links this project to that profile. The result panel lists the three warehouses dbt can target at 0.7.0. The revenue calculation stays unchanged.
+      explanation: >-
+        Highlighted line 5 of the profile selects snowflake, telling dbt which warehouse adapter to use. Line
+        6 names the account; lines 9 to 11 name the database, schema and compute warehouse. Highlighted line 3
+        of the project file links this project to that profile. The result panel lists the three warehouses
+        dbt can target at 0.7.0. The revenue calculation stays unchanged.
       state:
         kind: comparison
         title: Warehouses dbt can target at 0.7.0
@@ -154,16 +162,17 @@ walkthrough:
           - target
           - status at 0.7.0
         rows:
-          -   - Redshift
-              - existing
-          -   - PostgreSQL
-              - existing since 0.5.1
-          -   - Snowflake
-              - newly supported
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - Redshift
+            - existing
+          - - PostgreSQL
+            - existing since 0.5.1
+          - - Snowflake
+            - newly supported
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: |
         Switching warehouses means editing the connection profile; the model SQL stays the same.
       evidence:
@@ -208,8 +217,11 @@ walkthrough:
           purpose: Authored era-specific example; illustration only.
     - id: check
       title: '0.7.1: choose a Snowflake role'
-      explanation: |-
-        Highlighted line 13 of the profile adds role: TRANSFORMER, supported from 0.7.1. The role is a set of Snowflake permissions used for the connection. The unchanged revenue calculation produces the expected values in the panel: 3,400, 4,300 and 4,800 cents, totalling 12,500. These are prepared results, not a captured Snowflake run.
+      explanation: >-
+        Highlighted line 13 of the profile adds role: TRANSFORMER, supported from 0.7.1. The role is a set of
+        Snowflake permissions used for the connection. The unchanged revenue calculation produces the expected
+        values in the panel: 3,400, 4,300 and 4,800 cents, totalling 12,500. These are prepared results, not a
+        captured Snowflake run.
       state:
         kind: table
         title: Expected revenue by location on Snowflake
@@ -220,27 +232,27 @@ walkthrough:
           - refund_cents
           - revenue_cents
         rows:
-          -   - 1
-              - Old Port
-              - 4400
-              - 1000
-              - 3400
-          -   - 2
-              - Mile End
-              - 4600
-              - 300
-              - 4300
-          -   - 3
-              - Riverside
-              - 4800
-              - 0
-              - 4800
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
-      takeaway: >-
-        The 0.7.1 profile can choose the Snowflake role while the revenue SQL keeps the same expected result.
+          - - 1
+            - Old Port
+            - 4400
+            - 1000
+            - 3400
+          - - 2
+            - Mile End
+            - 4600
+            - 300
+            - 4300
+          - - 3
+            - Riverside
+            - 4800
+            - 0
+            - 4800
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
+      takeaway: The 0.7.1 profile can choose the Snowflake role while the revenue SQL keeps the same expected result.
       evidence:
         - src-1
         - src-2
@@ -278,13 +290,28 @@ walkthrough:
       - src-4
       - alignment-0-7-0
       - alignment-0-7-1
-    limitations: |
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
-      The 0.7.0 Snowflake profile is a configuration example with visibly marked credentials, not a live connection. role is deliberately omitted because it arrives in 0.7.1.
-      Unlike 0.3, the 0.7 loader uses a named profile and target; preserve that historical difference. Role is shown only in the 0.7.1 step, not at 0.7.0.
-      review-0.7-01: Keep named profile target in 0.7.0. Original loader/connection source verifies the change from 0.3 user.run-target; these versions should not be made artificially identical. Evidence: src-1, src-2, src-3, src-4, alignment-0-7-0, alignment-0-7-1.
-      historical-0.7-01: Keep named profile target in 0.7.0. Original loader/connection source verifies the change from 0.3 user.run-target; these versions should not be made artificially identical. Evidence: src-1, src-2, src-3, src-4, alignment-0-7-0, alignment-0-7-1.
-      historical-0.7-02: Original 0.7.0 connection contract confirms account, user, password, database, schema and warehouse; role is shown only in patch 0.7.1. Evidence: src-1, src-2, src-3, src-4, alignment-0-7-0, alignment-0-7-1.
+    limitations: >
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
+      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
+      performance claims.
+
+      The 0.7.0 Snowflake profile is a configuration example with visibly marked credentials, not a live
+      connection. role is deliberately omitted because it arrives in 0.7.1.
+
+      Unlike 0.3, the 0.7 loader uses a named profile and target; preserve that historical difference. Role is
+      shown only in the 0.7.1 step, not at 0.7.0.
+
+      review-0.7-01: Keep named profile target in 0.7.0. Original loader/connection source verifies the change
+      from 0.3 user.run-target; these versions should not be made artificially identical. Evidence: src-1,
+      src-2, src-3, src-4, alignment-0-7-0, alignment-0-7-1.
+
+      historical-0.7-01: Keep named profile target in 0.7.0. Original loader/connection source verifies the
+      change from 0.3 user.run-target; these versions should not be made artificially identical. Evidence:
+      src-1, src-2, src-3, src-4, alignment-0-7-0, alignment-0-7-1.
+
+      historical-0.7-02: Original 0.7.0 connection contract confirms account, user, password, database, schema
+      and warehouse; role is shown only in patch 0.7.1. Evidence: src-1, src-2, src-3, src-4, alignment-0-7-0,
+      alignment-0-7-1.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'

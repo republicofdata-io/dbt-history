@@ -11,21 +11,23 @@ what_changed:
   - id: change-1
     summary: fail-fast and path-based selection.
     introduced_in: 0.17.0
-    adapter_constraints:
+    adapter_constraints: null
     evidence:
       - src-1
     confidence: high
   - id: change-2
     summary: Source overrides/enablement; persist_docs support expands across warehouses.
     introduced_in: 0.17.0
-    adapter_constraints:
+    adapter_constraints: null
     evidence:
       - src-1
     confidence: high
-in_practice: |
-  Choose fail-fast deliberately for runs where early termination is useful.
-technical_detail: |
-  Fail-fast is not a transaction spanning the entire project and does not erase completed work. Work already running may have progressed. Persisted documentation remains adapter-dependent.
+in_practice: >
+  A run could stop at the first failure instead of continuing through the rest of the project, and a single
+  model could be selected by its file path.
+technical_detail: >
+  Fail-fast is not a transaction spanning the entire project and does not erase completed work. Work already
+  running may have progressed. Persisted documentation remains adapter-dependent.
    The 0.17 release also introduced the config-version: 2 project format; this walkthrough focuses on stopping failures and selecting a model by path.
 milestones:
   - id: 0.17.0
@@ -72,8 +74,10 @@ walkthrough:
   steps:
     - id: failure
       title: A refund model with a typo
-      explanation: |-
-        Highlighted line 1 of refunds_by_order sums refund_amount_cents, which doesn't exist. The real column is amount_cents. This model feeds the revenue calculation through order_amounts, so the panel shows the refund error blocking revenue. The data hasn't changed; the mistake is in the SQL.
+      explanation: >-
+        Highlighted line 1 of refunds_by_order sums refund_amount_cents, which doesn't exist. The real column
+        is amount_cents. This model feeds the revenue calculation through order_amounts, so the panel shows
+        the refund error blocking revenue. The data hasn't changed; the mistake is in the SQL.
       state:
         kind: comparison
         title: The broken model and what it blocks
@@ -81,14 +85,15 @@ walkthrough:
           - model
           - prepared outcome
         rows:
-          -   - refunds_by_order
-              - error
-          -   - order_revenue
-              - cannot safely build
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - refunds_by_order
+            - error
+          - - order_revenue
+            - cannot safely build
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: |
         When one model fails, every model that reads from it cannot be built either.
       evidence:
@@ -108,9 +113,10 @@ walkthrough:
     - id: policy
       title: Choose to stop the run early
       explanation: >-
-        Highlighted line 1 of refunds_by_order is still the misspelled amount column. The command adds --fail-fast.
-        The panel shows the failed refund model, its unbuilt descendants and the stopped invocation. It is
-        a prepared outcome, not an exact parallel execution trace; work already completed remains in the database.
+        Highlighted line 1 of refunds_by_order is still the misspelled amount column. The command adds
+        --fail-fast. The panel shows the failed refund model, its unbuilt descendants and the stopped
+        invocation. It is a prepared outcome, not an exact parallel execution trace; work already completed
+        remains in the database.
       state:
         kind: result
         title: Prepared fail-fast outcome, not a run log
@@ -118,22 +124,22 @@ walkthrough:
           - resource
           - outcome
         rows:
-          -   - refunds_by_order
-              - error
-          -   - order_amounts
-              - 'not built: depends on the error'
-          -   - order_revenue
-              - 'not built: depends on the error'
-          -   - revenue_by_location
-              - 'not built: depends on the error'
-          -   - invocation
-              - stopped after failure
+          - - refunds_by_order
+            - error
+          - - order_amounts
+            - 'not built: depends on the error'
+          - - order_revenue
+            - 'not built: depends on the error'
+          - - revenue_by_location
+            - 'not built: depends on the error'
+          - - invocation
+            - stopped after failure
         result_status: fail
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
-      takeaway: |-
-        Fail-fast stops the invocation promptly after an error; it does not undo completed models.
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
+      takeaway: Fail-fast stops the invocation promptly after an error; it does not undo completed models.
       code:
         - language: sql
           filename: models/refunds_by_order.sql (deliberately invalid)
@@ -157,11 +163,13 @@ walkthrough:
         - src-3
     - id: repair
       title: Fix the model, then run again
-      explanation: |-
-        Highlighted line 1 of refunds_by_order corrects the column to amount_cents; line 2 keeps the same input. The command selects this file by path, with a trailing + to include its descendants. The panel shows the repaired branch's revenue: 3,400, 4,300 and 4,800 cents, totalling 12,500.
+      explanation: >-
+        Highlighted line 1 of refunds_by_order corrects the column to amount_cents; line 2 keeps the same
+        input. The command selects this file by path, with a trailing + to include its descendants. The panel
+        shows the repaired branch's revenue: 3,400, 4,300 and 4,800 cents, totalling 12,500.
       state:
         kind: table
-        title: 'Revenue after the repaired path is rebuilt'
+        title: Revenue after the repaired path is rebuilt
         columns:
           - location_id
           - location
@@ -169,27 +177,27 @@ walkthrough:
           - refund_cents
           - revenue_cents
         rows:
-          -   - 1
-              - Old Port
-              - 4400
-              - 1000
-              - 3400
-          -   - 2
-              - Mile End
-              - 4600
-              - 300
-              - 4300
-          -   - 3
-              - Riverside
-              - 4800
-              - 0
-              - 4800
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
-      takeaway: >-
-        Selecting the repaired file path and its descendants restores the revenue result.
+          - - 1
+            - Old Port
+            - 4400
+            - 1000
+            - 3400
+          - - 2
+            - Mile End
+            - 4600
+            - 300
+            - 4300
+          - - 3
+            - Riverside
+            - 4800
+            - 0
+            - 4800
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
+      takeaway: Selecting the repaired file path and its descendants restores the revenue result.
       evidence:
         - src-1
         - src-2
@@ -219,9 +227,14 @@ walkthrough:
       - src-1
       - src-2
       - src-3
-    limitations: |
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
-      Fail-fast statuses are a prepared schedule, not guaranteed native skip records from a concurrent aborted run. config-version: 2 also shipped in 0.17; it remains release context, outside these two demonstrated behaviors (src-1, v0.17.0 release notes).
+    limitations: >
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
+      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
+      performance claims.
+
+      Fail-fast statuses are a prepared schedule, not guaranteed native skip records from a concurrent aborted
+      run. config-version: 2 also shipped in 0.17; it remains release context, outside these two demonstrated
+      behaviors (src-1, v0.17.0 release notes).
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
@@ -234,9 +247,7 @@ walkthrough:
       The refund model has a typo and fails. Every model that depends on it, including revenue, cannot be
       trusted until it is fixed. Jaffle Shop decides whether the rest of the run should keep going or stop
       right away.
-    outcome: |-
-      See the typo stop the invocation, then a path-selected rebuild restore 12,500 cents.
-  title: |-
-    Demo: stop at a failure and rebuild the repaired file’s branch
+    outcome: See the typo stop the invocation, then a path-selected rebuild restore 12,500 cents.
+  title: 'Demo: stop at a failure and rebuild the repaired file’s branch'
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

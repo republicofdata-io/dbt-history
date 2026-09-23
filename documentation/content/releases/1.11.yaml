@@ -18,12 +18,13 @@ what_changed:
   - id: change-2
     summary: Stricter config validation and DBT_ENGINE_ environment namespace.
     introduced_in: 1.11.0
-    adapter_constraints:
+    adapter_constraints: null
     evidence:
       - src-1
     confidence: high
-in_practice: |
-  Manage supported function definitions with the project and make their consumers visible.
+in_practice: >
+  A warehouse function could be defined as a project resource, so the models that called it appeared as its
+  dependents in the graph.
 technical_detail: >
   UDF languages and deployment behavior depend on adapter support. This diagram demonstrates the resource
   relationship without inventing a portable CREATE FUNCTION statement. The first 1.11.0 and 1.11.1 artifacts
@@ -70,22 +71,19 @@ sources:
     url: https://www.getdbt.com/blog/the-dbt-developer-agent-is-now-in-preview
     retrieved: '2026-09-21'
     supports: >-
-      Developer Agent preview in Studio, described as Copilot's next evolution. Original publication is May
-      6;
+      Developer Agent preview in Studio, described as Copilot's next evolution. Original publication is May 6;
       edited date May 7.
   - id: src-4
     title: Merger closes; State preview
     url: >-
       https://www.getdbt.com/blog/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents
     retrieved: '2026-09-21'
-    supports: Merger closes; Core v2 alpha and dbt State preview announced. Separate these from
-      September GA.
+    supports: Merger closes; Core v2 alpha and dbt State preview announced. Separate these from September GA.
   - id: src-5
     title: Merger closes; State preview
     url: https://www.getdbt.com/blog/what-we-announced-at-snowflake-summit-and-why-it-matters
     retrieved: '2026-09-21'
-    supports: Merger closes; Core v2 alpha and dbt State preview announced. Separate these from
-      September GA.
+    supports: Merger closes; Core v2 alpha and dbt State preview announced. Separate these from September GA.
   - id: src-6
     title: 1.11.0 function contracts
     url: >-
@@ -113,16 +111,17 @@ sources:
       overload/JavaScript additions.
     historical_scope: Syntax at the named immutable version; research cutoff remains 2026-09-21.
   - id: alignment-1-11-0
-    title: 'dbt 1.11.0 original source: dbt/context/providers.py; dbt/artifacts/resources/v1/function.py;
-      dbt/parser/functions.py'
-    url:
+    title: >-
+      dbt 1.11.0 original source: dbt/context/providers.py; dbt/artifacts/resources/v1/function.py;
+      dbt/parser/functions.py
+    url: >-
       https://files.pythonhosted.org/packages/ba/4f/f0a8689231b982d06c293e745ff3a800c6423a7fc32f19d08496e3a6c9ec/dbt_core-1.11.0.tar.gz
     retrieved: '2026-09-22'
-    source_path: dbt/context/providers.py; dbt/artifacts/resources/v1/function.py;
-      dbt/parser/functions.py
+    source_path: dbt/context/providers.py; dbt/artifacts/resources/v1/function.py; dbt/parser/functions.py
     sha256: c943e4b59350a0d013708059f4dada0aa349c12942f39425803c1d0019879bd6
-    supports: function(name) resolves a function resource and dependency; arguments and returns data
-      types are schema properties.
+    supports: >-
+      function(name) resolves a function resource and dependency; arguments and returns data types are schema
+      properties.
 narrative_evidence:
   - src-1
   - src-2
@@ -145,8 +144,11 @@ walkthrough:
   steps:
     - id: conversion
       title: Divide by 100, for display only
-      explanation: |-
-        This example targets Snowflake. Highlighted line 1 of functions/cents_to_units.sql divides by 100. Highlighted lines 2 and 5 to 9 of functions/cents_to_units.yml declare the function and its Snowflake number types. Highlighted line 2 of revenue_display calls it. The panel shows 1,000 cents becoming 10.00, alongside the prepared location example of 3,400 becoming 34.00.
+      explanation: >-
+        This example targets Snowflake. Highlighted line 1 of functions/cents_to_units.sql divides by 100.
+        Highlighted lines 2 and 5 to 9 of functions/cents_to_units.yml declare the function and its Snowflake
+        number types. Highlighted line 2 of revenue_display calls it. The panel shows 1,000 cents becoming
+        10.00, alongside the prepared location example of 3,400 becoming 34.00.
       state:
         kind: comparison
         title: Cents to units
@@ -154,14 +156,15 @@ walkthrough:
           - cents
           - units
         rows:
-          -   - 1000
-              - '10.00'
-          -   - 3400
-              - '34.00'
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - 1000
+            - '10.00'
+          - - 3400
+            - '34.00'
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: |
         The function changes how revenue is shown, not how it is calculated. The accounting stays in cents.
       evidence:
@@ -213,14 +216,16 @@ walkthrough:
           purpose: authored executable syntax; illustration only
     - id: function
       title: dbt builds the function before the model
-      explanation: |-
-        Highlighted line 2 of revenue_display calls the function defined on the previous screen. Highlighted line 1 of the command builds this model and its dependencies. The diagram shows order_revenue and cents_to_units feeding revenue_display, so dbt deploys the function before the model that calls it.
+      explanation: >-
+        Highlighted line 2 of revenue_display calls the function defined on the previous screen. Highlighted
+        line 1 of the command builds this model and its dependencies. The diagram shows order_revenue and
+        cents_to_units feeding revenue_display, so dbt deploys the function before the model that calls it.
       state:
         kind: diagram
         title: Function dependency
         columns: []
         rows: []
-        result_status:
+        result_status: null
         diagram:
           nodes:
             - id: fn
@@ -236,8 +241,9 @@ walkthrough:
               to: display
           highlight:
             - fn
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: |
         Because the function is a project resource, dbt knows to deploy it before the model that calls it.
       evidence:
@@ -269,8 +275,10 @@ walkthrough:
           purpose: authored executable syntax; illustration only
     - id: distinction
       title: Function or macro?
-      explanation: |-
-        Highlighted line 2 of the macro inserts division by 100 into compiled SQL. Highlighted line 2 of revenue_display instead calls the stored function. The panel compares when each acts: the macro writes SQL during compilation, while the Snowflake function executes when the database runs the query.
+      explanation: >-
+        Highlighted line 2 of the macro inserts division by 100 into compiled SQL. Highlighted line 2 of
+        revenue_display instead calls the stored function. The panel compares when each acts: the macro writes
+        SQL during compilation, while the Snowflake function executes when the database runs the query.
       state:
         kind: comparison
         title: Macro versus function
@@ -278,16 +286,16 @@ walkthrough:
           - mechanism
           - where it acts
         rows:
-          -   - Jinja macro
-              - generates SQL during compilation
-          -   - warehouse UDF
-              - deployed function called by warehouse SQL
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
-      takeaway: >-
-        The macro emits a division expression; the function is a deployed database object called by SQL.
+          - - Jinja macro
+            - generates SQL during compilation
+          - - warehouse UDF
+            - deployed function called by warehouse SQL
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
+      takeaway: The macro emits a division expression; the function is a deployed database object called by SQL.
       evidence:
         - src-1
         - src-2
@@ -330,13 +338,31 @@ walkthrough:
       - src-7
       - src-8
       - alignment-1-11-0
-    limitations: |
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
-      The concrete UDF recipe is Snowflake SQL: an expression body, arguments/returns properties and function() reference. These fields were checked in the 1.11.0 parser/contracts; it is not a portable promise for every adapter. Function deployment still requires a compatible adapter and warehouse privileges.
-      The function() call and dependency edge were verified in the 1.11.0 context provider; the Snowflake adapter, types and expression-body assumption are now stated on screen. Empty table columns are expected for kind: diagram: its nodes and edges carry the picture. The diagram contains three nodes and two valid edges (alignment-1-11-0).
-      review-1.11-02: Confirmed function(name) in the original 1.11 context provider and parser. Keep the call and cite exact-version source. Evidence: src-1, src-2, src-3, src-4, src-5, src-6, src-7, src-8, alignment-1-11-0.
-      historical-1.11-02: The diagram has three nodes and two valid edges; empty table columns are normal for a diagram state. Evidence: src-1, src-2, src-3, src-4, src-5, src-6, src-7, src-8, alignment-1-11-0.
-      historical-1.11-03: Confirmed function(name) in the original 1.11 context provider and parser. Keep the call and cite exact-version source. Evidence: src-1, src-2, src-3, src-4, src-5, src-6, src-7, src-8, alignment-1-11-0.
+    limitations: >
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
+      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
+      performance claims.
+
+      The concrete UDF recipe is Snowflake SQL: an expression body, arguments/returns properties and
+      function() reference. These fields were checked in the 1.11.0 parser/contracts; it is not a portable
+      promise for every adapter. Function deployment still requires a compatible adapter and warehouse
+      privileges.
+
+      The function() call and dependency edge were verified in the 1.11.0 context provider; the Snowflake
+      adapter, types and expression-body assumption are now stated on screen. Empty table columns are expected
+      for kind: diagram: its nodes and edges carry the picture. The diagram contains three nodes and two valid
+      edges (alignment-1-11-0).
+
+      review-1.11-02: Confirmed function(name) in the original 1.11 context provider and parser. Keep the call
+      and cite exact-version source. Evidence: src-1, src-2, src-3, src-4, src-5, src-6, src-7, src-8,
+      alignment-1-11-0.
+
+      historical-1.11-02: The diagram has three nodes and two valid edges; empty table columns are normal for
+      a diagram state. Evidence: src-1, src-2, src-3, src-4, src-5, src-6, src-7, src-8, alignment-1-11-0.
+
+      historical-1.11-03: Confirmed function(name) in the original 1.11 context provider and parser. Keep the
+      call and cite exact-version source. Evidence: src-1, src-2, src-3, src-4, src-5, src-6, src-7, src-8,
+      alignment-1-11-0.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'

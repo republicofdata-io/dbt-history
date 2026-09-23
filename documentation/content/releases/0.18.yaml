@@ -11,19 +11,20 @@ what_changed:
   - id: change-1
     summary: State selection, deferral and YAML selectors.
     introduced_in: 0.18.0
-    adapter_constraints:
+    adapter_constraints: null
     evidence:
       - src-1
     confidence: high
   - id: change-2
     summary: Exposures represent downstream consumers.
     introduced_in: 0.18.1
-    adapter_constraints:
+    adapter_constraints: null
     evidence:
       - src-4
     confidence: high
-in_practice: |
-  Compare the current project with saved artifacts, then choose a bounded development build.
+in_practice: >
+  dbt could compare the project with a saved production state and build only what changed, borrowing unchanged
+  upstream tables from production. Patch 0.18.1 let a dashboard be declared as an exposure.
 technical_detail: >
   state:modified compares project definitions, not new business rows. --defer resolves eligible unselected
   references through saved state. Exposures arrive in 0.18.1. Keep saved state separate from the current
@@ -99,8 +100,11 @@ walkthrough:
   steps:
     - id: change
       title: The refund model changes
-      explanation: |-
-        Highlighted lines 1 and 2 of models/refunds_by_order.sql add coalesce, which treats a missing amount as zero. Compare models/refunds_by_order.sql (saved production version): its highlighted lines 1 and 2 show the earlier sum and the same input. The base has no missing amounts, so values stay unchanged. The panel identifies the changed model, its three descendants and unchanged inputs.
+      explanation: >-
+        Highlighted lines 1 and 2 of models/refunds_by_order.sql add coalesce, which treats a missing amount
+        as zero. Compare models/refunds_by_order.sql (saved production version): its highlighted lines 1 and 2
+        show the earlier sum and the same input. The base has no missing amounts, so values stay unchanged.
+        The panel identifies the changed model, its three descendants and unchanged inputs.
       state:
         kind: comparison
         title: Saved definition compared with current definition
@@ -108,20 +112,21 @@ walkthrough:
           - resource
           - definition status
         rows:
-          -   - refunds_by_order
-              - 'modified: added coalesce'
-          -   - order_amounts
-              - downstream
-          -   - order_revenue
-              - downstream
-          -   - revenue_by_location
-              - downstream
-          -   - orders, payments_by_order, refunds
-              - unchanged inputs
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - refunds_by_order
+            - 'modified: added coalesce'
+          - - order_amounts
+            - downstream
+          - - order_revenue
+            - downstream
+          - - revenue_by_location
+            - downstream
+          - - orders, payments_by_order, refunds
+            - unchanged inputs
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: >
         Comparing against the saved production state tells dbt which model changed and which models sit
         downstream of it.
@@ -156,8 +161,11 @@ walkthrough:
           purpose: Authored era-specific example; illustration only.
     - id: build
       title: Build only the changed branch
-      explanation: |-
-        Highlighted lines 1 and 2 of refunds_by_order retain the change from the previous screen. The command selects changed models with state:modified and their descendants with +. It also enables deferral, which borrows eligible unselected inputs from saved production state. With no development copies of those parents, the panel shows the rebuilt branch and the three inputs read from production.
+      explanation: >-
+        Highlighted lines 1 and 2 of refunds_by_order retain the change from the previous screen. The command
+        selects changed models with state:modified and their descendants with +. It also enables deferral,
+        which borrows eligible unselected inputs from saved production state. With no development copies of
+        those parents, the panel shows the rebuilt branch and the three inputs read from production.
       state:
         kind: comparison
         title: Development build and reused production inputs
@@ -165,14 +173,15 @@ walkthrough:
           - behavior
           - models
         rows:
-          -   - build in development
-              - refunds_by_order, order_amounts, order_revenue, revenue_by_location
-          -   - read from saved production relations
-              - orders, payments_by_order, refunds
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - build in development
+            - refunds_by_order, order_amounts, order_revenue, revenue_by_location
+          - - read from saved production relations
+            - orders, payments_by_order, refunds
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: >
         The changed branch is rebuilt, and unchanged inputs are borrowed from production, so the development
         build stays small.
@@ -204,8 +213,11 @@ walkthrough:
         - src-6
     - id: consumer
       title: Name the dashboard that uses the result (added in 0.18.1)
-      explanation: |-
-        Highlighted lines 2, 5 and 6 of exposures.yml declare an exposure: a named use of the project, here a daily dashboard, with the model it reads. The panel shows the dashboard depending on revenue_by_location. Exposures arrived in patch 0.18.1. The definition documents the dependency; it doesn't build the dashboard.
+      explanation: >-
+        Highlighted lines 2, 5 and 6 of exposures.yml declare an exposure: a named use of the project, here a
+        daily dashboard, with the model it reads. The panel shows the dashboard depending on
+        revenue_by_location. Exposures arrived in patch 0.18.1. The definition documents the dependency; it
+        doesn't build the dashboard.
       state:
         kind: comparison
         title: The dashboard as an exposure
@@ -214,13 +226,14 @@ walkthrough:
           - kind
           - depends on
         rows:
-          -   - shop_daily_dashboard
-              - exposure at 0.18.1
-              - revenue_by_location
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - shop_daily_dashboard
+            - exposure at 0.18.1
+            - revenue_by_location
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: >
         An exposure records that the daily dashboard reads revenue_by_location. It documents the dependency
         but does not build the dashboard.
@@ -259,17 +272,21 @@ walkthrough:
       - src-4
       - src-5
       - src-6
-    limitations: |
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
-      This example assumes saved production relations exist and unselected parents have no development copies. Deferral applies to model ref calls, not direct raw table names; raw.locations is deliberately a direct warehouse input. YAML selectors are release context only (src-1).
+    limitations: >
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
+      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
+      performance claims.
+
+      This example assumes saved production relations exist and unselected parents have no development copies.
+      Deferral applies to model ref calls, not direct raw table names; raw.locations is deliberately a direct
+      warehouse input. YAML selectors are release context only (src-1).
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
       method: Original source/archive and release documentation inspection; no historical dbt execution.
   intro:
     can_now:
-      - Compare the project to a saved copy from production and select only the models whose code
-        changed.
+      - Compare the project to a saved copy from production and select only the models whose code changed.
       - >-
         Build those changed models in a development schema while reading unchanged inputs from production,
         instead of rebuilding them. dbt calls this deferral.

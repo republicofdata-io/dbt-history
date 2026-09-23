@@ -11,20 +11,20 @@ what_changed:
   - id: change-1
     summary: Python models, including incremental support where implemented.
     introduced_in: 1.3.0
-    adapter_constraints: Supported Python platforms include Snowflake, BigQuery and Databricks; APIs and
-      materializations differ.
+    adapter_constraints: Supported Python platforms include Snowflake, BigQuery and Databricks; APIs and materializations differ.
     evidence:
       - src-1
     confidence: high
   - id: change-2
     summary: Additional portable macros and .dbtignore.
     introduced_in: 1.3.0
-    adapter_constraints:
+    adapter_constraints: null
     evidence:
       - src-1
     confidence: high
-in_practice: |
-  Use Python where it earns its place and keep the upstream references visible.
+in_practice: >
+  On supported platforms a model could be written in Python, read other models with dbt.ref, and take its
+  place in the same dependency graph.
 technical_detail: >
   Python model support depends on the adapter; initial supported platforms include Snowflake, BigQuery and
   Databricks. This Snowpark-shaped example is not a PostgreSQL or universal Python example. No Python runtime
@@ -57,8 +57,7 @@ narrative_evidence:
 walkthrough:
   id: wt-1.3
   learning_objective: >
-    See a model written in Python sit in the same chain as the SQL models, reading from one and producing
-    the
+    See a model written in Python sit in the same chain as the SQL models, reading from one and producing the
     same numbers.
   context: >
     Jaffle Shop has three locations. Base revenue is 12,500 cents: Old Port 3,400, Mile End 4,300 and
@@ -67,25 +66,29 @@ walkthrough:
   steps:
     - id: input
       title: The SQL model that the Python model will read
-      explanation: |-
-        Highlighted line 1 of order_revenue subtracts refunds from payments supplied by order_amounts. order_1042.sql is an inspection query: a plain query under analyses that reads data without building a model. Its highlighted lines 2 and 4 work through order 1042. The panel shows 1,200 cents paid, 200 refunded and 1,000 net, the value the Python model will receive.
+      explanation: >-
+        Highlighted line 1 of order_revenue subtracts refunds from payments supplied by order_amounts.
+        order_1042.sql is an inspection query: a plain query under analyses that reads data without building a
+        model. Its highlighted lines 2 and 4 work through order 1042. The panel shows 1,200 cents paid, 200
+        refunded and 1,000 net, the value the Python model will receive.
       state:
         kind: table
-        title: 'Order 1042 before the Python model'
+        title: Order 1042 before the Python model
         columns:
           - order_id
           - payment_cents
           - refund_cents
           - revenue_cents
         rows:
-          -   - 1042
-              - 1200
-              - 200
-              - 1000
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - 1042
+            - 1200
+            - 200
+            - 1000
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: >
         Before any Python runs, net revenue per order is already defined in SQL, and order 1042 is worth 1,000
         cents.
@@ -114,8 +117,11 @@ walkthrough:
           purpose: authored executable syntax; illustration only
     - id: python
       title: A four-line Python model
-      explanation: |-
-        Highlighted line 1 of python_order_revenue.py defines the model function that dbt calls. Line 2 stores its output as a table; line 3 reads order_revenue using dbt.ref, recording the dependency. Line 4 returns order_id and revenue_cents. The panel shows those two columns and the SQL model they came from.
+      explanation: >-
+        Highlighted line 1 of python_order_revenue.py defines the model function that dbt calls. Line 2 stores
+        its output as a table; line 3 reads order_revenue using dbt.ref, recording the dependency. Line 4
+        returns order_id and revenue_cents. The panel shows those two columns and the SQL model they came
+        from.
       state:
         kind: comparison
         title: Two columns kept, read from order_revenue
@@ -123,12 +129,13 @@ walkthrough:
           - selected columns
           - source
         rows:
-          -   - order_id, revenue_cents
-              - order_revenue
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - order_id, revenue_cents
+            - order_revenue
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: >
         The Python model reads a SQL model through the same ref mechanism, so dbt places it in the chain like
         any other model.
@@ -151,8 +158,11 @@ walkthrough:
         - src-2
     - id: scope
       title: Same numbers, and a note on which warehouses can run it
-      explanation: |-
-        python_totals.sql checks the output of the Python model from the previous screen. Highlighted line 1 sums revenue, and line 4 selects order 1042. The panel shows 1,000 cents for that order and 12,500 across all 12 orders. This example assumes Snowflake's Snowpark Python engine; a warehouse without Python support can't run the model.
+      explanation: >-
+        python_totals.sql checks the output of the Python model from the previous screen. Highlighted line 1
+        sums revenue, and line 4 selects order 1042. The panel shows 1,000 cents for that order and 12,500
+        across all 12 orders. This example assumes Snowflake's Snowpark Python engine; a warehouse without
+        Python support can't run the model.
       state:
         kind: comparison
         title: Values unchanged; runs on Snowflake with Snowpark
@@ -160,16 +170,17 @@ walkthrough:
           - check
           - expected
         rows:
-          -   - order 1042 revenue_cents
-              - 1000
-          -   - all 12 orders total_cents
-              - 12500
-          -   - example adapter
-              - Snowflake / Snowpark
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - order 1042 revenue_cents
+            - 1000
+          - - all 12 orders total_cents
+            - 12500
+          - - example adapter
+            - Snowflake / Snowpark
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: |
         The Python model changed no values, but it only works on a warehouse that can run Python.
       evidence:
@@ -193,12 +204,23 @@ walkthrough:
     source_refs:
       - src-1
       - src-2
-    limitations: |
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
-      The base fixture contains exactly 12 orders; the two payments on order 1043 do not add an order. Snowpark select(column-name strings) is the Snowflake recipe shown. No Python-on-Postgres execution or historical capture is claimed (src-1).
-      review-1.3-01: Confirmed exactly 12 base orders and kept the result; it remains a Snowflake/Snowpark illustration, not a captured Python run. Evidence: src-1, src-2.
-      historical-1.3-01: Confirmed exactly 12 base orders and kept the result; it remains a Snowflake/Snowpark illustration, not a captured Python run. Evidence: src-1, src-2.
-      historical-1.3-02: Retain the Snowpark string-column select recipe and its explicit Snowflake restriction. Evidence: src-1, src-2.
+    limitations: >
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
+      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
+      performance claims.
+
+      The base fixture contains exactly 12 orders; the two payments on order 1043 do not add an order.
+      Snowpark select(column-name strings) is the Snowflake recipe shown. No Python-on-Postgres execution or
+      historical capture is claimed (src-1).
+
+      review-1.3-01: Confirmed exactly 12 base orders and kept the result; it remains a Snowflake/Snowpark
+      illustration, not a captured Python run. Evidence: src-1, src-2.
+
+      historical-1.3-01: Confirmed exactly 12 base orders and kept the result; it remains a Snowflake/Snowpark
+      illustration, not a captured Python run. Evidence: src-1, src-2.
+
+      historical-1.3-02: Retain the Snowpark string-column select recipe and its explicit Snowflake
+      restriction. Evidence: src-1, src-2.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
@@ -206,15 +228,15 @@ walkthrough:
   intro:
     can_now:
       - Write a model in Python instead of SQL, on warehouses that can run Python, such as Snowflake.
-      - Have that Python model read from a SQL model and be read by others, exactly like any other
-        model.
+      - Have that Python model read from a SQL model and be read by others, exactly like any other model.
     scenario: >
       The shop has its net revenue per order in a SQL model. It adds a small Python model that reads that
       result, keeps two columns, and returns them unchanged. The values must stay the same. The point is to
       show the Python file is just another link in the chain, and that it only runs on a warehouse that
       supports Python.
-    outcome: |
-      The walkthrough shows the SQL input, the Python model, and a check that order 1042 and the 12,500-cent total come through untouched.
+    outcome: >
+      The walkthrough shows the SQL input, the Python model, and a check that order 1042 and the 12,500-cent
+      total come through untouched.
   title: |
     Demo: a Python model reads a SQL model and gives the same totals
 status: reviewed

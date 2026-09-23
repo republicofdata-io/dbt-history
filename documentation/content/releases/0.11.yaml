@@ -10,19 +10,20 @@ what_changed:
   - id: change-1
     summary: Auto-generated project documentation and lineage.
     introduced_in: 0.11.0
-    adapter_constraints:
+    adapter_constraints: null
     evidence:
       - src-1
     confidence: high
   - id: change-2
     summary: Schema YAML version 2 adds model/column descriptions.
     introduced_in: 0.11.0
-    adapter_constraints:
+    adapter_constraints: null
     evidence:
       - src-1
     confidence: high
-in_practice: |
-  Document model and column meaning, then browse the generated project graph.
+in_practice: >
+  The project generated its own documentation site: model and column descriptions written in YAML, plus a
+  lineage graph, browsable without reading the SQL.
 technical_detail: >
   Schema YAML version 2 introduces this richer documentation structure. Generated docs describe the project;
   they are not the later hosted Explorer/Catalog product.
@@ -63,8 +64,11 @@ walkthrough:
   steps:
     - id: meaning
       title: Write down what the revenue column means
-      explanation: |-
-        Highlighted lines 6 and 7 of schema.yml name revenue_cents and define it as successful payments minus refunds, in cents. order_1042.sql is a plain query for inspecting an existing result, not a model. Its highlighted lines 2 and 5 select the amounts for order 1042. The panel makes the definition concrete: 1,200 minus 200 equals 1,000 cents.
+      explanation: >-
+        Highlighted lines 6 and 7 of schema.yml name revenue_cents and define it as successful payments minus
+        refunds, in cents. order_1042.sql is a plain query for inspecting an existing result, not a model. Its
+        highlighted lines 2 and 5 select the amounts for order 1042. The panel makes the definition concrete:
+        1,200 minus 200 equals 1,000 cents.
       state:
         kind: table
         title: One order that shows the refund rule
@@ -75,18 +79,18 @@ walkthrough:
           - refund_cents
           - revenue_cents
         rows:
-          -   - 1042
-              - Old Port
-              - 1200
-              - 200
-              - 1000
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - 1042
+            - Old Port
+            - 1200
+            - 200
+            - 1000
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: >
-        The refund rule is now written next to the column it describes, so a reader does not have to guess
-        it
+        The refund rule is now written next to the column it describes, so a reader does not have to guess it
         from the SQL.
       code:
         - language: yaml
@@ -120,14 +124,17 @@ walkthrough:
         - src-2
     - id: lineage
       title: Follow the inputs behind the number
-      explanation: |-
-        Highlighted lines 5 to 7 of order_revenue link orders to the payment and refund totals. Each ref() records a dependency, meaning this model waits for that input. The diagram uses the same model names to show all three inputs feeding order_revenue. Their SQL doesn't need to be repeated to see those links.
+      explanation: >-
+        Highlighted lines 5 to 7 of order_revenue link orders to the payment and refund totals. Each ref()
+        records a dependency, meaning this model waits for that input. The diagram uses the same model names
+        to show all three inputs feeding order_revenue. Their SQL doesn't need to be repeated to see those
+        links.
       state:
         kind: diagram
         title: 'Lineage graph: what feeds order_revenue'
         columns: []
         rows: []
-        result_status:
+        result_status: null
         diagram:
           nodes:
             - id: orders
@@ -146,8 +153,9 @@ walkthrough:
             - from: refunds_by_order
               to: order_revenue
           highlight: []
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: >
         The lineage graph is built from the ref calls in the SQL, so it shows exactly which tables feed the
         revenue number.
@@ -172,8 +180,11 @@ walkthrough:
           purpose: authored executable syntax; illustration only
     - id: publish
       title: Generate the documentation website
-      explanation: |-
-        Highlighted lines 4, 6 and 7 of the schema file describe the revenue model and its revenue column. The command generates the documentation and opens it in a browser. The panel lists what that site contains: model descriptions, columns and a dependency graph from the project's ref() calls. The commands are historical examples; this app doesn't run them.
+      explanation: >-
+        Highlighted lines 4, 6 and 7 of the schema file describe the revenue model and its revenue column. The
+        command generates the documentation and opens it in a browser. The panel lists what that site
+        contains: model descriptions, columns and a dependency graph from the project's ref() calls. The
+        commands are historical examples; this app doesn't run them.
       state:
         kind: comparison
         title: What the generated documentation shows
@@ -181,17 +192,17 @@ walkthrough:
           - artifact view
           - reader learns
         rows:
-          -   - model page
-              - definition and columns
-          -   - lineage graph
-              - upstream and downstream relationships
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - model page
+            - definition and columns
+          - - lineage graph
+            - upstream and downstream relationships
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: >
-        One command turns the descriptions and ref links into a browsable website with a page per model and
-        a
+        One command turns the descriptions and ref links into a browsable website with a page per model and a
         lineage graph.
       code:
         - language: yaml
@@ -227,10 +238,17 @@ walkthrough:
     source_refs:
       - src-1
       - src-2
-    limitations: |
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
-      The documentation example deliberately retains a direct raw.locations join; that table is not a ref node in the displayed lineage. Each chapter is an independent prepared project slice, not a cumulative runnable checkout (src-1, docs lineage from ref dependencies).
-      historical-0.11-01: Deliberately retain raw.locations in this standalone slice; the diagram only promises model ref dependencies and does not draw a seed edge. Evidence: src-1, src-2.
+    limitations: >
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
+      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
+      performance claims.
+
+      The documentation example deliberately retains a direct raw.locations join; that table is not a ref node
+      in the displayed lineage. Each chapter is an independent prepared project slice, not a cumulative
+      runnable checkout (src-1, docs lineage from ref dependencies).
+
+      historical-0.11-01: Deliberately retain raw.locations in this standalone slice; the diagram only
+      promises model ref dependencies and does not draw a seed edge. Evidence: src-1, src-2.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'

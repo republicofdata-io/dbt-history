@@ -10,19 +10,20 @@ what_changed:
   - id: change-1
     summary: Macros can use adapter, ref and var; packages can supply custom tests/materializations.
     introduced_in: 0.9.0
-    adapter_constraints:
+    adapter_constraints: null
     evidence:
       - src-1
     confidence: high
   - id: change-2
     summary: Custom schemas; improved BigQuery table support.
     introduced_in: 0.9.0
-    adapter_constraints:
+    adapter_constraints: null
     evidence:
       - src-1
     confidence: high
-in_practice: |
-  Put shared project behavior in dependencies and choose schemas deliberately.
+in_practice: >
+  Tests, materializations and macros could be shared between projects as a package, and a project could place
+  its models in a schema of its own.
 technical_detail: >
   This release predates packages.yml. Do not display the later package file as 0.9 syntax. Macros gain richer
   context, including adapter, ref and var. The example uses workflow states to avoid inventing a historical
@@ -78,15 +79,17 @@ sources:
     source_path: dbt/parser.py
     sha256: ee26f68014221f32ed73467bf11fb6981701ff952e247b3ac39ed4b3dcaa7c5e
   - id: alignment-0-9-0
-    title: 'dbt 0.9.0 original source: dbt/parser.py; dbt/task/deps.py; dbt/include/global_project/macros/etc/get_custom_schema.sql'
-    url:
+    title: >-
+      dbt 0.9.0 original source: dbt/parser.py; dbt/task/deps.py;
+      dbt/include/global_project/macros/etc/get_custom_schema.sql
+    url: >-
       https://files.pythonhosted.org/packages/06/b1/351da5005cfeb17525beac3de7ba86efce9dbd093863abb2ae6bfef2349c/dbt-0.9.0.tar.gz
     retrieved: '2026-09-22'
-    source_path: dbt/parser.py; dbt/task/deps.py;
-      dbt/include/global_project/macros/etc/get_custom_schema.sql
+    source_path: dbt/parser.py; dbt/task/deps.py; dbt/include/global_project/macros/etc/get_custom_schema.sql
     sha256: ee26f68014221f32ed73467bf11fb6981701ff952e247b3ac39ed4b3dcaa7c5e
-    supports: Package-prefixed constraints resolve test macros; repositories use git clone (including
-      file URLs); custom schema appends to target schema.
+    supports: >-
+      Package-prefixed constraints resolve test macros; repositories use git clone (including file URLs);
+      custom schema appends to target schema.
 narrative_evidence:
   - src-1
   - src-2
@@ -105,8 +108,10 @@ walkthrough:
   steps:
     - id: copies
       title: Two reports, one rule
-      explanation: |-
-        Highlighted line 2 of daily_revenue and line 2 of customer_revenue each type out payments minus refunds. These are separate copies of the rule. The panel names the two reports and their repeated calculation; the next step brings shared behavior into a package.
+      explanation: >-
+        Highlighted line 2 of daily_revenue and line 2 of customer_revenue each type out payments minus
+        refunds. These are separate copies of the rule. The panel names the two reports and their repeated
+        calculation; the next step brings shared behavior into a package.
       state:
         kind: comparison
         title: One rule shared by two reports
@@ -114,16 +119,16 @@ walkthrough:
           - model
           - rule
         rows:
-          -   - daily_revenue
-              - payments minus refunds
-          -   - customer_revenue
-              - payments minus refunds
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
-      takeaway: |-
-        Both reports currently carry their own copy of the same subtraction.
+          - - daily_revenue
+            - payments minus refunds
+          - - customer_revenue
+            - payments minus refunds
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
+      takeaway: Both reports currently carry their own copy of the same subtraction.
       evidence:
         - src-1
         - src-2
@@ -153,8 +158,12 @@ walkthrough:
           purpose: Authored era-specific example; illustration only.
     - id: dependency
       title: Pull the shared behaviour in as a dependency
-      explanation: |-
-        Highlighted lines 4 and 5 of the project file list the shared repository, the dependency format before packages.yml. Highlighted lines 1 to 3 of test_non_negative count rows below zero; lines 2 to 4 of the schema file apply that shared test to revenue_cents. The command downloads the package. The panel places reusable macros and tests in the package and source mappings in the shop. This example package was never published.
+      explanation: >-
+        Highlighted lines 4 and 5 of the project file list the shared repository, the dependency format before
+        packages.yml. Highlighted lines 1 to 3 of test_non_negative count rows below zero; lines 2 to 4 of the
+        schema file apply that shared test to revenue_cents. The command downloads the package. The panel
+        places reusable macros and tests in the package and source mappings in the shop. This example package
+        was never published.
       state:
         kind: comparison
         title: What lives in the package and what stays local
@@ -162,16 +171,17 @@ walkthrough:
           - component
           - belongs in
         rows:
-          -   - net-revenue macro
-              - shared dependency
-          -   - shared integrity tests
-              - shared dependency
-          -   - shop-specific source mappings
-              - Jaffle Shop project
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - net-revenue macro
+            - shared dependency
+          - - shared integrity tests
+            - shared dependency
+          - - shop-specific source mappings
+            - Jaffle Shop project
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: |
         A package can supply macros and tests, not only models, and one command pulls it in.
       evidence:
@@ -227,8 +237,11 @@ walkthrough:
           purpose: authored executable syntax; illustration only
     - id: schema
       title: Give the reports their own schema
-      explanation: |-
-        A schema is a named area inside the database. Highlighted line 5 of the profile sets the base schema, jaffle. Highlighted line 1 of revenue_by_location asks for analytics. dbt joins those names with an underscore. The panel shows revenue_by_location in jaffle_analytics and the unconfigured order_revenue in jaffle. The names are illustrative.
+      explanation: >-
+        A schema is a named area inside the database. Highlighted line 5 of the profile sets the base schema,
+        jaffle. Highlighted line 1 of revenue_by_location asks for analytics. dbt joins those names with an
+        underscore. The panel shows revenue_by_location in jaffle_analytics and the unconfigured order_revenue
+        in jaffle. The names are illustrative.
       state:
         kind: comparison
         title: Where each model lands
@@ -236,14 +249,15 @@ walkthrough:
           - relation
           - illustrative schema
         rows:
-          -   - order_revenue
-              - jaffle
-          -   - revenue_by_location
-              - jaffle_analytics
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - order_revenue
+            - jaffle
+          - - revenue_by_location
+            - jaffle_analytics
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: |
         A model can choose its own schema, so shared code does not force every project into the same place.
       evidence:
@@ -285,12 +299,25 @@ walkthrough:
       - src-4
       - src-5
       - alignment-0-9-0
-    limitations: |
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
-      The dependency is an authored local Git repository at /tmp/shared_shop, not a claimed historical published package; it must exist and contain the shown macro/project files. The old repositories key is used, not packages.yml. With target schema jaffle and custom schema analytics, the default schema macro produces jaffle_analytics.
-      The shared 0.9 test uses a test_ macro returning a count, invoked through the v1 constraints mapping and package namespace; it is not a modern data-test block.
-      historical-0.9-02: Confirmed package-prefixed v1 constraints in 0.9 parser.py, resolving a namespaced test_ macro. Evidence: src-1, src-2, src-3, src-4, src-5, alignment-0-9-0.
-      historical-0.9-03: Confirmed repositories is handed to Git clone, which accepts file URLs. The example is an authored existing local Git repository, not a historical public package. Evidence: src-1, src-2, src-3, src-4, src-5, alignment-0-9-0.
+    limitations: >
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
+      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
+      performance claims.
+
+      The dependency is an authored local Git repository at /tmp/shared_shop, not a claimed historical
+      published package; it must exist and contain the shown macro/project files. The old repositories key is
+      used, not packages.yml. With target schema jaffle and custom schema analytics, the default schema macro
+      produces jaffle_analytics.
+
+      The shared 0.9 test uses a test_ macro returning a count, invoked through the v1 constraints mapping and
+      package namespace; it is not a modern data-test block.
+
+      historical-0.9-02: Confirmed package-prefixed v1 constraints in 0.9 parser.py, resolving a namespaced
+      test_ macro. Evidence: src-1, src-2, src-3, src-4, src-5, alignment-0-9-0.
+
+      historical-0.9-03: Confirmed repositories is handed to Git clone, which accepts file URLs. The example
+      is an authored existing local Git repository, not a historical public package. Evidence: src-1, src-2,
+      src-3, src-4, src-5, alignment-0-9-0.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'

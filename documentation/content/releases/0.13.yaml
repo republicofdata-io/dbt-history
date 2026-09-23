@@ -10,19 +10,20 @@ what_changed:
   - id: change-1
     summary: Sources with freshness checks.
     introduced_in: 0.13.0
-    adapter_constraints:
+    adapter_constraints: null
     evidence:
       - src-1
     confidence: high
   - id: change-2
     summary: Stable adapter API and separate adapter plugins; Presto adapter.
     introduced_in: 0.13.0
-    adapter_constraints:
+    adapter_constraints: null
     evidence:
       - src-1
     confidence: high
-in_practice: |
-  Treat source timeliness as a separate question from model correctness.
+in_practice: >
+  Raw tables were declared as sources with freshness rules, so a run could report that the numbers were right
+  but the payment feed was hours old.
 technical_detail: >
   The stale-payments variant supplies fixed freshness observations, not an extra timestamp column in the base
   payment table. The result is a prepared age comparison. Adapter plugins also become separate packages.
@@ -82,8 +83,11 @@ walkthrough:
   steps:
     - id: clock
       title: Check when the payment feed last loaded
-      explanation: |-
-        Highlighted lines 2 to 4 of payments_feed.sql stamp each payment with its load time, 08:00 on March 9. payment_feed_age.sql is an inspection query: a plain query under analyses that reads a result without building a model. Its highlighted lines 2 to 4 compare the last load to noon. The panel shows that the feed is four hours old.
+      explanation: >-
+        Highlighted lines 2 to 4 of payments_feed.sql stamp each payment with its load time, 08:00 on March 9.
+        payment_feed_age.sql is an inspection query: a plain query under analyses that reads a result without
+        building a model. Its highlighted lines 2 to 4 compare the last load to noon. The panel shows that the
+        feed is four hours old.
       state:
         kind: comparison
         title: Age of the payment feed at noon
@@ -92,13 +96,14 @@ walkthrough:
           - last_loaded_utc
           - age_hours
         rows:
-          -   - 2016-03-09 12:00
-              - 2016-03-09 08:00
-              - 4
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - 2016-03-09 12:00
+            - 2016-03-09 08:00
+            - 4
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: |
         Freshness is simply how much time has passed since the raw table was last loaded.
       evidence:
@@ -135,8 +140,10 @@ walkthrough:
           purpose: authored executable syntax; illustration only
     - id: threshold
       title: Compare the age with the allowed limits
-      explanation: |-
-        Highlighted lines 7 to 11 of sources.yml name the feed and its load-time column, then set the limits: warn after one hour and error after three. The command runs the freshness check. The panel compares three hours allowed with four hours observed, so the check fails.
+      explanation: >-
+        Highlighted lines 7 to 11 of sources.yml name the feed and its load-time column, then set the limits:
+        warn after one hour and error after three. The command runs the freshness check. The panel compares
+        three hours allowed with four hours observed, so the check fails.
       state:
         kind: result
         title: 'Freshness check: three hours allowed, four observed'
@@ -145,13 +152,14 @@ walkthrough:
           - expected
           - actual
         rows:
-          -   - age before error
-              - at most 3 hours
-              - 4 hours
+          - - age before error
+            - at most 3 hours
+            - 4 hours
         result_status: fail
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: |
         The payment feed is older than the three-hour limit, so its freshness check fails.
       evidence:
@@ -190,8 +198,11 @@ walkthrough:
           purpose: authored executable syntax; illustration only
     - id: business
       title: The arithmetic is still right
-      explanation: |-
-        Highlighted line 2 of payments reads the declared source. Highlighted line 3 of order_amounts reads that model through ref(), carrying the source link into the revenue calculation. Lines 5, 8 and 9 add refunds and attach both totals to orders. The panel shows the downstream revenue still totalling 12,500 cents, despite the four-hour-old feed.
+      explanation: >-
+        Highlighted line 2 of payments reads the declared source. Highlighted line 3 of order_amounts reads
+        that model through ref(), carrying the source link into the revenue calculation. Lines 5, 8 and 9 add
+        refunds and attach both totals to orders. The panel shows the downstream revenue still totalling
+        12,500 cents, despite the four-hour-old feed.
       state:
         kind: table
         title: Revenue by location on the stale feed
@@ -202,25 +213,26 @@ walkthrough:
           - refund_cents
           - revenue_cents
         rows:
-          -   - 1
-              - Old Port
-              - 4400
-              - 1000
-              - 3400
-          -   - 2
-              - Mile End
-              - 4600
-              - 300
-              - 4300
-          -   - 3
-              - Riverside
-              - 4800
-              - 0
-              - 4800
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - 1
+            - Old Port
+            - 4400
+            - 1000
+            - 3400
+          - - 2
+            - Mile End
+            - 4600
+            - 300
+            - 4300
+          - - 3
+            - Riverside
+            - 4800
+            - 0
+            - 4800
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: >
         Correct arithmetic and fresh data are two separate questions, and this feed passes the first but fails
         the second.
@@ -267,11 +279,22 @@ walkthrough:
       - src-2
       - src-3
       - src-4
-    limitations: |
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
-      The derived raw.payments_feed view adds the variant’s fixed loaded_at observation without altering base rows. The displayed four-hour age is computed by the Redshift analysis at the declared historical evaluation time; native freshness uses the actual warehouse clock, so running that command today would not produce four hours.
-      The age query assumes Redshift, where datediff(hour, ...) is valid. Separate adapter installation is release context, not a demonstrated step; the source-freshness API and date arithmetic assumptions are stated explicitly (src-1 and source contract evidence).
-      historical-0.13-02: Named Redshift as the adapter for datediff(hour,...); no PostgreSQL compatibility is claimed for that query. Evidence: src-1, src-2, src-3, src-4.
+    limitations: >
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
+      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
+      performance claims.
+
+      The derived raw.payments_feed view adds the variant’s fixed loaded_at observation without altering base
+      rows. The displayed four-hour age is computed by the Redshift analysis at the declared historical
+      evaluation time; native freshness uses the actual warehouse clock, so running that command today would
+      not produce four hours.
+
+      The age query assumes Redshift, where datediff(hour, ...) is valid. Separate adapter installation is
+      release context, not a demonstrated step; the source-freshness API and date arithmetic assumptions are
+      stated explicitly (src-1 and source contract evidence).
+
+      historical-0.13-02: Named Redshift as the adapter for datediff(hour,...); no PostgreSQL compatibility is
+      claimed for that query. Evidence: src-1, src-2, src-3, src-4.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
@@ -279,16 +302,12 @@ walkthrough:
   intro:
     can_now:
       - >-
-        Give the raw tables a name in a YAML file and point models at them with source, so dbt knows where
-        the
+        Give the raw tables a name in a YAML file and point models at them with source, so dbt knows where the
         project's inputs come from.
-      - Say how old a raw table may be before dbt warns, and before it errors, then run one command to
-        check.
+      - Say how old a raw table may be before dbt warns, and before it errors, then run one command to check.
     scenario: >
-      It is noon on March 9. The last batch of payments landed at 08:00, four hours ago. The rows still add
-      up
-      to the expected revenue. But Jaffle Shop has said the payment feed must be no more than three hours
-      old,
+      It is noon on March 9. The last batch of payments landed at 08:00, four hours ago. The rows still add up
+      to the expected revenue. But Jaffle Shop has said the payment feed must be no more than three hours old,
       so the feed fails its freshness check.
     outcome: |
       Compare a revenue calculation that is correct with a freshness check that fails on the same data.

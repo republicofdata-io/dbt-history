@@ -11,19 +11,20 @@ what_changed:
   - id: change-1
     summary: source_status:fresher+ selection.
     introduced_in: 1.1.0
-    adapter_constraints:
+    adapter_constraints: null
     evidence:
       - src-1
     confidence: high
   - id: change-2
     summary: Composite unique_key lists and custom generic-test names.
     introduced_in: 1.1.0
-    adapter_constraints:
+    adapter_constraints: null
     evidence:
       - src-1
     confidence: high
-in_practice: |
-  Compare source observations and rebuild relevant descendants.
+in_practice: >
+  A run could rebuild only the models fed by a source that had received new data since the last freshness
+  check.
 technical_detail: >
   source_status:fresher+ requires source freshness artifacts from the relevant observations. This is not
   row-level change detection or the later hosted State service. Composite unique keys and custom test names
@@ -64,8 +65,11 @@ walkthrough:
   steps:
     - id: observe
       title: 'Two freshness checks: only orders got newer'
-      explanation: |-
-        Highlighted lines 1, 3 and 6 of source_observations.sql show the earlier orders timestamp, its newer timestamp and the unchanged customers timestamp. Highlighted line 5 of sources.yml names the load-time column; lines 10 to 13 identify the feeds. The panel compares the two checks: orders advanced from March 8 to March 9, while customers didn't change.
+      explanation: >-
+        Highlighted lines 1, 3 and 6 of source_observations.sql show the earlier orders timestamp, its newer
+        timestamp and the unchanged customers timestamp. Highlighted line 5 of sources.yml names the load-time
+        column; lines 10 to 13 identify the feeds. The panel compares the two checks: orders advanced from
+        March 8 to March 9, while customers didn't change.
       state:
         kind: comparison
         title: Orders got newer, customers did not
@@ -74,16 +78,17 @@ walkthrough:
           - prior UTC
           - current UTC
         rows:
-          -   - orders
-              - March 8 14:00
-              - March 9 10:00
-          -   - customers
-              - March 8 07:00
-              - March 8 07:00
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - orders
+            - March 8 14:00
+            - March 9 10:00
+          - - customers
+            - March 8 07:00
+            - March 8 07:00
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: |
         Only the orders source got newer between the saved check and the current one.
       evidence:
@@ -130,8 +135,11 @@ walkthrough:
           purpose: authored executable syntax; illustration only
     - id: select
       title: Select only what comes after the fresher source
-      explanation: |-
-        Highlighted line 2 of orders links the model to the declared source. freshness-command.sh records a freshness check on its highlighted line 1. Highlighted line 1 of commands.sh builds models below sources that are newer than in previous-freshness. The panel selects the orders branch and leaves the unchanged customers branch out. The source declarations remain as shown on the previous screen.
+      explanation: >-
+        Highlighted line 2 of orders links the model to the declared source. freshness-command.sh records a
+        freshness check on its highlighted line 1. Highlighted line 1 of commands.sh builds models below
+        sources that are newer than in previous-freshness. The panel selects the orders branch and leaves the
+        unchanged customers branch out. The source declarations remain as shown on the previous screen.
       state:
         kind: comparison
         title: Orders branch selected, customers branch left alone
@@ -139,14 +147,15 @@ walkthrough:
           - source
           - selection
         rows:
-          -   - orders
-              - descendants included
-          -   - customers
-              - not selected because of freshness alone
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - orders
+            - descendants included
+          - - customers
+            - not selected because of freshness alone
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: >
         dbt picked the orders branch to rebuild because its source got newer, and left the customer branch
         alone.
@@ -178,8 +187,11 @@ walkthrough:
         - src-2
     - id: result
       title: The rebuilt revenue includes the new day
-      explanation: |-
-        Highlighted line 10 of order_amounts reads the source-backed orders model, carrying the source dependency into the revenue branch. Highlighted lines 2, 5, 8 and 9 total payments and refunds and attach them to orders. After rebuilding the fresher branch, the panel includes the two new orders: 3,900, 5,700 and 4,800 cents, totalling 14,400.
+      explanation: >-
+        Highlighted line 10 of order_amounts reads the source-backed orders model, carrying the source
+        dependency into the revenue branch. Highlighted lines 2, 5, 8 and 9 total payments and refunds and
+        attach them to orders. After rebuilding the fresher branch, the panel includes the two new orders:
+        3,900, 5,700 and 4,800 cents, totalling 14,400.
       state:
         kind: comparison
         title: Revenue by location with the second day
@@ -187,19 +199,19 @@ walkthrough:
           - location
           - revenue_cents
         rows:
-          -   - Old Port
-              - 3900
-          -   - Mile End
-              - 5700
-          -   - Riverside
-              - 4800
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - Old Port
+            - 3900
+          - - Mile End
+            - 5700
+          - - Riverside
+            - 4800
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: >
-        Revenue now totals 14,400 cents, up 1,900 from the base, because the two new orders flowed through
-        the
+        Revenue now totals 14,400 cents, up 1,900 from the base, because the two new orders flowed through the
         rebuilt branch.
       evidence:
         - src-1
@@ -233,27 +245,42 @@ walkthrough:
     source_refs:
       - src-1
       - src-2
-    limitations: |
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
-      Source observations are derived-view fixture metadata. source_status selection additionally needs prior and current sources.json artifacts from freshness runs; their payloads are not fabricated here. The current orders view includes the selected second-day variant.
-      source_status:fresher compares max_loaded_at between artifacts, not pass/error freshness status. At the fixed March 9 noon observation, orders is two hours old and customers is over a day old; the selection example does not claim both pass freshness. orders-refreshed extends second-day and adds metadata. The direct raw payment/refund inputs in this self-contained slice differ from the aggregate-model layout elsewhere; they contain the current variant, while the orders ref supplies the required selection edge (src-1).
-      historical-1.1-01: Documented that fresher compares max_loaded_at, independently of freshness error status or the actual current clock. Evidence: src-1, src-2.
-      historical-1.1-02: The independent chapter slice intentionally reads current raw payments/refunds; restored the orders ref edge and explained the layout difference. Evidence: src-1, src-2.
+    limitations: >
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
+      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
+      performance claims.
+
+      Source observations are derived-view fixture metadata. source_status selection additionally needs prior
+      and current sources.json artifacts from freshness runs; their payloads are not fabricated here. The
+      current orders view includes the selected second-day variant.
+
+      source_status:fresher compares max_loaded_at between artifacts, not pass/error freshness status. At the
+      fixed March 9 noon observation, orders is two hours old and customers is over a day old; the selection
+      example does not claim both pass freshness. orders-refreshed extends second-day and adds metadata. The
+      direct raw payment/refund inputs in this self-contained slice differ from the aggregate-model layout
+      elsewhere; they contain the current variant, while the orders ref supplies the required selection edge
+      (src-1).
+
+      historical-1.1-01: Documented that fresher compares max_loaded_at, independently of freshness error
+      status or the actual current clock. Evidence: src-1, src-2.
+
+      historical-1.1-02: The independent chapter slice intentionally reads current raw payments/refunds;
+      restored the orders ref edge and explained the layout difference. Evidence: src-1, src-2.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
       method: Original source/archive and release documentation inspection; no historical dbt execution.
   intro:
     can_now:
-      - >-
-        Select descendants of sources whose latest load time advanced since a saved freshness check.
+      - Select descendants of sources whose latest load time advanced since a saved freshness check.
       - Leave a branch unselected when its source timestamp did not advance.
     scenario: >
       Overnight, two new orders land in the orders feed. The customer feed has not changed. dbt records when
       each source was last loaded. By comparing the new check with the saved one, the shop can rebuild just
       the models that depend on orders and leave the customer branch alone.
-    outcome: |
-      The walkthrough shows the freshness setup, the command that selects only the refreshed branch, and the new total of 14,400 cents.
+    outcome: >
+      The walkthrough shows the freshness setup, the command that selects only the refreshed branch, and the
+      new total of 14,400 cents.
   title: |
     Demo: rebuild only the models fed by a source that got new data
 status: reviewed

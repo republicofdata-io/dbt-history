@@ -2,8 +2,7 @@ id: '1.2'
 label: v1.2
 title: Grants as project configuration
 lead: >
-  Model grants can be declared in project configuration. Access to the location revenue table becomes part
-  of
+  Model grants can be declared in project configuration. Access to the location revenue table becomes part of
   the build definition.
 problem_then: >
   A model may be correctly built but unavailable to the people who need to query it. Manually repeated grants
@@ -19,12 +18,13 @@ what_changed:
   - id: change-2
     summary: Cross-database macros and ratio metric support.
     introduced_in: 1.2.0
-    adapter_constraints:
+    adapter_constraints: null
     evidence:
       - src-1
     confidence: high
-in_practice: |
-  Declare the intended read access alongside the model.
+in_practice: >
+  Who could read a model was declared in its configuration, and dbt applied the grant after each build instead
+  of someone doing it by hand.
 technical_detail: >
   The illustrative reporting role must already exist, and the executing identity must be authorized to grant
   access. Supported privileges and reconciliation differ by adapter. Cross-database macros also move into
@@ -65,8 +65,11 @@ walkthrough:
   steps:
     - id: access
       title: Who needs to read the table
-      explanation: |-
-        Highlighted line 1 of revenue_by_location builds a table without declaring grants. as_finance_reader.sql is a plain query that checks access to the stored table, not a model. Its highlighted lines 1 to 3 select the finance_reader role and attempt a read. The panel shows permission denied: the role exists and can use the schema, but lacks SELECT on the table.
+      explanation: >-
+        Highlighted line 1 of revenue_by_location builds a table without declaring grants.
+        as_finance_reader.sql is a plain query that checks access to the stored table, not a model. Its
+        highlighted lines 1 to 3 select the finance_reader role and attempt a read. The panel shows permission
+        denied: the role exists and can use the schema, but lacks SELECT on the table.
       state:
         kind: result
         title: Prepared read before the grant
@@ -75,15 +78,15 @@ walkthrough:
           - operation
           - outcome
         rows:
-          -   - finance_reader
-              - SELECT revenue_by_location
-              - permission denied
+          - - finance_reader
+            - SELECT revenue_by_location
+            - permission denied
         result_status: fail
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
-      takeaway: |-
-        The table exists, but finance_reader cannot read it yet.
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
+      takeaway: The table exists, but finance_reader cannot read it yet.
       evidence:
         - src-1
         - src-2
@@ -117,21 +120,23 @@ walkthrough:
           purpose: Authored era-specific example; illustration only.
     - id: grant
       title: The grant is declared on the model
-      explanation: |-
-        Highlighted line 1 of revenue_by_location adds SELECT permission for finance_reader. The command rebuilds the model, after which dbt applies the PostgreSQL grant shown in the prepared panel. The dbt connection must own the relation or have permission to grant access.
+      explanation: >-
+        Highlighted line 1 of revenue_by_location adds SELECT permission for finance_reader. The command
+        rebuilds the model, after which dbt applies the PostgreSQL grant shown in the prepared panel. The dbt
+        connection must own the relation or have permission to grant access.
       state:
         kind: result
         title: Prepared statement applied after the build
         columns:
           - statement
         rows:
-          -   - grant select on table jaffle.revenue_by_location to finance_reader;
+          - - grant select on table jaffle.revenue_by_location to finance_reader;
         result_status: pass
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
-      takeaway: |-
-        The model now declares and applies the finance role’s read permission.
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
+      takeaway: The model now declares and applies the finance role’s read permission.
       code:
         - language: sql
           filename: models/revenue_by_location.sql
@@ -160,8 +165,10 @@ walkthrough:
         - src-2
     - id: read
       title: The numbers are exactly the same
-      explanation: |-
-        Highlighted lines 1 to 3 of as_finance_reader.sql repeat the same role and read attempt from the first screen. After the grant, the panel now shows all three locations, totalling 12,500 cents. The permission changed; the query and revenue calculation didn't.
+      explanation: >-
+        Highlighted lines 1 to 3 of as_finance_reader.sql repeat the same role and read attempt from the first
+        screen. After the grant, the panel now shows all three locations, totalling 12,500 cents. The
+        permission changed; the query and revenue calculation didn't.
       state:
         kind: table
         title: Read succeeds as finance_reader
@@ -172,25 +179,26 @@ walkthrough:
           - refund_cents
           - revenue_cents
         rows:
-          -   - 1
-              - Old Port
-              - 4400
-              - 1000
-              - 3400
-          -   - 2
-              - Mile End
-              - 4600
-              - 300
-              - 4300
-          -   - 3
-              - Riverside
-              - 4800
-              - 0
-              - 4800
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - 1
+            - Old Port
+            - 4400
+            - 1000
+            - 3400
+          - - 2
+            - Mile End
+            - 4600
+            - 300
+            - 4300
+          - - 3
+            - Riverside
+            - 4800
+            - 0
+            - 4800
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: |
         Granting access changed who can read the revenue table, not a single number in it.
       evidence:
@@ -215,25 +223,30 @@ walkthrough:
     source_refs:
       - src-1
       - src-2
-    limitations: |
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
-      This is a PostgreSQL table example with an existing finance_reader role and schema USAGE already granted. Prepared permission states are not native error logs. Core reconciles configured grants, including revoking removed grants where supported; the demo does not claim additive-only behavior. Cross-database helpers remain release context (src-1).
-      historical-1.2-02: Grant reconciliation may revoke removed grants; no additive-only claim is made. Existing role/schema access are explicit preconditions. Evidence: src-1, src-2.
+    limitations: >
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
+      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
+      performance claims.
+
+      This is a PostgreSQL table example with an existing finance_reader role and schema USAGE already
+      granted. Prepared permission states are not native error logs. Core reconciles configured grants,
+      including revoking removed grants where supported; the demo does not claim additive-only behavior.
+      Cross-database helpers remain release context (src-1).
+
+      historical-1.2-02: Grant reconciliation may revoke removed grants; no additive-only claim is made.
+      Existing role/schema access are explicit preconditions. Evidence: src-1, src-2.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
       method: Original source/archive and release documentation inspection; no historical dbt execution.
   intro:
     can_now:
-      - >-
-        Declare a role’s SELECT permission in model config.
+      - Declare a role’s SELECT permission in model config.
       - Have dbt apply that permission after rebuilding the model.
     scenario: >-
       The finance_reader role can connect but cannot read the revenue table. Jaffle Shop adds the missing
       grant to the model and repeats the same query as that role.
-    outcome: |-
-      See permission denied, the applied grant statement, and the successful 12,500-cent result.
-  title: |-
-    Demo: turn a denied read into a successful read with model grants
+    outcome: See permission denied, the applied grant statement, and the successful 12,500-cent result.
+  title: 'Demo: turn a denied read into a successful read with model grants'
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

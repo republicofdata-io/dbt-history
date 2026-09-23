@@ -5,26 +5,26 @@ lead: >
   Deferral gains more explicit control over which existing relations to prefer. This helps avoid accidentally
   reading a stale development copy.
 problem_then: >
-  An unselected parent may exist in both development and saved production state. Existence alone does not
-  tell
+  An unselected parent may exist in both development and saved production state. Existence alone does not tell
   a developer which copy they intended.
 what_changed:
   - id: change-1
     summary: Incremental predicates and favor-state deferral.
     introduced_in: 1.4.0
-    adapter_constraints:
+    adapter_constraints: null
     evidence:
       - src-1
     confidence: high
   - id: change-2
     summary: Buildable indirect test selection; richer structured logs and warning controls.
     introduced_in: 1.4.0
-    adapter_constraints:
+    adapter_constraints: null
     evidence:
       - src-1
     confidence: high
-in_practice: |
-  Use favor-state when the saved-state relation should win for eligible deferred references.
+in_practice: >
+  A developer building against production could choose to read the production copy of an unchanged parent
+  rather than a stale development one, and an incremental merge could limit the rows it scanned.
 technical_detail: >
   --favor-state modifies deferral resolution; it does not force selected models to run in production.
   Incremental predicates and buildable indirect test selection are other additions.
@@ -65,16 +65,20 @@ sources:
       Agreement to acquire Transform and integrate MetricFlow. Record agreement separately from legal
       completion; exact completion date not established here.
   - id: alignment-1-4-0
-    title: 'dbt 1.4.0 original source: dbt/include/global_project/macros/materializations/models/incremental/merge.sql;
-      dbt/context/providers.py'
-    url:
+    title: >-
+      dbt 1.4.0 original source:
+      dbt/include/global_project/macros/materializations/models/incremental/merge.sql;
+      dbt/context/providers.py
+    url: >-
       https://files.pythonhosted.org/packages/03/67/a50ce7a564355f866db19ac99650246e024070f9f2c2b82fd8d05c1f2fa6/dbt-core-1.4.0.tar.gz
     retrieved: '2026-09-22'
-    source_path: dbt/include/global_project/macros/materializations/models/incremental/merge.sql;
+    source_path: >-
+      dbt/include/global_project/macros/materializations/models/incremental/merge.sql;
       dbt/context/providers.py
     sha256: 7f617186bcca452ba69048143bb0b33439470c53b5e82d8623684e492df2b85e
-    supports: incremental_predicates joins the merge ON condition; favor-state chooses an eligible
-      saved-state relation over an existing development copy.
+    supports: >-
+      incremental_predicates joins the merge ON condition; favor-state chooses an eligible saved-state
+      relation over an existing development copy.
 narrative_evidence:
   - src-1
   - src-2
@@ -91,8 +95,11 @@ walkthrough:
   steps:
     - id: copies
       title: Two copies of the same parent, one stale
-      explanation: |-
-        compare_parent_relations.sql is a plain query for inspecting existing tables, not a model. Highlighted lines 3 and 6 read the development and production copies of order_revenue. The panel shows 12,500 cents in development and 14,400 in production. The saved production manifest points to the two-day relation.
+      explanation: >-
+        compare_parent_relations.sql is a plain query for inspecting existing tables, not a model. Highlighted
+        lines 3 and 6 read the development and production copies of order_revenue. The panel shows 12,500
+        cents in development and 14,400 in production. The saved production manifest points to the two-day
+        relation.
       state:
         kind: comparison
         title: Parent totals before the development build
@@ -100,14 +107,15 @@ walkthrough:
           - environment
           - total_cents
         rows:
-          -   - development
-              - 12500
-          -   - production
-              - 14400
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - development
+            - 12500
+          - - production
+            - 14400
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: |
         The dev copy of order_revenue exists, but it is a day behind production.
       evidence:
@@ -134,8 +142,11 @@ walkthrough:
         phase: dev.order_revenue uses base; prod.order_revenue uses second-day.
     - id: favor
       title: Build the child and tell dbt to prefer the production parent
-      explanation: |-
-        Highlighted lines 3 to 5 of revenue_by_location sum payments, refunds and revenue per location. The command selects this model and uses saved production state for unselected inputs. Its --favor-state option prefers production even when a development copy exists. The panel shows the chosen input: prod.order_revenue feeds the development model.
+      explanation: >-
+        Highlighted lines 3 to 5 of revenue_by_location sum payments, refunds and revenue per location. The
+        command selects this model and uses saved production state for unselected inputs. Its --favor-state
+        option prefers production even when a development copy exists. The panel shows the chosen input:
+        prod.order_revenue feeds the development model.
       state:
         kind: comparison
         title: Child reads the production parent
@@ -143,12 +154,13 @@ walkthrough:
           - selected child
           - resolved parent
         rows:
-          -   - dev.revenue_by_location
-              - prod.order_revenue
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - dev.revenue_by_location
+            - prod.order_revenue
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: |
         With --favor-state, the development build reads the production parent instead of the stale dev copy.
       code:
@@ -183,8 +195,11 @@ walkthrough:
         - alignment-1-4-0
     - id: expected
       title: The result reflects both days
-      explanation: |-
-        Highlighted lines 3 to 5 of revenue_by_location repeat the same sums after the input choice changed. Reading the production parent includes the second day. The panel shows Old Port at 3,900 cents, Mile End at 5,700 and Riverside at 4,800. Reading the stale development parent would instead leave the first two at 3,400 and 4,300.
+      explanation: >-
+        Highlighted lines 3 to 5 of revenue_by_location repeat the same sums after the input choice changed.
+        Reading the production parent includes the second day. The panel shows Old Port at 3,900 cents, Mile
+        End at 5,700 and Riverside at 4,800. Reading the stale development parent would instead leave the
+        first two at 3,400 and 4,300.
       state:
         kind: comparison
         title: Revenue by location from the two-day parent
@@ -192,16 +207,17 @@ walkthrough:
           - location
           - revenue_cents
         rows:
-          -   - Old Port
-              - 3900
-          -   - Mile End
-              - 5700
-          -   - Riverside
-              - 4800
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - Old Port
+            - 3900
+          - - Mile End
+            - 5700
+          - - Riverside
+            - 4800
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: >
         The total is 14,400 cents because the build read the two-day production parent, not the one-day dev
         copy.
@@ -230,8 +246,11 @@ walkthrough:
           purpose: authored executable syntax; illustration only
     - id: predicate
       title: Limit the existing rows considered by a merge
-      explanation: |-
-        Highlighted lines 3 and 4 of order_revenue add a condition on DBT_INTERNAL_DEST, dbt's name for the stored target during a merge. The command runs this model on Snowflake. The panel shows the date condition alongside the order-id match. All stored fixture dates satisfy it, so adding the two new orders still raises revenue from 12,500 to 14,400 cents.
+      explanation: >-
+        Highlighted lines 3 and 4 of order_revenue add a condition on DBT_INTERNAL_DEST, dbt's name for the
+        stored target during a merge. The command runs this model on Snowflake. The panel shows the date
+        condition alongside the order-id match. All stored fixture dates satisfy it, so adding the two new
+        orders still raises revenue from 12,500 to 14,400 cents.
       state:
         kind: comparison
         title: Prepared Snowflake merge condition
@@ -239,20 +258,20 @@ walkthrough:
           - property
           - value
         rows:
-          -   - match clause
-              - DBT_INTERNAL_DEST.order_id = DBT_INTERNAL_SOURCE.order_id
-          -   - added condition
-              - DBT_INTERNAL_DEST.ordered_at >= '2016-03-08'
-          -   - base target before new orders
-              - 12,500 cents
-          -   - target after second-day input
-              - 14,400 cents
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
-      takeaway: The merge gains a destination date condition without changing this fixture’s revenue
-        result.
+          - - match clause
+            - DBT_INTERNAL_DEST.order_id = DBT_INTERNAL_SOURCE.order_id
+          - - added condition
+            - DBT_INTERNAL_DEST.ordered_at >= '2016-03-08'
+          - - base target before new orders
+            - 12,500 cents
+          - - target after second-day input
+            - 14,400 cents
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
+      takeaway: The merge gains a destination date condition without changing this fixture’s revenue result.
       code:
         - language: sql
           filename: models/order_revenue.sql (Snowflake merge example)
@@ -291,11 +310,22 @@ walkthrough:
       - src-2
       - src-3
       - alignment-1-4-0
-    limitations: |
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
-      The fixed 2016-03-08 predicate is chosen to cover every existing matching fixture row; current_date would be misleading for this historical dataset. No scan reduction is measured. Excluding existing keys while replaying them can create duplicates, so predicates are a correctness choice as well as a scan bound. The second-day variant is retained: orders-refreshed is its metadata-enriched child used for a different demo (src-1 and original merge macro).
-      historical-1.4-02: Keep the existing-development precedence contrast, confirmed in 1.4 source. Evidence: src-1, src-2, src-3, alignment-1-4-0.
-      historical-1.4-03: Keep distinct variant names: orders-refreshed extends second-day with freshness metadata, while this chapter needs only the rows. Evidence: src-1, src-2, src-3, alignment-1-4-0.
+    limitations: >
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
+      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
+      performance claims.
+
+      The fixed 2016-03-08 predicate is chosen to cover every existing matching fixture row; current_date
+      would be misleading for this historical dataset. No scan reduction is measured. Excluding existing keys
+      while replaying them can create duplicates, so predicates are a correctness choice as well as a scan
+      bound. The second-day variant is retained: orders-refreshed is its metadata-enriched child used for a
+      different demo (src-1 and original merge macro).
+
+      historical-1.4-02: Keep the existing-development precedence contrast, confirmed in 1.4 source. Evidence:
+      src-1, src-2, src-3, alignment-1-4-0.
+
+      historical-1.4-03: Keep distinct variant names: orders-refreshed extends second-day with freshness
+      metadata, while this chapter needs only the rows. Evidence: src-1, src-2, src-3, alignment-1-4-0.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
@@ -303,8 +333,7 @@ walkthrough:
   intro:
     can_now:
       - >-
-        When building one model in development, borrow its parents from production, and prefer production
-        even
+        When building one model in development, borrow its parents from production, and prefer production even
         if an old dev copy exists.
       - >-
         Limit how much of a big incremental table dbt scans when merging new rows, on warehouses that support
@@ -314,10 +343,10 @@ walkthrough:
       twice: an old copy in the dev schema with one day of orders, and the production copy with two days.
       Deferral is dbt's way of borrowing a parent from another environment instead of rebuilding it. Until
       now, dbt used the dev copy if one existed. The new --favor-state flag makes it prefer production.
-    outcome: |-
-      See production’s 14,400-cent result selected over stale development data, then the extra date condition in a Snowflake merge.
-  title: |-
-    Demo: choose the production parent and bound an incremental merge
+    outcome: >-
+      See production’s 14,400-cent result selected over stale development data, then the extra date condition
+      in a Snowflake merge.
+  title: 'Demo: choose the production parent and bound an incremental merge'
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.
 default_milestone: 1.4.0

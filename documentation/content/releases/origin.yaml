@@ -1,246 +1,268 @@
 id: origin
 label: Origins
 title: Before the project had a name
-lead: |
-  The story begins in 2016. Jaffle Shop starts with a question, some raw tables and a manually maintained revenue query.
-problem_then: |
-  The shop can calculate revenue, but someone must remember which scripts to run and which copy contains the latest refund rule.
+lead: >
+  The story begins in 2016. Jaffle Shop starts with a question, some raw tables and a manually maintained
+  revenue query.
+problem_then: >
+  The shop can calculate revenue, but someone must remember which scripts to run and which copy contains the
+  latest refund rule.
 what_changed:
-- id: first-package
-  summary: The first observed dbt package is 0.0.1.
-  introduced_in: 0.0.1
-  adapter_constraints: Early code targets Redshift.
-  evidence:
-  - src-2
-  confidence: high
-in_practice: |
-  SQL business logic begins moving into a project that can build related datasets. This is the starting point, not the full modern feature set.
-technical_detail: |
-  The founder retrospective marks 9 March 2016 as the first-commit origin. PyPI records 0.0.1 on 23 March. These are different events; the package date is not asserted as GA. The raw SQL below is an authored pre-dbt illustration.
+  - id: first-package
+    summary: The first observed dbt package is 0.0.1.
+    introduced_in: 0.0.1
+    adapter_constraints: Early code targets Redshift.
+    evidence:
+      - src-2
+    confidence: high
+in_practice: >
+  Before dbt, the revenue logic lived in whatever query someone last ran. Keeping copies in step, running them
+  in order and checking the result were all manual.
+technical_detail: >
+  The founder retrospective marks 9 March 2016 as the first-commit origin. PyPI records 0.0.1 on 23 March.
+  These are different events; the package date is not asserted as GA. The raw SQL below is an authored pre-dbt
+  illustration.
 milestones:
-- id: first-commit
-  kind: announcement
-  date: '2016-03-09'
-  precision: day
-  title: First commit, dated by the two-year retrospective
-  evidence:
-  - src-1
-  date_basis: retrospective attribution; announcement kind is the closest allowed schema category
-- id: 0.0.1
-  kind: package
-  date: '2016-03-23'
-  precision: day
-  title: 'First observed package: 0.0.1'
-  evidence:
-  - src-2
+  - id: first-commit
+    kind: announcement
+    date: '2016-03-09'
+    precision: day
+    title: First commit, dated by the two-year retrospective
+    evidence:
+      - src-1
+    date_basis: retrospective attribution; announcement kind is the closest allowed schema category
+  - id: 0.0.1
+    kind: package
+    date: '2016-03-23'
+    precision: day
+    title: 'First observed package: 0.0.1'
+    evidence:
+      - src-2
 sources:
-- id: src-1
-  title: On two years of dbt
-  url: https://www.getdbt.com/blog/on-two-years-of-dbt
-  retrieved: '2026-09-21'
-  supports: First-commit origin in March 2016.
-- id: src-2
-  title: dbt 0.0.1 package metadata
-  url: https://pypi.org/pypi/dbt/0.0.1/json
-  retrieved: '2026-09-21'
-  supports: Package version and upload date.
-- id: src-3
-  title: A practitioner introduces dbt into an analytical stack (July 2018)
-  url: https://odupuis.medium.com/my-journey-introducing-the-data-build-tool-dbt-in-projects-analytical-stacks-69971faed2c2
-  retrieved: '2026-09-21'
-  supports: A practitioner account from July 2018, two years after the project began.
-- id: src-4
-  title: Historical source archive reviewed for example syntax
-  url: https://pypi.org/project/dbt/0.0.1/
-  retrieved: '2026-09-21'
-  supports: Original source package and tagged release evidence for the example’s syntax; review is not runtime
-    execution.
-  rechecked: '2026-09-22'
+  - id: src-1
+    title: On two years of dbt
+    url: https://www.getdbt.com/blog/on-two-years-of-dbt
+    retrieved: '2026-09-21'
+    supports: First-commit origin in March 2016.
+  - id: src-2
+    title: dbt 0.0.1 package metadata
+    url: https://pypi.org/pypi/dbt/0.0.1/json
+    retrieved: '2026-09-21'
+    supports: Package version and upload date.
+  - id: src-3
+    title: A practitioner introduces dbt into an analytical stack (July 2018)
+    url: >-
+      https://odupuis.medium.com/my-journey-introducing-the-data-build-tool-dbt-in-projects-analytical-stacks-69971faed2c2
+    retrieved: '2026-09-21'
+    supports: A practitioner account from July 2018, two years after the project began.
+  - id: src-4
+    title: Historical source archive reviewed for example syntax
+    url: https://pypi.org/project/dbt/0.0.1/
+    retrieved: '2026-09-21'
+    supports: >-
+      Original source package and tagged release evidence for the example’s syntax; review is not runtime
+      execution.
+    rechecked: '2026-09-22'
 narrative_evidence:
-- src-1
-- src-2
-- src-3
-- src-4
+  - src-1
+  - src-2
+  - src-3
+  - src-4
 walkthrough:
   id: wt-origin
   title: Before dbt, the answer lived in a handwritten query.
   learning_objective: |
     See why a correct SQL query is not the same thing as a trustworthy answer.
-  context: |
-    Jaffle Shop has three locations. Twelve orders, 13,800 cents of payments and 1,300 cents of refunds make 12,500 cents of revenue.
+  context: >
+    Jaffle Shop has three locations. Twelve orders, 13,800 cents of payments and 1,300 cents of refunds make
+    12,500 cents of revenue.
   intro:
     can_now:
-    - Write the revenue query by hand in SQL and run it against the warehouse.
-    - Save copies of that query wherever they are needed, in a scheduler, a notebook or a dashboard.
-    - Nothing yet keeps those copies in step, runs them in the right order or checks the result.
-    scenario: |
-      Someone asks how much each location earned. The analyst writes one SQL query, gets the right number, and passes the query around. A month later two copies exist and they disagree. Amounts throughout are in cents, the way payment systems store money, so every sum is a whole number: 12,500 cents is $125.
-    outcome: |
-      Follow the question from the raw tables to a correct answer, then watch a second copy of the same query quietly report the wrong number.
+      - Write the revenue query by hand in SQL and run it against the warehouse.
+      - Save copies of that query wherever they are needed, in a scheduler, a notebook or a dashboard.
+      - Nothing yet keeps those copies in step, runs them in the right order or checks the result.
+    scenario: >
+      Someone asks how much each location earned. The analyst writes one SQL query, gets the right number, and
+      passes the query around. A month later two copies exist and they disagree. Amounts throughout are in
+      cents, the way payment systems store money, so every sum is a whole number: 12,500 cents is $125.
+    outcome: >
+      Follow the question from the raw tables to a correct answer, then watch a second copy of the same query
+      quietly report the wrong number.
   dataset_variant: base
   steps:
-  - id: question
-    title: The question and the raw tables
-    explanation: |-
-      How much did each location earn? Highlighted lines 1 to 3 of look_around.sql read the raw orders, payments and refunds. Orders identify the location, payments record money received, and refunds record money returned. The panel summarizes these feeds: 12 orders, 13 payments worth 13,800 cents and three refunds worth 1,300 cents.
-    code:
-    - language: sql
-      filename: raw/look_around.sql
-      content: |
-        select * from raw.orders;    -- 12 rows: order_id, customer_id, location_id, ordered_at
-        select * from raw.payments;  -- 13 rows: payment_id, order_id, amount_cents
-        select * from raw.refunds;   --  3 rows: refund_id, order_id, amount_cents
-      highlight_lines:
-      - 1
-      - 2
-      - 3
-      purpose: authored executable syntax; illustration only
-    state:
-      kind: comparison
-      title: What the raw tables hold
-      columns:
-      - table
-      - rows
-      - total cents
-      - what it tells us
-      rows:
-      - - raw.orders
-        - 12
-        - null
-        - which location each order belongs to
-      - - raw.payments
-        - 13
-        - 13800
-        - what customers paid, one order can have two payments
-      - - raw.refunds
-        - 3
-        - 1300
-        - what was given back
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      Revenue is payments minus refunds, attributed to the location of the order.
-    evidence:
-    - src-1
-    - src-2
-  - id: answer
-    title: The handwritten answer
-    explanation: |-
-      The analyst writes revenue_by_location.sql. It totals payments and refunds per order before joining them to orders to find each location. Highlighted lines 10 and 11 subtract refunds from payments. The result panel shows the three location totals, adding up to 12,500 cents.
-    code:
-    - language: sql
-      filename: analyst/revenue_by_location.sql
-      content: |
-        with payment_totals as (
-            select order_id, sum(amount_cents) as payment_cents
-            from raw.payments group by order_id
-        ), refund_totals as (
-            select order_id, sum(amount_cents) as refund_cents
-            from raw.refunds group by order_id
-        )
-        select
-            orders.location_id,
-            sum(coalesce(payment_totals.payment_cents, 0)
-                - coalesce(refund_totals.refund_cents, 0)) as revenue_cents
-        from raw.orders as orders
-        left join payment_totals on orders.order_id = payment_totals.order_id
-        left join refund_totals on orders.order_id = refund_totals.order_id
-        group by orders.location_id
-      highlight_lines:
-      - 10
-      - 11
-      purpose: authored executable syntax; illustration only
-    state:
-      kind: table
-      title: Revenue by location, 12,500 cents in total
-      columns:
-      - location
-      - payment_cents
-      - refund_cents
-      - revenue_cents
-      rows:
-      - - Old Port
-        - 4400
-        - 1000
-        - 3400
-      - - Mile End
-        - 4600
-        - 300
-        - 4300
-      - - Riverside
-        - 4800
-        - 0
-        - 4800
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      The numbers are right, but nothing checks them and nothing protects the refund rule from being lost when the query is copied.
-    evidence:
-    - src-1
-    - src-2
-  - id: problem
-    title: Two copies, two answers
-    explanation: |-
-      The query gets copied into the dashboard tool. Highlighted lines 3 and 4 of analyst/revenue_by_location.sql subtract refunds. Highlighted line 3 of dashboard/revenue_copy.sql only sums payments. The panel compares the answers: 12,500 cents from the analyst's query and 13,800 from the dashboard copy. The copied rule has lost the refund subtraction.
-    code:
-    - language: sql
-      filename: analyst/revenue_by_location.sql
-      content: |
-        select
-            orders.location_id,
-            sum(coalesce(payment_totals.payment_cents, 0)
-                - coalesce(refund_totals.refund_cents, 0)) as revenue_cents
-        from raw.orders as orders
-        left join payment_totals on orders.order_id = payment_totals.order_id
-        left join refund_totals on orders.order_id = refund_totals.order_id
-        group by orders.location_id
-      highlight_lines:
-      - 3
-      - 4
-      purpose: authored executable syntax; illustration only
-    - language: sql
-      filename: dashboard/revenue_copy.sql
-      content: |
-        select
-            orders.location_id,
-            sum(coalesce(payment_totals.payment_cents, 0)) as revenue_cents
-        from raw.orders as orders
-        left join payment_totals on orders.order_id = payment_totals.order_id
-        group by orders.location_id
-      highlight_lines:
-      - 3
-      purpose: authored illustration of a divergent copy; illustration only
-    state:
-      kind: comparison
-      title: The same question, answered twice
-      columns:
-      - copy
-      - Old Port
-      - Mile End
-      - Riverside
-      - total
-      rows:
-      - - analyst query
-        - 3400
-        - 4300
-        - 4800
-        - 12500
-      - - dashboard copy
-        - 4400
-        - 4600
-        - 4800
-        - 13800
-      provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
-    takeaway: |
-      This is the problem the next ten years work on: not writing the query, but keeping one version of it, running it in the right order, and checking its answer.
-    evidence:
-    - src-1
-    - src-2
+    - id: question
+      title: The question and the raw tables
+      explanation: >-
+        How much did each location earn? Highlighted lines 1 to 3 of look_around.sql read the raw orders,
+        payments and refunds. Orders identify the location, payments record money received, and refunds record
+        money returned. The panel summarizes these feeds: 12 orders, 13 payments worth 13,800 cents and three
+        refunds worth 1,300 cents.
+      code:
+        - language: sql
+          filename: raw/look_around.sql
+          content: |
+            select * from raw.orders;    -- 12 rows: order_id, customer_id, location_id, ordered_at
+            select * from raw.payments;  -- 13 rows: payment_id, order_id, amount_cents
+            select * from raw.refunds;   --  3 rows: refund_id, order_id, amount_cents
+          highlight_lines:
+            - 1
+            - 2
+            - 3
+          purpose: authored executable syntax; illustration only
+      state:
+        kind: comparison
+        title: What the raw tables hold
+        columns:
+          - table
+          - rows
+          - total cents
+          - what it tells us
+        rows:
+          - - raw.orders
+            - 12
+            - null
+            - which location each order belongs to
+          - - raw.payments
+            - 13
+            - 13800
+            - what customers paid, one order can have two payments
+          - - raw.refunds
+            - 3
+            - 1300
+            - what was given back
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: |
+        Revenue is payments minus refunds, attributed to the location of the order.
+      evidence:
+        - src-1
+        - src-2
+    - id: answer
+      title: The handwritten answer
+      explanation: >-
+        The analyst writes revenue_by_location.sql. It totals payments and refunds per order before joining
+        them to orders to find each location. Highlighted lines 10 and 11 subtract refunds from payments. The
+        result panel shows the three location totals, adding up to 12,500 cents.
+      code:
+        - language: sql
+          filename: analyst/revenue_by_location.sql
+          content: |
+            with payment_totals as (
+                select order_id, sum(amount_cents) as payment_cents
+                from raw.payments group by order_id
+            ), refund_totals as (
+                select order_id, sum(amount_cents) as refund_cents
+                from raw.refunds group by order_id
+            )
+            select
+                orders.location_id,
+                sum(coalesce(payment_totals.payment_cents, 0)
+                    - coalesce(refund_totals.refund_cents, 0)) as revenue_cents
+            from raw.orders as orders
+            left join payment_totals on orders.order_id = payment_totals.order_id
+            left join refund_totals on orders.order_id = refund_totals.order_id
+            group by orders.location_id
+          highlight_lines:
+            - 10
+            - 11
+          purpose: authored executable syntax; illustration only
+      state:
+        kind: table
+        title: Revenue by location, 12,500 cents in total
+        columns:
+          - location
+          - payment_cents
+          - refund_cents
+          - revenue_cents
+        rows:
+          - - Old Port
+            - 4400
+            - 1000
+            - 3400
+          - - Mile End
+            - 4600
+            - 300
+            - 4300
+          - - Riverside
+            - 4800
+            - 0
+            - 4800
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: >
+        The numbers are right, but nothing checks them and nothing protects the refund rule from being lost
+        when the query is copied.
+      evidence:
+        - src-1
+        - src-2
+    - id: problem
+      title: Two copies, two answers
+      explanation: >-
+        The query gets copied into the dashboard tool. Highlighted lines 3 and 4 of
+        analyst/revenue_by_location.sql subtract refunds. Highlighted line 3 of dashboard/revenue_copy.sql
+        only sums payments. The panel compares the answers: 12,500 cents from the analyst's query and 13,800
+        from the dashboard copy. The copied rule has lost the refund subtraction.
+      code:
+        - language: sql
+          filename: analyst/revenue_by_location.sql
+          content: |
+            select
+                orders.location_id,
+                sum(coalesce(payment_totals.payment_cents, 0)
+                    - coalesce(refund_totals.refund_cents, 0)) as revenue_cents
+            from raw.orders as orders
+            left join payment_totals on orders.order_id = payment_totals.order_id
+            left join refund_totals on orders.order_id = refund_totals.order_id
+            group by orders.location_id
+          highlight_lines:
+            - 3
+            - 4
+          purpose: authored executable syntax; illustration only
+        - language: sql
+          filename: dashboard/revenue_copy.sql
+          content: |
+            select
+                orders.location_id,
+                sum(coalesce(payment_totals.payment_cents, 0)) as revenue_cents
+            from raw.orders as orders
+            left join payment_totals on orders.order_id = payment_totals.order_id
+            group by orders.location_id
+          highlight_lines:
+            - 3
+          purpose: authored illustration of a divergent copy; illustration only
+      state:
+        kind: comparison
+        title: The same question, answered twice
+        columns:
+          - copy
+          - Old Port
+          - Mile End
+          - Riverside
+          - total
+        rows:
+          - - analyst query
+            - 3400
+            - 4300
+            - 4800
+            - 12500
+          - - dashboard copy
+            - 4400
+            - 4600
+            - 4800
+            - 13800
+        provenance: authored illustration; fixture-derived values or explicitly hypothetical workflow
+      takeaway: >
+        This is the problem the next ten years work on: not writing the query, but keeping one version of it,
+        running it in the right order, and checking its answer.
+      evidence:
+        - src-1
+        - src-2
   evidence:
     status: illustration
     review_date: '2026-09-22'
     source_refs:
-    - src-1
-    - src-2
-    limitations: |
-      Fictional pre-dbt scenario with authored SQL; no database or dbt runtime was executed. The divergent dashboard copy is a teaching device, not a historical incident.
+      - src-1
+      - src-2
+    limitations: >
+      Fictional pre-dbt scenario with authored SQL; no database or dbt runtime was executed. The divergent
+      dashboard copy is a teaching device, not a historical incident.
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

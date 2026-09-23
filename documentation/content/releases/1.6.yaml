@@ -18,12 +18,13 @@ what_changed:
   - id: change-2
     summary: Semantic-model parsing and cross-project foundations.
     introduced_in: 1.6.0
-    adapter_constraints:
+    adapter_constraints: null
     evidence:
       - src-1
     confidence: high
-in_practice: |
-  Inspect the failure, repair its cause and retry the previous invocation’s unfinished work.
+in_practice: >
+  After a failure, dbt retry reran only the models that failed or were skipped. Materialized views became a
+  storage option where the warehouse supported them.
 technical_detail: >
   retry relies on recorded artifacts from the prior invocation. It is not a promise that retries fix incorrect
   SQL or that every adapter supports zero-copy cloning. Semantic-model parsing is distinct from hosted
@@ -74,18 +75,18 @@ sources:
       New Semantic Layer generation, Explorer, Cloud CLI and Mesh enter the catalogue. Mesh and Explorer are
       public preview; the MetricFlow-based Semantic Layer reaches GA at Coalesce.
   - id: alignment-1-6-0
-    title: 'dbt 1.6.0 original source: dbt/task/retry.py; dbt/include/global_project/macros/materializations/models/materialized_view.sql'
-    url:
+    title: >-
+      dbt 1.6.0 original source: dbt/task/retry.py;
+      dbt/include/global_project/macros/materializations/models/materialized_view.sql
+    url: >-
       https://files.pythonhosted.org/packages/30/1b/5b0c8ebe1140e3ff267f2e2a09c68981c4387bc8647d5ef1bc81c1d08493/dbt-core-1.6.0.tar.gz
     retrieved: '2026-09-22'
-    source_path: dbt/task/retry.py;
-      dbt/include/global_project/macros/materializations/models/materialized_view.sql
+    source_path: dbt/task/retry.py; dbt/include/global_project/macros/materializations/models/materialized_view.sql
     sha256: 51da239af02ed449562d3c5caea903edee7b5427c47efd5a6439634c59858087
-    supports: Retry uses previous result statuses; materialized-view lifecycle delegates to adapter
-      macros.
+    supports: Retry uses previous result statuses; materialized-view lifecycle delegates to adapter macros.
   - id: alignment-postgres
     title: dbt-postgres 1.6.0 materialized-view macros
-    url:
+    url: >-
       https://files.pythonhosted.org/packages/ba/5d/f3341042672f4433e3955c79aa79516810016aaf990f8e1b95a409358245/dbt-postgres-1.6.0.tar.gz
     retrieved: '2026-09-22'
     supports: PostgreSQL create and explicit REFRESH MATERIALIZED VIEW behavior.
@@ -109,8 +110,11 @@ walkthrough:
   steps:
     - id: partial
       title: Look at what the failed run left behind
-      explanation: |-
-        Highlighted lines 1 and 2 of refunds_by_order and payments_by_order total their separate feeds. The panel shows a prepared connection-outage scenario: payments succeeded, refunds errored, and the three models downstream of refunds were skipped. The failure is assumed to come from the connection, not a change in either calculation.
+      explanation: >-
+        Highlighted lines 1 and 2 of refunds_by_order and payments_by_order total their separate feeds. The
+        panel shows a prepared connection-outage scenario: payments succeeded, refunds errored, and the three
+        models downstream of refunds were skipped. The failure is assumed to come from the connection, not a
+        change in either calculation.
       state:
         kind: comparison
         title: Prepared prior run record
@@ -118,20 +122,21 @@ walkthrough:
           - model
           - prior result
         rows:
-          -   - payments_by_order
-              - success
-          -   - refunds_by_order
-              - error
-          -   - order_amounts
-              - skipped
-          -   - order_revenue
-              - skipped
-          -   - revenue_by_location
-              - skipped
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - payments_by_order
+            - success
+          - - refunds_by_order
+            - error
+          - - order_amounts
+            - skipped
+          - - order_revenue
+            - skipped
+          - - revenue_by_location
+            - skipped
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: >
         dbt keeps a record of which models succeeded, failed or were skipped, and that record is what a retry
         works from.
@@ -165,8 +170,11 @@ walkthrough:
           purpose: Authored era-specific example; illustration only.
     - id: repair
       title: Fix the cause, then run dbt retry
-      explanation: |-
-        Highlighted line 1 of the command runs dbt retry. With the connection restored, it uses the saved result record to rerun failed and skipped work. The panel confirms those prerequisites: a repaired connection and the prior results available. The SQL happens to be unchanged here, but unchanged SQL isn't a requirement for retry.
+      explanation: >-
+        Highlighted line 1 of the command runs dbt retry. With the connection restored, it uses the saved
+        result record to rerun failed and skipped work. The panel confirms those prerequisites: a repaired
+        connection and the prior results available. The SQL happens to be unchanged here, but unchanged SQL
+        isn't a requirement for retry.
       state:
         kind: comparison
         title: Prepared recovery context
@@ -174,18 +182,18 @@ walkthrough:
           - item
           - state
         rows:
-          -   - connection
-              - restored
-          -   - cause
-              - outside the business SQL
-          -   - prior run_results.json
-              - available
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
-      takeaway: |-
-        With the connection restored, retry can use the prior result record to finish the failed branch.
+          - - connection
+            - restored
+          - - cause
+            - outside the business SQL
+          - - prior run_results.json
+            - available
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
+      takeaway: With the connection restored, retry can use the prior result record to finish the failed branch.
       code:
         - language: shell
           filename: commands.sh
@@ -203,8 +211,11 @@ walkthrough:
         - alignment-postgres
     - id: finish
       title: Check the recovered numbers
-      explanation: |
-        After the retry, the refunds total and the revenue model are built. Highlighted lines 3 to 5 in revenue_by_location sum payments, refunds and revenue for each location. The result panel shows the base figures: 3,400, 4,300 and 4,800 cents, which add up to 12,500. A recovered run should land on exactly the numbers a clean run would.
+      explanation: >
+        After the retry, the refunds total and the revenue model are built. Highlighted lines 3 to 5 in
+        revenue_by_location sum payments, refunds and revenue for each location. The result panel shows the
+        base figures: 3,400, 4,300 and 4,800 cents, which add up to 12,500. A recovered run should land on
+        exactly the numbers a clean run would.
       state:
         kind: table
         title: Base revenue by location
@@ -215,25 +226,26 @@ walkthrough:
           - refund_cents
           - revenue_cents
         rows:
-          -   - 1
-              - Old Port
-              - 4400
-              - 1000
-              - 3400
-          -   - 2
-              - Mile End
-              - 4600
-              - 300
-              - 4300
-          -   - 3
-              - Riverside
-              - 4800
-              - 0
-              - 4800
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - 1
+            - Old Port
+            - 4400
+            - 1000
+            - 3400
+          - - 2
+            - Mile End
+            - 4600
+            - 300
+            - 4300
+          - - 3
+            - Riverside
+            - 4800
+            - 0
+            - 4800
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: |
         After the retry, revenue by location matches the base figures, so the recovery is complete.
       evidence:
@@ -263,8 +275,11 @@ walkthrough:
           purpose: authored executable syntax; illustration only
     - id: materialized_view
       title: Store the query result as a PostgreSQL materialized view
-      explanation: |-
-        Highlighted line 1 of revenue_by_location selects materialized_view, a database object that stores a query's result. The command creates it on the first PostgreSQL 1.6 run and can refresh it on a later run. The panel contrasts an ordinary view with this stored result. PostgreSQL doesn't refresh it automatically after every input change.
+      explanation: >-
+        Highlighted line 1 of revenue_by_location selects materialized_view, a database object that stores a
+        query's result. The command creates it on the first PostgreSQL 1.6 run and can refresh it on a later
+        run. The panel contrasts an ordinary view with this stored result. PostgreSQL doesn't refresh it
+        automatically after every input change.
       state:
         kind: comparison
         title: View compared with a PostgreSQL materialized view
@@ -273,16 +288,17 @@ walkthrough:
           - on read
           - refresh
         rows:
-          -   - view
-              - execute its SELECT
-              - read current inputs each time
-          -   - materialized view
-              - read stored result
-              - REFRESH MATERIALIZED VIEW on an appropriate dbt run
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - view
+            - execute its SELECT
+            - read current inputs each time
+          - - materialized view
+            - read stored result
+            - REFRESH MATERIALIZED VIEW on an appropriate dbt run
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: The model can use PostgreSQL’s stored-view result, with refreshes handled explicitly.
       code:
         - language: sql
@@ -324,10 +340,18 @@ walkthrough:
       - src-4
       - alignment-1-6-0
       - alignment-postgres
-    limitations: |
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
-      The shown SQL is the work interrupted by an assumed external connection outage. No SQL statement manufactures that outage or proves recovery; retry requires the genuine prior run artifacts in an actual environment.
-      The PostgreSQL materialized view stores results until an explicit refresh; it is not continuously updated. Clone is outside this walkthrough because PostgreSQL does not provide the zero-copy clone recipe. The outage remains an assumed scenario, not a captured failure (alignment-postgres and src-1).
+    limitations: >
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
+      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
+      performance claims.
+
+      The shown SQL is the work interrupted by an assumed external connection outage. No SQL statement
+      manufactures that outage or proves recovery; retry requires the genuine prior run artifacts in an actual
+      environment.
+
+      The PostgreSQL materialized view stores results until an explicit refresh; it is not continuously
+      updated. Clone is outside this walkthrough because PostgreSQL does not provide the zero-copy clone
+      recipe. The outage remains an assumed scenario, not a captured failure (alignment-postgres and src-1).
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
@@ -338,14 +362,12 @@ walkthrough:
       - Build a PostgreSQL model as a materialized view, a stored result refreshed explicitly.
     scenario: >
       A run is halfway done when the database connection drops. The payments total finished, but the refunds
-      total failed and the revenue model never ran. Once the connection is back, the shop wants to finish
-      the
+      total failed and the revenue model never ran. Once the connection is back, the shop wants to finish the
       run without rebuilding what already worked.
     outcome: >-
       See failed and skipped work retried, the restored 12,500-cent result, and a PostgreSQL materialized-view
       definition.
-  title: |-
-    Demo: retry an interrupted branch and store a materialized view
+  title: 'Demo: retry an interrupted branch and store a materialized view'
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.
 default_milestone: 1.6.0

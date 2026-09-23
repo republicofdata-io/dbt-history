@@ -24,8 +24,9 @@ what_changed:
     evidence:
       - src-1
     confidence: high
-in_practice: |
-  Think in dependencies and runnable branches, not a handwritten sequence of SQL files.
+in_practice: >
+  Independent models built side by side, and a broken model only held up the models that depended on it. Teams
+  started thinking in dependency branches rather than a fixed order of files.
 technical_detail: >
   The release supports up to eight threads. Descendants of failed models are skipped while independent
   branches continue. The graph is a scheduling illustration, not a measured run or timing claim.

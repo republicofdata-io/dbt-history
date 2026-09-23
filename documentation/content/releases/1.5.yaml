@@ -17,13 +17,13 @@ what_changed:
   - id: change-2
     summary: dbt show and programmatic dbtRunner.
     introduced_in: 1.5.0
-    adapter_constraints:
+    adapter_constraints: null
     evidence:
       - src-1
     confidence: high
 in_practice: >
-  Declare the interface and plan changes for consumers rather than treating every model as a private scratch
-  table.
+  A model could declare a contract, the columns and types it promised, and dbt refused a build that broke it.
+  A breaking change could ship as a new version while consumers stayed on the old one.
 technical_detail: >
   Contract enforcement checks model shape where supported; it does not prove the revenue definition is
   correct. Versions and groups/access manage project interfaces, not a universal warehouse authorization
@@ -51,8 +51,10 @@ sources:
       linked from the package.
     rechecked: '2026-09-22'
   - id: alignment-1-5-0
-    title: 'dbt 1.5.0 original source: dbt/contracts/graph/unparsed.py:144-247; dbt/parser/schemas.py; dbt/task/show.py'
-    url:
+    title: >-
+      dbt 1.5.0 original source: dbt/contracts/graph/unparsed.py:144-247; dbt/parser/schemas.py;
+      dbt/task/show.py
+    url: >-
       https://files.pythonhosted.org/packages/bd/50/24e22edfe4d667a6c3e7910dcbbf4c1cf1994d82ae2a8d90c94fd14bd763/dbt-core-1.5.0.tar.gz
     retrieved: '2026-09-22'
     source_path: dbt/contracts/graph/unparsed.py:144-247; dbt/parser/schemas.py; dbt/task/show.py
@@ -73,8 +75,10 @@ walkthrough:
   steps:
     - id: promise
       title: The model promises two columns
-      explanation: |-
-        Highlighted lines 5 and 6 of schema.yml enforce a contract, the model's promised output shape. Lines 8 to 11 declare location_id as integer and revenue_cents as bigint. The panel lists those two names and types, which the model must produce.
+      explanation: >-
+        Highlighted lines 5 and 6 of schema.yml enforce a contract, the model's promised output shape. Lines 8
+        to 11 declare location_id as integer and revenue_cents as bigint. The panel lists those two names and
+        types, which the model must produce.
       state:
         kind: comparison
         title: The two promised columns and their types
@@ -82,14 +86,15 @@ walkthrough:
           - column
           - declared type
         rows:
-          -   - location_id
-              - integer
-          -   - revenue_cents
-              - bigint
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - location_id
+            - integer
+          - - revenue_cents
+            - bigint
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: |
         The contract fixes both the names and the types of the model's output columns.
       code:
@@ -121,8 +126,11 @@ walkthrough:
         - alignment-1-5-0
     - id: mismatch
       title: An edit renames the column and the contract rejects it
-      explanation: |-
-        Highlighted lines 5, 6 and 8 to 11 of schema.yml retain the enforced contract. Highlighted line 2 of revenue_by_location.sql renames revenue_cents to net_cents. The command attempts to build the model. The panel shows the name mismatch stopping compilation before table creation. This checks the promised output, not a database constraint.
+      explanation: >-
+        Highlighted lines 5, 6 and 8 to 11 of schema.yml retain the enforced contract. Highlighted line 2 of
+        revenue_by_location.sql renames revenue_cents to net_cents. The command attempts to build the model.
+        The panel shows the name mismatch stopping compilation before table creation. This checks the promised
+        output, not a database constraint.
       state:
         kind: result
         title: 'Contract mismatch: revenue_cents expected, net_cents found'
@@ -131,13 +139,14 @@ walkthrough:
           - proposed column
           - assessment
         rows:
-          -   - revenue_cents
-              - net_cents
-              - interface mismatch
+          - - revenue_cents
+            - net_cents
+            - interface mismatch
         result_status: fail
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: |
         The contract failed the build because a column name changed, even though the numbers were still right.
       evidence:
@@ -186,8 +195,10 @@ walkthrough:
           purpose: Authored era-specific example; illustration only.
     - id: repair
       title: Restore the column name and the build passes
-      explanation: |-
-        Highlighted line 2 of revenue_by_location restores revenue_cents, the name promised by the unchanged contract. The panel now shows exactly the two query columns and three location rows, with revenue of 3,400, 4,300 and 4,800 cents. Restoring the name lets the existing interface pass.
+      explanation: >-
+        Highlighted line 2 of revenue_by_location restores revenue_cents, the name promised by the unchanged
+        contract. The panel now shows exactly the two query columns and three location rows, with revenue of
+        3,400, 4,300 and 4,800 cents. Restoring the name lets the existing interface pass.
       state:
         kind: table
         title: Corrected contract output
@@ -195,16 +206,17 @@ walkthrough:
           - location_id
           - revenue_cents
         rows:
-          -   - 1
-              - 3400
-          -   - 2
-              - 4300
-          -   - 3
-              - 4800
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - 1
+            - 3400
+          - - 2
+            - 4300
+          - - 3
+            - 4800
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: >
         With the column name restored, the contract passes and the dashboard keeps reading the column it
         expects.
@@ -225,8 +237,12 @@ walkthrough:
           purpose: authored executable syntax; illustration only
     - id: versions
       title: Ship the rename as version 2
-      explanation: |-
-        Highlighted line 4 of schema.yml keeps v1 as the default; lines 10 to 16 add v2 with net_cents. Highlighted line 2 of revenue_by_location_v2.sql supplies that renamed column. Highlighted line 2 of dashboard_input keeps an unversioned ref(), which still selects v1. The command previews v2. The panel shows the same three revenue amounts under net_cents, while the dashboard retains its existing interface.
+      explanation: >-
+        Highlighted line 4 of schema.yml keeps v1 as the default; lines 10 to 16 add v2 with net_cents.
+        Highlighted line 2 of revenue_by_location_v2.sql supplies that renamed column. Highlighted line 2 of
+        dashboard_input keeps an unversioned ref(), which still selects v1. The command previews v2. The panel
+        shows the same three revenue amounts under net_cents, while the dashboard retains its existing
+        interface.
       state:
         kind: table
         title: Prepared dbt show preview of v2
@@ -234,16 +250,17 @@ walkthrough:
           - location_id
           - net_cents
         rows:
-          -   - 1
-              - 3400
-          -   - 2
-              - 4300
-          -   - 3
-              - 4800
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - 1
+            - 3400
+          - - 2
+            - 4300
+          - - 3
+            - 4800
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: The renamed interface is available as v2 while the existing dashboard stays on v1.
       code:
         - language: yaml
@@ -310,25 +327,28 @@ walkthrough:
       - src-1
       - src-2
       - alignment-1-5-0
-    limitations: |
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
-      The include selector is "*", not the review’s suggested literal all. defined_in preserves the existing v1 filename; default ref resolves latest_version: 1. Groups and access remain release context, not promised demo behaviors. Preview order is illustrative because the grouped SQL has no ORDER BY (src-1 and 1.5 source).
+    limitations: >
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
+      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
+      performance claims.
+
+      The include selector is "*", not the review’s suggested literal all. defined_in preserves the existing
+      v1 filename; default ref resolves latest_version: 1. Groups and access remain release context, not
+      promised demo behaviors. Preview order is illustrative because the grouped SQL has no ORDER BY (src-1
+      and 1.5 source).
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
       method: Original source/archive and release documentation inspection; no historical dbt execution.
   intro:
     can_now:
-      - >-
-        Reject a model whose output differs from its promised column names and types.
+      - Reject a model whose output differs from its promised column names and types.
       - Publish a renamed column in a second model version while the default stays on version 1.
       - Preview the versioned model with dbt show.
     scenario: >-
       A proposed rename from revenue_cents to net_cents breaks the dashboard’s expected column. Jaffle Shop
       catches it with a contract, restores the original, then publishes the rename as a separate version.
-    outcome: |-
-      See the mismatch, the restored v1 output, and a v2 preview that preserves the same revenue values.
-  title: |-
-    Demo: catch a contract break and publish the rename as version 2
+    outcome: See the mismatch, the restored v1 output, and a v2 preview that preserves the same revenue values.
+  title: 'Demo: catch a contract break and publish the rename as version 2'
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

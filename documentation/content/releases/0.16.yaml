@@ -10,19 +10,20 @@ what_changed:
   - id: change-1
     summary: meta and richer resource documentation.
     introduced_in: 0.16.0
-    adapter_constraints:
+    adapter_constraints: null
     evidence:
       - src-1
     confidence: high
   - id: change-2
     summary: Documentation for macros, analyses, snapshots and seeds; source/column tags.
     introduced_in: 0.16.0
-    adapter_constraints:
+    adapter_constraints: null
     evidence:
       - src-1
     confidence: high
-in_practice: |
-  Attach team context to the resource alongside its technical definition.
+in_practice: >
+  A model could carry its own metadata, such as which team owned it, and descriptions extended to seeds and
+  macros.
 technical_detail: >
   meta is project metadata; it does not itself create access control, approval workflows or a governance
   service. This example’s finance owner is fictional.
@@ -71,8 +72,10 @@ walkthrough:
   steps:
     - id: question
       title: A question the SQL cannot answer
-      explanation: |-
-        Highlighted lines 3 and 4 of schema.yml name and describe the revenue model but give no owner. The panel places the prepared Old Port result, 3,400 cents, beside the unanswered question of who maintains its definition. The calculation exists; the ownership information is missing.
+      explanation: >-
+        Highlighted lines 3 and 4 of schema.yml name and describe the revenue model but give no owner. The
+        panel places the prepared Old Port result, 3,400 cents, beside the unanswered question of who
+        maintains its definition. The calculation exists; the ownership information is missing.
       state:
         kind: comparison
         title: Correct number, owner still unspecified
@@ -82,14 +85,15 @@ walkthrough:
           - revenue_cents
           - question
         rows:
-          -   - 'revenue_by_location'
-              - Old Port
-              - 3400
-              - Who maintains this definition?
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - revenue_by_location
+            - Old Port
+            - 3400
+            - Who maintains this definition?
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: |
         The SQL says how revenue is computed, but not who is responsible for the rule.
       evidence:
@@ -110,8 +114,10 @@ walkthrough:
           purpose: Authored era-specific example; illustration only.
     - id: meta
       title: Record the owner next to the model
-      explanation: |-
-        Highlighted lines 5 and 6 of the schema file add owner: finance and unit: cents inside meta, descriptive information that travels with a resource. The panel now shows the named owner and unit. These descriptions don't change database permissions.
+      explanation: >-
+        Highlighted lines 5 and 6 of the schema file add owner: finance and unit: cents inside meta,
+        descriptive information that travels with a resource. The panel now shows the named owner and unit.
+        These descriptions don't change database permissions.
       state:
         kind: comparison
         title: Owner and unit recorded on the model
@@ -120,15 +126,15 @@ walkthrough:
           - owner
           - unit
         rows:
-          -   - revenue_by_location
-              - finance
-              - cents
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
-      takeaway: |-
-        The model records its owner and unit. That description does not grant warehouse access.
+          - - revenue_by_location
+            - finance
+            - cents
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
+      takeaway: The model records its owner and unit. That description does not grant warehouse access.
       code:
         - language: yaml
           filename: models/schema.yml
@@ -149,8 +155,10 @@ walkthrough:
         - src-3
     - id: boundary
       title: Describe the location seed as well
-      explanation: |-
-        Highlighted lines 2, 4 and 7 of seed_docs.yml describe the locations seed and its name column. The command generates documentation. The prepared panel shows the seed description and column description, extending the documentation beyond the model metadata on the previous screen.
+      explanation: >-
+        Highlighted lines 2, 4 and 7 of seed_docs.yml describe the locations seed and its name column. The
+        command generates documentation. The prepared panel shows the seed description and column description,
+        extending the documentation beyond the model metadata on the previous screen.
       state:
         kind: comparison
         title: Prepared documentation entries
@@ -158,16 +166,16 @@ walkthrough:
           - resource
           - description
         rows:
-          -   - 'seed locations'
-              - The three Jaffle Shop locations.
-          -   - locations.name
-              - Name shown on revenue reports.
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
-      takeaway: |-
-        The documentation can describe the CSV seed and its columns, as well as models.
+          - - seed locations
+            - The three Jaffle Shop locations.
+          - - locations.name
+            - Name shown on revenue reports.
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
+      takeaway: The documentation can describe the CSV seed and its columns, as well as models.
       evidence:
         - src-1
         - src-2
@@ -215,11 +223,9 @@ walkthrough:
       - Attach custom facts such as owner and unit to a model.
       - Add descriptions to seed resources and their columns.
     scenario: >-
-      The revenue SQL gives the right number but no owner. Jaffle Shop records who maintains it and adds documentation
-      for the location CSV used by reports.
-    outcome: >-
-      See the ownership gap filled and the seed description appear in a prepared documentation view.
-  title: |-
-    Demo: record the revenue owner and describe the location seed
+      The revenue SQL gives the right number but no owner. Jaffle Shop records who maintains it and adds
+      documentation for the location CSV used by reports.
+    outcome: See the ownership gap filled and the seed description appear in a prepared documentation view.
+  title: 'Demo: record the revenue owner and describe the location seed'
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.

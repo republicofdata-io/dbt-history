@@ -16,17 +16,16 @@ what_changed:
     confidence: high
   - id: ref-known-present
     summary: ref() and deps are present by 0.1.14; first introduction is unresolved.
-    introduced_in:
-    adapter_constraints:
+    introduced_in: null
+    adapter_constraints: null
     evidence:
       - src-3
     confidence: qualified
     known_present_in: 0.1.14
     introduction_uncertainty: Not present in 0.1.1; confirmed by inspection of 0.1.14.
 in_practice: >
-  A project can compile and build SQL definitions. Later in this series, ref-based dependencies are visible
-  in
-  the source.
+  A SQL file in the project became a table or view in the warehouse with one command, instead of a statement
+  someone pasted into a console. By patch 0.1.14 a model could point at another by name.
 technical_detail: >
   The first observed 0.1 package is 0.1.1, not 0.1.0. It uses Boolean materialization configuration and lacks
   ref() and a test command. ref()/deps are present by 0.1.14; the exact first introducing patch is not
@@ -69,13 +68,12 @@ sources:
     supports: ref()/deps present by this package; absence in 0.1.1 source confirmed
   - id: alignment-0-1-1
     title: 'dbt 0.1.1 original source: dbt/task/compile.py:40-59'
-    url:
+    url: >-
       https://files.pythonhosted.org/packages/52/d2/c9c3ca708fce408ae77304d441eeb07aace4b39637a772527dacd71d6e1b/dbt-0.1.1.tar.gz
     retrieved: '2026-09-22'
     source_path: dbt/task/compile.py:40-59
     sha256: 623c829b9ba50d6e15dd33fa0800c4fc5f5d84d44cf25e5fe277ae94cb5996bf
-    supports: Boolean materialized selects table or view in the CREATE wrapper; this package has no ref
-      helper.
+    supports: Boolean materialized selects table or view in the CREATE wrapper; this package has no ref helper.
 narrative_evidence:
   - src-1
   - src-2
@@ -93,8 +91,11 @@ walkthrough:
   steps:
     - id: query
       title: Start with one SQL file
-      explanation: |-
-        revenue_by_location.sql saves the whole revenue query as a model, a SQL file that dbt turns into a table or view. Highlighted lines 1 to 4 total payments per order straight from the raw table. There's no dbt shorthand yet, just plain table names. The result panel shows 12,500 cents across three locations.
+      explanation: >-
+        revenue_by_location.sql saves the whole revenue query as a model, a SQL file that dbt turns into a
+        table or view. Highlighted lines 1 to 4 total payments per order straight from the raw table. There's
+        no dbt shorthand yet, just plain table names. The result panel shows 12,500 cents across three
+        locations.
       state:
         kind: table
         title: Revenue from the saved query
@@ -102,16 +103,17 @@ walkthrough:
           - location_id
           - revenue_cents
         rows:
-          -   - 1
-              - 3400
-          -   - 2
-              - 4300
-          -   - 3
-              - 4800
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - 1
+            - 3400
+          - - 2
+            - 4300
+          - - 3
+            - 4800
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: |
         A model is a SQL query saved in a file, and dbt builds the table from it.
       code:
@@ -148,8 +150,11 @@ walkthrough:
         - alignment-0-1-1
     - id: config
       title: Tell dbt to store the result as a table
-      explanation: |-
-        Highlighted line 2 of dbt_project.yml is a Boolean switch: true stores a table; false stores a view. Highlighted lines 1 to 3 of order_payments.sql total raw payments per order. The command compiles the project. With target schema analytics, the panel compares the CREATE statements that the 0.1.1 compiler would generate. These are prepared examples, not captured output.
+      explanation: >-
+        Highlighted line 2 of dbt_project.yml is a Boolean switch: true stores a table; false stores a view.
+        Highlighted lines 1 to 3 of order_payments.sql total raw payments per order. The command compiles the
+        project. With target schema analytics, the panel compares the CREATE statements that the 0.1.1
+        compiler would generate. These are prepared examples, not captured output.
       state:
         kind: comparison
         title: Generated statements at 0.1.1 (illustration)
@@ -157,18 +162,20 @@ walkthrough:
           - materialized
           - generated SQL
         rows:
-          -   - true
-              - create table analytics.order_payments as ( select order_id, sum(amount_cents) as
-                payment_cents from raw.payments group by order_id );
-          -   - false
-              - create view analytics.order_payments as ( select order_id, sum(amount_cents) as
-                payment_cents from raw.payments group by order_id );
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
-      takeaway: >-
-        Changing one Boolean changes the generated CREATE TABLE to CREATE VIEW.
+          - - true
+            - >-
+              create table analytics.order_payments as ( select order_id, sum(amount_cents) as payment_cents
+              from raw.payments group by order_id );
+          - - false
+            - >-
+              create view analytics.order_payments as ( select order_id, sum(amount_cents) as payment_cents
+              from raw.payments group by order_id );
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
+      takeaway: Changing one Boolean changes the generated CREATE TABLE to CREATE VIEW.
       code:
         - language: yaml
           filename: dbt_project.yml (excerpt)
@@ -203,14 +210,17 @@ walkthrough:
         - alignment-0-1-1
     - id: patch
       title: 'Jump to patch 0.1.14: one model points at another'
-      explanation: |-
-        At patch 0.1.14, highlighted line 2 of revenue_by_location.sql uses ref('order_revenue') instead of a raw table name. dbt replaces that placeholder with the real table name and records the dependency. The existing order_revenue model supplies one row per order with payments minus refunds. The diagram shows it building before revenue_by_location.
+      explanation: >-
+        At patch 0.1.14, highlighted line 2 of revenue_by_location.sql uses ref('order_revenue') instead of a
+        raw table name. dbt replaces that placeholder with the real table name and records the dependency. The
+        existing order_revenue model supplies one row per order with payments minus refunds. The diagram shows
+        it building before revenue_by_location.
       state:
         kind: diagram
         title: Build order at 0.1.14
         columns: []
         rows: []
-        result_status:
+        result_status: null
         diagram:
           nodes:
             - id: order_revenue
@@ -222,11 +232,11 @@ walkthrough:
               to: revenue_by_location
           highlight:
             - revenue_by_location
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: >
-        By patch 0.1.14 a model can point at another model by name, and dbt uses that link to build things
-        in
+        By patch 0.1.14 a model can point at another model by name, and dbt uses that link to build things in
         the right order.
       code:
         - language: sql
@@ -251,9 +261,13 @@ walkthrough:
       - src-2
       - src-3
       - alignment-0-1-1
-    limitations: |
-      Illustration only. Early engine code targets Redshift; no local compatibility is claimed. The 0.1.1 project setting and 0.1.14 ref helper were inspected in original package source; the exact ref introduction patch remains unknown.
-      historical-0.1-04: 0.1.1 compile.py inspected: only Jinja/project wrapping, no ref helper. 0.1.14 has ref; exact introduction patch stays unknown. Evidence: src-1, src-2, src-3, alignment-0-1-1.
+    limitations: >
+      Illustration only. Early engine code targets Redshift; no local compatibility is claimed. The 0.1.1
+      project setting and 0.1.14 ref helper were inspected in original package source; the exact ref
+      introduction patch remains unknown.
+
+      historical-0.1-04: 0.1.1 compile.py inspected: only Jinja/project wrapping, no ref helper. 0.1.14 has
+      ref; exact introduction patch stays unknown. Evidence: src-1, src-2, src-3, alignment-0-1-1.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
@@ -261,8 +275,7 @@ walkthrough:
   intro:
     can_now:
       - Save a revenue query as a file and have dbt build it as a table in the warehouse.
-      - Use one project-wide switch, materialized true or false, to store every model as a table or a
-        view.
+      - Use one project-wide switch, materialized true or false, to store every model as a table or a view.
       - >-
         By patch 0.1.14, point one model at another by name and let dbt work out the build order. Which patch
         first added this is still unconfirmed.

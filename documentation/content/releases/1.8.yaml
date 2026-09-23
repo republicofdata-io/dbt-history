@@ -11,8 +11,7 @@ what_changed:
   - id: unit-tests
     summary: Native SQL unit tests with controlled YAML fixtures.
     introduced_in: 1.8.0
-    adapter_constraints: SQL model execution uses a supported target adapter; fixture/type limitations
-      are adapter-specific.
+    adapter_constraints: SQL model execution uses a supported target adapter; fixture/type limitations are adapter-specific.
     evidence:
       - src-1
     confidence: high
@@ -24,8 +23,8 @@ what_changed:
       - src-1
     confidence: high
 in_practice: >
-  The author specifies inputs and expected rows next to the model. A failure points directly to the business
-  rule under test.
+  A unit test described a few input rows and the rows expected out, next to the model, so a refund edge case
+  could be checked before any real data was built.
 technical_detail: >
   Native SQL unit tests arrive in 1.8.0. They execute SQL through the target adapter; they are not an offline
   SQL validator. The fixture below isolates an existing order from the base data. --empty is also introduced
@@ -111,8 +110,11 @@ walkthrough:
   steps:
     - id: refund
       title: What the right answer looks like
-      explanation: |-
-        order_1042.sql is an inspection query: a plain query under analyses that reads data without building a model. Highlighted line 2 subtracts refunds from payments; line 4 selects order 1042. The panel shows 1,200 cents paid, 200 refunded and the correct 1,000-cent answer. That's the rule the unit test will protect.
+      explanation: >-
+        order_1042.sql is an inspection query: a plain query under analyses that reads data without building a
+        model. Highlighted line 2 subtracts refunds from payments; line 4 selects order 1042. The panel shows
+        1,200 cents paid, 200 refunded and the correct 1,000-cent answer. That's the rule the unit test will
+        protect.
       state:
         kind: table
         title: Order 1042 with its partial refund
@@ -122,14 +124,15 @@ walkthrough:
           - refund_cents
           - revenue_cents
         rows:
-          -   - 1042
-              - 1200
-              - 200
-              - 1000
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - 1042
+            - 1200
+            - 200
+            - 1000
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: >
         Revenue for order 1042 must be 1,200 minus 200, or 1,000 cents. That is the rule the test will
         protect.
@@ -154,8 +157,11 @@ walkthrough:
           purpose: authored executable syntax; illustration only
     - id: bug
       title: A plus sign creeps in
-      explanation: |-
-        Highlighted line 3 of order_revenue.sql adds refunds by mistake. Highlighted lines 8 and 11 of order_revenue.yml supply one test input and its expected 1,000-cent output. The command first builds zero-row upstream relations so dbt can inspect column types, then runs the unit test. The panel shows the incorrect 1,400-cent result and a failure.
+      explanation: >-
+        Highlighted line 3 of order_revenue.sql adds refunds by mistake. Highlighted lines 8 and 11 of
+        order_revenue.yml supply one test input and its expected 1,000-cent output. The command first builds
+        zero-row upstream relations so dbt can inspect column types, then runs the unit test. The panel shows
+        the incorrect 1,400-cent result and a failure.
       state:
         kind: result
         title: Test result on the buggy model
@@ -164,13 +170,14 @@ walkthrough:
           - expected_cents
           - actual_cents
         rows:
-          -   - 1042
-              - 1000
-              - 1400
+          - - 1042
+            - 1000
+            - 1400
         result_status: fail
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: |
         A one-character mistake in the SQL gives a wrong answer, and a unit test with one row exposes it.
       code:
@@ -220,8 +227,11 @@ walkthrough:
         - alignment-empty
     - id: fixture
       title: How the test describes the case
-      explanation: |-
-        Highlighted lines 8 and 11 of order_revenue.yml define one input row and one expected output. dbt substitutes that input when evaluating the model. The panel compares 1,000 cents expected with the 1,400 returned by the buggy SQL on the previous screen. A warehouse connection and upstream schemas are still required; the earlier --empty build supplies the schemas without business rows.
+      explanation: >-
+        Highlighted lines 8 and 11 of order_revenue.yml define one input row and one expected output. dbt
+        substitutes that input when evaluating the model. The panel compares 1,000 cents expected with the
+        1,400 returned by the buggy SQL on the previous screen. A warehouse connection and upstream schemas
+        are still required; the earlier --empty build supplies the schemas without business rows.
       state:
         kind: result
         title: Input row, expected row, buggy result
@@ -232,15 +242,16 @@ walkthrough:
           - expected_cents
           - actual_buggy_cents
         rows:
-          -   - 1042
-              - 1200
-              - 200
-              - 1000
-              - 1400
+          - - 1042
+            - 1200
+            - 200
+            - 1000
+            - 1400
         result_status: fail
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: |
         A unit test is a tiny worked example: this row in, that row out. It makes the failure easy to read.
       code:
@@ -271,8 +282,9 @@ walkthrough:
         - alignment-empty
     - id: fixed
       title: Restore the minus sign and the test passes
-      explanation: |-
-        Highlighted line 3 of order_revenue.sql restores subtraction. The command reruns the unchanged unit test from the previous screen. The panel now shows a pass: expected 1,000 cents, actual 1,000 cents.
+      explanation: >-
+        Highlighted line 3 of order_revenue.sql restores subtraction. The command reruns the unchanged unit
+        test from the previous screen. The panel now shows a pass: expected 1,000 cents, actual 1,000 cents.
       state:
         kind: result
         title: Test result on the corrected model
@@ -281,16 +293,16 @@ walkthrough:
           - expected_cents
           - actual_cents
         rows:
-          -   - 1042
-              - 1000
-              - 1000
+          - - 1042
+            - 1000
+            - 1000
         result_status: pass
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: >
-        With the subtraction restored the test passes, and it will fail again if anyone breaks the refund
-        rule
+        With the subtraction restored the test passes, and it will fail again if anyone breaks the refund rule
         later.
       code:
         - language: sql
@@ -327,22 +339,26 @@ walkthrough:
       - src-4
       - src-5
       - alignment-empty
-    limitations: |
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
-      Unit tests need an adapter/warehouse and relation schemas for type discovery. --empty supplies zero-row model relations; it is not an offline engine. Raw source relations still have to exist. The order_amounts chain now consistently uses aggregate model refs. The selected unit_test command is test_type:unit, verified in the 1.8 upgrade reference (src-1).
+    limitations: >
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
+      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
+      performance claims.
+
+      Unit tests need an adapter/warehouse and relation schemas for type discovery. --empty supplies zero-row
+      model relations; it is not an offline engine. Raw source relations still have to exist. The
+      order_amounts chain now consistently uses aggregate model refs. The selected unit_test command is
+      test_type:unit, verified in the 1.8 upgrade reference (src-1).
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
       method: Original source/archive and release documentation inspection; no historical dbt execution.
   intro:
     can_now:
-      - 'Write a unit test for a model with a few supplied input rows and expected output rows.'
+      - Write a unit test for a model with a few supplied input rows and expected output rows.
       - Test the model calculation with only the rows supplied in the unit test.
-      - Build every model with zero rows using the --empty flag, to check the SQL is valid before a full
-        run.
+      - Build every model with zero rows using the --empty flag, to check the SQL is valid before a full run.
     scenario: >
-      Order 1042 at Old Port has a 1,200-cent payment and a 200-cent partial refund, so its revenue should
-      be
+      Order 1042 at Old Port has a 1,200-cent payment and a 200-cent partial refund, so its revenue should be
       1,000 cents. Someone edits the revenue model and types a plus where a minus belongs. Revenue for that
       order jumps to 1,400 cents. A unit test with one input row catches the mistake.
     outcome: >-

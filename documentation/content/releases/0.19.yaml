@@ -10,19 +10,20 @@ what_changed:
   - id: change-1
     summary: Snapshot hard-delete invalidation and revival.
     introduced_in: 0.19.0
-    adapter_constraints:
+    adapter_constraints: null
     evidence:
       - src-1
     confidence: high
   - id: change-2
     summary: Deferral extends to tests; versioned artifact schemas and project config migrations.
     introduced_in: 0.19.0
-    adapter_constraints:
+    adapter_constraints: null
     evidence:
       - src-1
     confidence: high
-in_practice: |
-  Choose how the snapshot represents hard deletes instead of leaving the meaning implicit.
+in_practice: >
+  A snapshot could close a customer's history when the source row disappeared, rather than leaving the last
+  record open forever.
 technical_detail: >
   invalidate_hard_deletes closes the active interval when disappearance is observed. It does not remove
   historical records or erase existing orders. Artifact schemas also become versioned; deferral extends to
@@ -85,8 +86,11 @@ walkthrough:
   steps:
     - id: current
       title: 'Before the deletion: the customer is still in the feed'
-      explanation: |-
-        Highlighted lines 2 and 3 of the snapshot enable invalidate_hard_deletes, which closes a saved row when it disappears from the feed. customer_before_delete.sql is an inspection query: a plain query under analyses that reads a result without building a model. Its highlighted line 2 selects customer 6. The panel shows Finn in Montréal before deletion.
+      explanation: >-
+        Highlighted lines 2 and 3 of the snapshot enable invalidate_hard_deletes, which closes a saved row
+        when it disappears from the feed. customer_before_delete.sql is an inspection query: a plain query
+        under analyses that reads a result without building a model. Its highlighted line 2 selects customer
+        6. The panel shows Finn in Montréal before deletion.
       state:
         kind: comparison
         title: Customer 6 as seen before the deletion
@@ -95,13 +99,14 @@ walkthrough:
           - name
           - city
         rows:
-          -   - 6
-              - Finn
-              - Montréal
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - 6
+            - Finn
+            - Montréal
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: |
         Before anything is deleted, the snapshot holds one open, current version of customer 6.
       evidence:
@@ -135,8 +140,10 @@ walkthrough:
         phase: Before the declared customer deletion.
     - id: missing
       title: The source row disappears, but the orders stay
-      explanation: |-
-        The customer-removed variant deletes Finn's current customer row. This result-only panel shows that declared fixture change: customer 6 disappears from the feed while orders 1046 and 1052 remain. The snapshot settings from the previous screen haven't changed.
+      explanation: >-
+        The customer-removed variant deletes Finn's current customer row. This result-only panel shows that
+        declared fixture change: customer 6 disappears from the feed while orders 1046 and 1052 remain. The
+        snapshot settings from the previous screen haven't changed.
       state:
         kind: comparison
         title: Customer 6 is gone from the feed, orders 1046 and 1052 remain
@@ -145,13 +152,14 @@ walkthrough:
           - current feed
           - existing orders
         rows:
-          -   - 6
-              - absent
-              - 1046 and 1052 retained
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - 6
+            - absent
+            - 1046 and 1052 retained
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: |
         Deleting a customer from the source feed is not the same as removing or refunding their orders.
       code: []
@@ -162,8 +170,11 @@ walkthrough:
         - src-3
     - id: close
       title: 'Run the snapshot: the history row gets an end date'
-      explanation: |-
-        The command runs the snapshot after deletion. Highlighted lines 1 and 3 of closed_customer.sql inspect customer 6's saved validity dates. Highlighted line 1 of revenue_total.sql separately sums revenue. The panel shows Finn's history closed at March 9, 09:00, while the orders still contribute to the unchanged 12,500-cent total.
+      explanation: >-
+        The command runs the snapshot after deletion. Highlighted lines 1 and 3 of closed_customer.sql inspect
+        customer 6's saved validity dates. Highlighted line 1 of revenue_total.sql separately sums revenue.
+        The panel shows Finn's history closed at March 9, 09:00, while the orders still contribute to the
+        unchanged 12,500-cent total.
       state:
         kind: comparison
         title: Customer 6 history closed, revenue unchanged
@@ -172,13 +183,14 @@ walkthrough:
           - history status
           - revenue total
         rows:
-          -   - 6
-              - closed at March 9 09:00
-              - 12500
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - 6
+            - closed at March 9 09:00
+            - 12500
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: >
         The snapshot now says customer 6 was real until March 9 and is no longer current, and every past order
         keeps its history.
@@ -225,11 +237,20 @@ walkthrough:
       - src-2
       - src-3
       - src-4
-    limitations: |
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
-      The 2016 timestamps describe fixture observations, not the release date or captured warehouse clocks. Revival and test deferral are not demonstrated; they remain sourced release context (src-1). Snapshot history alone does not create a temporal order join.
-      historical-0.19-01: Revival and test deferral remain release context with explicit limitations; the shown event is deletion only. Evidence: src-1, src-2, src-3, src-4.
-      historical-0.19-02: 2016 dates are declared fixture observations, not the 2021 release date or a captured warehouse clock. Evidence: src-1, src-2, src-3, src-4.
+    limitations: >
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
+      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
+      performance claims.
+
+      The 2016 timestamps describe fixture observations, not the release date or captured warehouse clocks.
+      Revival and test deferral are not demonstrated; they remain sourced release context (src-1). Snapshot
+      history alone does not create a temporal order join.
+
+      historical-0.19-01: Revival and test deferral remain release context with explicit limitations; the
+      shown event is deletion only. Evidence: src-1, src-2, src-3, src-4.
+
+      historical-0.19-02: 2016 dates are declared fixture observations, not the 2021 release date or a
+      captured warehouse clock. Evidence: src-1, src-2, src-3, src-4.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
@@ -243,8 +264,7 @@ walkthrough:
       snapshot is a table dbt keeps that records each version of a row over time. Before this version, a
       deleted customer stayed marked as current forever. Now the snapshot can close that record while keeping
       its history.
-    outcome: >-
-      See the deletion setting and the closed history row it produces.
+    outcome: See the deletion setting and the closed history row it produces.
   title: |
     Demo: a snapshot closes a customer's history when the source row is deleted
 status: reviewed

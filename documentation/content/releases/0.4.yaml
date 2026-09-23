@@ -23,8 +23,9 @@ what_changed:
     evidence:
       - src-1
     confidence: high
-in_practice: |
-  Choose how a model is built as part of the project.
+in_practice: >
+  How a model was stored became a choice made in the model file: rebuild it, add only new rows, or fold its
+  SQL into the models that used it without creating a table.
 technical_detail: >
   The historical incremental filter is sql_where, used with this; do not substitute the later is_incremental
   pattern. This simple increasing-ID example assumes new records only and does not solve changed refunds or

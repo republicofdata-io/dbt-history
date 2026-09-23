@@ -10,19 +10,20 @@ what_changed:
   - id: change-1
     summary: Relation caching speeds introspection.
     introduced_in: 0.12.0
-    adapter_constraints:
+    adapter_constraints: null
     evidence:
       - src-1
     confidence: high
   - id: change-2
     summary: Model tags and selection by tag.
     introduced_in: 0.12.0
-    adapter_constraints:
+    adapter_constraints: null
     evidence:
       - src-1
     confidence: high
-in_practice: |
-  Group the revenue models with a tag and select that group.
+in_practice: >
+  A group of models could be tagged and run on its own, so a small change no longer meant rebuilding
+  everything.
 technical_detail: >
   Tags are selection metadata, not a claim that all dependencies are automatically selected. Relation caching
   is an internal improvement; no speed measurement is shown.
@@ -86,8 +87,10 @@ walkthrough:
   steps:
     - id: tag
       title: Put a finance tag on the revenue model
-      explanation: |-
-        Highlighted line 1 of order_revenue and line 1 of revenue_by_location give each model the finance tag. A tag is a label for grouping models; it doesn't change their calculations. The panel shows both models belonging to finance.
+      explanation: >-
+        Highlighted line 1 of order_revenue and line 1 of revenue_by_location give each model the finance tag.
+        A tag is a label for grouping models; it doesn't change their calculations. The panel shows both
+        models belonging to finance.
       state:
         kind: comparison
         title: Models carrying the finance tag
@@ -95,14 +98,15 @@ walkthrough:
           - model
           - tag
         rows:
-          -   - order_revenue
-              - finance
-          -   - revenue_by_location
-              - finance
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - order_revenue
+            - finance
+          - - revenue_by_location
+            - finance
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: |
         A tag is a label on a model that says which group it belongs to.
       code:
@@ -137,8 +141,10 @@ walkthrough:
         - src-4
     - id: select
       title: Run only the models tagged finance
-      explanation: |-
-        Highlighted line 1 of order_revenue and revenue_by_location retains the finance tag. The command now uses that tag to select which models to run. The panel lists just those two models. Their inputs, such as order_amounts, aren't rebuilt; this example assumes those tables already exist from an earlier run.
+      explanation: >-
+        Highlighted line 1 of order_revenue and revenue_by_location retains the finance tag. The command now
+        uses that tag to select which models to run. The panel lists just those two models. Their inputs, such
+        as order_amounts, aren't rebuilt; this example assumes those tables already exist from an earlier run.
       state:
         kind: comparison
         title: What the finance selection builds
@@ -146,12 +152,13 @@ walkthrough:
           - selection
           - models in this prepared slice
         rows:
-          -   - tag:finance
-              - order_revenue, revenue_by_location
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - tag:finance
+            - order_revenue, revenue_by_location
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: |
         Selecting by tag tells dbt to build just the tagged models and skip the rest.
       code:
@@ -193,8 +200,11 @@ walkthrough:
         - src-4
     - id: answer
       title: The revenue numbers do not change
-      explanation: |-
-        Highlighted line 1 of revenue_by_location still carries the finance tag. After the tag-selected run, this model sums the rebuilt order revenue into location totals. The panel shows 3,400, 4,300 and 4,800 cents, the same 12,500-cent answer as a full build. The selection changed, while the calculation stayed the same.
+      explanation: >-
+        Highlighted line 1 of revenue_by_location still carries the finance tag. After the tag-selected run,
+        this model sums the rebuilt order revenue into location totals. The panel shows 3,400, 4,300 and 4,800
+        cents, the same 12,500-cent answer as a full build. The selection changed, while the calculation
+        stayed the same.
       state:
         kind: table
         title: Revenue by location after the finance-only run
@@ -205,25 +215,26 @@ walkthrough:
           - refund_cents
           - revenue_cents
         rows:
-          -   - 1
-              - Old Port
-              - 4400
-              - 1000
-              - 3400
-          -   - 2
-              - Mile End
-              - 4600
-              - 300
-              - 4300
-          -   - 3
-              - Riverside
-              - 4800
-              - 0
-              - 4800
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - 1
+            - Old Port
+            - 4400
+            - 1000
+            - 3400
+          - - 2
+            - Mile End
+            - 4600
+            - 300
+            - 4300
+          - - 3
+            - Riverside
+            - 4800
+            - 0
+            - 4800
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: |
         Running only the finance slice gave the same revenue result as running everything.
       evidence:
@@ -255,10 +266,16 @@ walkthrough:
       - src-2
       - src-3
       - src-4
-    limitations: |
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
-      Relation caching remains release context, not a demonstrated behavior or speed measurement; src-1 documents the change. The intro now promises only the tagged-model selection actually shown.
-      review-0.12-02: Relation caching is sourced release context only. Removed it from intro promises and documented the omitted demonstration. Evidence: src-1, src-2, src-3, src-4.
+    limitations: >
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
+      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
+      performance claims.
+
+      Relation caching remains release context, not a demonstrated behavior or speed measurement; src-1
+      documents the change. The intro now promises only the tagged-model selection actually shown.
+
+      review-0.12-02: Relation caching is sourced release context only. Removed it from intro promises and
+      documented the omitted demonstration. Evidence: src-1, src-2, src-3, src-4.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'

@@ -11,19 +11,20 @@ what_changed:
   - id: change-1
     summary: dbt build runs seeds, snapshots, models and tests in DAG order.
     introduced_in: 0.21.0
-    adapter_constraints:
+    adapter_constraints: null
     evidence:
       - src-1
     confidence: high
   - id: change-2
     summary: on_schema_change for incremental models; state detects macro changes.
     introduced_in: 0.21.0
-    adapter_constraints:
+    adapter_constraints: null
     evidence:
       - src-1
     confidence: high
-in_practice: |
-  Build the selected graph with its checks in the relevant order.
+in_practice: >
+  One command, dbt build, ran seeds, snapshots, models and tests in dependency order, and a failed test
+  stopped the models downstream of it.
 technical_detail: >
   The illustration assumes a selected upstream relationship test on the payment staging model and an ordinary
   single-parent failure barrier. Actual blocking rules depend on test dependencies and selection. Incremental
@@ -72,14 +73,17 @@ walkthrough:
   steps:
     - id: graph
       title: Where the test sits in the chain
-      explanation: |-
-        Highlighted lines 8 to 10 of schema.yml require each payment's order_id to exist in orders. The diagram places that check between payments and the dependent revenue branch. It follows payments_by_order through order_amounts and order_revenue to revenue_by_location, showing how a failed check can block the final table.
+      explanation: >-
+        Highlighted lines 8 to 10 of schema.yml require each payment's order_id to exist in orders. The
+        diagram places that check between payments and the dependent revenue branch. It follows
+        payments_by_order through order_amounts and order_revenue to revenue_by_location, showing how a failed
+        check can block the final table.
       state:
         kind: diagram
         title: Payment test guards the revenue branch
         columns: []
         rows: []
-        result_status:
+        result_status: null
         diagram:
           nodes:
             - id: payments
@@ -108,8 +112,9 @@ walkthrough:
           highlight:
             - payments
             - orders
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: |
         The test is a step in the chain, sitting between the payments model and the revenue models.
       evidence:
@@ -137,8 +142,11 @@ walkthrough:
           purpose: authored executable syntax; illustration only
     - id: build
       title: 'Run dbt build: the test fails and revenue is skipped'
-      explanation: |-
-        Highlighted lines 8 to 10 of schema.yml retain the payment-to-order rule. The command runs dbt build, which orders model creation and tests together. The panel reports one missing parent and skips the dependent revenue branch, including revenue_by_location. That's the table inspected on the next screen.
+      explanation: >-
+        Highlighted lines 8 to 10 of schema.yml retain the payment-to-order rule. The command runs dbt build,
+        which orders model creation and tests together. The panel reports one missing parent and skips the
+        dependent revenue branch, including revenue_by_location. That's the table inspected on the next
+        screen.
       state:
         kind: result
         title: Test fails, revenue model skipped
@@ -146,14 +154,15 @@ walkthrough:
           - resource
           - prepared result
         rows:
-          -   - payment relationship test
-              - 'fail: expected 0, actual 1'
-          -   - revenue_by_location and its dependent-input branch
-              - skipped after the failed upstream test
+          - - payment relationship test
+            - 'fail: expected 0, actual 1'
+          - - revenue_by_location and its dependent-input branch
+            - skipped after the failed upstream test
         result_status: fail
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: |
         Because the payments test failed, dbt build did not rebuild the revenue model at all.
       code:
@@ -188,8 +197,11 @@ walkthrough:
         - src-3
     - id: limit
       title: The old revenue table still exists, so read it carefully
-      explanation: |-
-        existing_revenue.sql is a plain query for inspecting a stored result, not a model. Its highlighted lines 2 and 3 sum the revenue table left from the last successful build. The panel shows 12,500 cents, the correct base total. This failed build produced no new revenue table; the stored one predates the bad payment.
+      explanation: >-
+        existing_revenue.sql is a plain query for inspecting a stored result, not a model. Its highlighted
+        lines 2 and 3 sum the revenue table left from the last successful build. The panel shows 12,500 cents,
+        the correct base total. This failed build produced no new revenue table; the stored one predates the
+        bad payment.
       state:
         kind: comparison
         title: Old total 12,500 cents; nothing new was produced
@@ -197,12 +209,13 @@ walkthrough:
           - existing base total
           - freshly validated output
         rows:
-          -   - 12500
-              - not produced by this failed build
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - 12500
+            - not produced by this failed build
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: >
         A revenue table that exists is not proof the latest build passed. This one is left over from before
         the failure.
@@ -228,11 +241,20 @@ walkthrough:
       - src-1
       - src-2
       - src-3
-    limitations: |
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
-      The concrete relationships test references both payments and orders; both are ancestors of order_revenue in the shown graph. It is therefore eligible to block that dependent branch. This clarifies the earlier simplified single-parent description without removing it.
-      on_schema_change remains release context only (src-1). The existing jaffle.revenue_by_location table in the last step is explicitly the previous successful base build, not a fresh result of this failed build.
-      historical-0.21-02: Keep failed-test blocking behavior; the test has both orders and payments as ancestors of the dependent revenue branch. Evidence: src-1, src-2, src-3.
+    limitations: >
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
+      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
+      performance claims.
+
+      The concrete relationships test references both payments and orders; both are ancestors of order_revenue
+      in the shown graph. It is therefore eligible to block that dependent branch. This clarifies the earlier
+      simplified single-parent description without removing it.
+
+      on_schema_change remains release context only (src-1). The existing jaffle.revenue_by_location table in
+      the last step is explicitly the previous successful base build, not a fresh result of this failed build.
+
+      historical-0.21-02: Keep failed-test blocking behavior; the test has both orders and payments as
+      ancestors of the dependent revenue branch. Evidence: src-1, src-2, src-3.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
@@ -243,12 +265,12 @@ walkthrough:
       - Skip dependent revenue models when an upstream test fails.
     scenario: >
       A payment for a missing order sits in the payments data. A test on the payments model catches it. Before
-      this version, dbt run built every model and dbt test checked afterwards, so the revenue table would
-      be
+      this version, dbt run built every model and dbt test checked afterwards, so the revenue table would be
       rebuilt with the bad row before anyone knew. Now dbt build runs the test right after the payments model
       and skips everything after it if the test fails.
-    outcome: |
-      The walkthrough shows where the test sits in the chain, what dbt build reports, and why the old revenue table still in the warehouse should not be trusted.
+    outcome: >
+      The walkthrough shows where the test sits in the chain, what dbt build reports, and why the old revenue
+      table still in the warehouse should not be trusted.
   title: |
     Demo: dbt build stops the revenue model when an upstream test fails
 status: reviewed

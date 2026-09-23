@@ -10,24 +10,21 @@ what_changed:
   - id: rust-v2
     summary: Rust-based dbt v2 is distributed as full dbt and dbt OSS.
     introduced_in: 2.0.0
-    adapter_constraints: GA adapter coverage differs from v1; PostgreSQL is coming soon in the Summit
-      announcement.
+    adapter_constraints: GA adapter coverage differs from v1; PostgreSQL is coming soon in the Summit announcement.
     evidence:
       - src-1
     confidence: high
   - id: sql-comprehension
     summary: Full-distribution SQL comprehension supports earlier SQL feedback.
     introduced_in: 2.0.0
-    adapter_constraints: Full distribution plus documented login/access and adapter requirements; not a
-      dbt OSS promise.
+    adapter_constraints: Full distribution plus documented login/access and adapter requirements; not a dbt OSS promise.
     evidence:
       - src-2
       - src-5
     confidence: high
 in_practice: >
-  The full distribution can provide SQL comprehension, while dbt OSS contains the Apache-licensed subset.
-  The
-  shop still asks the same revenue question.
+  The same project ran on the Rust engine, as full dbt or as the Apache-licensed dbt OSS. The full
+  distribution could flag a SQL mistake, such as a missing column, before running anything.
 technical_detail: >
   Keep the September 14 artifact, September 15 naming change and September 16 GA announcement separate. Full
   SQL analysis has a documented login gate; do not attribute it to OSS or promise it works unauthenticated.
@@ -110,8 +107,9 @@ sources:
     title: Static analysis during dbt v2 compilation
     url: https://docs.getdbt.com/docs/build/about-static-analysis
     retrieved: '2026-09-21'
-    supports: Compilation renders Jinja then analyzes SQL. Strict mode gives pre-execution validation
-      and requires authentication; baseline findings can be warnings.
+    supports: >-
+      Compilation renders Jinja then analyzes SQL. Strict mode gives pre-execution validation and requires
+      authentication; baseline findings can be warnings.
 narrative_evidence:
   - src-1
   - src-2
@@ -132,8 +130,11 @@ walkthrough:
   steps:
     - id: distributions
       title: Two ways to install one engine
-      explanation: |-
-        Highlighted line 1 of requirements-full.txt pins full dbt, while line 1 of requirements-oss.txt pins dbt-oss, both at 2.0.2. They belong in separate environments. This chapter assumes DuckDB, not PostgreSQL support. The panel distinguishes their licences and full dbt's SQL checks, which operate before execution under the documented login and metadata conditions.
+      explanation: >-
+        Highlighted line 1 of requirements-full.txt pins full dbt, while line 1 of requirements-oss.txt pins
+        dbt-oss, both at 2.0.2. They belong in separate environments. This chapter assumes DuckDB, not
+        PostgreSQL support. The panel distinguishes their licences and full dbt's SQL checks, which operate
+        before execution under the documented login and metadata conditions.
       state:
         kind: comparison
         title: Full dbt versus dbt OSS
@@ -142,16 +143,17 @@ walkthrough:
           - licence category
           - SQL comprehension
         rows:
-          -   - dbt
-              - Product Licensing Agreement
-              - full features with documented access conditions
-          -   - dbt OSS
-              - Apache 2.0 subset
-              - not the proprietary SQL-comprehension feature set
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - dbt
+            - Product Licensing Agreement
+            - full features with documented access conditions
+          - - dbt OSS
+            - Apache 2.0 subset
+            - not the proprietary SQL-comprehension feature set
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: |
         One engine, two packages: full dbt with the SQL checks, and dbt OSS without them.
       evidence:
@@ -180,8 +182,12 @@ walkthrough:
           purpose: authored executable syntax; illustration only
     - id: typo
       title: Ask for a column that does not exist
-      explanation: |-
-        Highlighted line 1 of revenue_by_location requests revenue_amount_cents, while highlighted line 1 of order_revenue defines revenue_cents. The command compiles with full dbt's strict SQL analysis. It can reject the unresolved column before executing the model query in DuckDB. The panel compares requested and available names. Metadata lookup may still contact the database; no exact engine error text is fabricated.
+      explanation: >-
+        Highlighted line 1 of revenue_by_location requests revenue_amount_cents, while highlighted line 1 of
+        order_revenue defines revenue_cents. The command compiles with full dbt's strict SQL analysis. It can
+        reject the unresolved column before executing the model query in DuckDB. The panel compares requested
+        and available names. Metadata lookup may still contact the database; no exact engine error text is
+        fabricated.
       state:
         kind: result
         title: Missing column caught
@@ -190,15 +196,17 @@ walkthrough:
           - available_column
           - assessment
         rows:
-          -   - revenue_amount_cents
-              - revenue_cents
-              - missing column
+          - - revenue_amount_cents
+            - revenue_cents
+            - missing column
         result_status: fail
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
-      takeaway: |-
-        Full dbt’s SQL analysis can catch the missing column during compilation, before executing the model query.
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
+      takeaway: >-
+        Full dbt’s SQL analysis can catch the missing column during compilation, before executing the model
+        query.
       code:
         - language: sql
           filename: models/revenue_by_location.sql
@@ -234,8 +242,10 @@ walkthrough:
         - alignment-static
     - id: correction
       title: Use the real column name
-      explanation: |-
-        Highlighted line 1 of revenue_by_location now sums the real revenue_cents column. The panel shows 3,400, 4,300 and 4,800 cents, totalling 12,500. Earlier feedback changed how quickly the mistake was found, not what revenue means.
+      explanation: >-
+        Highlighted line 1 of revenue_by_location now sums the real revenue_cents column. The panel shows
+        3,400, 4,300 and 4,800 cents, totalling 12,500. Earlier feedback changed how quickly the mistake was
+        found, not what revenue means.
       state:
         kind: table
         title: Corrected query output
@@ -243,16 +253,17 @@ walkthrough:
           - location_id
           - revenue_cents
         rows:
-          -   - 1
-              - 3400
-          -   - 2
-              - 4300
-          -   - 3
-              - 4800
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - 1
+            - 3400
+          - - 2
+            - 4300
+          - - 3
+            - 4800
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: |
         With the column name fixed, the model gives the base total of 12,500 cents.
       code:
@@ -276,8 +287,11 @@ walkthrough:
         - alignment-static
     - id: boundary
       title: Not everything announced is finished
-      explanation: |-
-        Highlighted lines 3 to 7 of summit-availability.yml record the September 16 announcement. The panel shows dbt v2 and dbt State as generally available, Lake Compute and the Fivetran Context Layer in private beta, and dbt Charts in public beta. Generally available describes release maturity; it doesn't mean every feature is free or accessible without conditions.
+      explanation: >-
+        Highlighted lines 3 to 7 of summit-availability.yml record the September 16 announcement. The panel
+        shows dbt v2 and dbt State as generally available, Lake Compute and the Fivetran Context Layer in
+        private beta, and dbt Charts in public beta. Generally available describes release maturity; it
+        doesn't mean every feature is free or accessible without conditions.
       state:
         kind: comparison
         title: Product status at the September 16 Summit
@@ -285,22 +299,24 @@ walkthrough:
           - offering
           - status
         rows:
-          -   - dbt v2
-              - GA
-          -   - dbt State
-              - GA
-          -   - Lake Compute
-              - private beta in detailed announcement
-          -   - dbt Charts
-              - public beta
-          -   - Fivetran Context Layer
-              - private beta
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
-      takeaway: |-
-        The engine and State are generally available, while the three other listed offerings remain in their stated beta programs.
+          - - dbt v2
+            - GA
+          - - dbt State
+            - GA
+          - - Lake Compute
+            - private beta in detailed announcement
+          - - dbt Charts
+            - public beta
+          - - Fivetran Context Layer
+            - private beta
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
+      takeaway: >-
+        The engine and State are generally available, while the three other listed offerings remain in their
+        stated beta programs.
       evidence:
         - src-1
         - src-2
@@ -340,14 +356,38 @@ walkthrough:
       - src-6
       - src-7
       - alignment-static
-    limitations: |
-      All states are authored illustrations. No full/OSS engine was run and no diagnostic text is an original terminal log. SQL-comprehension behavior depends on the full distribution, login, metadata and supported adapter. No speed comparison is claimed.
-      The distribution requirements are alternative environments at the 2.0.2 September 15 checkpoint, never a combined installation instruction. reference/summit-availability.yml is the authored data behind the product-status comparison, not dbt project syntax or output. Product maturity comes from the cited announcement, not SQL execution.
-      The 2.0.2 distributions were published before the cutoff: full dbt on 2026-09-15 at 09:35:22 UTC and dbt-oss at 16:09:45 UTC (src-6, src-7 PyPI metadata). Full distribution licensing and the September 16 maturity statuses remain qualified by src-2, src-3 and src-5. The example now explicitly assumes DuckDB; the GA material did not promise PostgreSQL support. The final product-status step is deliberately retained as a short bridge to the catalogue/ecosystem, not as a SQL demo or proof of unrestricted access.
-      The example explicitly requests --static-analysis strict after login. Baseline mode may surface findings as warnings; the prepared failure panel is not a promise about every default invocation (alignment-static).
-      review-2.0-03: Confirmed both 2.0.2 PyPI uploads on September 15, the Product Licensing Agreement/Apache distinction, and Summit maturity levels. Kept access and beta qualifications. Evidence: src-1, src-2, src-3, src-4, src-5, src-6, src-7, alignment-static.
-      historical-2.0-01: Confirmed both 2.0.2 PyPI uploads on September 15, the Product Licensing Agreement/Apache distinction, and Summit maturity levels. Kept access and beta qualifications. Evidence: src-1, src-2, src-3, src-4, src-5, src-6, src-7, alignment-static.
-      historical-2.0-03: Retain the final product-status screen as an explicit short bridge to catalogue/ecosystem, not a dbt execution demo. Evidence: src-1, src-2, src-3, src-4, src-5, src-6, src-7, alignment-static.
+    limitations: >
+      All states are authored illustrations. No full/OSS engine was run and no diagnostic text is an original
+      terminal log. SQL-comprehension behavior depends on the full distribution, login, metadata and supported
+      adapter. No speed comparison is claimed.
+
+      The distribution requirements are alternative environments at the 2.0.2 September 15 checkpoint, never a
+      combined installation instruction. reference/summit-availability.yml is the authored data behind the
+      product-status comparison, not dbt project syntax or output. Product maturity comes from the cited
+      announcement, not SQL execution.
+
+      The 2.0.2 distributions were published before the cutoff: full dbt on 2026-09-15 at 09:35:22 UTC and
+      dbt-oss at 16:09:45 UTC (src-6, src-7 PyPI metadata). Full distribution licensing and the September 16
+      maturity statuses remain qualified by src-2, src-3 and src-5. The example now explicitly assumes DuckDB;
+      the GA material did not promise PostgreSQL support. The final product-status step is deliberately
+      retained as a short bridge to the catalogue/ecosystem, not as a SQL demo or proof of unrestricted
+      access.
+
+      The example explicitly requests --static-analysis strict after login. Baseline mode may surface findings
+      as warnings; the prepared failure panel is not a promise about every default invocation
+      (alignment-static).
+
+      review-2.0-03: Confirmed both 2.0.2 PyPI uploads on September 15, the Product Licensing Agreement/Apache
+      distinction, and Summit maturity levels. Kept access and beta qualifications. Evidence: src-1, src-2,
+      src-3, src-4, src-5, src-6, src-7, alignment-static.
+
+      historical-2.0-01: Confirmed both 2.0.2 PyPI uploads on September 15, the Product Licensing
+      Agreement/Apache distinction, and Summit maturity levels. Kept access and beta qualifications. Evidence:
+      src-1, src-2, src-3, src-4, src-5, src-6, src-7, alignment-static.
+
+      historical-2.0-03: Retain the final product-status screen as an explicit short bridge to
+      catalogue/ecosystem, not a dbt execution demo. Evidence: src-1, src-2, src-3, src-4, src-5, src-6,
+      src-7, alignment-static.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
@@ -355,13 +395,12 @@ walkthrough:
   intro:
     can_now:
       - Install the new Rust-based dbt v2 as either full dbt or the open-source dbt OSS.
-      - With full dbt, get told about a column that does not exist before the query is sent to the
-        database.
+      - With full dbt, get told about a column that does not exist before the query is sent to the database.
     scenario: >-
       This chapter assumes DuckDB, a supported target for the shown dbt v2 example. The location model asks
       for revenue_amount_cents, but its input has revenue_cents. The walkthrough compares the distributions,
-      the full distribution’s pre-execution SQL check, the corrected result and the announcement’s product-status
-      boundary.
+      the full distribution’s pre-execution SQL check, the corrected result and the announcement’s
+      product-status boundary.
     outcome: >
       Compare the two distributions, watch the column mistake get caught and fixed, and confirm the base total
       is still 12,500 cents.

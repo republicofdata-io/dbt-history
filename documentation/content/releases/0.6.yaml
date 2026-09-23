@@ -9,19 +9,20 @@ what_changed:
   - id: change-1
     summary: Macros, full-refresh control for incrementals and target context.
     introduced_in: 0.6.0
-    adapter_constraints:
+    adapter_constraints: null
     evidence:
       - src-1
     confidence: high
   - id: change-2
     summary: Run-level hooks and additional runtime materialization controls.
     introduced_in: 0.6.0
-    adapter_constraints:
+    adapter_constraints: null
     evidence:
       - src-1
     confidence: high
-in_practice: |
-  Change one macro, then compile the models that use it.
+in_practice: >
+  A calculation used in several models was written once as a macro. Correcting it meant changing one file and
+  rebuilding the models that called it.
 technical_detail: >
   Use a simple expression macro compatible with this era. Richer adapter/ref/var macro context belongs to
   later releases. Full-refresh is another change in this release; it rebuilds incremental tables when needed.
@@ -68,7 +69,7 @@ sources:
       Do not retroactively name it Cloud.
   - id: alignment-0-6-0
     title: 'dbt 0.6.0 original source: dbt/main.py; dbt/model.py; dbt/templates.py'
-    url:
+    url: >-
       https://files.pythonhosted.org/packages/15/6e/935616b8f2d5e6114cb11b8d54e4948758a8dc5b598941f26017b4ac53e5/dbt-0.6.0.tar.gz
     retrieved: '2026-09-22'
     source_path: dbt/main.py; dbt/model.py; dbt/templates.py
@@ -91,8 +92,11 @@ walkthrough:
   steps:
     - id: repeat
       title: The same subtraction in every report
-      explanation: |-
-        order_1042.sql is an inspection query: a plain query under analyses that reads data without building a model. Highlighted line 2 subtracts refunds; line 4 selects order 1042. Highlighted line 2 of customer_revenue.sql repeats the subtraction in a report. The panel shows the worked answer: 1,200 cents paid minus 200 refunded equals 1,000 cents.
+      explanation: >-
+        order_1042.sql is an inspection query: a plain query under analyses that reads data without building a
+        model. Highlighted line 2 subtracts refunds; line 4 selects order 1042. Highlighted line 2 of
+        customer_revenue.sql repeats the subtraction in a report. The panel shows the worked answer: 1,200
+        cents paid minus 200 refunded equals 1,000 cents.
       state:
         kind: comparison
         title: Order 1042, worked by hand
@@ -102,14 +106,15 @@ walkthrough:
           - refund_cents
           - revenue_cents
         rows:
-          -   - 1042
-              - 1200
-              - 200
-              - 1000
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - 1042
+            - 1200
+            - 200
+            - 1000
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: >
         Payments minus refunds is typed out in several models, and each copy is a place a mistake could creep
         in.
@@ -143,8 +148,10 @@ walkthrough:
           purpose: Authored era-specific example; illustration only.
     - id: macro
       title: Give the expression a name
-      explanation: |-
-        Highlighted lines 1 to 3 of the macro define net_cents, a small template that takes two inputs and writes their subtraction as SQL text. It doesn't create a table or store data. The panel shows the input expressions and the expression the macro produces.
+      explanation: >-
+        Highlighted lines 1 to 3 of the macro define net_cents, a small template that takes two inputs and
+        writes their subtraction as SQL text. It doesn't create a table or store data. The panel shows the
+        input expressions and the expression the macro produces.
       state:
         kind: comparison
         title: What the macro takes in and gives back
@@ -153,13 +160,14 @@ walkthrough:
           - input expressions
           - emitted expression
         rows:
-          -   - net_cents
-              - payment_cents, refund_cents
-              - (payment_cents - refund_cents)
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - net_cents
+            - payment_cents, refund_cents
+            - (payment_cents - refund_cents)
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: |
         A macro produces SQL text; it is not a table and holds no data.
       code:
@@ -182,8 +190,11 @@ walkthrough:
         - alignment-0-6-0
     - id: use
       title: Call the macro from the revenue model
-      explanation: |-
-        Highlighted line 3 of order_revenue replaces the written subtraction with a call to net_cents, the macro defined on the previous screen. Lines 1 and 2 retain the incremental filter. Highlighted lines 1 and 3 of the inspection query read the stored columns for order 1042. The panel shows the same 1,000-cent result through the shared rule.
+      explanation: >-
+        Highlighted line 3 of order_revenue replaces the written subtraction with a call to net_cents, the
+        macro defined on the previous screen. Lines 1 and 2 retain the incremental filter. Highlighted lines 1
+        and 3 of the inspection query read the stored columns for order 1042. The panel shows the same
+        1,000-cent result through the shared rule.
       state:
         kind: table
         title: Order 1042 through the macro
@@ -193,14 +204,15 @@ walkthrough:
           - refund_cents
           - revenue_cents
         rows:
-          -   - 1042
-              - 1200
-              - 200
-              - 1000
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - 1042
+            - 1200
+            - 200
+            - 1000
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: |
         The model now uses the shared definition and gets the same 1,000-cent answer.
       code:
@@ -234,8 +246,12 @@ walkthrough:
         - alignment-0-6-0
     - id: refresh
       title: Recalculate stored rows after correcting a macro
-      explanation: |-
-        Compare macros/net_cents.sql (before correction), whose highlighted line 2 adds refunds, with macros/net_cents.sql, whose highlighted lines 1 to 3 define the corrected subtraction. Highlighted lines 1 and 2 of order_revenue ordinarily admit only new ids, leaving old values stored. The command uses full refresh to rebuild all rows. The panel shows order 1042 falling from 1,400 to 1,000 cents and the total from 15,100 to 12,500.
+      explanation: >-
+        Compare macros/net_cents.sql (before correction), whose highlighted line 2 adds refunds, with
+        macros/net_cents.sql, whose highlighted lines 1 to 3 define the corrected subtraction. Highlighted
+        lines 1 and 2 of order_revenue ordinarily admit only new ids, leaving old values stored. The command
+        uses full refresh to rebuild all rows. The panel shows order 1042 falling from 1,400 to 1,000 cents
+        and the total from 15,100 to 12,500.
       state:
         kind: comparison
         title: Rebuilt values after the macro correction
@@ -244,16 +260,17 @@ walkthrough:
           - order_1042_cents
           - all_orders_cents
         rows:
-          -   - old addition, still stored
-              - 1400
-              - 15100
-          -   - corrected subtraction, rebuilt
-              - 1000
-              - 12500
-        result_status:
-        diagram:
-        provenance: Authored illustration; fixture-derived values or explicitly prepared workflow. Not a
-          captured dbt run.
+          - - old addition, still stored
+            - 1400
+            - 15100
+          - - corrected subtraction, rebuilt
+            - 1000
+            - 12500
+        result_status: null
+        diagram: null
+        provenance: >-
+          Authored illustration; fixture-derived values or explicitly prepared workflow. Not a captured dbt
+          run.
       takeaway: Full refresh applies the corrected macro to already stored orders, as well as new ones.
       code:
         - language: sql
@@ -303,8 +320,7 @@ walkthrough:
         - alignment-0-6-0
       data_context:
         dataset_variant: base
-        phase: Same input rows; compare an intentionally wrong stored calculation with its corrected
-          rebuild.
+        phase: Same input rows; compare an intentionally wrong stored calculation with its corrected rebuild.
   evidence:
     status: illustration
     review_date: '2026-09-22'
@@ -314,11 +330,20 @@ walkthrough:
       - src-3
       - src-4
       - alignment-0-6-0
-    limitations: |
-      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were reviewed against the cited release evidence. Small-fixture values are independently checked; no measured performance claims.
-      The before/after refresh panel compares calculations over the same base rows, not a changed fixture: payments plus refunds is 15,100; payments minus refunds is 12,500. Hooks and target context are release context only (src-1).
-      historical-0.6-02: Kept macro definition and folder after checking 0.6.0 source. Evidence: src-1, src-2, src-3, src-4, alignment-0-6-0.
-      historical-0.6-03: Hooks and target context remain release context, expressly outside the walkthrough. Evidence: src-1, src-2, src-3, src-4, alignment-0-6-0.
+    limitations: >
+      Prepared teaching states, not executed on a historical dbt runtime. Feature and syntax choices were
+      reviewed against the cited release evidence. Small-fixture values are independently checked; no measured
+      performance claims.
+
+      The before/after refresh panel compares calculations over the same base rows, not a changed fixture:
+      payments plus refunds is 15,100; payments minus refunds is 12,500. Hooks and target context are release
+      context only (src-1).
+
+      historical-0.6-02: Kept macro definition and folder after checking 0.6.0 source. Evidence: src-1, src-2,
+      src-3, src-4, alignment-0-6-0.
+
+      historical-0.6-03: Hooks and target context remain release context, expressly outside the walkthrough.
+      Evidence: src-1, src-2, src-3, src-4, alignment-0-6-0.
     code_review:
       reviewed_on: '2026-09-22'
       historical_cutoff: '2026-09-21'
@@ -328,14 +353,13 @@ walkthrough:
       - Write a piece of SQL once as a macro, a small template, and drop it into any model.
       - Force an incremental model to rebuild from scratch with the full-refresh flag.
     scenario: >
-      Several reports subtract refunds from payments. Each one types the subtraction by hand, so a change
-      to
+      Several reports subtract refunds from payments. Each one types the subtraction by hand, so a change to
       the rule means editing them all. The shop moves the expression into one macro. Order 1042, paid 1,200
       cents and refunded 200, is the test case.
-    outcome: |-
-      See the shared macro return 1,000 cents for order 1042, then see full refresh correct every previously stored row.
-  title: |-
-    Demo: share the revenue rule and rebuild stored rows after a correction
+    outcome: >-
+      See the shared macro return 1,000 cents for order 1042, then see full refresh correct every previously
+      stored row.
+  title: 'Demo: share the revenue rule and rebuild stored rows after a correction'
 status: reviewed
 review_scope: Source and fixture review; no historical dbt engine execution.
 default_milestone: 0.6.0
