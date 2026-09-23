@@ -72,6 +72,10 @@ The catalogue derivation (`src/content/derive.ts`) carries every qualification f
 3. Run `make test`. It checks schema, source references, highlight line ranges, table widths, diagram edges and the dataset arithmetic.
 4. Chapters without a walkthrough render a "Walkthrough in preparation" panel. `make content-releases` regenerates skeletons for those chapters only; authored chapters are never overwritten.
 
+## Analytics
+
+`index.html` loads the RepublicOfData.io Google Analytics property (the app is served under the site's domain). Automatic page views are off; `src/app/analytics.ts` sends one `page_view` per route change, so chapters, tabs and walkthrough steps each count as a page. Nothing is sent from localhost.
+
 ## Publishing
 
 The app is its own Netlify site, `republicofdata-dbt-history` (https://republicofdata-dbt-history.netlify.app), served under the main domain by one proxy rule in the website repo (`republicofdata.io-website/netlify.toml`):

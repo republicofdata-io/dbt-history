@@ -4,6 +4,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/labs/dbt-history/favicon.svg" />
+    <!-- Google Analytics: the RepublicOfData.io property, since the app is served under the site's domain.
+         Page views are sent by the app on each route change (see src/app/analytics.ts), not on load. -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9K6HZT12NY"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9K6HZT12NY', { send_page_view: false });
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

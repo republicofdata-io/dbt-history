@@ -4,6 +4,7 @@ import { TABS, useHistoryState, type Tab } from "./state";
 import Header from "./Header";
 import { usePresentation } from "./usePresentation";
 import { useTheme } from "./theme";
+import { usePageViews } from "./analytics";
 import ReleaseIndex from "./ReleaseIndex";
 import AnchorBar from "./AnchorBar";
 import ReleaseTab from "./ReleaseTab";
@@ -22,6 +23,7 @@ export default function HistoryPage() {
   const state = useHistoryState();
   const [presentation, setPresentation] = usePresentation();
   const [theme, cycleTheme] = useTheme();
+  usePageViews();
 
   useEffect(() => {
     if (!state) return;
