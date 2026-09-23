@@ -122,3 +122,14 @@ describe("what changed since the previous chapter", () => {
     expect(d.get("fivetran")?.kind).toBe("new");
   });
 });
+
+describe("dbt Cloud maturity", () => {
+  it("is a hosted experiment as Sinter and generally available from the January 2019 rename", () => {
+    const sinter = catalogueAt("2018-06-01", products, productEvents).find((s) => s.product.id === "dbt-cloud")!;
+    expect(sinter.maturity).toBeNull();
+    expect(sinter.maturityLabel).toMatch(/experiment/);
+    const cloud = catalogueAt("2022-10-12", products, productEvents).find((s) => s.product.id === "dbt-cloud")!;
+    expect(cloud.maturity).toBe("ga");
+    expect(cloud.maturityLabel).toBeNull();
+  });
+});
