@@ -46,12 +46,6 @@ export default function ReleaseTab({ state }: { state: HistoryState }) {
         </div>
       </div>
 
-      <div className="mb-4 grid gap-3 sm:grid-cols-2" aria-label="Published adoption figures at this date">
-        {metrics.series.map((series) => (
-          <AdoptionChart key={series.id} series={series} date={state.anchor.date} />
-        ))}
-      </div>
-
       <div className="grid min-h-[180px] flex-1 grid-cols-1 gap-x-12 gap-y-6 overflow-y-auto lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
         <div className="flex min-h-0 flex-col">
           <h3 className="mb-2.5 text-sm font-semibold">What changed</h3>
@@ -135,6 +129,11 @@ export default function ReleaseTab({ state }: { state: HistoryState }) {
             </div>
           )}
         </div>
+      </div>
+      <div className="mt-4 grid gap-3 sm:grid-cols-2" aria-label="Published adoption figures at this date">
+        {metrics.series.map((series) => (
+          <AdoptionChart key={series.id} series={series} date={state.anchor.date} />
+        ))}
       </div>
     </div>
   );
