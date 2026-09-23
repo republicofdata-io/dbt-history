@@ -218,8 +218,6 @@ export const Release = z.object({
   label: z.string(),
   title: z.string(),
   status: ReleaseStatus.optional(),
-  /** Marks a chapter to dwell on; the sidebar index highlights it. */
-  featured: z.boolean().default(false),
   era: z.enum(["origin", "0.x", "1.x", "2.x"]).optional(),
   lead: z.string(),
   problem_then: z.string().nullable().optional(),

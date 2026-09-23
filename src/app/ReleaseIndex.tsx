@@ -18,16 +18,14 @@ function VersionButton({ id, label, current, onSelect, className }: { id: string
       onClick={() => onSelect(id)}
       aria-pressed={active}
       aria-current={active ? "page" : undefined}
-      title={`${r.label} · ${r.title}${r.featured ? " · featured" : ""}`}
+      title={`${r.label} · ${r.title}`}
       className={cn(
-        "relative rounded-[5px] border border-transparent py-1 text-xs tabular-nums transition-colors hover:bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-        r.featured && !active && "border-gold/60 bg-gold-wash font-semibold text-foreground",
+        "rounded-[5px] border border-transparent py-1 text-xs tabular-nums transition-colors hover:bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
         active && "bg-accent text-accent-foreground hover:bg-accent",
         className,
       )}
     >
       {label}
-      {r.featured && <span className="sr-only"> (featured)</span>}
     </button>
   );
 }
@@ -47,7 +45,6 @@ export default function ReleaseIndex({ current, onSelect }: { current: string; o
         aria-pressed={current === "origin"}
         className={cn(
           "rounded-[5px] border border-transparent px-1 py-1 text-left text-xs text-muted-foreground hover:bg-card",
-          releases[0].featured && current !== "origin" && "border-gold/60 bg-gold-wash font-semibold text-foreground",
           current === "origin" && "bg-accent text-accent-foreground hover:bg-accent",
         )}
       >
@@ -66,15 +63,7 @@ export default function ReleaseIndex({ current, onSelect }: { current: string; o
         ))}
       </div>
       <VersionButton id="2.0" label="v2.0 · September 2026" current={current} onSelect={onSelect} className="mt-3 w-full border-border px-2.5 py-1.5 text-left" />
-      <p className="mt-4 text-[11px] text-muted-foreground">
-        35 version chapters. The history starts in 2016.
-        {releases.some((r) => r.featured) && (
-          <span className="mt-1 block">
-            <span className="mr-1 inline-block h-2.5 w-2.5 rounded-[3px] border border-gold/60 bg-gold-wash align-middle" aria-hidden="true" />
-            featured chapters
-          </span>
-        )}
-      </p>
+      <p className="mt-4 text-[11px] text-muted-foreground">35 version chapters. The history starts in 2016.</p>
     </aside>
   );
 }
