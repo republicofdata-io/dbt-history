@@ -1,7 +1,5 @@
 import { Badge } from "@/components/ui/badge";
 import EvidenceDrawer, { SourceList } from "@/components/EvidenceDrawer";
-import AdoptionChart from "@/components/AdoptionChart";
-import { metrics } from "@/content/load";
 import { formatDate } from "@/content/dates";
 import type { HistoryState } from "./state";
 
@@ -129,11 +127,6 @@ export default function ReleaseTab({ state }: { state: HistoryState }) {
             </div>
           )}
         </div>
-      </div>
-      <div className="mt-4 grid gap-3 sm:grid-cols-2" aria-label="Published adoption figures at this date">
-        {metrics.series.map((series) => (
-          <AdoptionChart key={series.id} series={series} date={state.anchor.date} />
-        ))}
       </div>
     </div>
   );

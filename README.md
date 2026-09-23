@@ -53,7 +53,6 @@ Content lives under `documentation/content/` and is validated against `src/conte
 | `catalogue/products.yaml` | Stable product identities with dated names and owners (Sinter → dbt Cloud → dbt, Explorer → Catalog…). |
 | `catalogue/events.yaml` | Dated product events. The catalogue at any date is computed from these; nothing is copied per chapter. |
 | `ecosystem/placements.yaml` | Which products sit in which layer from when, their relationship to dbt, and sources. |
-| `adoption/metrics.yaml` | Published adoption figures (weekly active companies, Community Slack members) as dated statements with sources; drawn as two charts on the release tab. |
 
 ### Qualifications the UI keeps visible
 

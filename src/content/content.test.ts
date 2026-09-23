@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { catalogueProducts, dataset, ecosystem, metrics, productEvents, products, releases } from "./load";
+import { catalogueProducts, dataset, ecosystem, productEvents, products, releases } from "./load";
 import { walkthroughSourceIds, type Cell } from "./schema";
 import { catalogueAt, ecosystemAt, resolveAnchor } from "./derive";
 
@@ -181,16 +181,6 @@ describe("ecosystem snapshots", () => {
     for (const r of releases) {
       const snap = at(resolveAnchor(r).date);
       for (const [layer, list] of snap) expect(list.length, `${r.id} ${layer}`).toBeLessThanOrEqual(5);
-    }
-  });
-});
-
-describe("published adoption figures", () => {
-  it("has two dated, sourced, increasing-in-time series", () => {
-    expect(metrics.series.map((s) => s.id)).toEqual(["weekly-active", "slack-members"]);
-    for (const s of metrics.series) {
-      for (let i = 1; i < s.points.length; i++) expect(s.points[i].date > s.points[i - 1].date, `${s.id} order`).toBe(true);
-      for (const p of s.points) expect(p.source.url, `${s.id} ${p.date}`).toMatch(/^https?:/);
     }
   });
 });

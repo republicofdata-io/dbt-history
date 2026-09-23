@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Dataset, Ecosystem, Metrics, Product, ProductEvent, Release, type Release as ReleaseT } from "./schema";
+import { Dataset, Ecosystem, Product, ProductEvent, Release, type Release as ReleaseT } from "./schema";
 
 /**
  * Loads every content file under documentation/content/ and validates it.
@@ -15,7 +15,6 @@ const productModules = import.meta.glob("../../documentation/content/catalogue/p
 const eventModules = import.meta.glob("../../documentation/content/catalogue/events.yaml", { eager: true }) as Modules;
 const ecosystemModules = import.meta.glob("../../documentation/content/ecosystem/placements.yaml", { eager: true }) as Modules;
 const ecosystemProductModules = import.meta.glob("../../documentation/content/ecosystem/products.yaml", { eager: true }) as Modules;
-const metricsModules = import.meta.glob("../../documentation/content/adoption/metrics.yaml", { eager: true }) as Modules;
 
 function parseAll<T extends z.ZodTypeAny>(schema: T, modules: Modules, label: string): z.infer<T>[] {
   return Object.entries(modules).map(([file, mod]) => {
@@ -52,10 +51,6 @@ export const productEvents = single(z.array(ProductEvent), eventModules, "events
 export const ecosystem = single(Ecosystem, ecosystemModules, "ecosystem");
 /** Non-dbt players may be defined in ecosystem/products.yaml instead of inline. */
 export const ecosystemProducts: z.infer<typeof Product>[] = parseAll(z.array(Product), ecosystemProductModules, "ecosystem products").flat();
-
-/** Published adoption figures (weekly active companies, Slack members), sorted by date. */
-export const metrics = single(Metrics, metricsModules, "metrics");
-for (const series of metrics.series) series.points.sort((a, b) => a.date.localeCompare(b.date));
 
 /** Every product, whether defined in the catalogue or in the ecosystem files. */
 export const products = new Map<string, z.infer<typeof Product>>();

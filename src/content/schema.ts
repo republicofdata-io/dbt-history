@@ -387,32 +387,3 @@ export type Placement = z.infer<typeof Placement>;
 export const Ecosystem = z
   .union([z.object({ products: z.array(Product).default([]), placements: z.array(Placement) }), z.array(Placement)])
   .transform((v) => (Array.isArray(v) ? { products: [], placements: v } : v));
-
-// ---------- Published adoption figures ----------
-
-export const MetricPoint = z.object({
-  date: DateString,
-  precision: Precision.default("day"),
-  value: z.number().positive(),
-  basis: z.string(),
-  confidence: z.enum(["high", "qualified"]).default("high"),
-  source: Source,
-  note: z.string().nullable().optional(),
-});
-export type MetricPoint = z.infer<typeof MetricPoint>;
-
-export const MetricSeries = z.object({
-  id: z.string(),
-  title: z.string(),
-  short: z.string(),
-  unit: z.string(),
-  note: z.string().nullable().optional(),
-  points: z.array(MetricPoint).min(2),
-});
-export type MetricSeries = z.infer<typeof MetricSeries>;
-
-export const Metrics = z.object({
-  researched_on: DateString,
-  series: z.array(MetricSeries),
-});
-export type Metrics = z.infer<typeof Metrics>;
