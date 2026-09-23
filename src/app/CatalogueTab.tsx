@@ -182,7 +182,7 @@ function ProductRow({ s, date, change }: { s: ProductState; date: string; change
 /** One product group column; wide groups split into two text columns so the panel still fits a screen. */
 function Group({ id, items, date, dashed, label, columns = 1, changes }: { id: string; items: ProductState[]; date: string; dashed?: boolean; label?: string; columns?: 1 | 2 | 3; changes: Map<string, CatalogueChange> }) {
   return (
-    <section className={cn("flex min-h-0 flex-col overflow-y-auto rounded-lg border border-border bg-card p-3.5", dashed && "border-dashed bg-transparent")}>
+    <section className={cn("flex flex-col rounded-lg border border-border bg-card p-3.5", dashed && "border-dashed bg-transparent")}>
       <h3 className="mb-2.5 text-xs font-medium text-muted-foreground">{label ?? GROUPS.find((g) => g.id === id)?.label}</h3>
       <ul className={cn(columns === 2 && "columns-2 gap-x-5 [&>li]:break-inside-avoid", columns === 3 && "columns-3 gap-x-5 [&>li]:break-inside-avoid")}>
         {items.map((s) => (
@@ -251,7 +251,7 @@ export default function CatalogueTab({ state }: { state: HistoryState }) {
           )}
         </p>
       )}
-      <div className={cn("grid min-h-0 flex-1 gap-3 overflow-y-auto sm:grid-cols-2", platformColumns === 3 ? "xl:grid-cols-[1fr_3fr_1fr]" : platformColumns === 2 ? "xl:grid-cols-[1fr_2fr_1fr]" : "xl:grid-cols-3")}>
+      <div className={cn("grid min-h-0 flex-1 items-start gap-3 overflow-y-auto sm:grid-cols-2", platformColumns === 3 ? "xl:grid-cols-[1fr_3fr_1fr]" : platformColumns === 2 ? "xl:grid-cols-[1fr_2fr_1fr]" : "xl:grid-cols-3")}>
         <div className="flex min-h-0 flex-col gap-3">
           {byId.engines.length > 0 && <Group id="engines" items={byId.engines} date={date} changes={changes} />}
           {byId.companies.length > 0 && <Group id="companies" items={byId.companies} date={date} changes={changes} />}
